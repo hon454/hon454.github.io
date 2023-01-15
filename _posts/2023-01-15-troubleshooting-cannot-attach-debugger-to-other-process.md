@@ -3,6 +3,7 @@ title: 언리얼 프로젝트의 다른 프로세스에 디버거를 붙일 수 
 date: 2023-01-15 22:40:00 +0900
 categories: [Unreal, Troubleshooting]
 tags: [unreal, debug]
+typora-root-url: ./..
 ---
 
 ### 문제
@@ -35,7 +36,7 @@ tags: [unreal, debug]
 
 하지만, 언리얼 기반 프로젝트는 버전과 플러그인의 구성에 따라 그 이상의 모듈을 로드 할 수 있기 때문에 해당 제한을 늘려 주어야 한다.
 
-![add-registry-key](../assets/images/2023-01-15-troubleshooting-cannot-attach-debugger-to-other-process/add-registry-key.png)
+![add-registry-key](/assets/images/2023-01-15-troubleshooting-cannot-attach-debugger-to-other-process/add-registry-key.png)
 
 레지스트리 편집기를 이용하여 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager`  경로에 `DWORD` 타입의 `DebuggerMaxModuleMsgs` 값을 높게 설정. (예: 2048)
 

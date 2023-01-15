@@ -6,13 +6,13 @@ tags: [unreal, debug]
 typora-root-url: ./..
 ---
 
-### 문제
+## 문제
 
 언리얼 에디터에서 멀티 플레이 환경 실행 후 IDE(Visual Studio / Rider)를 통해 `Attach to Process`를 수행할 때 중단점이 정상적으로 활성화 될 때도 있고 안될 때도 있는 현상 발생.
 
 
 
-### 환경
+## 환경
 
 - Windows 11 22H2
 - Unreal Engine 4.27.2
@@ -20,7 +20,7 @@ typora-root-url: ./..
 
 
 
-### 재현 단계
+## 재현 단계
 
 1. Visual Studio / Rider를 통해 DebugGameEditor 환경으로 에디터 실행 빌드 및 실행
 2. 멀티 플레이 환경을 구성 및 실행 (Listen Server, Client 등)
@@ -30,7 +30,7 @@ typora-root-url: ./..
 
 
 
-### 해결 방법
+## 해결 방법
 
 윈도우에서는 기본적으로 디버거가 실행 중인 프로세스에 연결 할 때 500 개의 모듈에 대한 심볼을 로드 하는 것으로 제한된다고 한다. 
 
@@ -46,6 +46,6 @@ typora-root-url: ./..
 
 
 
-### 출처
+## 출처
 
 [Increase the Number of Modules Loaded When Attaching the Debugger](https://forums.unrealengine.com/t/increase-the-number-of-modules-loaded-when-attaching-the-debugger/661624)

@@ -1,5 +1,5 @@
 ---
-title: 언리얼 프로젝트의 다른 프로세스에 디버거를 붙일 수 없는 문제 해결하기
+title: 다른 프로세스에 디버거를 붙일 수 없는 문제 해결하기
 date: 2023-01-15 22:40:00 +0900
 categories: [Unreal, Troubleshooting]
 tags: [unreal, debug]

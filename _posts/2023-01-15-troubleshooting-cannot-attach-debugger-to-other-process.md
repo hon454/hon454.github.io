@@ -38,7 +38,7 @@ typora-root-url: ./..
 
 ![add-registry-key](/assets/images/2023-01-15-troubleshooting-cannot-attach-debugger-to-other-process/add-registry-key.png)
 
-레지스트리 편집기를 이용하여 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager`  경로에 `DWORD` 타입의 `DebuggerMaxModuleMsgs` 값을 높게 설정. (예: 2048)
+레지스트리 편집기를 이용하여 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager`  경로에 `DWORD` 타입의 `DebuggerMaxModuleMsgs` 값을 높게 설정하여 추가. (ex. 2048)
 
 
 

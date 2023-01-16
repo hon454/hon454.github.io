@@ -6,10 +6,9 @@ tags: [unreal, networking, multiplayer]
 typora-root-url: ./..
 ---
 
-## **TMap/TSet은 리플리케이션이 불가능하다**
+## **TMap, TSet은 리플리케이션이 불가능하다**
 
-- 구조체 리스트를 리플리케이션 한 후
-- 수신 측에서 TMap/TSet 을 재구성 하는 식으로 사용 가능
+TArray를 리플리케이션 한 후 수신 측에서 TMap/TSet 을 재구성 하는 식으로 사용 가능
 
 
 

@@ -40,15 +40,7 @@ if (Character != nullptr)
 }
 ```
 
-
-
-
-
-> **SpawnActor** 호출 시 Constructor와 BeginPlay 모두 트리거 
-
-> **SpawnActorDeferred** 호출 시 Constructor만 트리거
-
-> BeginPlay는 **FinishSpawning** 이후 트리거
+> **SpawnActor** 호출 시 Constructor와 BeginPlay 모두 트리거<br>**SpawnActorDeferred** 호출 시 Constructor만 트리거<br>BeginPlay는 **FinishSpawning** 이후 트리거
 
 
 

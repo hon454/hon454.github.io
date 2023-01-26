@@ -1,7 +1,7 @@
 ---
 title: Jekyll 블로그가 구글 검색에 노출 되도록 하는 방법
 date: 2023-01-21 01:13:00 +0900
-categories: [Jekyll, Network]
+categories: [Jekyll]
 tags: [jekyll, blog, github, chirpy, google, google search]
 typora-root-url: ./..
 ---

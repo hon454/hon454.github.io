@@ -96,6 +96,98 @@
 
 
 
+## 포트나이트의 리플리케이션 그래프
+
+#### 리플리케이션 액터가 추가/삭제 되는 등 상태 변화가 발생 할 때 리플리케이션 그래프를 수정하는 것으로 보임
+
+<img src="C:\Users\Jihun Jeon\AppData\Roaming\Typora\typora-user-images\image-20230127152303098.png" alt="image-20230127152303098" style="width:100%;" />
+
+
+
+#### 다음과 같이 액터의 리플리케이션 룰을 설정
+
+<img src="C:\Users\Jihun Jeon\AppData\Roaming\Typora\typora-user-images\image-20230127152659414.png" alt="image-20230127152659414" style="width:100%;" />
+
+
+
+## MazyModz - Replication Graph (Tutorial & Overview)
+
+#### 리플리케이션 그래프란?
+
+- 네트워크 게임을 위한 고 수준(High-Level)의 서버 최적화
+- C++ 전용 기능
+- 처음에는 포트나이트의 자체 기능을 위해 개발 됨.
+- 특정 연결(Connection)에 대해 빠르고 효율적으로 리플리케이트 해야 할 것을 결정한다.
+- 각기 다른 액터들을 그들이 처리 되는 **노드(ReplicationGraphNode)**로 전송한다.
+
+
+
+#### 리플리케이션 그래프의 최적화 개념
+
+- 위치에 기반하여 액터들을 그룹으로 분류한다 (Grid Spatialization)
+  - 일부 사전 정의된 위치의 액터들을 특정 연결에 대하여 업데이트를 송신하지 않음으로써 성능을 향상시킨다.
+- 네트워크 업데이트를 조절한다 (Static, Dynamic or Dormant actor routes)
+  - 액터의 역할에 따라 업데이트 빈도를 설정하여 대역폭을 줄인다.
+- 액터의 Owner가 업데이트 될 때 업데이트를 수행한다 (DependantActorList)
+  - 캐릭터가 무기를 가지고 있다고 할 때, 무기를 따로 업데이트하지 않고, 캐릭터가 업데이트 되면 무기를 업데이트 한다. 
+- 모든 연결에 대하여 항상 알려진 액터 목록을 구성한다 (AlwaysRelevant Node)
+- 특정 연결에 대하여 항상 알려진 액터 목록을 구성한다 (AlwaysRelevantForConnection Node)
+
+
+
+#### 리플리케이션 그래프 노드
+
+- 'Nodes'라고 불리기는 하지만 그냥 클래스. 블루프린트 노드와 혼동하지 말 것
+- 액터들을 고유의 특별한 방법으로 다룬다
+- **Grid Spatialization Node** (UReplicationGraphNode_GridSpatailization2D)
+  - 월드를 격자로 나눈다
+  - 액터가 소속한 셀에 의존하여 연결이(Connection) 네트워크 업데이트를 수신해야 하는지를 결정한다.
+  - 몇 가지 방법들로 리플리케이션을 다룰 수 있다. (Static, Dynamic, Dormant)
+- **Always Relevant Node** (UReplicationGraphNode_AlwaysRelevant)
+  - 모든 연결에 대하여 항상 네트워크 업데이트를 송신 하는 액터들을 처리한다.
+- **Always Relevant For Connection Node** (UReplicationGraphNode_AlwaysRelevant_ForConnection)
+  - 특정 연결에 대하여 항상 네트워크 업데이트를 송신 하는 액터들을 처리한다.
+
+#### 
+
+#### 참고 자료 및 가이드
+
+- [Wiki Docs](https://docs.unrealengine.com/en-US/replication-graph-in-unreal-engine/)
+- [Epic Games Livestream](https://www.youtube.com/live/CDnNAAzgltw?feature=share)
+- BasicReplicationGraph.h (엔진에 내장 됨, 기초 설정)
+- ShooterReplicationGraph.h (ShooterGame 예제, 고급 설정)
+
+
+
+#### 리플리케이션 그래프 활성화
+
+```ini
+[/Script/OnlineSubsystemUtils.IpNetDriver]
+ReplicationDriverClassName="/Script/ProjectName.ClassName"
+
+;If you are using steam uncomment bellow
+;[/Script/OnlineSubsystemSteam.SteamNetDriver]
+;ReplicationDriverClassName="/Script/ProjectName.ClassName"
+```
+
+```csharp
+// Copyright Epic Games, Inc. All Rights Reserved.
+
+using UnrealBuildTool;
+
+public class ProjectName : ModuleRules
+{
+	public ProjectName(ReadOnlyTargetRules Target) : base(Target)
+	{
+        PrivateDependencyModuleNames.AddRange(new string[] { "ReplicationGraph" });
+    }
+}
+```
+
+
+
+
+
 ### 참고자료
 
 [Replication Graph | Unreal Engine Documentation](https://docs.unrealengine.com/5.1/en-US/replication-graph-in-unreal-engine/)

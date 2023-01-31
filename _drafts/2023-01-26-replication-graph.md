@@ -201,3 +201,7 @@ https://github.com/locus84/LocusReplicationGraph
 [Replication Graph For Optimizing Real-Time Strategy Games](https://www.youtube.com/watch?v=VusAHXoHF3Y)
 
 [UE4-DAReplicationGraphExample](https://github.com/MazyModz/UE4-DAReplicationGraphExample)
+
+[[UE4] Replication Graph](https://qiita.com/donbutsu17/items/71aa94d2aa539e96db40)
+
+[Replication Graph 从入门到入土](https://bokjan.com/2022/10/unreal-replication-graph.html)

@@ -186,6 +186,53 @@ public class ProjectName : ModuleRules
 
 
 
+## The ReplicationGraph Grid Spatialization
+
+### Legacy Unreal Engine Replication System
+
+- 월드의 모든 액터를 가져온다.
+- 액터 및 연결에 대한 액터의 위치를 가져온다.
+- 액터가 Cull Distance 및 다른 플래그들에 의해 연관성이 있는지 확인한다.
+- 몇 천개의 액터가 있는 월드에서는 정상 작동한다
+- 매우 큰 오픈월드/MMO에서는 매우 느리다.
+
+
+
+### ReplicationGraph Grid Spatialization
+
+- 맵을 'Cell'이라 불리는 격자로 나눈다.
+- 이 'Cell'들은 각 연결별로 처리해야할 액터들의 목록을 가지고 있다.
+- 주어진 셀의 연결은 셀의 액터 목록에 대한 관련성만 처리한다
+- 결과적으로 연결당 처리할 작업자 수가 **훨씬 줄어듭니다**
+- 서버에서 전반적으로 **향상된 CPU 성능** 제공
+- 복제 작업자 근처의 셀에도 해당 작업자가 목록에 포함됩니다. 이 값은 배우의 컬 거리 설정에 의해 정의됩니다
+
+
+
+### Cell Frequency Buckets
+
+- 스트리밍 되지 않는 액터 목록을 다수의 **버킷**들로 분할하여 성능 향상
+- 프레임 마다 번갈아가며 버킷들의 리플리케이션을 수행
+- 리플리케이션 교대 프레임의 각 "버킷"에서 가져옵니다
+- 부하를 다른 프레임에 균등하게 분산합니다
+- 그리드 공간화에 저장된 각 그리드 셀에서 기본적으로 찾을 수 있습니다
+
+
+
+## ShooterReplicationGraph Replication
+
+### Overview
+
+이것은 액터의 관련성의 작동 방식을 변경합니다. AActor::IsNetRelativeFor는 이 시스템에서 사용되지 않습니다!
+
+대신에, UShooterReplicationGraph는 UReplicationGraphNodes를 포함하고 있습니다. 이 노드들은 각 연결에 대해 리플리케이트 할 액터 목록을 생성하는 역할을 합니다. 이러한 목록의 대부분의 프레임간에 영구적입니다. 이를 통해 수집 작업("리플리케이트를 위해 고려해야 하는 액터들")의 대부분을 공유/재사용 할 수 있습니다. 노드는 글로벌(모든 연결에서 사용됨), 연결별(각 연결마다 고유한 노드가 있음) 또는 공유(예: 팀: 동일한 )
+
+
+
+### ShooterGame Nodes
+
+### Dependent Actors (AShooterWeapon)
+
 
 
 ### 참고자료

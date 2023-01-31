@@ -225,7 +225,13 @@ public class ProjectName : ModuleRules
 
 이것은 액터의 관련성의 작동 방식을 변경합니다. AActor::IsNetRelativeFor는 이 시스템에서 사용되지 않습니다!
 
-대신에, UShooterReplicationGraph는 UReplicationGraphNodes를 포함하고 있습니다. 이 노드들은 각 연결에 대해 리플리케이트 할 액터 목록을 생성하는 역할을 합니다. 이러한 목록의 대부분의 프레임간에 영구적입니다. 이를 통해 수집 작업("리플리케이트를 위해 고려해야 하는 액터들")의 대부분을 공유/재사용 할 수 있습니다. 노드는 글로벌(모든 연결에서 사용됨), 연결별(각 연결마다 고유한 노드가 있음) 또는 공유(예: 팀: 동일한 )
+대신에, UShooterReplicationGraph는 UReplicationGraphNodes를 포함하고 있습니다. 이 노드들은 각 연결에 대해 리플리케이트 할 액터 목록을 생성하는 역할을 합니다. 이러한 목록의 대부분의 프레임간에 영구적입니다. 이를 통해 수집 작업("리플리케이트를 위해 고려해야 하는 액터들")의 대부분을 공유/재사용 할 수 있습니다. 노드는 글로벌(모든 연결에서 사용됨), 연결별(각 연결마다 고유한 노드가 있음) 또는 공유(e.g, 팀: 동일한 팀 간의 모든 연결)일 수 있습니다. 액터들은 여러 노드에 속할 수 있습니다! 예를들어 폰은 spatialization 노드에 속 하면서 always-relevant-for-team 노드에도 동시에 속할 수 있습니다. 그것은 팀원들에게 투번 반환 될 것입니다. 가능하면 최소화 해야 하지만 이정도는 괜찮습니다.
+
+UShooterReplicationGraph는 게임 코드에 의해 직접 사용되지 않도록 고안되었습니다. 즉, 다른 어느곳에도 ShooterReplicationGraph.h를 포함할 필요가 없습니다.
+
+오히려 UShooterReplicationGraph가 게임 코드에 의존하며 게임 코드가 방송하는 이벤트(예. 팀에 가입/탈퇴하는 플레이어를 위한 이벤트 등)에 등록합니다.
+
+이런 결과는 UShooterReplicationGraph가 액터 리플리케이션에 대한 완전한 전체적인 뷰를 제공하기 때문에 만들어졌습니다. 게임 코드의 어떤 장소에서도 호출 할 수 있는 일반적인 공공 기능을 노출하는 대신, 모든 알림은 `ShooterReplicationGraph::InitGlobalActorClassSettings`에서 명시적으로 등록됩니다.
 
 
 

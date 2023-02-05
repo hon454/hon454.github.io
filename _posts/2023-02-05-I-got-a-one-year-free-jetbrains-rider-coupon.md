@@ -4,13 +4,50 @@ date: 2023-01-31 16:00:00 +0900
 categories: [Daily Life]
 tags: [unreal, jetbrains, rider]
 typora-root-url: ./..
-image: /assets/images/2023-02-05-I-got-a-one-year-free-jetbrains-rider-coupon/preview-image.png
 ---
 
 {% include embed/youtube.html id='sUSyxJGyrho' %}
+
+Unity 엔진 에서 Rider를 사용했었기 때문에 별다른 학습없이 그때 그때 주먹구구 식으로 Rider를 Unreal 엔진 에도 사용하고 있었는데 마침 Rider를 Unreal 엔진에서 사용하는 방법에 대한 세션 라이브를 Jetbrains에서 제공해줘서 퇴근 후에 시청했다.
+
+시청을 해보니까 사실 90%정도가 이미 알고있는 내용이었기 때문에 세션 자체는 나에게 크게 도움이 되지는 않았다. 하지만, 나는 세션을 듣는 시청자들에게 주는 쿠폰에 관심이 있었다. 시청자 전원에게 Rider 3 개월 사용권(신규 사용자) 혹은 25% 할인 쿠폰 코드(기존고객)를 받을 수 있었기 때문이다.
+
+
+
+![image-20230206012234209](/assets/images/2023-02-05-I-got-a-one-year-free-jetbrains-rider-coupon/image-20230206012234209.png)
+
+_사실 가치에 비하면 전혀 비싸지는 않지만 뭔가 IDE를 깡돈주고 사는 것은 뭔가 거부감이 아직은 있다._
+
+
+
+세션을 듣다보니 쿠폰과는 별개로 세션 중간에 퀴즈가 제공되었다. 퀴즈를 맞추는 선착순 1명에게는 라이더 구독권 1년짜리 쿠폰을 주는데 첫 번째 퀴즈는 아쉽게도 아직 퇴근중이라 밖에 있어서 참여할 수 없었다. 첫번째 퀴즈는  라이더의 출시일에 관련된 퀴즈였다.
+
+세션이 마무리될 때 쯤 두번째 퀴즈가 나왔고 집에 도착한 나는 철저한 준비 태세를 갖추고 퀴즈를 기다리고 있었다. 그런데..
+
+
+
+![Unreal Engine으로 게임 제작하기_ Rider로 아이디어를 더 쉽게 구현 1-4-26 screenshot](/assets/images/2023-02-05-I-got-a-one-year-free-jetbrains-rider-coupon/Unreal Engine으로 게임 제작하기_ Rider로 아이디어를 더 쉽게 구현 1-4-26 screenshot.png)
+
+_아니 이건 Rider와 관련된 문제가 아니잖소? 거기에다가 이렇게 소수만 알법한 문제를??_
+
+
+
+Rider랑은 하나도 관계 없는 플레이스테이션의 풋페달 디폴트 기능 이런 문제가 나와서 멘붕했다. 거기에다가 채팅창에는 문제가 나오자마자 `나`를 선택한 답변자들이 속출했고, 나는 '아.. 저게 답인가보네..'라고 아쉬워 하고 있었는데 많은 사람들이 `나`를 답으로 말해도 유튜브 딜레이를 감안해도 답이 나왔다고 진행자 분이 말씀하지 않길래 뭔가 이상하다고 생각했다.
+
+곰곰히 생각해보니까 풋 페달은 자동차 브레이크가 연상되고 브레이크 하면 인터럽트가 연상되고.. 라고 생각하면서 `가`를 답으로 채팅창에 답변을 적었더니 정답이라고 하는게 아닌가?
+
+
+
+![image-20230206013057672](/assets/images/2023-02-05-I-got-a-one-year-free-jetbrains-rider-coupon/image-20230206013057672.png)
+
+_Rider 1년 구독권 겟토다제 wwwwww_
+
+
+
+얼떨결에 1년치 Rider 구독권을 획득했다. 내가 실제로 사용하는 프로그램의 구독권을 획득했으니 기쁨이 몇배나 좋았다. 거기에 초기 플레이스테이션의 개발 키트에서의 풋페달의 디폴트 기능이라는 희귀한 지식에 대한 것도 얻어서 여러모로 재밌는 이벤트였다.
 
 
 
 ## 출처
 
-[No 'Edit Solution Configuration' and 'Build' button in new UI](https://youtrack.jetbrains.com/issue/RIDER-83004/No-Edit-Solution-Configuration-and-Build-button-in-new-UI)
+[Unreal Engine으로 게임 제작하기: Rider로 아이디어를 더 쉽게 구현](https://www.youtube.com/live/sUSyxJGyrho?feature=share)

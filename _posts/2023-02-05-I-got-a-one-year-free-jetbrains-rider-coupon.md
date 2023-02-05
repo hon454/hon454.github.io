@@ -1,6 +1,6 @@
 ---
 title: Jetbrains 발표 세션 퀴즈 맞추고 Rider 1년권 쿠폰을 얻었다!
-date: 2023-01-31 16:00:00 +0900
+date: 2023-02-05 16:00:00 +0900
 categories: [Daily Life]
 tags: [unreal, jetbrains, rider]
 typora-root-url: ./..

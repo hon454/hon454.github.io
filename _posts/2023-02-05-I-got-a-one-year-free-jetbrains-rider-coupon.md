@@ -7,7 +7,7 @@ typora-root-url: ./..
 image: /assets/images/2023-02-05-I-got-a-one-year-free-jetbrains-rider-coupon/preview-image.png
 ---
 
-{% include embed/{youtube}.html id='{sUSyxJGyrho}' %}
+{% include embed/youtube.html id='sUSyxJGyrho' %}
 
 
 

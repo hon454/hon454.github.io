@@ -19,9 +19,9 @@ timezone: Asia/Seoul
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Dev Compass                # the main title
+title: 'Game Dev Compass'                # the main title
 
-tagline: May this be a compass to overcome the sea of development.   # it will display as the sub-title
+tagline: '게임 개발하면서 길을 잃지 않으려고 만든 블로그'   # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
   A minimal, responsive, and powerful Jekyll theme for presenting professional writing.

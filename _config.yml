@@ -19,7 +19,7 @@ timezone: Asia/Seoul
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: 'Log Pose'                # the main title
+title: 'Dev Compass'                # the main title
 
 tagline: '지침의 끝에는 반드시 섬이 있어'   # it will display as the sub-title
 

@@ -1,5 +1,5 @@
 ---
-title: Rider의 신규 UI에서 'Edit Solution Configuration'이 보이지 않는 경우 해결법.
+title: Rider의 신규 UI에서 'Edit Solution Configuration'이 보이지 않는 경우 해결 방법
 date: 2023-02-11 16:06:00 +0900
 categories: [Jetbrains, Rider]
 tags: [unreal, jetbrains, rider, tip]

@@ -1,6 +1,6 @@
 ---
 title: Rider의 신규 UI에서 'Edit Solution Configuration'이 보이지 않는 경우 해결법.
-date: 2023-02-11 15:49:00 +0900
+date: 2023-02-11 16:06:00 +0900
 categories: [Jetbrains, Rider]
 tags: [unreal, jetbrains, rider, tip]
 typora-root-url: ./..

@@ -16,7 +16,7 @@ Rider가  2022.2.3부터 인가 부터 신규 UI를 사용할 수 있는 옵션�
 
 
 
-![image-20230211033025369](/assets/img/2023-02-11-no-edit-solution-configuration-and-build-button-in-new-ui-of-rider/image-20230211033025369.png)_새로운 UI가 적용된 Rider_
+![image-20230211033025369](/assets/img/2023-02-11-restore-edit-solution-configuration-in-rider-with-new-ui/image-20230211033025369.png)_새로운 UI가 적용된 Rider_
 
 
 

@@ -14,7 +14,7 @@ Unity 엔진 에서 Rider를 사용했었기 때문에 별다른 학습없이 �
 
 
 
-![image-20230206012234209](/assets/images/2023-02-05-I-got-a-one-year-free-jetbrains-rider-coupon/image-20230206012234209.png)_사실 가치에 비하면 굉장히 싼편이지만 학생 때 생각하면 뭔가 IDE는 구매가 망설여진다_
+![image-20230206012234209](/assets/img/2023-02-05-I-got-a-one-year-free-jetbrains-rider-coupon/image-20230206012234209.png)_사실 가치에 비하면 굉장히 싼편이지만 학생 때 생각하면 뭔가 IDE는 구매가 망설여진다_
 
 
 
@@ -24,7 +24,7 @@ Unity 엔진 에서 Rider를 사용했었기 때문에 별다른 학습없이 �
 
 
 
-![Unreal Engine으로 게임 제작하기_ Rider로 아이디어를 더 쉽게 구현 1-4-26 screenshot](/assets/images/2023-02-05-I-got-a-one-year-free-jetbrains-rider-coupon/Unreal Engine으로 게임 제작하기_ Rider로 아이디어를 더 쉽게 구현 1-4-26 screenshot.png)
+![Unreal Engine으로 게임 제작하기_ Rider로 아이디어를 더 쉽게 구현 1-4-26 screenshot](/assets/img/2023-02-05-I-got-a-one-year-free-jetbrains-rider-coupon/Unreal Engine으로 게임 제작하기_ Rider로 아이디어를 더 쉽게 구현 1-4-26 screenshot.png)
 _아니 이건 Rider와 관련된 문제가 아니잖소? 거기에다가 이렇게 소수만 알법한 문제를??_
 
 
@@ -35,7 +35,7 @@ Rider랑은 하나도 관계 없는 플레이스테이션의 풋페달 디폴트
 
 
 
-![image-20230206013057672](/assets/images/2023-02-05-I-got-a-one-year-free-jetbrains-rider-coupon/image-20230206013057672.png)
+![image-20230206013057672](/assets/img/2023-02-05-I-got-a-one-year-free-jetbrains-rider-coupon/image-20230206013057672.png)
 _Rider 1년 구독권 겟토다제 wwwwww_
 
 

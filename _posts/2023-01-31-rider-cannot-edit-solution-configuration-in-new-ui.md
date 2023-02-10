@@ -8,7 +8,7 @@ typora-root-url: ./..
 
 ## 문제
 
-![ui-solution-configurations-thumb](/assets/images/2023-01-31-rider-cannot-edit-solution-configuration-in-new-ui/ui-solution-configurations-thumb.png)
+![ui-solution-configurations-thumb](/assets/img/2023-01-31-rider-cannot-edit-solution-configuration-in-new-ui/ui-solution-configurations-thumb.png)
 
 
 
@@ -44,7 +44,7 @@ typora-root-url: ./..
 
 하지만, 언리얼 기반 프로젝트는 버전과 플러그인의 구성에 따라 그 이상의 모듈을 로드 할 수 있기 때문에 해당 제한을 늘려 주어야 한다.
 
-![add-registry-key](/assets/images/2023-01-15-troubleshooting-cannot-attach-debugger-to-other-process/add-registry-key.png)
+![add-registry-key](/assets/img/2023-01-15-troubleshooting-cannot-attach-debugger-to-other-process/add-registry-key.png)
 
 레지스트리 편집기를 이용하여 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager`  경로에 `DWORD` 타입의 `DebuggerMaxModuleMsgs` 값을 높게 설정하여 추가. (ex. 2048)
 

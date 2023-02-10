@@ -10,13 +10,13 @@ typora-root-url: ./..
 
 ####  [Google Search Console](https://search.google.com/search-console) 로그인 및 URL 접두어 선택 후 블로그 주소 입력
 
-![google-search-console](/assets/images/2023-01-27-how-to-make-jekyll-blog-searchable-by-google/google-search-console.png)
+![google-search-console](/assets/img/2023-01-27-how-to-make-jekyll-blog-searchable-by-google/google-search-console.png)
 
 
 
 #### 소유권 확인 창에서 HTML 태그 섹션의 메타태그 복사
 
-<img src="/assets/images/2023-01-27-how-to-make-jekyll-blog-searchable-by-google/check-authority-by-html-tag.png" alt="check-authority-by-html-tag"  />
+<img src="/assets/img/2023-01-27-how-to-make-jekyll-blog-searchable-by-google/check-authority-by-html-tag.png" alt="check-authority-by-html-tag"  />
 
 
 
@@ -43,7 +43,7 @@ google_site_verification: _wV_-z2V..........................................c0pT
 
 #### 변경 내용 Push 후 Deploy가 될 때 까지 대기 후 확인 버튼 클릭
 
-![check-authority-success](/assets/images/2023-01-27-how-to-make-jekyll-blog-searchable-by-google/check-authority-success.png)
+![check-authority-success](/assets/img/2023-01-27-how-to-make-jekyll-blog-searchable-by-google/check-authority-success.png)
 
 
 

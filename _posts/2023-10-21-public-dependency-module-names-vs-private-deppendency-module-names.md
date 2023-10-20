@@ -56,6 +56,6 @@ PrivateDependencyModuleNames.AddRange(
 
 ### 참고 자료
 
-[What is the difference between PublicDependencyModuleNames and PrivateDependencyModuleNames](https://forums.unrealengine.com/t/what-is-the-difference-between-publicdependencymodulenames-and-privatedependencymodulenames/279386)
+[Unreal Engine Forum](https://forums.unrealengine.com/t/what-is-the-difference-between-publicdependencymodulenames-and-privatedependencymodulenames/279386)
 
-[Unreal Engine Modules](https://docs.unrealengine.com/unreal-engine-modules/)
+[Unreal Engine Documentation](https://docs.unrealengine.com/unreal-engine-modules/)

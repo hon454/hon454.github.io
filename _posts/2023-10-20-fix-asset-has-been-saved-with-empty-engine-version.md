@@ -1,12 +1,12 @@
 ---
 title: Asset has been saved with empty engine version
-date: 2023-02-11 14:22:00 +0900
+date: 2023-02-11 14:37:00 +0900
 categories: [Unreal, Troubleshooting]
 tags: [unreal]
 typora-root-url: ./..
 ---
 
-사내 프로젝트를 언리얼 엔진 4.27-Plus에서 5.3.1로 마이그레이션을 진행하니 다수의 에셋에 대하여 다음과 같은 경고 메시지가 발생한다.
+사내 프로젝트를 언리얼 엔진 4.27-Plus에서 5.3.1로 마이그레이션을 진행하니 다수의 에셋에 대하여 다음과 같은 경고 메시지가 발생하기 시작했다.
 
 `<ASSET_PATH>: Asset has been saved with empty engine version. The asset will be loaded but may be incompatible.`
 

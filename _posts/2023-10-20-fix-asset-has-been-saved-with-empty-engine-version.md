@@ -12,7 +12,7 @@ typora-root-url: ./..
 
 
 
-#### 해결 방법
+### 해결 방법
 
 이 문제를 해결 할 수 있는 두 가지 방법이 존재한다.
 
@@ -28,6 +28,6 @@ typora-root-url: ./..
 
 
 
-#### 참고 자료
+### 참고 자료
 
 [Assets “saved with empty engine version” warning](https://forums.unrealengine.com/t/assets-saved-with-empty-engine-version-warning/304482)

@@ -1,6 +1,6 @@
 ---
-title: PublicDependencyModuleNames vs PrivateDependencyModuleNames
-date: 2023-10-21 02:37:00 +0900
+title: DependencyModuleNames Public vs Private
+date: 2023-10-22 00:18:00 +0900
 categories: [Unreal, Troubleshooting]
 tags: [unreal]
 typora-root-url: .

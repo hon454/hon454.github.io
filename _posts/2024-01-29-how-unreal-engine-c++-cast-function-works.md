@@ -90,7 +90,7 @@ EClassCastFlags ClassCastFlags;
 
 
 
-## `IsA<T>` 함수
+## IsA 함수
 
 ```cpp
 // ObjectPtr.h
@@ -120,7 +120,7 @@ bool FObjectPtr::IsA(const UClass* SomeBase) const
 
 
 
-### `IsChildof` 함수
+### IsChildof 함수
 
 ```cpp
 	/** Returns true if this struct either is class T, or is a child of class T. This will not crash on null structs */
@@ -217,7 +217,7 @@ bool IsChildOf(const UStruct* SomeBase) const
 
 
 
-### `IsA<T>` 함수의 시간복잡도
+### IsA 함수의 시간복잡도
 
 
 
@@ -230,7 +230,7 @@ bool IsChildOf(const UStruct* SomeBase) const
 
 
 
-##  ExactCast<T> 함수
+##  ExactCast 함수
 
 ```cpp
 template< class T >
@@ -243,7 +243,7 @@ FORCEINLINE T* ExactCast( UObject* Src )
 - 위 함수는 원본 개체의 클래스 타입이 정확히 목표 클래스 타입인 경우에만 캐스팅하여 반환한다.
 - 엄격한 타입 일치를 요구하지만 `Cast<T>`보다 더 빠른 성능을 가진다.
   - 클래스 타입 비교를 한번만 수행하므로 O(1)의 시간복잡도를 가진다.
-- 전달 되는 오브젝트의 타입을 미리 알고 있을 경우에는 유용하게 사용할 수도 있다.
+- 전달 되는 오브젝트의 타입을 미리 알고 있을 경우에는 유용하게 사용할 수 있다.
 
 
 

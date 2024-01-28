@@ -223,14 +223,14 @@ bool IsChildOf(const UStruct* SomeBase) const
 
 
 
-## 왜 `Cast<T>`를 사용해야 하는가?
+## 왜 Cast 함수를 사용해야 하는가?
 
 - `dynamic_cast`를 사용할 경우 RTTI를 활성 해야 하기 때문에 성능 저하의 요인이 된다
 - 
 
 
 
-##  `ExactCast<T>` 함수
+##  ExactCast<T> 함수
 
 ```cpp
 template< class T >

@@ -226,11 +226,14 @@ bool IsChildOf(const UStruct* SomeBase) const
 ## 왜 Cast 함수를 사용해야 하는가?
 
 - `dynamic_cast`를 사용할 경우 RTTI를 활성 해야 하기 때문에 성능 저하의 요인이 된다
-- 
+  - 이 방식은 가상 함수 정보가 저장되는 가상 함수 테이블에 현재 객체의 타입 정보를 추가로 저장하는 방식으로 구현된다.
+  - 런타임에 가상 함수 테이블에 저장 된 객체 타입 정보를 비교하는 과정이 추가 되어 성능 저하를 유발
 
 
 
-##  ExactCast 함수
+## 그 외
+
+###  ExactCast 함수
 
 ```cpp
 template< class T >
@@ -245,6 +248,12 @@ FORCEINLINE T* ExactCast( UObject* Src )
   - 클래스 타입 비교를 한번만 수행하므로 O(1)의 시간복잡도를 가진다.
 - 전달 되는 오브젝트의 타입을 미리 알고 있을 경우에는 유용하게 사용할 수 있다.
 
+### 블루프린트 캐스팅
+
+- 
+
+
+
 
 
 ## 참고자료
@@ -254,3 +263,5 @@ https://peterleontev.com/blog/unreal_cast/
 https://forums.unrealengine.com/t/is-casting-expensive/13589/31
 
 https://devshovelinglife.tistory.com/714
+
+https://forums.unrealengine.com/t/dynamic-casting-best-practice/126339/9

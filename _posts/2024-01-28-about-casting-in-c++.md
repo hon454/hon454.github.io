@@ -2,7 +2,7 @@
 title: C++의 형변환(캐스팅, Casting)에 대하여
 date: 2024-01-28 21:51:00 +0900
 categories: [C++]
-tags: [c++, Cpp, casting]
+tags: [c++, cpp, casting]
 typora-root-url: .
 ---
 

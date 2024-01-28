@@ -21,7 +21,7 @@ timezone: Asia/Seoul
 
 title: "Cycling Developer"                # the main title
 
-tagline: '지침은 실패로 쓰여진다'  # it will display as the sub-title
+tagline: 'The guidelines are written in failure'  # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
   A minimal, responsive, and powerful Jekyll theme for presenting professional writing.

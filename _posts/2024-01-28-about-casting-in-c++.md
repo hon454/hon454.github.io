@@ -8,6 +8,8 @@ typora-root-url: .
 
 
 
+## 캐스팅의 종류
+
 #### 암시적(Implicit) 캐스팅
 
 - 컴파일러가 형을 변환해 줌
@@ -26,7 +28,14 @@ typora-root-url: .
   3. `dynamic_cast` (C++98, 모던 C++)
   4. `reinterpret_cast`
 
-​	
+
+
+## C vs C++
+
+```cpp
+double a = 1.354;
+int b = (int)a;
+```
 
 ### C 스타일 캐스팅
 
@@ -34,9 +43,11 @@ typora-root-url: .
   - 뭔가 명확하지 못함
 - 명백한 실수를 컴파일러가 캐치하지 못함
   - C++ 캐스팅이 이런 문제를 해결
-  - 그러나 기계는 C vs C++를 구분하지 않음
+  - 기계어 수준에서는 C/C++를 구분하지 않기에 실제 실행 시 차이는 없음
 
 
+
+## C++ 캐스팅 4종
 
 ### static_cast
 
@@ -86,7 +97,7 @@ typora-root-url: .
 
 
 
-### 캐스팅 지침
+## 캐스팅 지침
 
 1. 기본적으로 `staitc_cast`를 쓸 것
    - `reinterpret_cast<Cat*>` 대신 `static_cast<Cat*>

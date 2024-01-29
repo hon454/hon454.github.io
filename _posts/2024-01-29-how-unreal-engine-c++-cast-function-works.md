@@ -10,7 +10,8 @@ typora-root-url: .
 
 언리얼 엔진 C++에서는 `dynamic_cast<T*>`를 사용하지 않아도 안전하게 업/다운 캐스팅을 수행 할 수 있는 `Cast<T>` 함수를 제공하는데 구현이 다음과 같다. 
 
-> 아래 소스 코드는 언리얼 엔진 5 기준이다. 언리얼 엔진 4의 `Cast<T>` 구현은 언리얼 엔진 5와 다르다 {: .prompt-warning }
+> 아래 소스 코드는 언리얼 엔진 5 기준이다. 언리얼 엔진 4의 `Cast<T>` 구현은 언리얼 엔진 5와 다르다 
+{: .prompt-warning }
 
 ```cpp
 // Dynamically cast an object type-safely.

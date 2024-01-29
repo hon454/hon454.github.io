@@ -86,6 +86,7 @@ FORCEINLINE To* Cast(From* Src)
 /** Cast flags used to accelerate dynamic_cast<T*> on objects of this type for common T */
 EClassCastFlags ClassCastFlags;
 ```
+{: file='…\Engine\Source\Runtime\CoreUObject\Public\UObject\Class.h'}
 
 주석에 나와 있듯이 일반적인 타입에 대한 형변환을 가속하기 위해 사용한다는 것을 유추할 수 있다.
 

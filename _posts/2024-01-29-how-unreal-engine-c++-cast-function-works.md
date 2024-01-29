@@ -265,3 +265,5 @@ FORCEINLINE T* ExactCast( UObject* Src )
 [https://devshovelinglife.tistory.com/714](https://devshovelinglife.tistory.com/714)
 
 [https://forums.unrealengine.com/t/dynamic-casting-best-practice/126339/9](https://forums.unrealengine.com/t/dynamic-casting-best-practice/126339/9)
+
+[https://koreanfoodie.me/1169](https://koreanfoodie.me/1169)

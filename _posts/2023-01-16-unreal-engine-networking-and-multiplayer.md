@@ -46,9 +46,9 @@ if (Character != nullptr)
 
 ## 참고자료
 
-['Unreal Engine 4' Network Compendium](https://cedric-neukirchen.net/Downloads/Compendium/UE4_Network_Compendium_by_Cedric_eXi_Neukirchen.pdf)
+[Unreal Engine 4' Network Compendium](https://cedric-neukirchen.net/Downloads/Compendium/UE4_Network_Compendium_by_Cedric_eXi_Neukirchen.pdf)
 
-[프로그래머를 괴롭히는 Unreal Engine 4의 함정들](http://ndcreplay.nexon.com/NDC2016/sessions/NDC2016_0069.html)
+[프로그래머를 괴롭히는 Unreal Engine 4의 함정들](https://youtu.be/o8TgvFPhUgE?si=BbKFPqcgEoVGXosG)
 
 [언리얼 네트워킹 아키텍처](https://sites.google.com/site/techaht/trans/unreal-net-arch?pli=1)
 

@@ -1,6 +1,6 @@
 ---
 title: C++의 형변환(캐스팅, Casting)에 대하여
-date: 2024-11-12 12:59:00 +0900
+date: 2024-01-28 21:51:00 +0900
 categories: [C++]
 tags: [c++, cpp, casting, RTTI]
 typora-root-url: .

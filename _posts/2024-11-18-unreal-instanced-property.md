@@ -81,9 +81,9 @@ public:
 
 ## Instanced Struct
 
-`Instanced Struct`는 언리얼 엔진 5.x 이상의 버전에서 추가 된 `Instanced Object`의 대안이다. 주요 장점은 `Instanced Object` 보다 낮은 메모리 오버헤드를 가지기에 데이터를 저장하는 용도로만 `Instanced Object`를 활용하는 경우 `Instanced Struct`가 더 올바른 선택이 될 수 있다.
+`Instanced Struct`는 언리얼 엔진 5.x 이상의 버전에서 추가 된 `Instanced Object`의 대안이다. 주요 장점은 `Instanced Object` 보다 낮은 메모리 오버헤드를 가지기에 데이터를 저장하는 용도로만 `Instanced Object`를 활용하는 경우 `Instanced Struct`가 더 올바른 선택이 될 수 있다. 
 
-
+또한, `Instanced Struct`는 `Instanced Object`를 사용하지 못하는 데이터 테이블에서 사용 할 수 있기 때문에 데이터 테이블에 절실히 필요했던 유연성을 제공할 수 있다.
 
 ![enable-struct-utils-plugin](/../assets/img/2024-11-18-unreal-instanced-struct/enable-struct-utils-plugin.png)
 
@@ -116,7 +116,12 @@ struct FItemStackInLootChest : public FItemInLootChest
 ```cpp
 UPROPERTY(EditAnywhere, meta = (BaseStruct = "ItemInLootChest"))
 FInstancedStruct InstancedStruct;
-// 배열과 맵을 지원한다.
+
+// 탬플릿을 지원한다. 이경우, BaseStruct 메타 지정자를 생략할 수 있다.
+UPROPERTY(EditAnywhere)
+FInstancedStruct<FItemInLootChest> InstancedStruct;
+
+// 배열과 맵을 지원한다. ExcludeBaseStruct 메타 지정자를 통해 BaseStruct에 해당하는 구조체는 인스턴스화 할 수 없도록 할 수 있다
 UPROPERTY(EditAnywhere, meta = (ExcludeBaseStruct, BaseStruct = "/Script/{ModuleName}.ItemInLootChest"))
 TArray<FInstancedStruct> InstancedStructArray;
 ```
@@ -143,3 +148,4 @@ TArray<FInstancedStruct> InstancedStructArray;
 
 [InstancedStruct - DataConfig Book](https://slowburn.dev/dataconfig/Extra/InstancedStruct.html#instancedstruct)
 
+[GenericItemization - mattyman174](https://github.com/mattyman174/GenericItemization#instanced-structs)

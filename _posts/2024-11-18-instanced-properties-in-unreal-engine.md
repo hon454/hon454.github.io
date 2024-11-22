@@ -1,5 +1,5 @@
 ---
-title: Instanced Properties (UObject/Struct)
+title: Instanced Properties in Unreal Engine
 date: 2024-11-18 11:55:00 +0900
 categories: [Unreal, C++]
 tags: [Unreal, C++, CPP, Instanced, InstancedStruct, InstancedObject, InstancedProperties]
@@ -29,7 +29,7 @@ typora-root-url: .
 
 
 
-## Instanced Object
+## Instanced UObject
 
 먼저 `Instanced Object`를 클래스를 생성해야 한다.  UCLASS 지정자 `EditInlineNew`, `DefaultToInstanced` 를 추가 해야 한다.
 
@@ -79,9 +79,12 @@ public:
 
 
 
-## Instanced Struct
+## Instanced Struct (UE5)
 
-`Instanced Struct`는 언리얼 엔진 5.x 이상의 버전에서 추가 된 `Instanced Object`의 대안이다. 주요 장점은 `Instanced Object` 보다 낮은 메모리 오버헤드를 가지기에 데이터를 저장하는 용도로만 `Instanced Object`를 활용하는 경우 `Instanced Struct`가 더 올바른 선택이 될 수 있다. 
+`Instanced Struct`는 언리얼 엔진 5에 추가 된 `Instanced Object`의 대안이다. 주요 장점은 `Instanced Object` 보다 낮은 메모리 오버헤드를 가지기에 데이터를 저장하는 용도로만 `Instanced Object`를 활용하는 경우 `Instanced Struct`가 더 올바른 선택이 될 수 있다. 
+
+> `InstancedStruct`는 최상위 구조체를 개발자가 구축 하기 때문에 선언하는 변수 만큼 메모리 크기를 가지지만, UObject를 상속한 클래스를 기반으로 하는 `Instanced Object`는 기본적으로 UObject의 클래스 크기 인 48Byte의 메모리 오버헤드를 각 `Instanced Object` 마다 가지게 된다.
+{: .prompt-info }
 
 또한, `Instanced Struct`는 `Instanced Object`를 사용하지 못하는 데이터 테이블에서 사용 할 수 있기 때문에 데이터 테이블에 절실히 필요했던 유연성을 제공할 수 있다.
 
@@ -93,43 +96,84 @@ public:
 
 ```cpp
 USTRUCT(BlueprintType)
-struct FItemInLootChest
+struct FMyStructParent
 {
 	GENERATED_BODY()
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftClassPtr<class UInventoryItemObject> Item;
+
+	UPROPERTY(EditAnywhere)
+	int32 ParentProperty;
 };
 
-// 상속을 지원한다.
 USTRUCT(BlueprintType)
-struct FItemStackInLootChest : public FItemInLootChest
+struct FMyStructChild : public FMyStructParent
 {
 	GENERATED_BODY()
-	// 추가적인 프로퍼티를 선언할 수 있다.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 AmountOfItem;
+
+	UPROPERTY(EditAnywhere)
+	float ChildProperty;
 };
 ```
 
 다른 객체에서 이를 사용하기 위해서는 `FInstancedStruct` 타입으로 변수를 선언하고, UPROPERTY 메타 지정자 `BaseStruct = {F를 제외한 구조체명}` 혹은 `BaseStruct = /Script/{구조체가 속한 모듈명}.{F를 제외한 구조체명}`을 추가하면 된다.
 
 ```cpp
-UPROPERTY(EditAnywhere, meta = (BaseStruct = "ItemInLootChest"))
+// 가장 기본 적인 선언 방식. BaseStruct 메타 지정자를 통해 최상위 구조체를 설정한다.
+UPROPERTY(EditAnywhere, meta = (BaseStruct = "MyStructParent"))
 FInstancedStruct InstancedStruct;
 
-// 탬플릿을 지원한다. 이경우, BaseStruct 메타 지정자를 생략할 수 있다.
-UPROPERTY(EditAnywhere)
-FInstancedStruct<FItemInLootChest> InstancedStruct;
+// 여러 모듈이나 플러그인에서 동일한 이름의 구조체를 정의할 경우, 명시적 경로 지정을 활용한다.
+UPROPERTY(EditAnywhere, meta = (BaseStruct = "/Script/MyModuele/MyStructParent"))
+FInstancedStruct InstancedStruct;
 
-// 배열과 맵을 지원한다. ExcludeBaseStruct 메타 지정자를 통해 BaseStruct에 해당하는 구조체는 인스턴스화 할 수 없도록 할 수 있다
-UPROPERTY(EditAnywhere, meta = (ExcludeBaseStruct, BaseStruct = "/Script/{ModuleName}.ItemInLootChest"))
-TArray<FInstancedStruct> InstancedStructArray;
+// ShowTreeView 메타 지정자를 추가할 경우, 옵션이 리스트 뷰에서 트리 뷰로 변경된다.
+UPROPERTY(EditAnywhere, meta = (BaseStruct = "MyStructParent", ShowTreeView))
+FInstancedStruct InstancedStruct;
+
+// ExcludeBaseStruct 메타 지정자를 통해 최상위 구조체가 선택 가능 하지 않게 할 수 있다.
+UPROPERTY(EditAnywhere, meta = (BaseStruct = "MyStructParent", ExcludeBaseStruct))
+FInstancedStruct InstancedStruct;
+
+// TArray, TMap을 지원한다.
+UPROPERTY(EditAnywhere, meta = (BaseStruct = "MyStructParent"))
+TArray<FInstancedStruct> InstancedStruct;
+
+// 탬플릿을 버전의 TInstancedStruct를 활용할 경우, BaseStruct 메타 지정자를 생략 할 수 있다.
+UPROPERTY(EditAnywhere)
+TInstancedStruct<FMyStructParent> InstancedStruct;
+
+// 하지만, 버그인지 TInstancedStruct를 TArray나 TMap과 같이 사용 하는 경우에는 생략이 지원되지 않는다. (UE5.3 기준)
+UPROPERTY(EditAnywhere, meta = (BaseStruct = "MyStructParent", ExcludeBaseStruct))
+TArray<TInstancedStruct<FMyStructParent>> InstancedStruct;
 ```
 
 ![instanced-struct-example](/../assets/img/2024-11-18-unreal-instanced-property/instanced-struct-example.png)
 
 > `Instanced Struct` 사용 시, `EditCondition` 프로퍼티 지정자가 작동하지 않는다. (UE5.3 기준)
 {: .prompt-warning }
+
+
+
+`InstancedStruct`에 변수를 사용하는 방법은 다음과 같다. 
+
+```cpp
+// GetScriptStruct() 함수를 통해 변수에 할당 된 구조체 인스턴스의 타입을 확인 할 수 있다.
+bool bIsChild = InstancedStruct.GetScriptStruct() == FMyStructChild::StaticStruct())
+
+// 할당 된 구조체 인스턴스의 const 레퍼런스를 가져온다. 호환 되는 타입이 아닐 경우 assert가 발생한다.
+const FMyStructChild& Ref = InstancedStruct.Get<FMyStructChild>();
+
+// 할당 된 구조체 인스턴스의 const 포인터를 가져온다. 호환 되는 타입이 아닐 경우 nullptr를 반환한다.
+const FMyStructChild* Ptr = InstancedStruct.GetPtr<FMyStructChild>();
+
+// 할당 된 구조체 인스턴스의 레퍼런스를 가져온다. 호환 되는 타입이 아닐 경우 assert가 발생한다.
+FMyStructChild* MutableRef = InstancedStruct.GetMutable<FMyStructChild>();
+
+// 할당 된 구조체 인스턴스의 포인터를 가져온다. 호환 되는 타입이 아닐 경우 nullptr를 반환한다.
+FMyStructChild* MutablePtr = InstancedStruct.GetMutablePtr<FMyStructChild>();
+```
+
+> 더 자세한 사용법은 엔진 코드의 `FInstancedStruct`나 `TInstancedStruct`를 참고 하면 된다.
+{: .prompt-info}
 
 
 
@@ -149,3 +193,5 @@ TArray<FInstancedStruct> InstancedStructArray;
 [InstancedStruct - DataConfig Book](https://slowburn.dev/dataconfig/Extra/InstancedStruct.html#instancedstruct)
 
 [GenericItemization - mattyman174](https://github.com/mattyman174/GenericItemization#instanced-structs)
+
+[Polymorphic Serialization In Unreal Engine](https://slowburn.dev/blog/polymorphic-serialization-in-unreal-engine/)

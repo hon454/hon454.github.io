@@ -153,7 +153,7 @@ TArray<TInstancedStruct<FMyStructParent>> InstancedStruct;
 
 
 
-`InstancedStruct`에 변수를 사용하는 방법은 다음과 같다. 
+`InstancedStruct` 변수를 사용하는 방법은 다음과 같다. 
 
 ```cpp
 // GetScriptStruct() 함수를 통해 변수에 할당 된 구조체 인스턴스의 타입을 확인 할 수 있다.
@@ -180,7 +180,6 @@ FMyStructChild* MutablePtr = InstancedStruct.GetMutablePtr<FMyStructChild>();
 ## Instanced Properties Considerations
 
 - 구조체나 UObject에 선택적 파라미터를 추가하는 데 매우 유용하다.
-- 데이터 테이블에서 사용 할 수 없다
 - 참조 체인이나 트리 계층 구조를 만드는 데 매우 유용할 수 있다.
 - `Instanced Object`의 경우, Owner 객체가 로드 되는 경우 완전히 로드 된다.
 

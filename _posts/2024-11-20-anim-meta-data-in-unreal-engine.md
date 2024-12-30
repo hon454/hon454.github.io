@@ -2,7 +2,7 @@
 title: Anim Meta Data in Unreal Engine
 date: 2024-11-20 00:52:00 +0900
 categories: [Unreal, C++]
-tags: [Unreal, C++, CPP, Animation, AnimMetaData]
+tags: [unreal, c++, cpp, animation, anim-meta-data]
 typora-root-url: .
 
 ---

@@ -143,7 +143,15 @@ typora-root-url: .
 
 - [점진적 가비지 컬렉션](https://dev.epicgames.com/documentation/ko-kr/unreal-engine/incremental-garbage-collection-in-unreal-engine) 활용
 
-  
+
+
+
+## GC를 강제로 실행하는 방법
+
+- 콘솔 명령어
+  - `gc.CollectGarbageEveryFrame 1` 
+- C++ 코드
+  - `GEngine->ForceGarbageCollection(true);`
 
 
 

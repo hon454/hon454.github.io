@@ -1,0 +1,71 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import Features2 from '~/components/widgets/Features2.astro';
+import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+
+const metadata = {
+  title: 'hon454',
+  ignoreTitleTemplate: true,
+};
+---
+
+<Layout metadata={metadata}>
+  <Hero
+    tagline="Digital garden"
+    actions={[
+      { variant: 'primary', text: '글 읽기', href: '/blog', icon: 'tabler:book-2' },
+      { text: 'GitHub 보기', href: 'https://github.com/hon454', target: '_blank', icon: 'tabler:brand-github' },
+    ]}
+    image={{
+      src: '~/assets/images/hero-image.png',
+      alt: '개인 블로그를 상징하는 데스크 환경 이미지',
+    }}
+  >
+    <Fragment slot="title">
+      hon454
+      <span class="block text-accent dark:text-white">개발과 배움의 기록</span>
+    </Fragment>
+
+    <Fragment slot="subtitle">
+      프로젝트를 만들며 배운 것, 문제를 해결한 과정, 다시 꺼내 볼 생각을 차분히 정리합니다.
+    </Fragment>
+  </Hero>
+
+  <Features2
+    title="무엇을 기록하나요"
+    subtitle="완성된 결과보다 판단 과정과 시행착오를 남기는 블로그입니다."
+    columns={3}
+    items={[
+      {
+        title: 'Development',
+        description: '웹, 백엔드, 자동화 작업에서 마주친 문제와 해결 과정을 정리합니다.',
+        icon: 'tabler:code',
+      },
+      {
+        title: 'Learning',
+        description: '새로 익힌 개념을 짧은 메모와 긴 글 사이의 밀도로 기록합니다.',
+        icon: 'tabler:notes',
+      },
+      {
+        title: 'Projects',
+        description: '작게 만든 도구와 실험의 배경, 구조, 다음 개선점을 남깁니다.',
+        icon: 'tabler:tools',
+      },
+    ]}
+  />
+
+  <BlogLatestPosts
+    title="최근 글"
+    linkText="전체 글 보기"
+    information="블로그의 첫 글부터 하나씩 쌓아갈 예정입니다."
+    count={3}
+  />
+
+  <CallToAction
+    title="RSS로 새 글 받아보기"
+    subtitle="피드 리더에서 이 블로그의 새 글을 구독할 수 있습니다."
+    actions={[{ text: 'RSS 열기', href: '/rss.xml', icon: 'tabler:rss' }]}
+  />
+</Layout>

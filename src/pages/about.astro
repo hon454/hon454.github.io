@@ -1,0 +1,51 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import Features2 from '~/components/widgets/Features2.astro';
+
+const metadata = {
+  title: 'About',
+};
+---
+
+<Layout metadata={metadata}>
+  <Hero
+    tagline="About"
+    image={{
+      src: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80',
+      alt: '코드가 열린 작업 책상',
+    }}
+  >
+    <Fragment slot="title">
+      Jihoon Jeon의
+      <span class="block text-accent dark:text-white">개인 기록 공간</span>
+    </Fragment>
+
+    <Fragment slot="subtitle">
+      이곳은 개발하며 배운 내용을 정리하고, 프로젝트의 맥락과 의사결정을 오래 남기기 위한 블로그입니다.
+    </Fragment>
+  </Hero>
+
+  <Features2
+    title="관심사"
+    subtitle="현재는 웹 개발, 생산성 자동화, 꾸준히 유지되는 개인 지식 관리에 관심이 있습니다."
+    columns={3}
+    items={[
+      {
+        title: 'Web engineering',
+        description: '작동하는 제품을 빠르게 만들되, 나중에 고칠 수 있는 구조를 선호합니다.',
+        icon: 'tabler:world-code',
+      },
+      {
+        title: 'Automation',
+        description: '반복되는 일을 줄이고 기록과 배포 흐름을 단순하게 만드는 방법을 찾습니다.',
+        icon: 'tabler:automation',
+      },
+      {
+        title: 'Writing',
+        description: '문제를 푼 뒤 사라지는 맥락을 글로 남겨 다음 결정을 쉽게 만듭니다.',
+        icon: 'tabler:pencil',
+      },
+    ]}
+  />
+</Layout>

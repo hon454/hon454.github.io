@@ -22,21 +22,15 @@ export const profileConfig: ProfileConfig = {
 	// showName이 true이면 아이콘과 이름을, false이면 아이콘만 표시합니다.
 	links: [
 		{
-			name: "qq",
-			icon: "fa7-brands:qq",
-			url: "https://qm.qq.com/q/ZGsFa8qX2G",
-			showName: false,
-		},
-		{
 			name: "GitHub",
 			icon: "fa7-brands:github",
-			url: "https://github.com/CuteLeaf",
+			url: "https://github.com/hon454",
 			showName: false,
 		},
 		{
 			name: "Email",
 			icon: "fa7-solid:envelope",
-			url: "mailto:xiaye@msn.com",
+			url: "mailto:hon454@gmail.com",
 			showName: false,
 		},
 		{

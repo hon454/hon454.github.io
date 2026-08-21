@@ -1,7 +1,7 @@
 ---
 title: Firefly, 산뜻하고 아름다운 Astro 블로그 테마 템플릿
 published: 1970-01-02
-pinned: true
+pinned: false
 description: Firefly는 Astro 프레임워크와 Fuwari 템플릿을 바탕으로 만든 산뜻하고 현대적인 개인 블로그 테마입니다. 기술 애호가와 콘텐츠 제작자를 위해 풍부한 기능과 높은 사용자 지정 가능성을 제공합니다.
 tags: [Markdown, Firefly, 블로그, 테마, 템플릿]
 category: 글 예시

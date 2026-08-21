@@ -1,7 +1,7 @@
 ---
 title: Firefly 간단 사용 가이드
 published: 1970-01-02
-pinned: true
+pinned: false
 description: "Firefly 블로그 템플릿 사용 방법"
 image: "./cover.avif"
 tags: ["Firefly", "블로그", "Markdown", "가이드"]

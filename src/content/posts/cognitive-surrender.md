@@ -5,6 +5,7 @@ description: AI가 만드는 코드의 속도를 따라가지 못하면서 느�
 tags: [AI, 에이전틱 코딩, 게임 개발, 개발 문화]
 category: 개발
 slug: cognitive-surrender
+image: ./images/cognitive-surrender.avif
 ---
 
 ‘인지적 압도’와 ‘인지적 항복(Cognitive Surrender)’이라는 말을 함께 알게 됐다.

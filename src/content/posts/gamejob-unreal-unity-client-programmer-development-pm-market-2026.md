@@ -5,7 +5,7 @@ author: Jihoon Jeon
 title: '이직 준비: 2026.08 Unreal·Unity 클라이언트와 개발 PM 채용 분석'
 description: 2026년 8월 22일 게임잡의 Unreal·Unity 클라이언트 및 엔진 개발, 개발 PM 공고를 다시 조사하고 반복 요구사항을 공개 이력서와 비교해 지원 트랙과 준비 우선순위를 정리합니다.
 image: ./images/gamejob-logo.avif
-category: Engineering
+category: 커리어
 tags:
   - unreal-engine
   - unity

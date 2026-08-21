@@ -156,6 +156,8 @@ tests near the feature they cover, using the local file name as the stem.
   explanatory content under them in Korean. Include at least `## Summary`,
   `## Changes`, and `## Validation`; add `## Notes` or `## Breaking Changes`
   when relevant. Keep commands, paths, and identifiers in their original form.
+- When contributing to the upstream project, use English for PR titles,
+  descriptions, comments, and review replies.
 - Record validation commands and results in the PR body. Include screenshots
   for visual or interactive changes, link related issues when available, and
   report known failures rather than omitting them.

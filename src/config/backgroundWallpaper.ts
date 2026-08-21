@@ -73,17 +73,13 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 홈페이지 배너 문구 사용 여부
 			enable: true,
 			// 홈페이지 배너 주 제목
-			title: "Lovely firefly!",
+			title: "Just Keep Pedaling!",
 			// 홈페이지 배너 주 제목 글자 크기
 			titleSize: "4.5rem",
 			// 홈페이지 배너 부제목
 			subtitle: [
-				"In Reddened Chrysalis, I Once Rest",
-				"From Shattered Sky, I Free Fall",
-				"Amidst Silenced Stars, I Deep Sleep",
-				"Upon Lighted Fyrefly, I Soon Gaze",
-				"From Undreamt Night, I Thence Shine",
-				"In Finalized Morrow, I Full Bloom",
+				"Life is like riding a bicycle.",
+				"To keep your balance, you must keep moving.",
 			],
 			// 홈페이지 배너 부제목 글자 크기
 			subtitleSize: "1.5rem",
@@ -107,18 +103,13 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				{
 					name: "GitHub",
 					icon: "fa7-brands:github",
-					url: "https://github.com/CuteLeaf/Firefly",
+					url: "https://github.com/hon454",
 					showName: true,
 				},
 				{
 					name: "Email",
 					icon: "fa7-solid:envelope",
-					url: "mailto:xiaye@msn.com",
-				},
-				{
-					name: "Sponsor",
-					icon: "material-symbols:favorite",
-					url: "https://blog.cuteleaf.cn/sponsor/",
+					url: "mailto:hon454@gmail.com",
 				},
 				{
 					name: "RSS",

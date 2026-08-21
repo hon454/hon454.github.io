@@ -8,7 +8,7 @@ slug: cognitive-surrender
 image: ./images/cognitive-surrender.avif
 ---
 
-‘인지적 압도’와 ‘인지적 항복(Cognitive Surrender)’이라는 말을 함께 알게 됐다.
+`인지적 압도(Cognitive Overload)`와 `인지적 항복(Cognitive Surrender)`이라는 말을 함께 알게 됐다.
 
 두 단어의 정확한 정의를 설명해보라고 하면 아직 자신이 없다. 그런데 이 표현들을 처음 접했을 때, AI 에이전틱 코딩을 하면서 느꼈던 불편함을 꽤 정확하게 설명해주는 말이라고 생각했다.
 

@@ -127,7 +127,7 @@ export const siteConfig: SiteConfig = {
 	},
 
 	// 사이트 시작일. 운영 일수를 계산할 때 사용합니다.
-	siteStartDate: "2025-01-01",
+	siteStartDate: "2026-08-21",
 
 	// 사이트 시간대(IANA 시간대 문자열). Bangumi, RSS 등의 빌드 날짜와 시간을 표시할 때 사용합니다.
 	// 예: "Asia/Shanghai", "UTC". 비워 두면 빌드 서버 시간대를 기준으로 변환합니다.

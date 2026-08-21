@@ -139,6 +139,12 @@ export const booknavConfig: BooknavGroup[] = [
 		weight: 70,
 		items: [
 			{
+				title: "GeekNews",
+				url: "https://news.hada.io",
+				desc: "개발·기술·스타트업 소식을 공유하는 한국어 뉴스 커뮤니티",
+				weight: 8,
+			},
+			{
 				title: "Firefly Docs",
 				url: "https://docs-firefly.cuteleaf.cn",
 				desc: "Firefly 테마 템플릿 문서",

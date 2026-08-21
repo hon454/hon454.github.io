@@ -147,6 +147,14 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 
 ## 오픈소스
 
+### [Firefly](https://github.com/CuteLeaf/Firefly) — 오픈소스 기여
+
+**환경:** Astro 7, Svelte 5, TypeScript, Node.js, Merman, Mermaid
+
+- **[Mermaid 렌더러 마이그레이션](https://github.com/CuteLeaf/Firefly/pull/584)** — 빌드 시 Mermaid 다이어그램을 생성하는 Merman을 WebAssembly 기반 패키지에서 Node.js 기반 최신 버전으로 전환했습니다. 변경된 렌더링 API와 옵션 구조에 맞춰 플러그인·테마 타입을 수정하고 기존 라이트·다크 테마의 배경색과 출력 형태를 유지했습니다.
+- **[Astro 레이아웃 슬롯 수정](https://github.com/CuteLeaf/Firefly/pull/587)** — 페이지별 `<head>` 콘텐츠가 중간 UI 컴포넌트에서 소비되어 최상위 레이아웃으로 전달되지 않던 구조를 추적하고, 슬롯 전달 위치를 수정했습니다.
+- **[한국어 문서화](https://github.com/CuteLeaf/Firefly/pull/583)** — 설치·구성·배포와 Markdown 확장 기능을 다루는 프로젝트 README의 한국어 번역본을 작성하고, 각 언어 문서에 한국어 탐색 경로를 연결했습니다.
+
 ### [Grimoire](https://github.com/hon454/grimoire)
 
 **환경:** Python, Codex Skills, Codex Plugins, GitHub CLI, Git

@@ -53,7 +53,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		url: "#",
 		icon: "material-symbols:person",
 		children: [
-			// 소식
+			// 일상
 			LinkPresets.Dynamic,
 
 			// 갤러리
@@ -181,7 +181,7 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		pageKey: "guestbook",
 	},
 	Dynamic: {
-		name: "소식",
+		name: "일상",
 		url: "/dynamic/",
 		icon: "material-symbols:forum-rounded",
 		pageKey: "dynamic",

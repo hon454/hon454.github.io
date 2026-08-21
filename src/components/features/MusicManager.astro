@@ -390,7 +390,7 @@ const managerConfigStr = JSON.stringify({
             tryPlayCurrentTrackUrl(true, ver);
         } else {
             state.error = 'Audio playback error';
-            emit('fm:error', { message: '播放失败，即将自动跳过...' });
+            emit('fm:error', { message: '재생에 실패해 곧 자동으로 건너뜁니다...' });
 
             if (errorSkipTimeout) clearTimeout(errorSkipTimeout);
             errorSkipTimeout = setTimeout(function () {

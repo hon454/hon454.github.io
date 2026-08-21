@@ -56,10 +56,11 @@
 			const errorBox = document.createElement("div");
 			errorBox.className = "plantuml-error";
 			const msg = document.createElement("p");
-			msg.textContent = "PlantUML 图表加载失败，请检查网络或服务器状态";
+			msg.textContent =
+				"PlantUML 다이어그램을 불러오지 못했습니다. 네트워크나 서버 상태를 확인하세요.";
 			const retry = document.createElement("button");
 			retry.type = "button";
-			retry.textContent = "重试";
+			retry.textContent = "다시 시도";
 			retry.addEventListener("click", (event) => {
 				event.preventDefault();
 				event.stopPropagation();
@@ -157,18 +158,18 @@
 		const buttons = [
 			{
 				label: "+",
-				title: "放大",
+				title: "확대",
 				action: () => zoomBy(SCALE_STEP),
 			},
 			{
 				label: "\u2212",
-				title: "缩小",
+				title: "축소",
 				action: () => zoomBy(1 / SCALE_STEP),
 			},
-			{ label: "\u21BA", title: "重置", action: reset },
+			{ label: "\u21BA", title: "초기화", action: reset },
 			{
 				label: "\u26F6",
-				title: "全屏",
+				title: "전체 화면",
 				action: () => openFullscreen(container),
 			},
 		];
@@ -300,14 +301,14 @@
 		};
 
 		const fsButtons = [
-			{ label: "+", title: "放大", action: () => zoom(SCALE_STEP) },
+			{ label: "+", title: "확대", action: () => zoom(SCALE_STEP) },
 			{
 				label: "\u2212",
-				title: "缩小",
+				title: "축소",
 				action: () => zoom(1 / SCALE_STEP),
 			},
-			{ label: "\u21BA", title: "重置", action: resetState },
-			{ label: "\u2715", title: "关闭", action: close },
+			{ label: "\u21BA", title: "초기화", action: resetState },
+			{ label: "\u2715", title: "닫기", action: close },
 		];
 		fsButtons.forEach((btn) => {
 			const el = document.createElement("button");

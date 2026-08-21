@@ -81,10 +81,10 @@
 		const controls = document.createElement("div");
 		controls.className = "diagram-controls";
 		[
-			["+", "放大", () => zoomBy(SCALE_STEP)],
-			["−", "缩小", () => zoomBy(1 / SCALE_STEP)],
-			["↺", "重置", reset],
-			["⛶", "全屏", () => openFullscreen(container)],
+			["+", "확대", () => zoomBy(SCALE_STEP)],
+			["−", "축소", () => zoomBy(1 / SCALE_STEP)],
+			["↺", "초기화", reset],
+			["⛶", "전체 화면", () => openFullscreen(container)],
 		].forEach((b) => {
 			const el = document.createElement("button");
 			el.type = "button";
@@ -197,10 +197,10 @@
 		};
 
 		[
-			["+", "放大", () => zoom(SCALE_STEP)],
-			["−", "缩小", () => zoom(1 / SCALE_STEP)],
-			["↺", "重置", rst],
-			["✕", "关闭", close],
+			["+", "확대", () => zoom(SCALE_STEP)],
+			["−", "축소", () => zoom(1 / SCALE_STEP)],
+			["↺", "초기화", rst],
+			["✕", "닫기", close],
 		].forEach((b) => {
 			const el = document.createElement("button");
 			el.type = "button";

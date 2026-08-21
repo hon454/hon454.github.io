@@ -1,30 +1,30 @@
 import type { BackgroundWallpaperConfig } from "@/types/backgroundWallpaper";
 
 export const backgroundWallpaper: BackgroundWallpaperConfig = {
-	// 壁纸模式："banner" 横幅壁纸，"fullscreen" 全屏壁纸，"overlay" 覆盖透明，"none" 纯色背景无壁纸
+	// 배경화면 모드: "banner" 배너 배경, "fullscreen" 전체 화면 배경, "overlay" 투명 오버레이, "none" 단색 배경
 	mode: "banner",
-	// 是否启用背景视频播放，配置后将在导航栏显示视频播放按钮
+	// 배경 동영상 재생 여부. 설정하면 내비게이션 바에 동영상 재생 버튼이 표시됩니다.
 	playerEnable: true,
 	/**
-	 * 背景图片配置
-	 * 图片路径支持三种格式：
-	 * 1. public 目录（以 "/" 开头，不优化）："/assets/images/banner.avif"
-	 * 2. src 目录（不以 "/" 开头，自动优化但会增加构建时间，推荐）："assets/images/banner.avif"
-	 * 3. 远程 URL："https://example.com/banner.jpg"
-	 * 注意：远程URL和public目录的图片不会被优化，请确保图片体积足够小以免影响加载速度
+	 * 배경 이미지 설정
+	 * 이미지 경로는 세 가지 형식을 지원합니다.
+	 * 1. public 디렉터리("/"로 시작하며 최적화하지 않음): "/assets/images/banner.avif"
+	 * 2. src 디렉터리("/"로 시작하지 않으며 자동 최적화하지만 빌드 시간이 늘어남, 권장): "assets/images/banner.avif"
+	 * 3. 원격 URL: "https://example.com/banner.jpg"
+	 * 주의: 원격 URL과 public 디렉터리의 이미지는 최적화하지 않으므로 로딩 속도에 영향을 주지 않도록 파일 크기를 충분히 줄이세요.
 	 *
-	 * 建议不要替换d1-d6，m1-m6这些默认示例图片，但你可以删除掉节省空间
-	 * 因为以后可能会更换示例图片，导致你自定义的图片被覆盖
-	 * 所以建议使用自己的图片的时候命名为其他名称，不要使用d1-d6，m1-m6这些名称
+	 * 기본 예시 이미지인 d1-d6, m1-m6은 교체하지 않는 것이 좋습니다. 공간을 아끼려면 삭제해도 됩니다.
+	 * 향후 예시 이미지가 바뀌면 같은 이름의 사용자 이미지가 덮어써질 수 있습니다.
+	 * 따라서 직접 만든 이미지에는 d1-d6, m1-m6이 아닌 다른 이름을 사용하세요.
 	 *
-	 * 如果只使用一张图片或者使用随机图API，推荐直接使用字符串格式：
-	 * desktop: "https://t.alcy.cc/pc",   // 随机图API
-	 * desktop: "assets/images/DesktopWallpaper/d1.avif", // 单张图片
+	 * 이미지 한 장이나 무작위 이미지 API만 사용한다면 문자열 형식을 권장합니다.
+	 * desktop: "https://t.alcy.cc/pc",   // 무작위 이미지 API
+	 * desktop: "assets/images/DesktopWallpaper/d1.avif", // 단일 이미지
 	 *
-	 * mobile: "https://t.alcy.cc/mp", // 随机图API
-	 * mobile: "assets/images/MobileWallpaper/m1.avif", // 单张图片
+	 * mobile: "https://t.alcy.cc/mp", // 무작위 이미지 API
+	 * mobile: "assets/images/MobileWallpaper/m1.avif", // 단일 이미지
 	 *
-	 * 支持配置多张图片（数组），每次刷新页面随机显示一张：
+	 * 여러 이미지를 배열로 설정할 수도 있으며 페이지를 새로 고칠 때마다 한 장을 무작위로 표시합니다.
 	 * desktop: [
 	 * "assets/images/DesktopWallpaper/d1.avif",
 	 * "assets/images/DesktopWallpaper/d2.avif",
@@ -36,7 +36,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	 * ],
 	 */
 	src: {
-		// 桌面背景图片（支持单张或多张随机）
+		// 데스크톱 배경 이미지(단일 이미지 또는 여러 이미지 무작위 표시 지원)
 		// desktop: "assets/images/DesktopWallpaper/d1.avif",
 		desktop: [
 			"assets/images/DesktopWallpaper/d1.avif",
@@ -46,7 +46,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			"assets/images/DesktopWallpaper/d5.avif",
 			"assets/images/DesktopWallpaper/d6.avif",
 		],
-		// 移动背景图片（支持单张或多张随机）
+		// 모바일 배경 이미지(단일 이미지 또는 여러 이미지 무작위 표시 지원)
 		// mobile: "assets/images/MobileWallpaper/m1.avif",
 		mobile: [
 			"assets/images/MobileWallpaper/m1.avif",
@@ -56,52 +56,69 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			"assets/images/MobileWallpaper/m5.avif",
 			"assets/images/MobileWallpaper/m6.avif",
 		],
-		// 背景视频播放地址
-		// 支持单个视频路径（字符串）或多个视频循环（数组，参考上面壁纸配置）
-		// 支持远程视频URL，本地视频请放在 public/assets/videos/ 目录下
+		// 배경 동영상 재생 주소
+		// 단일 동영상 경로(문자열) 또는 여러 동영상 반복 재생(배열, 위 배경화면 설정 참고)을 지원합니다.
+		// 원격 동영상 URL을 지원하며 로컬 동영상은 public/assets/videos/ 디렉터리에 두세요.
 		// playerUrl: "/assets/videos/firefly.mp4",
 		playerUrl: "https://bed.twoleaf.cn/file/1785658612716_firefly.mp4",
 	},
-	// 横幅壁纸和全屏壁纸共享配置
+	// 배너 배경화면과 전체 화면 배경화면의 공통 설정
 	common: {
-		// 壁纸遮罩暗度，让横幅文字显示更清晰，0-1之间，值越大越暗
+		// 배너 문구를 더 선명하게 보이게 하는 배경화면 마스크의 어두운 정도. 0~1 사이이며 클수록 어두워집니다.
 		dimOpacity: 0.2,
-		// 多视频播放模式："order" 顺序循环，"random" 随机切换（仅当 playerUrl 为数组时生效）
+		// 여러 동영상 재생 모드: "order" 순차 반복, "random" 무작위 전환(playerUrl이 배열일 때만 적용)
 		playerMode: "random",
-		// 主页横幅文字
+		// 홈페이지 배너 문구
 		homeText: {
-			// 是否启用主页横幅文字
+			// 홈페이지 배너 문구 사용 여부
 			enable: true,
-			// 主页横幅主标题
-			title: "hon454",
-			// 主页横幅主标题字体大小
+			// 홈페이지 배너 주 제목
+			title: "Lovely firefly!",
+			// 홈페이지 배너 주 제목 글자 크기
 			titleSize: "4.5rem",
-			// 主页横幅副标题
-			subtitle: ["개발하며 배우고 기록합니다.", "작은 발견을 오래 남깁니다."],
-			// 主页横幅副标题字体大小
+			// 홈페이지 배너 부제목
+			subtitle: [
+				"In Reddened Chrysalis, I Once Rest",
+				"From Shattered Sky, I Free Fall",
+				"Amidst Silenced Stars, I Deep Sleep",
+				"Upon Lighted Fyrefly, I Soon Gaze",
+				"From Undreamt Night, I Thence Shine",
+				"In Finalized Morrow, I Full Bloom",
+			],
+			// 홈페이지 배너 부제목 글자 크기
 			subtitleSize: "1.5rem",
 			typewriter: {
-				// 是否启用打字机效果
-				// 打字机开启 → 循环显示所有副标题
-				// 打字机关闭 → 每次刷新随机显示一条副标题
+				// 타자기 효과 사용 여부
+				// 타자기 효과 켬 → 모든 부제목을 순환 표시
+				// 타자기 효과 끔 → 새로 고칠 때마다 부제목 하나를 무작위 표시
 				enable: true,
-				// 打字速度（毫秒）
+				// 입력 속도(밀리초)
 				speed: 100,
-				// 删除速度（毫秒）
+				// 삭제 속도(밀리초)
 				deleteSpeed: 50,
-				// 完全显示后的暂停时间（毫秒）
+				// 전체 문구 표시 후 대기 시간(밀리초)
 				pauseTime: 2000,
 			},
-			// 是否显示标题下方的链接图标
+			// 제목 아래 링크 아이콘 표시 여부
 			linksEnable: true,
-			// 首页横幅标题下方的链接图标（可选，支持 showName 显示文字）
-			// 图标支持 Iconify 格式：fa7-brands:github、fa7-solid:envelope、mdi:rss 等
+			// 홈페이지 배너 제목 아래의 링크 아이콘(선택 사항, showName으로 문구 표시 지원)
+			// 아이콘은 fa7-brands:github, fa7-solid:envelope, mdi:rss 같은 Iconify 형식을 지원합니다.
 			links: [
 				{
 					name: "GitHub",
 					icon: "fa7-brands:github",
-					url: "https://github.com/hon454",
+					url: "https://github.com/CuteLeaf/Firefly",
 					showName: true,
+				},
+				{
+					name: "Email",
+					icon: "fa7-solid:envelope",
+					url: "mailto:xiaye@msn.com",
+				},
+				{
+					name: "Sponsor",
+					icon: "material-symbols:favorite",
+					url: "https://blog.cuteleaf.cn/sponsor/",
 				},
 				{
 					name: "RSS",
@@ -110,85 +127,85 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				},
 			],
 		},
-		// 壁纸轮播配置，横幅壁纸和全屏壁纸共享，仅在配置多张图片时生效
+		// 배경화면 슬라이드 설정. 배너와 전체 화면 배경이 공유하며 여러 이미지를 설정했을 때만 적용됩니다.
 		carousel: {
-			// 是否启用壁纸轮播；关闭时保持每次刷新随机显示一张
+			// 배경화면 슬라이드 사용 여부. 끄면 새로 고칠 때마다 한 장을 무작위로 표시합니다.
 			enable: false,
-			// 轮播切换间隔（毫秒）
+			// 슬라이드 전환 간격(밀리초)
 			interval: 5000,
-			// 过渡效果: 'fade' 渐变 | 'zoom' 缩放 | 'slide' 滑动 | 'kenburns' 旋转木马
+			// 전환 효과: 'fade' 페이드 | 'zoom' 확대·축소 | 'slide' 슬라이드 | 'kenburns' 회전식 전환
 			transitionEffect: "zoom",
 		},
 	},
-	// Banner模式特有配置
+	// Banner 모드 전용 설정
 	banner: {
-		// 图片位置
-		// 支持所有CSS object-position值，如: 'top', 'center', 'bottom', 'left top', 'right bottom', '25% 75%', '10px 20px'..
-		// 如果不知道怎么配置百分百之类的配置，推荐直接使用：'center'居中，'top'顶部居中，'bottom' 底部居中，'left'左侧居中，'right'右侧居中
+		// 이미지 위치
+		// 'top', 'center', 'bottom', 'left top', 'right bottom', '25% 75%', '10px 20px' 등 모든 CSS object-position 값을 지원합니다.
+		// 백분율 설정이 익숙하지 않다면 'center' 가운데, 'top' 위쪽 가운데, 'bottom' 아래쪽 가운데, 'left' 왼쪽 가운데, 'right' 오른쪽 가운데를 사용하세요.
 		position: "0% 20%",
-		// 文章横幅信息："description" 显示描述，"meta" 显示日期、字数和阅读时长
+		// 글 배너 정보: "description"은 설명을, "meta"는 날짜·글자 수·읽기 시간을 표시합니다.
 		postInfo: {
 			mode: "description",
 		},
-		// 导航栏配置
+		// 내비게이션 바 설정
 		navbar: {
-			// 导航栏透明模式："semi" 半透明，"full" 完全透明，"semifull" 动态透明
+			// 내비게이션 바 투명 모드: "semi" 반투명, "full" 완전 투명, "semifull" 동적 투명
 			transparentMode: "semi",
-			// 毛玻璃模糊度，0 即关闭导航栏的毛玻璃
-			// 注意：导航栏子菜单与浮动面板始终保留毛玻璃，模糊度跟随此项但有最小值
+			// 유리 효과 흐림 정도. 0이면 내비게이션 바의 유리 효과를 끕니다.
+			// 주의: 내비게이션 하위 메뉴와 플로팅 패널은 항상 유리 효과를 유지하며 이 값에 따르되 최솟값이 있습니다.
 			blur: 5,
 		},
-		// 水波纹动画效果配置，开启会影响页面性能，增加内存占用，请根据自己的喜好开启
+		// 물결 애니메이션 설정. 사용하면 페이지 성능과 메모리 사용량에 영향을 주므로 필요에 따라 켜세요.
 		waves: {
 			enable: {
-				// 桌面端是否启用水波纹动画效果
+				// 데스크톱에서 물결 애니메이션 사용 여부
 				desktop: true,
-				// 移动端是否启用水波纹动画效果
+				// 모바일에서 물결 애니메이션 사용 여부
 				mobile: true,
 			},
 		},
-		// 渐变过渡效果配置，当水波纹关闭时自动启用，提供壁纸底部到背景色的平滑过渡
+		// 그라데이션 전환 설정. 물결 효과가 꺼지면 자동으로 활성화되어 배경화면 아래쪽에서 배경색으로 부드럽게 이어집니다.
 		gradient: {
 			enable: {
-				// 桌面端是否启用渐变过渡
+				// 데스크톱에서 그라데이션 전환 사용 여부
 				desktop: true,
-				// 移动端是否启用渐变过渡
+				// 모바일에서 그라데이션 전환 사용 여부
 				mobile: true,
 			},
-			// 渐变高度
+			// 그라데이션 높이
 			height: "10%",
 		},
 	},
-	// 覆盖透明覆盖模式特有配置
+	// 투명 오버레이 모드 전용 설정
 	overlay: {
-		// 层级，确保壁纸在背景层
+		// 배경화면을 배경 레이어에 유지하는 z-index
 		zIndex: -1,
-		// 壁纸透明度
+		// 배경화면 투명도
 		opacity: 0.8,
-		// 背景模糊度
+		// 배경 흐림 정도
 		blur: 10,
-		// 卡片透明度，0-1之间，值越小越透明
+		// 카드 불투명도. 0~1 사이이며 작을수록 투명합니다.
 		cardOpacity: 0.6,
 	},
-	// 全屏壁纸模式特有配置
-	// 全屏模式下壁纸固定全屏显示，首屏居中标题，内容区在首屏之下、下滑时覆盖壁纸
-	// 壁纸模糊度(blur)、卡片透明度(cardOpacity)、层级(zIndex) 复用上方 overlay 模式的配置；
-	// 背景透明度(opacity)不适用（全屏壁纸不透明）；导航栏透明模式由卡片透明度控制，脱离 banner 的 navbar 配置
+	// 전체 화면 배경화면 모드 전용 설정
+	// 전체 화면 모드에서는 배경화면을 화면에 고정하고 첫 화면 중앙에 제목을 표시합니다. 콘텐츠 영역은 첫 화면 아래에서 시작해 스크롤할 때 배경화면을 덮습니다.
+	// 배경화면 흐림(blur), 카드 불투명도(cardOpacity), z-index(zIndex)는 위 overlay 모드 설정을 재사용합니다.
+	// 배경 투명도(opacity)는 적용되지 않습니다(전체 화면 배경은 불투명). 내비게이션 바 투명 모드는 카드 불투명도가 제어하며 banner의 navbar 설정과 무관합니다.
 	fullscreen: {
-		// 图片位置
+		// 이미지 위치
 		position: "center",
-		// 全屏壁纸模式的导航栏配置
+		// 전체 화면 배경화면 모드의 내비게이션 바 설정
 		navbar: {
-			// 是否开启动态透明：开启后首页顶部导航栏透明，下滑后变不透明（仅首页生效）
+			// 동적 투명 효과 사용 여부. 켜면 홈페이지 상단에서 투명하고 스크롤하면 불투명해집니다(홈페이지에만 적용).
 			dynamicTransparent: false,
 		},
-		// 首页下滑时壁纸模糊渐变开关（从 0 渐变为 overlay.blur 的最大模糊）
-		// 关闭后该设备上全屏壁纸保持清晰（首页与非首页都不模糊），设置面板的模糊度滑块也会隐藏
+		// 홈페이지 스크롤 시 배경화면 흐림 전환 여부(0에서 overlay.blur의 최댓값까지 변화)
+		// 끄면 해당 기기에서 전체 화면 배경을 항상 선명하게 유지하고(홈페이지와 다른 페이지 모두) 설정 패널의 흐림 슬라이더도 숨깁니다.
 		blurRamp: {
 			enable: {
-				// 桌面端是否启用模糊渐变
+				// 데스크톱에서 흐림 전환 사용 여부
 				desktop: true,
-				// 移动端是否启用模糊渐变
+				// 모바일에서 흐림 전환 사용 여부
 				mobile: true,
 			},
 		},

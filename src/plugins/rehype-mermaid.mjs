@@ -119,7 +119,11 @@ export function rehypeMermaid(options = {}) {
 				};
 				node.children = [
 					h("div", { class: MERMAID_ERROR }, [
-						h("p", {}, "Mermaid 图表渲染失败，请检查图表语法是否正确"),
+						h(
+							"p",
+							{},
+							"Mermaid 다이어그램 렌더링에 실패했습니다. 다이어그램 문법을 확인하세요.",
+						),
 						h("pre", { class: MERMAID_FALLBACK_CODE }, mermaidCode),
 					]),
 				];

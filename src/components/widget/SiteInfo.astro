@@ -270,8 +270,8 @@ const detailItems: {
       const iconEl = this.querySelector(".site-info-toggle-icon");
       if (!btn || !detail || !textEl) return;
 
-      const expandText = this.dataset.expandText || "展开构建信息";
-      const collapseText = this.dataset.collapseText || "收起构建信息";
+      const expandText = this.dataset.expandText || "빌드 정보 펼치기";
+      const collapseText = this.dataset.collapseText || "빌드 정보 접기";
 
       // 初始状态已在 HTML 中通过 class="collapsed" 设定，JS 只需同步文字
       let expanded = false;

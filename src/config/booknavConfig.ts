@@ -26,15 +26,15 @@ export const booknavPageConfig: BooknavPageConfig = {
 export const booknavConfig: BooknavGroup[] = [
 	{
 		id: "dev",
-		name: "开发",
+		name: "개발",
 		icon: "material-symbols:code-rounded",
-		desc: "写代码时离不开的站点",
+		desc: "코드를 작성할 때 유용한 사이트",
 		weight: 100,
 		items: [
 			{
 				title: "GitHub",
 				url: "https://github.com",
-				desc: "全球最大的代码托管平台",
+				desc: "세계 최대 규모의 코드 호스팅 플랫폼",
 				// icon 字段可以使用 astro-icon 图标库的图标名称
 				// 也可以使用图片 URL 和本地图片路径
 				// 不填则会通过接口自动获取目标站点的 favicon 图标（需要在上面配置）
@@ -44,40 +44,40 @@ export const booknavConfig: BooknavGroup[] = [
 			{
 				title: "MDN Web Docs",
 				url: "https://developer.mozilla.org",
-				desc: "最权威的 Web 技术文档",
+				desc: "신뢰할 수 있는 웹 기술 문서",
 				weight: 9,
 			},
 			{
 				title: "Astro",
 				url: "https://astro.build",
-				desc: "内容驱动型网站的 Web 框架",
+				desc: "콘텐츠 중심 웹사이트를 위한 웹 프레임워크",
 				weight: 8,
 			},
 			{
 				title: "Svelte",
 				url: "https://svelte.dev",
-				desc: "把组件编译成高效原生 JS 的框架",
+				desc: "컴포넌트를 효율적인 기본 JavaScript로 컴파일하는 프레임워크",
 				weight: 7,
 			},
 			{
 				title: "Tailwind CSS",
 				url: "https://tailwindcss.com",
-				desc: "一个功能强大且灵活的 CSS 框架",
+				desc: "강력하고 유연한 CSS 프레임워크",
 				weight: 6,
 			},
 		],
 	},
 	{
 		id: "opensource",
-		name: "项目",
+		name: "프로젝트",
 		icon: "material-symbols:code-rounded",
-		desc: "好用的开源项目",
+		desc: "유용한 오픈 소스 프로젝트",
 		weight: 90,
 		items: [
 			{
 				title: "Firefly",
 				url: "https://github.com/CuteLeaf/Firefly",
-				desc: "清晰美观的 Astro 个人博客主题模板",
+				desc: "깔끔하고 아름다운 Astro 개인 블로그 테마 템플릿",
 				icon: "/favicon/firefly-32.png",
 				weight: 10,
 			},
@@ -85,70 +85,70 @@ export const booknavConfig: BooknavGroup[] = [
 	},
 	{
 		id: "design",
-		name: "设计",
+		name: "디자인",
 		icon: "material-symbols:palette-outline-rounded",
-		desc: "配色、图标与灵感来源",
+		desc: "색상, 아이콘, 영감을 얻을 수 있는 자료",
 		weight: 90,
 		items: [
 			{
 				title: "Iconify",
 				url: "https://icon-sets.iconify.design",
-				desc: "海量开源图标集合搜索",
+				desc: "방대한 오픈 소스 아이콘 컬렉션 검색",
 				weight: 10,
 			},
 			{
 				title: "iconfont",
 				url: "https://www.iconfont.cn",
-				desc: "阿里巴巴矢量图标库",
+				desc: "Alibaba 벡터 아이콘 라이브러리",
 				weight: 9,
 			},
 		],
 	},
 	{
 		id: "tools",
-		name: "工具",
+		name: "도구",
 		icon: "material-symbols:build-outline-rounded",
-		desc: "顺手的在线小工具",
+		desc: "간편한 온라인 도구",
 		weight: 80,
 		items: [
 			{
 				title: "TinyPNG",
 				url: "https://tinypng.com",
-				desc: "在线压缩 PNG / JPEG 图片",
+				desc: "PNG/JPEG 이미지 온라인 압축",
 				weight: 10,
 			},
 			{
 				title: "Squoosh",
 				url: "https://squoosh.app",
-				desc: "Google 出品的图片压缩与格式转换",
+				desc: "Google이 제공하는 이미지 압축과 형식 변환",
 				weight: 9,
 			},
 			{
 				title: "Carbon",
 				url: "https://carbon.now.sh",
-				desc: "把代码片段生成漂亮的图片",
+				desc: "코드 조각을 멋진 이미지로 변환",
 				weight: 8,
 			},
 		],
 	},
 	{
 		id: "resources",
-		name: "资源",
+		name: "자료",
 		icon: "material-symbols:auto-stories-outline-rounded",
-		desc: "文档、教程与阅读",
+		desc: "문서, 튜토리얼, 읽을거리",
 		weight: 70,
 		items: [
 			{
 				title: "Firefly Docs",
 				url: "https://docs-firefly.cuteleaf.cn",
-				desc: "Firefly 主题模板文档",
+				desc: "Firefly 테마 템플릿 문서",
 				icon: "https://docs-firefly.cuteleaf.cn/logo.png",
 				weight: 10,
 			},
 			{
-				title: "夏夜流萤",
+				title: "여름밤의 반딧불",
 				url: "https://blog.cuteleaf.cn",
-				desc: "飞萤之火自无梦的长夜亮起",
+				desc: "반딧불의 빛은 꿈 없는 긴 밤에 피어납니다",
 				weight: 9,
 			},
 		],

@@ -9,7 +9,7 @@ export const sponsorConfig: SponsorConfig = {
 
 	// 打赏用途说明
 	usage:
-		"您的打赏将用于服务器维护、内容创作和功能开发，帮助我持续提供优质内容。",
+		"후원금은 서버 유지보수, 콘텐츠 제작, 기능 개발에 사용되며 좋은 콘텐츠를 꾸준히 제공하는 데 큰 도움이 됩니다.",
 
 	// 是否显示打赏者列表
 	showSponsorsList: true,
@@ -23,20 +23,20 @@ export const sponsorConfig: SponsorConfig = {
 	// 打赏方式列表
 	methods: [
 		{
-			name: "支付宝",
+			name: "Alipay",
 			icon: "fa7-brands:alipay",
 			// 收款码图片路径（需要放在 public 目录下）
 			qrCode: "/assets/images/sponsor/alipay.png",
 			link: "",
-			description: "使用 支付宝 扫码打赏",
+			description: "Alipay QR 코드를 스캔해 후원",
 			enabled: true,
 		},
 		{
-			name: "微信",
+			name: "WeChat Pay",
 			icon: "fa7-brands:weixin",
 			qrCode: "/assets/images/sponsor/wechat.png",
 			link: "",
-			description: "使用 微信 扫码打赏",
+			description: "WeChat Pay QR 코드를 스캔해 후원",
 			enabled: true,
 		},
 		{
@@ -48,11 +48,11 @@ export const sponsorConfig: SponsorConfig = {
 			enabled: true,
 		},
 		{
-			name: "爱发电",
+			name: "Afdian",
 			icon: "simple-icons:afdian",
 			qrCode: "",
 			link: "https://ifdian.net/a/cuteleaf",
-			description: "通过 爱发电 进行打赏",
+			description: "Afdian에서 후원",
 			enabled: true,
 		},
 	],
@@ -61,7 +61,7 @@ export const sponsorConfig: SponsorConfig = {
 	sponsors: [
 		// 示例：已实名打赏者
 		{
-			name: "夏叶",
+			name: "XiaYe",
 			avatar:
 				"https://weavatar.com/avatar/d252655d40d6874417a720bad0a6c5f77f8f6a1fd2f882f8f338402dc37e4190?s=640",
 			amount: "¥50",
@@ -70,7 +70,7 @@ export const sponsorConfig: SponsorConfig = {
 
 		// 示例：匿名打赏者
 		{
-			name: "匿名用户",
+			name: "익명 사용자",
 			// avatar: "",
 			amount: "¥20",
 			date: "2025-10-01",

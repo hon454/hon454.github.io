@@ -1,23 +1,23 @@
 import type { AnnouncementConfig } from "../types/announcementConfig";
 
 export const announcementConfig: AnnouncementConfig = {
-	// 公告标题，留空则走i18n默认标题
+	// 공지 제목. 비워 두면 i18n의 기본 제목을 사용합니다.
 	title: "",
 
-	// 公告内容
-	content: "hon454의 블로그에 오신 것을 환영합니다.",
+	// 공지 내용
+	content: "제 블로그에 오신 것을 환영합니다! 예시 공지입니다.",
 
-	// 是否允许用户关闭公告
+	// 사용자가 공지를 닫을 수 있는지 여부
 	closable: true,
 
 	link: {
-		// 启用链接
+		// 링크 사용 여부
 		enable: true,
-		// 链接文本
-		text: "블로그 소개",
-		// 链接 URL
+		// 링크 문구
+		text: "자세히 알아보기",
+		// 링크 URL
 		url: "/about/",
-		// 内部链接
+		// 내부 링크 여부
 		external: false,
 	},
 };

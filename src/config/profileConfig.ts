@@ -1,30 +1,42 @@
 import type { ProfileConfig } from "../types/profileConfig";
 
 export const profileConfig: ProfileConfig = {
-	// 头像
-	// 图片路径支持三种格式：
-	// 1. public 目录（以 "/" 开头，不优化）："/assets/images/avatar.webp"
-	// 2. src 目录（不以 "/" 开头，自动优化但会增加构建时间，推荐）："assets/images/avatar.webp"
-	// 3. 远程 URL："https://example.com/avatar.jpg"
+	// 프로필 이미지
+	// 이미지 경로는 세 가지 형식을 지원합니다.
+	// 1. public 디렉터리("/"로 시작하며 최적화하지 않음): "/assets/images/avatar.webp"
+	// 2. src 디렉터리("/"로 시작하지 않으며 자동 최적화하지만 빌드 시간이 늘어남, 권장): "assets/images/avatar.webp"
+	// 3. 원격 URL: "https://example.com/avatar.jpg"
 	avatar: "assets/images/avatar.avif",
 
-	// 名字
-	name: "hon454",
+	// 이름
+	name: "Firefly",
 
-	// 个人签名
-	bio: "개발과 배움을 기록합니다.",
+	// 소개 문구
+	bio: "Hello, I'm Firefly.",
 
-	// 链接配置
-	// 已经预装的图标集：fa7-brands，fa7-regular，fa7-solid，material-symbols，simple-icons
-	// 访问https://icones.js.org/ 获取图标代码，
-	// 如果想使用尚未包含相应的图标集，则需要安装它
+	// 링크 설정
+	// 기본 설치된 아이콘 세트: fa7-brands, fa7-regular, fa7-solid, material-symbols, simple-icons
+	// https://icones.js.org/ 에서 아이콘 코드를 확인할 수 있습니다.
+	// 아직 포함되지 않은 아이콘 세트를 사용하려면 직접 설치해야 합니다.
 	// `pnpm add @iconify-json/<icon-set-name>`
-	// showName: true 时显示图标和名称，false 时只显示图标
+	// showName이 true이면 아이콘과 이름을, false이면 아이콘만 표시합니다.
 	links: [
+		{
+			name: "qq",
+			icon: "fa7-brands:qq",
+			url: "https://qm.qq.com/q/ZGsFa8qX2G",
+			showName: false,
+		},
 		{
 			name: "GitHub",
 			icon: "fa7-brands:github",
-			url: "https://github.com/hon454",
+			url: "https://github.com/CuteLeaf",
+			showName: false,
+		},
+		{
+			name: "Email",
+			icon: "fa7-solid:envelope",
+			url: "mailto:xiaye@msn.com",
 			showName: false,
 		},
 		{

@@ -17,22 +17,23 @@ export const galleryConfig: GalleryConfig = {
 		// 每添加一个数组项就相当于添加了一个相册，记得在 public/gallery/ 目录下创建对应的子目录并放入图片
 		{
 			id: "firefly-2026",
-			name: "可爱流萤",
-			description: "飞萤之火自无梦的长夜亮起，绽放在终竟的明天。",
-			location: "崩坏：星穹铁道",
+			name: "귀여운 반딧불",
+			description:
+				"반딧불의 빛은 꿈 없는 긴 밤에 피어나 마침내 다가올 내일을 밝힙니다.",
+			location: "붕괴: 스타레일",
 			date: "2026-01-01",
-			tags: ["崩坏星穹铁道", "流萤"],
+			tags: ["붕괴 스타레일", "반딧불"],
 		},
 		{
 			id: "encrypted-test",
-			name: "加密相册示例",
+			name: "암호화된 앨범 예시",
 			description:
-				"这是一个加密相册的示例，设置了访问密码，只有输入正确的密码才能查看相册内容。",
-			location: "崩坏：星穹铁道",
+				"접근 비밀번호를 설정한 암호화 앨범 예시입니다. 올바른 비밀번호를 입력해야 앨범을 볼 수 있습니다.",
+			location: "붕괴: 스타레일",
 			date: "2026-02-01",
-			tags: ["加密相册", "示例"],
+			tags: ["암호화 앨범", "예시"],
 			password: "123456",
-			passwordHint: "示例密码123456",
+			passwordHint: "예시 비밀번호: 123456",
 		},
 	],
 

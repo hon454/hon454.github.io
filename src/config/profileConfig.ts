@@ -9,10 +9,10 @@ export const profileConfig: ProfileConfig = {
 	avatar: "assets/images/avatar.avif",
 
 	// 이름
-	name: "Firefly",
+	name: "Jihoon Jeon",
 
 	// 소개 문구
-	bio: "Hello, I'm Firefly.",
+	bio: "Hello, I'm Jihoon Jeon.",
 
 	// 링크 설정
 	// 기본 설치된 아이콘 세트: fa7-brands, fa7-regular, fa7-solid, material-symbols, simple-icons

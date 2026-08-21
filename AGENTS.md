@@ -25,9 +25,31 @@ Biome is the formatter and linter. It uses tabs for indentation and double quote
 
 There is no dedicated unit-test framework configured. Before submitting changes, run `pnpm check`, `pnpm type-check`, and `pnpm build` for rendering, content, or generated asset work. For visual or interactive changes, verify with `pnpm dev` or `pnpm preview` and include screenshots in the PR. Name future tests near the feature they cover, using the local file name as the stem.
 
-## Commit & Pull Request Guidelines
+## Git & GitHub Workflow
 
-Use Conventional Commits, matching the current history: `feat: ...`, `fix: ...`, and `chore: ...`. Keep commits and PRs focused on one concern. PRs should include a concise summary, linked issues when relevant, validation commands run, and screenshots for UI changes. Discuss major features or design changes in an issue or discussion before implementation.
+- Use Conventional Commits for every commit. Follow
+  `type(optional-scope): imperative summary`, using focused types such as
+  `feat`, `fix`, `docs`, `refactor`, `test`, `build`, `ci`, or
+  `chore`.
+- This repository uses `main` as its default branch. The
+  `CuteLeaf/Firefly` upstream repository uses `master`. Always name the
+  branch explicitly when fetching or integrating upstream changes; do not
+  assume the branch names match. Treat `origin/main` as the PR base and
+  `upstream/master` as the upstream source.
+- Work on a focused feature branch and never push changes to `upstream`.
+  Keep commits and PRs scoped to one concern.
+- Write every PR title in Conventional Commit style, for example
+  `feat: add archive filters` or `ci: target the main branch`.
+- Use English Markdown section headings in PR descriptions and write the
+  explanatory content under them in Korean. Use at least `## Summary`,
+  `## Changes`, and `## Validation`; add `## Notes` or
+  `## Breaking Changes` when relevant. Keep commands, paths, and identifiers
+  in their original code form.
+- Record the validation commands and results in the PR body. Include
+  screenshots for visual or interactive changes, link related issues when
+  available, and report known failures rather than omitting them.
+- Discuss major features or design changes in an issue or discussion before
+  implementation.
 
 ## Security & Configuration Tips
 

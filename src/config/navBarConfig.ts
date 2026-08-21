@@ -87,6 +87,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 
 			// 소개 페이지
 			LinkPresets.About,
+
+			// 이력서
+			LinkPresets.Resume,
 		],
 	});
 
@@ -229,6 +232,11 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		name: "소개",
 		url: "/about/",
 		icon: "material-symbols:person",
+	},
+	Resume: {
+		name: "이력서",
+		url: "/resume/",
+		icon: "material-symbols:badge",
 	},
 };
 

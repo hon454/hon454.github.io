@@ -39,6 +39,7 @@ import "@rehype-callouts-theme";
 interface Props {
 	title?: string;
 	description?: string;
+	robots?: string;
 	lang?: string;
 	setOGTypeArticle?: boolean;
 	postSlug?: string;
@@ -48,6 +49,7 @@ interface Props {
 let {
 	title,
 	description,
+	robots,
 	lang,
 	setOGTypeArticle,
 	postSlug,
@@ -149,6 +151,7 @@ const siteLang = lang.replace("_", "-");
       name="description"
       content={description || siteConfig.description || pageTitle}
     />
+    {robots && <meta name="robots" content={robots} />}
     {
       siteConfig.keywords && siteConfig.keywords.length > 0 && (
         <meta name="keywords" content={siteConfig.keywords.join(", ")} />

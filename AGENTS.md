@@ -112,6 +112,12 @@ on mobile.
   settings control is hidden. Keep the matching `Firefly-Docs` documentation
   synchronized.
 
+## Post Cover Images
+
+Post-card covers use centered cropping. Keep text, logos, and other essential
+content near the center with sufficient padding, and verify new covers in both
+list and grid layouts.
+
 ## Coding Style & Naming Conventions
 
 Biome is the formatter and linter. It uses tabs for indentation and double

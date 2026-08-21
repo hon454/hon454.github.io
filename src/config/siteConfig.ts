@@ -40,13 +40,13 @@ const pages = resolvePageToggles({
 
 export const siteConfig: SiteConfig = {
 	// 사이트 제목
-	title: "Firefly",
+	title: "Jihoon Jeon의 블로그",
 
 	// 사이트 부제목
-	subtitle: "Demo site",
+	subtitle: "개발과 일상을 기록하는 공간",
 
 	// 사이트 URL
-	site_url: "https://firefly.cuteleaf.cn",
+	site_url: "https://hon454.github.io",
 
 	// 사이트 설명
 	description:

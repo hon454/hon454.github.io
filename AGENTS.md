@@ -1,8 +1,5 @@
 # Repository Guidelines
 
-This file is the source of truth for repository agent instructions. `CLAUDE.md`
-imports it for Claude Code compatibility; maintain shared guidance here only.
-
 ## Project Overview
 
 Firefly is a feature-rich static blog theme built with Astro 7, Svelte 5 islands,

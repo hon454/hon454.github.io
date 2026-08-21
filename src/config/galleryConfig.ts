@@ -18,7 +18,8 @@ export const galleryConfig: GalleryConfig = {
 		{
 			id: "firefly-2026",
 			name: "귀여운 반딧불",
-			description: "반딧불의 빛은 꿈 없는 긴 밤에 피어나 마침내 다가올 내일을 밝힙니다.",
+			description:
+				"반딧불의 빛은 꿈 없는 긴 밤에 피어나 마침내 다가올 내일을 밝힙니다.",
 			location: "붕괴: 스타레일",
 			date: "2026-01-01",
 			tags: ["붕괴 스타레일", "반딧불"],

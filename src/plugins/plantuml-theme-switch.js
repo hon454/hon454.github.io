@@ -36,7 +36,8 @@
 			const errorBox = document.createElement("div");
 			errorBox.className = "plantuml-error";
 			const msg = document.createElement("p");
-			msg.textContent = "PlantUML 다이어그램을 불러오지 못했습니다. 네트워크나 서버 상태를 확인하세요.";
+			msg.textContent =
+				"PlantUML 다이어그램을 불러오지 못했습니다. 네트워크나 서버 상태를 확인하세요.";
 			const retry = document.createElement("button");
 			retry.type = "button";
 			retry.textContent = "다시 시도";

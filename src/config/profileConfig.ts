@@ -12,7 +12,7 @@ export const profileConfig: ProfileConfig = {
 	name: "Jihoon Jeon",
 
 	// 소개 문구
-	bio: "Hello, I'm Jihoon Jeon.",
+	bio: "안녕하세요! 서브컬처와 자전거를 좋아하는 개발자 전지훈입니다.",
 
 	// 링크 설정
 	// 기본 설치된 아이콘 세트: fa7-brands, fa7-regular, fa7-solid, material-symbols, simple-icons

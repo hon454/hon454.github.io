@@ -1,56 +1,173 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
+This file is the source of truth for repository agent instructions. `CLAUDE.md`
+imports it for Claude Code compatibility; maintain shared guidance here only.
 
-Firefly is an Astro 7 site with Svelte islands and TypeScript configuration. Main source code lives in `src/`: routes in `src/pages`, layouts in `src/layouts`, reusable UI in `src/components`, styles in `src/styles`, content in `src/content`, helpers in `src/utils`, and Markdown/HTML plugins in `src/plugins`. Site configuration is split across `src/config` with matching type definitions in `src/types`; prefer imports from `@/config` when available. Static files served directly belong in `public`, source-managed images in `src/assets`, docs in `docs` and `Firefly-Docs`, and automation in `scripts`.
+## Project Overview
+
+Firefly is a feature-rich static blog theme built with Astro 7, Svelte 5 islands,
+and TypeScript. It is a fork of Fuwari with multilingual content support and
+extended blog, media, and personalization features.
+
+## Project Structure & Architecture
+
+Main source code lives in `src/`: routes in `src/pages`, layouts in
+`src/layouts`, reusable UI in `src/components`, styles in `src/styles`, content
+in `src/content`, helpers in `src/utils`, i18n in `src/i18n`, and custom
+Markdown/HTML plugins in `src/plugins`. Static files served directly belong in
+`public`, source-managed images in `src/assets`, documentation in `docs` and
+`Firefly-Docs`, and build automation in `scripts`.
+
+### Astro + Svelte Hybrid
+
+- Use `.astro` components for static content and layouts.
+- Use `.svelte` components for interactive UI such as search, settings,
+  pagination, and archives; mount them with the appropriate `client:*`
+  directive.
+- Swup.js provides SPA-like page transitions across multiple container targets.
+
+### Configuration
+
+Features are toggled and configured through TypeScript modules in `src/config`,
+with matching definitions in `src/types`. Prefer exports from the
+`src/config/index.ts` barrel and imports from `@/config` when available. Keep
+config modules and their types aligned.
+
+Important configuration modules include:
+
+- `siteConfig.ts`: core site settings, theme, pages, and pagination.
+- `sidebarConfig.ts`: sidebar layout and widget ordering.
+- `commentConfig.ts`, `analyticsConfig.ts`, and `fontConfig.ts`: feature-specific
+  settings.
+
+The layout system is centered on `Layout.astro`, which owns the HTML shell,
+theme initialization, analytics, and Swup hooks, and `MainGridLayout.astro`,
+which owns the page grid, sidebars, navbar, wallpaper, and footer.
+
+### Content Collections
+
+`src/content.config.ts` defines:
+
+- `posts`: Markdown/MDX blog posts with metadata such as title, publication
+  date, tags, category, draft, pinned, password, and comments.
+- `spec`: special pages such as the about page and guestbook.
+- `dynamic`: Markdown microblog entries with publication date, pinned state,
+  and location.
+
+### Path Aliases
+
+`tsconfig.json` maps `@components/*`, `@assets/*`, `@constants/*`, `@utils/*`,
+`@i18n/*`, and `@layouts/*` to their corresponding `src` directories, and
+`@/*` to `src/*`.
 
 ## Build, Test, and Development Commands
 
-Use `pnpm`; the `preinstall` script enforces it.
+Use `pnpm`; the `preinstall` script enforces it. The exact runtime and package
+manager requirements in `package.json` are authoritative; the current minimum
+Node.js version is 22.23.0.
 
-- `pnpm dev` or `pnpm start`: run the local Astro dev server.
-- `pnpm check`: run Astro diagnostics.
-- `pnpm type-check`: run TypeScript with `--noEmit`.
-- `pnpm format`: format `src` with Biome.
-- `pnpm lint`: run Biome checks and safe fixes on `src`.
-- `pnpm build`: generate icons, LQIPs, the Astro build, font subsets, and Pagefind search output in `dist`.
+- `pnpm dev` or `pnpm start`: run the Astro development server at
+  `localhost:4321`.
 - `pnpm preview`: preview the production build locally.
-- `pnpm new-post`: scaffold a new content post.
+- `pnpm check`: run Astro diagnostics.
+- `pnpm type-check`: run TypeScript with `--noEmit --isolatedDeclarations`
+  across `src` and `scripts`.
+- `pnpm format`: format `src` and `scripts` with Biome.
+- `pnpm lint`: run Biome checks and fixes on `src` and `scripts`.
+- `pnpm build`: run the complete production pipeline and write output to
+  `dist`.
+- `pnpm new-post <filename>`: scaffold a blog post.
+- `pnpm new-dynamic <content>` or `pnpm new-d <content>`: scaffold a dynamic
+  microblog entry.
+- `pnpm lqips`: regenerate `src/constants/lqips.json`.
+
+The production pipeline runs LQIP generation, optional VNDB cover generation,
+the Astro build, unused Pio asset pruning, font subsetting, inline script
+minification, and Pagefind indexing. Treat the `build` script in `package.json`
+as the source of truth for its exact order.
+
+LQIP data in `src/constants/lqips.json` is generated and committed. Icon data
+in `src/constants/icons-data.json` is also committed and consumed by
+`src/components/common/Icon.svelte`, but it is not generated by the current
+build pipeline.
+
+`generate-vndb-covers.ts` writes downloaded covers to the gitignored
+`public/vndb-covers` directory and no-ops unless VNDB is configured for static
+cover downloads. `prune-pio-assets.ts` removes disabled Live2D or Spine assets
+from `dist` after Astro copies `public`.
+
+## Scroll Performance Constraints
+
+Scroll-linked work in `src/utils` is rAF-throttled and must remain inexpensive
+on mobile.
+
+- `fullscreen-wallpaper-utils.ts` quantizes `--fullscreen-blur` to 2 px steps
+  and caches the `--overlay-blur` maximum, refreshing it through a
+  `MutationObserver` on `#wallpaper-wrapper`. Avoid per-frame
+  `getComputedStyle` calls or continuous full-screen `filter: blur()` writes.
+- `grid-layout-utils.ts` keeps `updateSidebarStickySpacing()` on the per-scroll
+  path. It must not perform layout reads such as `offsetHeight`. Cache sidebar
+  top-container visibility through `refreshSidebarStickyState()` during
+  initialization or navigation.
+- The fullscreen blur ramp can be disabled per device through
+  `backgroundWallpaper.fullscreen.blurRamp.enable.{desktop,mobile}`. When it is
+  disabled, fullscreen mode has no blur on that device and the corresponding
+  settings control is hidden. Keep the matching `Firefly-Docs` documentation
+  synchronized.
 
 ## Coding Style & Naming Conventions
 
-Biome is the formatter and linter. It uses tabs for indentation and double quotes for JavaScript/TypeScript strings. Keep Astro and Svelte components in `PascalCase` (`PostCard.astro`, `Search.svelte`), config modules in `camelCase` ending with `Config.ts`, and utilities in descriptive kebab case such as `date-utils.ts`. Keep `src/types` aligned with `src/config`. Avoid unrelated formatting churn.
+Biome is the formatter and linter. It uses tabs for indentation and double
+quotes for JavaScript and TypeScript strings. Astro, Svelte, and Vue files have
+selected relaxed lint rules configured in Biome.
+
+Keep Astro and Svelte components in `PascalCase` (`PostCard.astro`,
+`Search.svelte`), configuration modules in `camelCase` ending with `Config.ts`,
+and utilities in descriptive kebab case such as `date-utils.ts`. The
+`scripts/subset-font.d.ts` file is a hand-written ambient declaration for the
+untyped `subset-font` package. Avoid unrelated formatting churn.
 
 ## Testing Guidelines
 
-There is no dedicated unit-test framework configured. Before submitting changes, run `pnpm check`, `pnpm type-check`, and `pnpm build` for rendering, content, or generated asset work. For visual or interactive changes, verify with `pnpm dev` or `pnpm preview` and include screenshots in the PR. Name future tests near the feature they cover, using the local file name as the stem.
+There is no dedicated unit-test framework configured. Before submitting
+changes, run `pnpm check`, `pnpm type-check`, and `pnpm build` for rendering,
+content, or generated-asset work. For visual or interactive changes, verify
+with `pnpm dev` or `pnpm preview` and include screenshots in the PR. Name future
+tests near the feature they cover, using the local file name as the stem.
+
+## Deployment
+
+- Vercel is configured through `vercel.json`.
+- Cloudflare Workers is configured through `wrangler.jsonc`; use the
+  `CF_WORKERS` environment variable where required.
+- Production output is written to `dist`.
 
 ## Git & GitHub Workflow
 
 - Use Conventional Commits for every commit. Follow
   `type(optional-scope): imperative summary`, using focused types such as
-  `feat`, `fix`, `docs`, `refactor`, `test`, `build`, `ci`, or
-  `chore`.
-- This repository uses `main` as its default branch. The
-  `CuteLeaf/Firefly` upstream repository uses `master`. Always name the
-  branch explicitly when fetching or integrating upstream changes; do not
-  assume the branch names match. Treat `origin/main` as the PR base and
-  `upstream/master` as the upstream source.
-- Work on a focused feature branch and never push changes to `upstream`.
-  Keep commits and PRs scoped to one concern.
+  `feat`, `fix`, `docs`, `refactor`, `test`, `build`, `ci`, or `chore`.
+- This repository uses `main` as its default branch. The `CuteLeaf/Firefly`
+  upstream repository uses `master`. Always name the branch explicitly when
+  fetching or integrating upstream changes. Treat `origin/main` as the PR base
+  and `upstream/master` as the upstream source.
+- Work on a focused feature branch, keep commits and PRs scoped to one concern,
+  and never push changes to `upstream`.
 - Write every PR title in Conventional Commit style, for example
   `feat: add archive filters` or `ci: target the main branch`.
 - Use English Markdown section headings in PR descriptions and write the
-  explanatory content under them in Korean. Use at least `## Summary`,
-  `## Changes`, and `## Validation`; add `## Notes` or
-  `## Breaking Changes` when relevant. Keep commands, paths, and identifiers
-  in their original code form.
-- Record the validation commands and results in the PR body. Include
-  screenshots for visual or interactive changes, link related issues when
-  available, and report known failures rather than omitting them.
+  explanatory content under them in Korean. Include at least `## Summary`,
+  `## Changes`, and `## Validation`; add `## Notes` or `## Breaking Changes`
+  when relevant. Keep commands, paths, and identifiers in their original form.
+- Record validation commands and results in the PR body. Include screenshots
+  for visual or interactive changes, link related issues when available, and
+  report known failures rather than omitting them.
 - Discuss major features or design changes in an issue or discussion before
   implementation.
 
-## Security & Configuration Tips
+## Security & Generated Files
 
-Do not commit secrets, tokens, or service keys in config files. Keep deployment-specific settings in the target platform environment, and review generated files such as `dist`, `src/constants/lqips.json`, and `src/constants/icons.ts` before committing them.
+Do not commit secrets, tokens, or service keys in configuration files. Keep
+deployment-specific values in the target platform environment. Review generated
+or build-related files such as `dist`, `src/constants/lqips.json`, and
+`src/constants/icons-data.json` before committing them.

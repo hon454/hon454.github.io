@@ -284,10 +284,10 @@ const activeTab = tabs[0]?.id || "anime";
             <Icon is:inline name="material-symbols:settings" class="text-[2rem] text-(--btn-content)" />
           </div>
           <h2 class="text-xl font-semibold text-black/80 dark:text-white/80 mb-3">
-            {isUserIdConfigured ? i18n(I18nKey.bangumiEmpty) : "未配置 Bangumi 用户ID"}
+            {isUserIdConfigured ? i18n(I18nKey.bangumiEmpty) : "Bangumi 사용자 ID가 설정되지 않았습니다"}
           </h2>
           <p class="text-black/60 dark:text-white/60 mb-4 max-w-md mx-auto">
-            {isUserIdConfigured ? i18n(I18nKey.bangumiEmptyReason) : "请在 src/config/siteConfig.ts 中配置你的 Bangumi 用户ID"}
+            {isUserIdConfigured ? i18n(I18nKey.bangumiEmptyReason) : "src/config/siteConfig.ts에서 Bangumi 사용자 ID를 설정하세요"}
           </p>
         </div>
       )}

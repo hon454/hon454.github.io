@@ -6,37 +6,142 @@ import {
 } from "../types/navBarConfig";
 
 // ============================================================================
-// 导航栏配置 - 根据顺序动态生成导航栏链接
+// 내비게이션 바 설정 - 순서에 따라 내비게이션 링크를 동적으로 생성합니다.
 // NavBar Configuration - Dynamically generate navigation bar links based on order
 // ============================================================================
 const getDynamicNavBarConfig = (): NavBarConfig => {
-	const links: NavBarLink[] = [
-		LinkPresets.Home,
-		{
-			name: "글",
-			url: "#",
-			icon: "material-symbols:article",
-			children: [LinkPresets.Archive, LinkPresets.Categories, LinkPresets.Tags],
-		},
-		LinkPresets.About,
-		{
-			name: "GitHub",
-			url: "https://github.com/hon454",
-			external: true,
-			icon: "fa7-brands:github",
-		},
-	];
+	// 기본 내비게이션 링크
+	const links: NavBarLink[] = [];
+
+	// 홈
+	links.push(LinkPresets.Home);
+
+	// 글과 하위 메뉴
+	links.push({
+		name: "글",
+		url: "#",
+		icon: "material-symbols:article",
+		children: [
+			// 아카이브
+			LinkPresets.Archive,
+
+			// 카테고리
+			LinkPresets.Categories,
+
+			// 태그
+			LinkPresets.Tags,
+		],
+	});
+
+	// 소셜과 하위 메뉴
+	links.push({
+		name: "소셜",
+		url: "#",
+		icon: "material-symbols:group",
+		children: [
+			// 친구 링크
+			LinkPresets.Friends,
+
+			// 방명록
+			LinkPresets.Guestbook,
+		],
+	});
+
+	// 내 메뉴와 하위 메뉴
+	links.push({
+		name: "내 공간",
+		url: "#",
+		icon: "material-symbols:person",
+		children: [
+			// 소식
+			LinkPresets.Dynamic,
+
+			// 갤러리
+			LinkPresets.Gallery,
+
+			// 북마크
+			LinkPresets.Booknav,
+
+			// Bilibili 시청 목록
+			LinkPresets.Bilibili,
+
+			// Bangumi
+			LinkPresets.Bangumi,
+
+			// VNDB
+			LinkPresets.VNDB,
+
+			// MyAnimeList
+			LinkPresets.MAL,
+		],
+	});
+
+	// 소개와 하위 메뉴
+	links.push({
+		name: "소개",
+		url: "#",
+		icon: "material-symbols:info",
+		children: [
+			// 후원
+			LinkPresets.Sponsor,
+
+			// 소개 페이지
+			LinkPresets.About,
+		],
+	});
+
+	// 사용자 지정 내비게이션 링크
+	links.push({
+		name: "링크",
+		url: "#",
+		icon: "material-symbols:link",
+		// 하위 메뉴
+		children: [
+			{
+				name: "GitHub",
+				url: "https://github.com/CuteLeaf/Firefly",
+				external: true,
+				icon: "fa7-brands:github",
+			},
+			{
+				name: "Gitee",
+				url: "https://gitee.com/CuteLeaf/Firefly",
+				external: true,
+				icon: "fa7-brands:gitee",
+			},
+			{
+				name: "QQ 커뮤니티",
+				url: "https://qm.qq.com/q/ZGsFa8qX2G",
+				external: true,
+				icon: "fa7-brands:qq",
+			},
+			{
+				name: "Firefly 문서",
+				url: "https://docs-firefly.cuteleaf.cn",
+				external: true,
+				icon: "material-symbols:docs",
+			},
+		],
+	});
+
+	// 문서 링크
+	// links.push({
+	// 	name: "문서",
+	// 	url: "https://docs-firefly.cuteleaf.cn",
+	// 	external: true,
+	// 	icon: "material-symbols:docs",
+	// });
 
 	return { links } as NavBarConfig;
 };
 
-// 导航搜索配置
+// 내비게이션 검색 설정
 export const navBarSearchConfig: NavBarSearchConfig = {
 	method: NavBarSearchMethod.PageFind,
 };
 
 // ============================================================================
-// 链接预设 - 可自由自定义导航栏链接的名称、图标和URL
+// 링크 프리셋 - 내비게이션 링크의 이름, 아이콘, URL을 자유롭게 지정할 수 있습니다.
 // Link Presets - Allows free customization of the name, icon, and URL of navigation bar links
 // ============================================================================
 export const LinkPresets: Record<string, NavBarLink> = {
@@ -61,43 +166,43 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		icon: "material-symbols:tag-rounded",
 	},
 	Friends: {
-		name: "友链",
+		name: "친구 링크",
 		url: "/friends/",
 		icon: "material-symbols:link-2-rounded",
 		pageKey: "friends",
 	},
 	Guestbook: {
-		name: "留言",
+		name: "방명록",
 		url: "/guestbook/",
 		icon: "material-symbols:chat",
 		pageKey: "guestbook",
 	},
 	Dynamic: {
-		name: "动态",
+		name: "소식",
 		url: "/dynamic/",
 		icon: "material-symbols:forum-rounded",
 		pageKey: "dynamic",
 	},
 	Gallery: {
-		name: "相册",
+		name: "갤러리",
 		url: "/gallery/",
 		icon: "material-symbols:photo-library",
 		pageKey: "gallery",
 	},
 	Booknav: {
-		name: "书签导航",
+		name: "북마크",
 		url: "/booknav/",
 		icon: "material-symbols:bookmarks",
 		pageKey: "booknav",
 	},
 	Bilibili: {
-		name: "哔哩哔哩",
+		name: "Bilibili",
 		url: "/bilibili/",
 		icon: "fa7-brands:bilibili",
 		pageKey: "bilibili",
 	},
 	Bangumi: {
-		name: "番组计划",
+		name: "Bangumi",
 		url: "/bangumi/",
 		icon: "material-symbols:movie",
 		pageKey: "bangumi",
@@ -115,7 +220,7 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		pageKey: "mal",
 	},
 	Sponsor: {
-		name: "打赏",
+		name: "후원",
 		url: "/sponsor/",
 		icon: "material-symbols:favorite",
 		pageKey: "sponsor",

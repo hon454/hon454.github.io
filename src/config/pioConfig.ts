@@ -50,14 +50,14 @@ export const spineModelConfig: SpineModelConfig = {
 		],
 		// 点击时随机显示的文字消息
 		clickMessages: [
-			"你好呀！我是流萤~",
-			"今天也要加油哦！✨",
-			"想要一起去看星空吗？🌟",
-			"记得要好好休息呢~",
-			"有什么想对我说的吗？💫",
-			"让我们一起探索未知的世界吧！🚀",
-			"每一颗星星都有自己的故事~⭐",
-			"希望能带给你温暖和快乐！💖",
+			"안녕하세요! 저는 반딧불이에요~",
+			"오늘도 힘내요! ✨",
+			"함께 별을 보러 갈래요? 🌟",
+			"충분히 쉬는 것도 잊지 마세요~",
+			"제게 하고 싶은 말이 있나요? 💫",
+			"함께 미지의 세계를 탐험해 봐요! 🚀",
+			"모든 별에는 저마다의 이야기가 있어요~ ⭐",
+			"따뜻함과 기쁨을 전해 드릴 수 있으면 좋겠어요! 💖",
 		],
 		// 文字显示时间（毫秒）
 		messageDisplayTime: 3000,
@@ -125,22 +125,22 @@ export const live2dWidgetConfig: Live2DWidgetConfig = {
 		items: [
 			{
 				icon: "mdi:home",
-				label: "返回主页",
+				label: "홈으로 돌아가기",
 				action: "home",
 			},
 			{
 				icon: "mdi:arrow-up",
-				label: "返回顶部",
+				label: "맨 위로",
 				action: "scrollToTop",
 			},
 			{
 				icon: "mdi:bed",
-				label: "休眠",
+				label: "잠자기",
 				action: "sleep",
 			},
 			{
 				icon: "mdi:swap-horizontal",
-				label: "切换模型",
+				label: "모델 전환",
 				action: "switchModel",
 			},
 			{
@@ -157,13 +157,13 @@ export const live2dWidgetConfig: Live2DWidgetConfig = {
 		// 气泡开关
 		enable: true,
 		// 初始欢迎消息
-		welcomeMessage: ["你好呀！", "欢迎来到我的世界！"],
+		welcomeMessage: ["안녕하세요!", "제 세계에 오신 것을 환영합니다!"],
 		// 循环提示内容
 		messages: [
-			"有什么需要帮助的吗？",
-			"今天天气真不错呢！",
-			"要不要一起玩游戏？",
-			"记得按时休息哦！",
+			"도움이 필요한가요?",
+			"오늘은 날씨가 참 좋네요!",
+			"같이 게임할래요?",
+			"제때 쉬는 것도 잊지 마세요!",
 		],
 		// 文字显示时间（ms）
 		duration: 3000,

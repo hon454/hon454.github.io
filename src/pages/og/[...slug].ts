@@ -161,8 +161,8 @@ async function imageToPngBase64(
 	} catch (err) {
 		console.warn(
 			"\n \x1b[33m[OG Image] Warning \n" +
-				`  无法处理图片 "${sourcePath}"，可能是不被 sharp 支持的图片格式。\n` +
-				"  已使用透明图片替代，请将图片转换为 sharp 支持的格式（PNG/JPEG/WebP/AVIF/TIFF/SVG）。\n" +
+				`  이미지 "${sourcePath}"을(를) 처리할 수 없습니다. sharp가 지원하지 않는 이미지 형식일 수 있습니다.\n` +
+				"  투명 이미지로 대체했습니다. 이미지를 sharp가 지원하는 형식(PNG/JPEG/WebP/AVIF/TIFF/SVG)으로 변환하세요.\n" +
 				`  Failed to process image "${sourcePath}", possibly an unsupported image format for sharp.\n` +
 				"  A transparent image was used instead. Please convert it to a sharp-supported format.\n" +
 				`  Error: ${err instanceof Error ? err.message : String(err)}\x1b[0m`,

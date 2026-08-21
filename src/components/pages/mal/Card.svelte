@@ -92,7 +92,7 @@ const episodesText = $derived(
 );
 const volumesText = $derived(
 	volumesWatched > 0
-		? `${volumesWatched}${volumesTotal ? `/${volumesTotal}` : ""}卷`
+		? `${volumesWatched}${volumesTotal ? `/${volumesTotal}` : ""}권`
 		: "",
 );
 const progressText = $derived(

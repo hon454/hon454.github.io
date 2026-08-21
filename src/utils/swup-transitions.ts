@@ -452,7 +452,7 @@ function registerSwupHooks(): void {
 				});
 				document.dispatchEvent(pageLoadedEvent);
 				console.log(
-					"Layout: 触发 firefly:page:loaded 事件，路径:",
+					"Layout: firefly:page:loaded 이벤트 발생, 경로:",
 					window.location.pathname,
 				);
 			}

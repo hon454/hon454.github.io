@@ -1,207 +1,207 @@
 import type { SidebarLayoutConfig } from "../types/sidebarConfig";
 
 /**
- * 侧边栏布局配置
+ * 사이드바 레이아웃 설정
  */
 export const sidebarLayoutConfig: SidebarLayoutConfig = {
-	// 是否启用侧边栏功能
+	// 사이드바 기능 사용 여부
 	enable: true,
 
-	// 侧边栏位置：
-	// left: 仅显示左侧边栏
-	// right: 仅显示右侧边栏
-	// both: 双侧边栏，1280px以上同时显示左右，769-1279px根据tabletSidebar配置显示其中一侧
+	// 사이드바 위치:
+	// left: 왼쪽 사이드바만 표시
+	// right: 오른쪽 사이드바만 표시
+	// both: 양쪽 사이드바. 1280px 이상에서는 양쪽을 모두, 769~1279px에서는 tabletSidebar 설정에 따른 한쪽을 표시합니다.
 	position: "both",
 
-	// 平板端(769-1279px)显示哪侧侧边栏，仅position为both时生效
-	// left: 平板端显示左侧边栏
-	// right: 平板端显示右侧边栏
+	// 태블릿(769~1279px)에서 표시할 사이드바. position이 both일 때만 적용됩니다.
+	// left: 태블릿에서 왼쪽 사이드바 표시
+	// right: 태블릿에서 오른쪽 사이드바 표시
 	tabletSidebar: "left",
 
-	// 文章详情页隐藏侧边栏，设为 true 则只在首页等非文章页显示
+	// 글 상세 페이지에서 사이드바를 숨길지 여부. true이면 홈페이지 같은 글 외 페이지에만 표시합니다.
 	hideSidebarOnPostPage: false,
 
-	// 文章详情页保持双侧栏
-	// 使用单侧栏(position为left或right)时，是否在文章详情页显示双侧边栏，（hideSidebarOnPostPage需要保持false）
-	// 当position为left时开启此项，文章详情页将额外显示右侧边栏
-	// 当position为right时开启此项，文章详情页将额外显示左侧边栏
-	// 适用在只想用单侧栏，但在文章详情页想用对侧栏的目录等组件的场景
+	// 글 상세 페이지에서 양쪽 사이드바 유지
+	// 단일 사이드바(position이 left 또는 right)를 사용할 때 글 상세 페이지에 양쪽 사이드바를 표시할지 여부입니다(hideSidebarOnPostPage는 false여야 함).
+	// position이 left이면 글 상세 페이지에 오른쪽 사이드바를 추가합니다.
+	// position이 right이면 글 상세 페이지에 왼쪽 사이드바를 추가합니다.
+	// 평소에는 단일 사이드바를 쓰되 글 상세 페이지에서 반대편 목차 같은 컴포넌트가 필요할 때 유용합니다.
 	showBothSidebarsOnPostPage: true,
 
-	// 左侧边栏组件配置列表
-	// 组件的渲染顺序完全取决于它们在配置数组中出现的顺序，但top的组件会优先于sticky位置的组件渲染
-	// type 组件类型
-	// enable 是否启用该组件
-	// showTitle 是否显示该组件标题，默认true
-	// position 组件位置：top固定顶部，sticky粘性定位(会跟随页面滚动)
-	// showOnPostPage 是否在文章详情页显示该组件
-	// hideOnNonPostPage 是否在非文章详情页隐藏该组件（true=仅文章详情页显示）
-	// specificConfig 组件专属配置
+	// 왼쪽 사이드바 컴포넌트 설정 목록
+	// 컴포넌트는 설정 배열의 순서대로 렌더링하되 top 컴포넌트를 sticky 컴포넌트보다 먼저 렌더링합니다.
+	// type: 컴포넌트 유형
+	// enable: 컴포넌트 사용 여부
+	// showTitle: 컴포넌트 제목 표시 여부(기본값 true)
+	// position: 컴포넌트 위치. top은 위쪽에 고정, sticky는 페이지 스크롤을 따라가는 고정 위치입니다.
+	// showOnPostPage: 글 상세 페이지에 컴포넌트 표시 여부
+	// hideOnNonPostPage: 글 상세 페이지가 아닌 곳에서 컴포넌트를 숨길지 여부(true이면 글 상세 페이지에만 표시)
+	// specificConfig: 컴포넌트 전용 설정
 	leftComponents: [
 		{
-			// 组件类型：用户资料组件
+			// 컴포넌트 유형: 프로필
 			type: "profile",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: true,
-			// 组件位置
+			// 컴포넌트 위치
 			position: "top",
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
 		},
 		{
-			// 组件类型：公告组件
+			// 컴포넌트 유형: 공지
 			type: "announcement",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: true,
-			// 组件位置
+			// 컴포넌트 위치
 			position: "top",
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
 		},
 		{
-			// 组件类型：音乐播放器
+			// 컴포넌트 유형: 음악 플레이어
 			type: "music",
-			// 是否启用该组件
-			enable: false,
-			// 组件位置
+			// 컴포넌트 사용 여부
+			enable: true,
+			// 컴포넌트 위치
 			position: "sticky",
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
 		},
 		{
-			// 组件类型：分类组件
+			// 컴포넌트 유형: 카테고리
 			type: "categories",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: true,
-			// 组件位置
+			// 컴포넌트 위치
 			position: "sticky",
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
-			// 组件专属配置
+			// 컴포넌트 전용 설정
 			specificConfig: {
-				// 折叠阈值：当分类数量超过>5个时自动折叠
+				// 접기 기준: 카테고리가 5개를 초과하면 자동으로 접습니다.
 				collapseThreshold: 5,
 			},
 		},
 		{
-			// 组件类型：标签组件
+			// 컴포넌트 유형: 태그
 			type: "tags",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: true,
-			// 组件位置
+			// 컴포넌트 위치
 			position: "sticky",
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
-			// 组件专属配置
+			// 컴포넌트 전용 설정
 			specificConfig: {
-				// 折叠阈值：当标签数量超过>10个时自动折叠
+				// 접기 기준: 태그가 10개를 초과하면 자동으로 접습니다.
 				collapseThreshold: 10,
 			},
 		},
 	],
 
-	// 右侧边栏组件配置列表
+	// 오른쪽 사이드바 컴포넌트 설정 목록
 	rightComponents: [
 		{
-			// 组件类型：最新动态组件
+			// 컴포넌트 유형: 최신 소식
 			type: "dynamic",
-			// 是否启用该组件
-			enable: false,
-			// 组件位置
+			// 컴포넌트 사용 여부
+			enable: true,
+			// 컴포넌트 위치
 			position: "top",
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
-			// 组件专属配置
+			// 컴포넌트 전용 설정
 			specificConfig: {
 				dynamic: {
-					// 显示的最新动态数量
+					// 표시할 최신 소식 수
 					limit: 2,
 				},
 			},
 		},
 		{
-			// 组件类型：站点统计组件
+			// 컴포넌트 유형: 사이트 통계
 			type: "stats",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: true,
-			// 组件位置
+			// 컴포넌트 위치
 			position: "top",
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: false,
 		},
 		{
-			// 组件类型：站点信息组件
+			// 컴포넌트 유형: 사이트 정보
 			type: "siteInfo",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: true,
-			// 组件位置
+			// 컴포넌트 위치
 			position: "top",
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
-			// 组件专属配置
+			// 컴포넌트 전용 설정
 			specificConfig: {
 				siteInfo: {
-					// 未能识别的构建平台回退显示文本，可自定义
+					// 빌드 플랫폼을 식별하지 못했을 때 표시할 사용자 지정 대체 문구
 					unknownBuildPlatform: "Unknown CI",
 				},
 			},
 		},
 		{
-			// 组件类型：日历组件
+			// 컴포넌트 유형: 달력
 			type: "calendar",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: true,
-			// 是否显示组件标题
+			// 컴포넌트 제목 표시 여부
 			showTitle: false,
-			// 组件位置
+			// 컴포넌트 위치
 			position: "sticky",
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: false,
-			// 组件专属配置
+			// 컴포넌트 전용 설정
 			specificConfig: {
 				calendar: {
-					// 是否显示年度文章热力图
+					// 연간 글 히트맵 표시 여부
 					showHeatmap: true,
 				},
 			},
 		},
 		{
-			// 组件类型：侧边栏目录组件（只在文章详情页显示）
+			// 컴포넌트 유형: 사이드바 목차(글 상세 페이지에만 표시)
 			type: "sidebarToc",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: true,
-			// 组件位置
+			// 컴포넌트 위치
 			position: "sticky",
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
-			// 是否在非文章详情页隐藏
+			// 글 상세 페이지가 아닌 곳에서 숨길지 여부
 			hideOnNonPostPage: true,
 		},
 		{
-			// 组件类型：广告栏组件 1
+			// 컴포넌트 유형: 광고 영역 1
 			type: "advertisement",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: false,
-			// 是否显示组件标题
+			// 컴포넌트 제목 표시 여부
 			showTitle: false,
-			// 组件位置
+			// 컴포넌트 위치
 			position: "sticky",
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
-			// 组件专属配置（广告内容直接在此配置）
+			// 컴포넌트 전용 설정(광고 내용을 여기에서 직접 설정)
 			specificConfig: {
 				ad: {
 					image: {
 						src: "/assets/images/ad/ad1.webp",
-						alt: "广告横幅",
+						alt: "광고 배너",
 						link: "https://haoka.lot-ml.com/plugreg.html?agentid=1423316",
 						external: true,
 					},
-					// 是否允许关闭广告
+					// 광고 닫기 허용 여부
 					closable: false,
-					// 显示次数限制，-1为无限制
+					// 표시 횟수 제한. -1이면 제한 없음
 					displayCount: -1,
-					// 组件内边距配置
+					// 컴포넌트 안쪽 여백 설정
 					padding: {
 						all: "1rem",
 					},
@@ -209,22 +209,22 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			},
 		},
 		{
-			// 组件类型：广告栏组件 2
+			// 컴포넌트 유형: 광고 영역 2
 			type: "advertisement",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: false,
-			// 组件位置
+			// 컴포넌트 위치
 			position: "sticky",
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
-			// 组件专属配置（广告内容直接在此配置）
+			// 컴포넌트 전용 설정(광고 내용을 여기에서 직접 설정)
 			specificConfig: {
 				ad: {
-					title: "支持博主",
+					title: "블로그 후원",
 					content:
-						"如果您觉得本站内容对您有帮助，欢迎支持我们的创作！您的支持是我们持续更新的动力。",
+						"이 사이트의 콘텐츠가 도움이 되었다면 블로그 운영을 후원해 주세요. 여러분의 응원이 꾸준한 업데이트의 힘이 됩니다.",
 					link: {
-						text: "支持一下",
+						text: "후원하기",
 						url: "about/",
 						external: false,
 					},
@@ -235,85 +235,85 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 		},
 	],
 
-	// 移动端底部组件配置列表
-	// 这些组件只在移动端(<768px)显示在页面底部，独立于左右侧边栏配置
+	// 모바일 하단 컴포넌트 설정 목록
+	// 이 컴포넌트는 좌우 사이드바 설정과 별개로 모바일(<768px)의 페이지 하단에만 표시됩니다.
 	mobileBottomComponents: [
 		{
-			// 组件类型：用户资料组件
+			// 컴포넌트 유형: 프로필
 			type: "profile",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: true,
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
 		},
 		{
-			// 组件类型：公告组件
+			// 컴포넌트 유형: 공지
 			type: "announcement",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: true,
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
 		},
 		{
-			// 组件类型：分类组件
+			// 컴포넌트 유형: 카테고리
 			type: "categories",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: true,
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
-			// 组件专属配置
+			// 컴포넌트 전용 설정
 			specificConfig: {
-				// 折叠阈值：当分类数量超过5个时自动折叠
+				// 접기 기준: 카테고리가 5개를 초과하면 자동으로 접습니다.
 				collapseThreshold: 5,
 			},
 		},
 		{
-			// 组件类型：标签组件
+			// 컴포넌트 유형: 태그
 			type: "tags",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: true,
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
-			// 组件专属配置
+			// 컴포넌트 전용 설정
 			specificConfig: {
-				// 折叠阈值：当标签数量超过20个时自动折叠
+				// 접기 기준: 태그가 20개를 초과하면 자동으로 접습니다.
 				collapseThreshold: 10,
 			},
 		},
 		{
-			// 组件类型：最新动态组件
+			// 컴포넌트 유형: 최신 소식
 			type: "dynamic",
-			// 是否启用该组件
-			enable: false,
-			// 是否在文章详情页显示
+			// 컴포넌트 사용 여부
+			enable: true,
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
-			// 组件专属配置
+			// 컴포넌트 전용 설정
 			specificConfig: {
 				dynamic: {
-					// 显示的最新动态数量
+					// 표시할 최신 소식 수
 					limit: 2,
 				},
 			},
 		},
 		{
-			// 组件类型：站点统计组件
+			// 컴포넌트 유형: 사이트 통계
 			type: "stats",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: true,
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
 		},
 		{
-			// 组件类型：站点信息组件
+			// 컴포넌트 유형: 사이트 정보
 			type: "siteInfo",
-			// 是否启用该组件
+			// 컴포넌트 사용 여부
 			enable: true,
-			// 是否在文章详情页显示
+			// 글 상세 페이지 표시 여부
 			showOnPostPage: true,
-			// 组件专属配置
+			// 컴포넌트 전용 설정
 			specificConfig: {
 				siteInfo: {
-					// 未能识别的构建平台回退显示文本，可自定义
+					// 빌드 플랫폼을 식별하지 못했을 때 표시할 사용자 지정 대체 문구
 					unknownBuildPlatform: "Unknown CI",
 				},
 			},

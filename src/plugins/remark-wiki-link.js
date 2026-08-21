@@ -171,9 +171,9 @@ function findMetaByBaseName(metas, target) {
 	}
 	if (matches.length > 1) {
 		console.warn(
-			`[remark-wiki-link] "[[${target}]]" 匹配到多个同名文件，已跳过：${matches
+			`[remark-wiki-link] "[[${target}]]"에 이름이 같은 파일이 여러 개 있어 건너뛰었습니다: ${matches
 				.map((meta) => toContentPath(meta.filePath))
-				.join(", ")}。请改写为更长的路径。`,
+				.join(", ")}. 더 긴 경로로 바꿔 주세요.`,
 		);
 	}
 

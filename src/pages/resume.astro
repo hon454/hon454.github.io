@@ -1,0 +1,32 @@
+---
+import { getEntry, render } from "astro:content";
+import Markdown from "@components/common/Markdown.astro";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+const title = "전지훈 — 게임 클라이언트·시스템 프로그래머";
+const description =
+	"Unreal Engine·C++ 게임 클라이언트부터 Rust·Bevy 기반 WebAssembly/WebGPU 런타임과 제작 도구까지, 시스템 경계를 연결해 복합 요구사항을 제품으로 완성하는 프로그래머입니다.";
+
+const resumePost = await getEntry("spec", "resume");
+
+if (!resumePost) {
+	throw new Error("Resume page content not found");
+}
+
+const { Content, headings } = await render(resumePost);
+---
+
+<MainGridLayout
+	title={title}
+	description={description}
+	robots="noindex, nofollow"
+	headings={headings}
+>
+	<div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
+		<div class="card-base z-10 px-9 py-6 relative w-full">
+			<Markdown class="mt-2">
+				<Content />
+			</Markdown>
+		</div>
+	</div>
+</MainGridLayout>

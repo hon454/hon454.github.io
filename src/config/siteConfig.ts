@@ -35,7 +35,7 @@ const pages = resolvePageToggles({
 	// ── 소개 (About) ──────────────────────────────────
 
 	// 후원 페이지 토글
-	sponsor: true,
+	sponsor: false,
 });
 
 export const siteConfig: SiteConfig = {

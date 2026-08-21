@@ -16,11 +16,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			name: "글",
 			url: "#",
 			icon: "material-symbols:article",
-			children: [
-				LinkPresets.Archive,
-				LinkPresets.Categories,
-				LinkPresets.Tags,
-			],
+			children: [LinkPresets.Archive, LinkPresets.Categories, LinkPresets.Tags],
 		},
 		LinkPresets.About,
 		{

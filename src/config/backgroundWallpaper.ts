@@ -77,10 +77,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 主页横幅主标题字体大小
 			titleSize: "4.5rem",
 			// 主页横幅副标题
-			subtitle: [
-				"개발하며 배우고 기록합니다.",
-				"작은 발견을 오래 남깁니다.",
-			],
+			subtitle: ["개발하며 배우고 기록합니다.", "작은 발견을 오래 남깁니다."],
 			// 主页横幅副标题字体大小
 			subtitleSize: "1.5rem",
 			typewriter: {

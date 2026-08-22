@@ -156,6 +156,27 @@ tests near the feature they cover, using the local file name as the stem.
   and `upstream/master` as the upstream source.
 - Work on a focused feature branch, keep commits and PRs scoped to one concern,
   and never push changes to `upstream`.
+
+### Template Upstream Updates
+
+This repository was created from a GitHub template and does not share Git
+history with `upstream`. Treat Firefly updates as vendored source updates.
+
+- Never merge or rebase `upstream/master` directly into `main`, and do not use
+  `--allow-unrelated-histories` to connect their histories.
+- Start an update branch from `origin/main`. Read the latest
+  `Upstream-Target` commit trailer and use it as the base revision for the next
+  update.
+- Apply only the upstream delta between that base revision and the new target,
+  using three-way conflict resolution where necessary. Preserve local content
+  and configuration intentionally.
+- Record the complete update as exactly one
+  `chore(upstream): sync Firefly to <short-sha>` commit with
+  `Upstream-Repository`, `Upstream-Base`, and `Upstream-Target` trailers.
+- Run `pnpm check`, `pnpm type-check`, and `pnpm build`, then update `main`
+  through a PR. Do not force-push `main` during routine updates, and merge
+  without adding a separate merge commit so one vendor-update commit remains.
+
 - Write every PR title in Conventional Commit style, for example
   `feat: add archive filters` or `ci: target the main branch`.
 - Use English Markdown section headings in PR descriptions and write the

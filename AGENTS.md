@@ -177,6 +177,8 @@ history with `upstream`. Treat Firefly updates as vendored source updates.
   through a PR. Do not force-push `main` during routine updates, and merge
   without adding a separate merge commit so one vendor-update commit remains.
 
+### Pull Request Guidelines
+
 - Write every PR title in Conventional Commit style, for example
   `feat: add archive filters` or `ci: target the main branch`.
 - Use English Markdown section headings in PR descriptions and write the

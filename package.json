@@ -1,7 +1,7 @@
 {
   "name": "firefly",
   "type": "module",
-  "version": "6.16.2",
+  "version": "6.16.3",
   "engines": {
     "node": ">=22.23.0"
   },
@@ -10,7 +10,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "check": "astro check",
-    "build": "npx tsx scripts/generate-lqips.ts && npx tsx scripts/generate-vndb-covers.ts && astro build && npx tsx scripts/prune-pio-assets.ts && npx tsx scripts/subset-fonts.ts && npx tsx scripts/minify-inline-scripts.ts && pagefind --site dist",
+    "build": "npx tsx scripts/generate-github-card-data.ts && npx tsx scripts/generate-lqips.ts && npx tsx scripts/generate-vndb-covers.ts && astro build && npx tsx scripts/prune-pio-assets.ts && npx tsx scripts/subset-fonts.ts && npx tsx scripts/minify-inline-scripts.ts && pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
     "type-check": "tsc --noEmit --isolatedDeclarations",
@@ -20,14 +20,15 @@
     "format": "biome format --write ./src ./scripts",
     "lint": "biome check --write ./src ./scripts",
     "preinstall": "npx only-allow pnpm",
-    "lqips": "npx tsx scripts/generate-lqips.ts"
+    "lqips": "npx tsx scripts/generate-lqips.ts",
+    "github-cards": "npx tsx scripts/generate-github-card-data.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
-    "@astrojs/cloudflare": "^14.2.0",
-    "@astrojs/markdown-remark": "^7.2.2",
-    "@astrojs/markdown-satteri": "^0.3.5",
-    "@astrojs/mdx": "^7.0.5",
+    "@astrojs/cloudflare": "^14.2.2",
+    "@astrojs/markdown-remark": "^7.2.3",
+    "@astrojs/markdown-satteri": "^0.3.6",
+    "@astrojs/mdx": "^7.0.6",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
     "@astrojs/svelte": "9.0.1",
@@ -49,7 +50,7 @@
     "@tailwindcss/typography": "^0.5.20",
     "@types/hast": "^3.0.5",
     "@types/mdast": "^4.0.4",
-    "astro": "7.2.2",
+    "astro": "7.2.3",
     "astro-expressive-code": "^0.44.1",
     "astro-icon": "^1.2.0",
     "ci-info": "^4.4.0",
@@ -87,10 +88,10 @@
     "tsx": "^4.23.12",
     "typescript": "^6.0.3",
     "unist-util-visit": "^5.1.0",
-    "wrangler": "^4.119.0"
+    "wrangler": "^4.124.0"
   },
   "devDependencies": {
-    "@astrojs/ts-plugin": "^1.10.10",
+    "@astrojs/ts-plugin": "^1.10.11",
     "@biomejs/biome": "2.5.9",
     "@iconify-json/mdi": "^1.2.3",
     "@iconify-json/svg-spinners": "^1.2.4",
@@ -98,7 +99,7 @@
     "@types/qrcode": "^1.5.6",
     "@types/sanitize-html": "^2.16.1",
     "esbuild": "^0.28.2",
-    "pinyin-pro": "^3.29.2",
+    "pinyin-pro": "^3.29.3",
     "postcss-import": "^16.1.1",
     "postcss-nesting": "^14.0.1",
     "rehype-callouts": "^2.2.0",

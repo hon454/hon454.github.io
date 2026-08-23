@@ -75,7 +75,7 @@ export const booknavConfig: BooknavGroup[] = [
 		weight: 90,
 		items: [
 			{
-				title: "Skills For Real Engineers",
+				title: "mattpocock/skills",
 				url: "https://github.com/mattpocock/skills",
 				desc: "실무 소프트웨어 개발을 위한 작고 조합 가능한 AI 에이전트 스킬 모음",
 				icon: "https://www.aihero.dev/favicon.svg",

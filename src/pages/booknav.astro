@@ -159,7 +159,10 @@ const description =
                               loading="lazy"
                               decoding="async"
                               referrerpolicy="no-referrer"
-                              class="w-full h-full object-contain"
+                              class:list={[
+                                "w-full h-full object-contain",
+                                item.invertInDark && "dark:invert",
+                              ]}
                             />
                           )}
                           {item.resolvedIcon.kind === "letter" && (

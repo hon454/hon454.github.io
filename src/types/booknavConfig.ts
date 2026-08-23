@@ -11,6 +11,7 @@ export type BooknavItem = {
 	// 2. public 目录图片：/assets/images/xxx.png
 	// 3. astro-icon 图标名：fa7-brands:github
 	icon?: string;
+	invertInDark?: boolean; // 深色模式下是否反转图片图标颜色
 	weight?: number; // 组内权重，数字越大排序越靠前，默认 0
 	enabled?: boolean; // 是否启用，默认 true
 };

@@ -3,7 +3,7 @@ title: GitHub Trending에서 발견한 ip-as-logo-skill로 블로그를 리브�
 published: 2026-08-24T09:00:00+09:00
 author: Jihoon Jeon
 description: GitHub에서 빠르게 주목받은 ip-as-logo Agent Skill로 달팽이 로고 후보를 만들고, Steady Spiral의 favicon과 라이트·다크 모드 로고로 적용한 과정을 기록합니다.
-image: ./images/ip-as-logo-steady-spiral/c2-verdant-firefly.avif
+image: ./images/ip-as-logo-steady-spiral/ip-as-logo-wall.webp
 category: 개발
 tags:
   - AI

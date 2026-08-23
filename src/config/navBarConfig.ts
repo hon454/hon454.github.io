@@ -30,6 +30,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 
 			// 태그
 			LinkPresets.Tags,
+
+			// 블로그 가이드
+			LinkPresets.BlogGuide,
 		],
 	});
 
@@ -151,6 +154,11 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		name: "아카이브",
 		url: "/archive/",
 		icon: "material-symbols:archive",
+	},
+	BlogGuide: {
+		name: "블로그 가이드",
+		url: "/posts/firefly-blog-guide/",
+		icon: "material-symbols:menu-book",
 	},
 	Categories: {
 		name: "카테고리",

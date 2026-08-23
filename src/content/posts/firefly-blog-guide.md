@@ -1,7 +1,6 @@
 ---
 title: Firefly 블로그 가이드
 published: 2026-08-24
-pinned: true
 description: Firefly 기본 예제 글을 정리하면서 실제로 사용하는 글 작성법, Markdown 확장, 다이어그램, 내부 링크, 암호화와 레이아웃 설정을 한곳에 모았습니다.
 image: ./images/firefly2.avif
 tags: [Firefly, Astro, Markdown, 블로그]

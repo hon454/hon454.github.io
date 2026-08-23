@@ -3,7 +3,6 @@ published: 2023-01-16
 author: Jihoon Jeon
 title: 'Unreal Engine 네트워크 코드의 두 가지 함정: 컨테이너 복제와 Deferred Spawn'
 description: TMap과 TSet을 직접 복제할 수 없는 이유와 안전한 배열·Fast Array 대안, 그리고 Actor가 BeginPlay에 들어가기 전에 초기값을 전달하는 Deferred Spawn의 정확한 생명주기를 정리합니다.
-image: https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80
 category: Unreal Engine
 tags:
   - unreal-engine
@@ -16,7 +15,7 @@ tags:
 
 Unreal Engine 네트워크 코드를 작성하다 보면 서로 다른 두 문제에서 비슷한 함정에 빠진다. 첫째, 게임 상태를 표현하기 좋은 `TMap`과 `TSet`을 그대로 복제하려 한다. 둘째, 동적으로 생성한 Actor에 필요한 값을 `BeginPlay` 전에 넣으려다가 이미 초기화가 끝난 뒤 값을 전달한다.
 
-두 문제의 기본 해법은 “`TArray`를 복제한 뒤 `TMap`/`TSet`을 재구성한다”와 “`SpawnActorDeferred`와 `FinishSpawning` 사이에서 값을 설정한다”이다. 다만 적용 범위와 생명주기를 정확히 모르면 다음과 같은 새 문제가 생긴다.
+두 문제의 기본 해법은 “`TArray`를 복제한 뒤 `TMap`/`TSet`을 재구성한다”와 “`SpawnActorDeferred`와 `FinishSpawning` 사이에서 값을 설정한다”이다. 다만 적용 범위와 생명주기를 정확히 모르면 새로운 문제가 생긴다.
 
 - `TMap`을 배열로 바꿨지만 중복 키와 순서 정책이 없다.
 - 큰 배열을 매번 복제해 불필요한 대역폭을 쓴다.
@@ -28,7 +27,7 @@ Unreal Engine 네트워크 코드를 작성하다 보면 서로 다른 두 문�
 
 ## 1. `TMap`과 `TSet`은 무엇이 지원되지 않는가
 
-정확한 결론은 다음과 같다.
+정확히 말하면 이렇다.
 
 > 일반 `UPROPERTY(Replicated)` 또는 `ReplicatedUsing`으로 선언한 `TMap`·`TSet`, 그리고 일반 RPC의 Map/Set 인자는 지원되지 않는다. 이것은 컨테이너의 데이터를 네트워크로 표현할 방법이 전혀 없다는 뜻은 아니다.
 
@@ -45,7 +44,7 @@ UPROPERTY(Replicated)
 TSet<FName> ReadyPlayers;
 ```
 
-반대로 `TArray`와 Fast Array는 복제할 수 있다. 따라서 단순한 기본 해법은 **네트워크 표현과 런타임 조회 표현을 분리**하는 것이다.
+반대로 `TArray`와 Fast Array는 복제할 수 있다. 가장 단순한 기본 해법은 **네트워크 표현과 런타임 조회 표현을 분리**하는 것이다.
 
 ## 작은 상태: `TArray<FEntry>`를 복제하고 `OnRep`에서 재구성하기
 
@@ -169,7 +168,7 @@ void AReplicatedScoreboard::RebuildScoreCache()
 - 서버만 정본을 변경한다. 클라이언트의 요청이 필요하면 Server RPC로 보내고 서버에서 소유권, 범위, 빈도를 검증한다.
 - 같은 키가 두 번 들어왔을 때 이 예제는 마지막 값을 사용한다. 데이터에 따라 첫 값을 유지하거나 전체 업데이트를 거부할 수도 있다.
 - `TMap`과 `TSet`의 순회 순서는 안정적인 표시 순서가 아니다. 순서가 의미 있으면 명시적인 정렬 키를 복제한 뒤 정렬한다.
-- 프로퍼티 복제는 **최종 상태 수렴**을 위한 것이다. 모든 중간 변경이나 이벤트 순서를 보장하지 않는다.
+- 프로퍼티 복제는 **최종 상태를 수렴**시킨다. 모든 중간 변경이나 이벤트 순서를 보장하지 않는다.
 
 여러 항목이 동시에 바뀌어야만 유효한 불변식이 있다면 수신 중간 상태를 그대로 적용하지 말고 revision을 함께 보내거나 하나의 항목 구조체로 묶어 검증한 뒤 캐시를 교체한다. ordered event stream이 필요하다면 상태 복제만으로 대신하지 않는다.
 
@@ -185,7 +184,7 @@ void AReplicatedScoreboard::RebuildScoreCache()
 - 서버와 클라이언트의 배열 인덱스나 순서가 같다고 가정하지 않는다. 게임 도메인의 안정적인 키를 별도 필드로 둔다.
 - 수신 콜백에서는 추가, 변경, 삭제에 따른 로컬 캐시와 UI를 명시적으로 갱신한다.
 
-선택 기준은 다음과 같다.
+아래 기준으로 선택한다.
 
 | 요구 사항                    | 우선 검토할 표현           | 이유                                                    |
 | ---------------------------- | -------------------------- | ------------------------------------------------------- |
@@ -200,7 +199,7 @@ void AReplicatedScoreboard::RebuildScoreCache()
 
 일반 `SpawnActor`는 생성과 Construction Script, 컴포넌트 초기화까지 한 호출 흐름에서 진행한다. 이미 플레이 중인 월드라면 호출이 반환되기 전에 `BeginPlay`까지 실행될 수 있으므로, 반환된 포인터에 초기값을 넣는 것은 늦다.
 
-Deferred Spawn은 **생성자를 미루는 API가 아니다.** `SpawnActorDeferred`가 반환할 때 네이티브 생성자와 기본 서브오브젝트 생성, `PostSpawnInitialize`, `PostActorCreated`까지 진행됐다. 대신 Blueprint Construction Script와 `OnConstruction`, 이후 컴포넌트 초기화와 `BeginPlay`로 가는 단계를 멈춘다. 따라서 반환값은 유효하지만 아직 완성되지 않은 Actor다.
+Deferred Spawn은 **생성자를 미루는 API가 아니다.** `SpawnActorDeferred`가 반환할 때 네이티브 생성자와 기본 서브오브젝트 생성, `PostSpawnInitialize`, `PostActorCreated`까지 진행됐다. 대신 Blueprint Construction Script와 `OnConstruction`, 이후 컴포넌트 초기화와 `BeginPlay`로 가는 단계를 멈춘다. 반환값은 유효하지만 아직 완성되지 않은 Actor다.
 
 ```mermaid
 sequenceDiagram
@@ -273,7 +272,7 @@ AConfiguredProjectile* SpawnConfiguredProjectile(
 | `OnConstruction`이 읽을 replicated 초기 프로퍼티 설정           | 타이머·AI·충돌 이벤트 등 완성된 Actor 동작 시작              |
 | 실패 시 즉시 안전하게 정리하고 반환                             | 포인터를 장기간 보관한 채 `FinishSpawning`을 나중으로 미루기 |
 
-모든 성공 경로에서 `FinishSpawning`은 정확히 한 번 호출해야 한다. 이 호출은 단순히 플래그 하나를 바꾸는 것이 아니라 `ExecuteConstruction`, Blueprint Construction Script, `OnConstruction`, 컴포넌트 초기화를 이어서 실행한다. 월드가 이미 플레이 중이라면 같은 호출 스택에서 `BeginPlay`까지 도달할 수 있다. 따라서 **마지막 필수 설정은 반드시 그 호출보다 앞에 있어야 한다.**
+모든 성공 경로에서 `FinishSpawning`은 정확히 한 번 호출해야 한다. 이 호출은 단순히 플래그 하나를 바꾸는 것이 아니라 `ExecuteConstruction`, Blueprint Construction Script, `OnConstruction`, 컴포넌트 초기화를 이어서 실행한다. 월드가 이미 플레이 중이라면 같은 호출 스택에서 `BeginPlay`까지 도달할 수 있다. **마지막 필수 설정은 반드시 그 호출보다 앞에 있어야 한다.**
 
 반대로 월드가 아직 BeginPlay 전이라면 Actor의 `BeginPlay`도 월드 시작까지 기다린다. 클라이언트에 복제로 생성되는 proxy Actor는 또 다른 특수 경로를 사용하며, 초기 replicated state를 역직렬화한 뒤 `PostNetInit`을 거쳐 `BeginPlay`에 들어간다.
 
@@ -318,7 +317,7 @@ Blueprint의 Spawn Actor 노드는 내부적으로 Begin Deferred Spawn, 노출�
 - `FinishSpawning` 안에서 Construction과 `BeginPlay`가 동기 실행될 수 있다고 가정했는가?
 - 클라이언트의 초기 상태 적용을 Construction Script 부작용이 아니라 replication/RepNotify로 설계했는가?
 
-두 문제의 공통 해법은 **표현과 생명주기의 경계를 명시하는 것**이다. `TMap`은 게임 코드의 조회 표현으로 남기고 네트워크에는 검증 가능한 배열 표현을 사용한다. Actor는 deferred 구간에서 필수 데이터만 받은 뒤 즉시 완성하고, 완성 이후의 게임플레이 상태는 복제로 동기화한다.
+두 문제는 **표현과 생명주기의 경계를 명시**해 해결한다. `TMap`은 게임 코드의 조회 표현으로 남기고 네트워크에는 검증 가능한 배열 표현을 사용한다. Actor는 deferred 구간에서 필수 데이터만 받은 뒤 즉시 완성하고, 완성 이후의 게임플레이 상태는 복제로 동기화한다.
 
 ## 참고 자료
 

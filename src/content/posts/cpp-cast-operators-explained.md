@@ -3,7 +3,6 @@ published: 2024-01-28
 author: Jihoon Jeon
 title: 'C++ 캐스팅 안전하게 고르기: static_cast, dynamic_cast, const_cast, reinterpret_cast'
 description: C++23 규칙을 기준으로 네 가지 named cast와 C-style cast의 실제 의미, 숫자·상속·cv·비트 변환의 실패 조건과 undefined behavior, Unreal Engine의 RTTI 경계를 정리합니다.
-image: https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80
 category: C++
 tags:
   - cpp
@@ -15,7 +14,7 @@ tags:
 
 C++의 cast는 “값의 type을 바꾼다”는 한 문장으로 묶기 어렵다. 숫자 값을 변환할 수도 있고, 상속 계층 안에서 pointer를 조정할 수도 있으며, cv qualification만 바꾸거나 같은 storage를 다른 type처럼 해석하려 할 수도 있다. 목적과 전제가 전혀 다르다.
 
-cast를 선택할 때 자주 접하는 오해는 다음과 같다.
+cast를 고를 때는 몇 가지 오해를 자주 접한다.
 
 - C-style cast는 `dynamic_cast`를 선택할 수 있다.
 - RTTI를 끄면 `dynamic_cast`가 `static_cast`처럼 동작한다.
@@ -274,7 +273,7 @@ const std::uint32_t Bits = std::bit_cast<std::uint32_t>(Value);
 
 byte sequence를 복사하려면 `std::memcpy`, 읽기 전용 byte view가 필요하면 `std::as_bytes`를 사용한다. raw storage에 object를 만들려면 alignment를 보장하고 placement new나 `std::construct_at`으로 lifetime을 시작한다. `reinterpret_cast` 하나가 이 세 작업을 대신하지 않는다.
 
-function pointer를 다른 function pointer type으로 바꿨다가 원래 type으로 돌리는 round trip과, 다른 signature로 실제 호출하는 것은 별개다. 정의와 호환되지 않는 function type으로 호출하면 UB다. object pointer와 function pointer 사이의 지원 여부도 implementation 조건을 확인해야 한다.
+function pointer를 다른 function pointer type으로 바꿨다가 원래 type으로 돌리는 round trip과, 다른 signature로 실제 호출하는 것은 별개다. 정의와 호환되지 않는 function type으로 호출하면 UB다. object pointer와 function pointer 사이의 지원 여부도 implementation 조건에 따라 확인한다.
 
 ## C-style cast는 `dynamic_cast`를 하지 않는다
 
@@ -351,7 +350,7 @@ RTTI를 켜기 어렵다면 `static_cast`로 type check를 없애는 것이 자�
 - UE code라면 UObject reflection 대상과 plain native C++ type을 구분했는가?
 - native `dynamic_cast`가 필요하다면 module·target RTTI와 platform ABI를 검증했는가?
 
-좋은 cast 선택은 “가장 빠른 연산자”를 외우는 일이 아니다. compile-time 관계, runtime type, object의 원래 cv 상태, storage lifetime과 representation 중 무엇을 바꾸려는지 먼저 밝히고, 그 전제를 코드와 검사로 남기는 일이다.
+좋은 cast 선택은 “가장 빠른 연산자”를 외우는 일이 아니다. compile-time 관계, runtime type, object의 원래 cv 상태, storage lifetime과 representation 중 무엇을 바꾸려는지부터 밝힌 뒤 그 전제를 코드와 검사로 남겨야 한다.
 
 ## 참고 자료
 

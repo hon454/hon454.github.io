@@ -3,7 +3,6 @@ published: 2024-11-18
 author: Jihoon Jeon
 title: 'UE 5.3의 Instanced UObject와 Instanced Struct'
 description: UE 5.3에서 owner별로 편집 가능한 다형 데이터를 만들 때 Instanced UObject와 FInstancedStruct·TInstancedStruct를 고르는 기준, 설정 방법과 직렬화 경계를 설명합니다.
-image: https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80
 category: Unreal Engine
 tags:
   - unreal-engine
@@ -312,7 +311,7 @@ API의 실패 contract를 구분한다.
 
 mutable reference가 필요하면 `GetMutable<T>()`를 `T&`로 받고, 실패 가능한 pointer가 필요하면 `GetMutablePtr<T>()`를 쓴다.
 
-`USTRUCT` 안에도 일반 C++ member function을 정의할 수 있다. 제한은 `UFUNCTION`을 USTRUCT member에 선언할 수 없다는 것이다. Blueprint-callable operation이 필요하면 `UBlueprintFunctionLibrary`나 별도 UObject API로 노출한다.
+`USTRUCT` 안에도 일반 C++ member function을 정의할 수 있다. 다만 `UFUNCTION`은 USTRUCT member에 선언할 수 없다. Blueprint-callable operation이 필요하면 `UBlueprintFunctionLibrary`나 별도 UObject API로 노출한다.
 
 ## Untyped `FInstancedStruct`
 
@@ -330,7 +329,7 @@ FInstancedStruct Rule;
 
 정확한 path 형식은 `"/Script/ModuleName.StructName"`이다. reflected USTRUCT name에는 C++ `F` prefix가 들어가지 않는다. module 이름의 철자와 `Module.Struct` 구분자를 정확히 써야 한다.
 
-UE 5.3에서 picker를 구성할 때 주로 쓰는 metadata는 다음과 같다.
+UE 5.3에서 picker를 구성할 때는 주로 아래 metadata를 쓴다.
 
 - `BaseStruct`: 선택 가능한 최상위 struct 지정
 - `ExcludeBaseStruct`: 최상위 struct 자체는 선택지에서 제외
@@ -352,7 +351,7 @@ Blueprint User Defined Struct는 native USTRUCT inheritance hierarchy를 만들�
 
 UObject의 overhead를 고정된 byte 수로 단정할 수는 없다. 크기는 platform, build configuration, engine version에 따라 달라진다. `FInstancedStruct`도 payload bytes만 inline 저장하는 zero-overhead type이 아니다. wrapper는 script type과 payload pointer를 유지하고 payload를 정렬된 별도 allocation에 소유한다.
 
-비교할 실제 비용은 다음과 같다.
+실제로 비교할 비용은 아래와 같다.
 
 | Instanced UObject                                     | Instanced Struct                                         |
 | ----------------------------------------------------- | -------------------------------------------------------- |

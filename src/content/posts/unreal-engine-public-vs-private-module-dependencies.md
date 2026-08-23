@@ -3,7 +3,6 @@ published: 2023-10-22
 author: Jihoon Jeon
 title: 'Unreal Build.cs 모듈 의존성: Public, Private, Include-only, Dynamic'
 description: Public 헤더와 Private cpp라는 단순 규칙을 넘어, Unreal Build Tool의 다섯 가지 모듈 목록이 compile 환경·link·runtime load를 어떻게 전파하는지 설명합니다.
-image: https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80
 category: Unreal Engine
 tags:
   - unreal-engine
@@ -14,7 +13,7 @@ tags:
   - cpp
 ---
 
-Unreal Engine 모듈에서 다른 모듈을 사용하려면 `[ModuleName].Build.cs`에 의존성을 선언한다. 가장 많이 쓰는 두 목록은 다음과 같다.
+Unreal Engine 모듈에서 다른 모듈을 사용하려면 `[ModuleName].Build.cs`에 의존성을 선언한다. 가장 많이 쓰는 목록은 두 가지다.
 
 ```csharp
 PublicDependencyModuleNames.Add("SharedTypes");
@@ -25,7 +24,7 @@ PrivateDependencyModuleNames.Add("Json");
 
 - `Public/`의 헤더가 다른 모듈의 타입 정의·compile definition·link symbol을 요구하면 Public dependency다.
 - `Private/`의 header와 cpp에서만 필요하면 Private dependency다.
-- Public 헤더가 타입을 전방 선언만 하고 정의를 요구하지 않으면 구현 dependency를 Private로 유지할 수 있다.
+- Public 헤더가 타입을 전방 선언만 하고 정의를 요구하지 않으면 구현 dependency를 Private로 유지한다.
 - header를 compile할 수 있다는 것, symbol을 link한다는 것, module을 runtime에 load한다는 것, DLL symbol을 export한다는 것은 서로 다른 문제다.
 
 여기에 `PublicIncludePathModuleNames`, `PrivateIncludePathModuleNames`, `DynamicallyLoadedModuleNames`, IWYU, API macro, plugin descriptor까지 더하면 서로 다른 의존성 경계를 분리해서 볼 수 있다.
@@ -68,7 +67,7 @@ Source/
 
 ## 다섯 가지 ModuleRules 목록
 
-`ModuleRules`에서 사용하는 핵심 목록은 다음과 같다.
+`ModuleRules`에서는 아래 목록을 주로 사용한다.
 
 | 목록                            | 현재 module에 public compile 환경 제공 | 정상 import/link 관계 | downstream consumer로 전파 | module을 실제 runtime load |
 | ------------------------------- | -------------------------------------: | --------------------: | -------------------------: | -------------------------: |
@@ -84,7 +83,7 @@ Source/
 
 현재 module의 **Public API를 compile하고 link하는 데 필요한** 정상 의존성이다. 이 관계는 현재 module을 사용하는 consumer가 공개 header를 compile할 수 있도록 전파된다.
 
-대표적인 경우는 다음과 같다.
+대표적인 경우를 살펴보자.
 
 - Public class가 다른 module class를 상속한다.
 - Public struct가 다른 module type을 value member로 가진다.
@@ -210,7 +209,7 @@ public:
 };
 ```
 
-pointer나 reference declaration은 incomplete type으로 가능한 경우가 많다. 다만 inheritance, value member, `sizeof`, 일부 template·inline body, UHT가 완전한 reflected type을 요구하는 위치에서는 정의가 필요하다. 또한 이 public signature가 `Json` 개념을 노출한다는 architectural coupling은 사라지지 않는다. consumer가 실제 `FJsonObject`를 만들고 사용한다면 consumer도 자신의 `Json` dependency를 직접 선언해야 한다.
+pointer나 reference declaration은 incomplete type으로 가능한 경우가 많다. 다만 inheritance, value member, `sizeof`, 일부 template·inline body, UHT가 완전한 reflected type을 요구하는 위치에서는 정의가 필요하다. 이 public signature가 `Json` 개념을 노출한다는 architectural coupling도 사라지지 않는다. consumer가 실제 `FJsonObject`를 만들고 사용한다면 consumer도 자신의 `Json` dependency를 직접 선언해야 한다.
 
 ## 현실적인 Build.cs 예제
 
@@ -247,7 +246,7 @@ public class Feature : ModuleRules
 
 ## 선택 module을 runtime에 load하기
 
-`OptionalBackend`의 interface header만 Private 구현에서 compile하고, backend가 있을 때 load하려면 두 목록을 함께 사용할 수 있다.
+`OptionalBackend`의 interface header만 Private 구현에서 compile하고, backend가 있을 때 load하려면 두 목록을 함께 사용한다.
 
 ```csharp
 PrivateIncludePathModuleNames.Add("OptionalBackend");
@@ -276,13 +275,13 @@ IOptionalBackendModule* TryLoadOptionalBackend()
 4. descriptor의 `Type`, platform allow/deny 조건, `LoadingPhase`가 현재 target과 맞아야 한다.
 5. unload를 지원한다면 가져온 pointer와 delegate lifetime을 module보다 길게 보관하지 않는다.
 
-`DynamicallyLoadedModuleNames`는 “항상 별도 DLL”이라는 뜻도 아니다. monolithic target에서는 module code가 하나의 executable에 compile될 수 있지만 `FModuleManager`가 정적으로 등록된 initializer를 통해 module lifetime을 관리할 수 있다.
+`DynamicallyLoadedModuleNames`는 “항상 별도 DLL”이라는 뜻도 아니다. monolithic target에서는 module code가 하나의 executable에 compile될 수 있지만 `FModuleManager`가 정적으로 등록된 initializer로 module lifetime을 관리한다.
 
 외부 vendor DLL의 delay load와 packaging은 다른 기능이다. 일반적으로 `PublicAdditionalLibraries`, `PublicDelayLoadDLLs`, `RuntimeDependencies`를 검토하며, Unreal module용 `DynamicallyLoadedModuleNames`로 third-party binary staging을 대신하지 않는다.
 
 ## Public folder와 `MYMODULE_API`는 별개다
 
-다른 module이 header를 찾을 수 있어도 modular build에서 구현 symbol이 export되지 않으면 unresolved external이 발생할 수 있다.
+다른 module이 header를 찾더라도 modular build에서 구현 symbol이 export되지 않으면 unresolved external이 발생한다.
 
 ```cpp
 class FEATURE_API FFeatureService
@@ -304,7 +303,7 @@ public:
 
 ## IWYU와 self-contained header
 
-Private dependency를 늘리거나 줄이는 것만으로 include hygiene가 완성되지는 않는다. IWYU의 원칙은 다음과 같다.
+Private dependency를 늘리거나 줄이는 것만으로 include hygiene가 완성되지는 않는다. IWYU에서는 아래 원칙을 따른다.
 
 1. 모든 header는 자신이 필요한 header를 직접 include한다.
 2. cpp는 대응하는 자신의 header를 먼저 include한다.

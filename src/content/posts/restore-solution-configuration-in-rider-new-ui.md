@@ -82,7 +82,7 @@ UI widget을 여러 번 추가해도 project model에 없는 target은 생기지
 | Rider 2022.3 EAP2 | Rider의 New UI Preview 공개                                                                  |
 | Rider 2022.3      | New UI에서 Build button과 Edit Solution Configuration이 누락되는 RIDER-83004 발생            |
 
-New UI Preview가 공개된 경계는 Rider 2022.3 EAP 계열이다. 따라서 이 문제는 Rider 2022.3 New UI와 `ActiveConfiguration` action을 기준으로 다룬다.
+New UI Preview가 공개된 경계는 Rider 2022.3 EAP 계열이다. 이 글에서는 Rider 2022.3 New UI와 `ActiveConfiguration` action을 기준으로 문제를 다룬다.
 
 ## 체크리스트
 

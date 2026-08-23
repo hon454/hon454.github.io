@@ -3,7 +3,6 @@ published: 2023-10-20
 author: Jihoon Jeon
 title: 'Unreal Engine “Asset has been saved with empty engine version” 경고 안전하게 해결하기'
 description: Asset package의 SavedByEngineVersion changelist가 0일 때 발생하는 경고의 정확한 의미와, nonzero-CL 엔진에서 ResavePackages로 metadata를 복구하고 결과를 검증하는 안전 절차를 설명합니다.
-image: https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80
 category: Unreal Engine
 tags:
   - unreal-engine
@@ -26,11 +25,11 @@ The asset will be loaded but may be incompatible.
 - target engine에서 package를 다시 저장하면 `SavedByEngineVersion` metadata를 **복구**할 수 있다.
 - `ZeroEngineVersionWarning=0`은 log를 **숨길 뿐** package를 바꾸지 않는다.
 
-대량 resave는 `.uasset`과 `.umap`을 실제로 load/save하고 migration conversion까지 적용할 수 있다. 그래서 명령 한 줄을 바로 실행하기보다 경고의 조건, UE 5.3.1 build의 changelist, source-control 범위, 결과 검증을 먼저 준비해야 한다.
+대량 resave는 `.uasset`과 `.umap`을 실제로 load/save하고 migration conversion까지 적용하기도 한다. 그래서 명령 한 줄을 바로 실행하기보다 경고의 조건, UE 5.3.1 build의 changelist, source-control 범위, 결과 검증을 먼저 준비해야 한다.
 
 ## `empty engine version`의 정확한 뜻
 
-경고 문구만 보면 major, minor, patch가 모두 비어 있다고 생각하기 쉽다. 실제 engine 분기는 `SavedByEngineVersion`이 유효한 **changelist**를 가지고 있는지에 초점을 둔다. 동작을 단순화하면 다음 조건이다.
+경고 문구만 보면 major, minor, patch가 모두 비어 있다고 생각하기 쉽다. 실제 engine 분기는 `SavedByEngineVersion`이 유효한 **changelist**를 가지고 있는지에 초점을 둔다. 동작을 단순화하면 아래 조건으로 정리된다.
 
 ```cpp
 NeedsEngineVersionChecks
@@ -64,14 +63,14 @@ CL0 package는 engine-version 호환성 비교에서 매우 관대하게 취급�
 
 ## 왜 changelist 0으로 저장되는가
 
-흔한 원인은 다음과 같다.
+주로 아래와 같은 이유로 발생한다.
 
 - `Engine/Build/Build.version`의 `Changelist`가 0인 source build로 source Asset을 저장했다.
 - 오래된 package가 완전한 engine-version field를 갖기 전에 만들어졌다.
 - 별도 branch나 custom fork에서 version metadata를 만들지 않은 build를 사용했다.
 - CL0 build에서 저장한 콘텐츠를 나중에 Launcher 또는 promoted build로 열었다.
 
-따라서 “UE 5.3.1 migration이 경고를 만들었다”고 바로 결론 내리면 안 된다. 4.27-Plus build가 이미 CL0 package를 만들었고, nonzero-CL UE 5.3.1이 이를 처음 경고했을 가능성도 있다.
+“UE 5.3.1 migration이 경고를 만들었다”고 바로 결론 내리면 안 된다. 4.27-Plus build가 이미 CL0 package를 만들었고, nonzero-CL UE 5.3.1이 이를 처음 경고했을 가능성도 있다.
 
 먼저 warning log의 package를 하나 골라 이전 build와 target build의 `Build.version`, source control history, package 저장 시점을 확인한다.
 
@@ -257,7 +256,7 @@ UE5의 [Migration Guide](https://dev.epicgames.com/documentation/unreal-engine/u
 
 `Asset has been saved with empty engine version`은 대개 source package의 `SavedByEngineVersion` changelist가 0인데 target Editor는 nonzero changelist를 가진 상황을 뜻한다. Asset은 load되지만 정확한 저장 engine을 근거로 한 compatibility 판단이 느슨해진다.
 
-안전한 해결은 target engine의 changelist를 먼저 확인하고, canary Asset을 수동 저장해 원인을 검증한 뒤, 깨끗한 복사본이나 source-control changelist에서 `ResavePackages -OnlyUnversioned -ProjectOnly`를 실행하는 것이다. 그 후 binary diff, log, map load, Blueprint compile, clean cook와 package를 모두 확인한다.
+안전하게 해결하려면 target engine의 changelist부터 확인하고 canary Asset을 수동 저장해 원인을 검증한다. 그런 다음 깨끗한 복사본이나 source-control changelist에서 `ResavePackages -OnlyUnversioned -ProjectOnly`를 실행하고, binary diff, log, map load, Blueprint compile, clean cook와 package를 모두 확인한다.
 
 `ZeroEngineVersionWarning=0`은 의도적인 CL0 pipeline에서 noise를 억제하는 설정일 뿐이다. package metadata를 복구하지 않으므로 일반 migration의 두 번째 해결책으로 나열해서는 안 된다.
 

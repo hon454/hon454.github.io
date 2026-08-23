@@ -3,7 +3,6 @@ published: 2025-09-14
 author: Jihoon Jeon
 title: 'Unreal Engine UObject 가비지 컬렉션: 참조 그래프와 안전한 수명 관리'
 description: UObject 참조 그래프, 강한·약한·소프트 참조, 소멸 단계와 클러스터, 점진적 GC의 제약을 정리합니다.
-image: https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80
 category: Unreal Engine
 tags:
   - unreal-engine
@@ -326,7 +325,7 @@ Disregard pool은 초기 load 단계의 engine/bootstrap object를 cooked-build 
 
 UE 5.4는 incremental reachability와 incremental gather를 Experimental로 도입했다. mark와 unreachable object gather를 여러 frame으로 나눠 긴 pause를 줄이는 대신, write barrier와 target별 검증이 필요하다.
 
-공식 예제 설정은 다음과 같다.
+공식 예제는 아래처럼 설정한다.
 
 ```ini
 [ConsoleVariables]
@@ -337,7 +336,7 @@ gc.IncrementalReachabilityTimeLimit=0.002
 
 `0.002`는 2 ms의 예시 budget일 뿐 보편적인 권장값이나 보장된 hard limit가 아니다. 실제 frame 비용을 측정해 project와 target에 맞게 조정한다.
 
-활성화 전에는 다음을 먼저 만족해야 한다.
+활성화하려면 아래 조건부터 만족해야 한다.
 
 1. GC-exposed `UPROPERTY` raw UObject pointer를 `TObjectPtr`로 전환한다.
 2. UObject static `AddReferencedObjects`와 `FGCObject` storage도 `TObjectPtr`로 바꾼다.

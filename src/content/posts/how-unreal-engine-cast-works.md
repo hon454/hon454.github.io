@@ -3,7 +3,6 @@ published: 2024-01-29
 author: Jihoon Jeon
 title: Unreal Engine의 C++ Cast<T> 함수는 어떻게 동작하는가?
 description: Unreal의 Cast<T>가 C++ RTTI 대신 UClass reflection, cast flags, IsA와 IsChildOf를 사용하는 경로와 API별 선택 기준, Blueprint interface 예외를 설명합니다.
-image: https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80
 category: Unreal Engine
 tags:
   - unreal-engine
@@ -216,7 +215,7 @@ if (Object && Object->IsA<UMyAsset>())
 
 Blueprint가 C++로 선언된 Unreal interface를 구현해도 native C++ `IInterface` subobject가 생기는 것은 아니다. Blueprint-only 구현에는 object pointer만 있고 native interface pointer는 없을 수 있다.
 
-따라서 다음 코드는 Blueprint-only implementation에서 null일 수 있다.
+이 때문에 다음 코드는 Blueprint-only implementation에서 null일 수 있다.
 
 ```cpp
 if (IInteractable* NativeInterface = Cast<IInteractable>(Object))
@@ -293,7 +292,7 @@ if (FStructProperty* StructProperty =
 - Blueprint-capable interface: `ImplementsInterface` + `Execute_`
 - non-UObject: 표준 C++ type system과 RTTI 정책
 
-마지막으로 `Cast` 성공은 object lifetime, ownership, network authority, gameplay readiness를 보장하지 않는다. type check와 object validity를 분리해서 검증해야 한다.
+`Cast` 성공은 object lifetime, ownership, network authority, gameplay readiness를 보장하지 않는다. type check와 object validity를 분리해서 검증해야 한다.
 
 ## 참고 자료
 

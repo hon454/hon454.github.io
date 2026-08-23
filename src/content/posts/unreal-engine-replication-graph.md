@@ -3,7 +3,6 @@ published: 2023-01-26
 author: Jihoon Jeon
 title: 'Unreal Engine Replication Graph: 라우팅에서 전송까지'
 description: Replication Graph가 줄이는 비용과 노드 라우팅, 연결별 후보 수집, Grid·빈도·우선순위 설계와 디버깅 절차를 정리합니다.
-image: https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80
 category: Unreal Engine
 tags:
   - unreal-engine
@@ -27,7 +26,7 @@ tags:
 | 기본 Driver       | Actor·연결 수가 비교적 작고 기본 `IsNetRelevantFor` 계약으로 충분한 프로젝트 | Actor virtual function과 NetDriver 기본 처리   | Actor × connection 후보 검사가 규모에 따라 비싸질 수 있다 |
 | Replication Graph | 많은 Actor와 연결에서 공간·소유자·팀 규칙을 명시적인 목록으로 재사용할 때    | global/connection/custom node와 class settings | C++ 정책 코드와 membership 수명주기를 프로젝트가 책임진다 |
 
-Replication Graph 경로에서는 Actor의 `IsNetRelevantFor`와 `GetNetPriority`가 관련성·우선순위의 중심이 아니다. 노드 membership과 gather 결과, `FGlobalActorReplicationInfo`, `FConnectionReplicationActorInfo`, RepGraph 내부 우선순위 계산이 그 역할을 나눠 맡는다. 따라서 기존 Actor override를 그대로 둔 채 driver만 교체하면 같은 결과가 나온다고 기대해서는 안 된다.
+Replication Graph 경로에서는 Actor의 `IsNetRelevantFor`와 `GetNetPriority`가 관련성·우선순위의 중심이 아니다. 노드 membership과 gather 결과, `FGlobalActorReplicationInfo`, `FConnectionReplicationActorInfo`, RepGraph 내부 우선순위 계산이 그 역할을 나눠 맡는다. 기존 Actor override를 그대로 둔 채 driver만 교체하면 같은 결과가 나온다고 기대해서는 안 된다.
 
 먼저 기본 driver의 Actor별 관련성 판단으로 충분한지, 아니면 게임 규칙에 맞는 persistent list를 직접 관리할지 결정한 뒤 코드를 설계해야 한다.
 
@@ -38,7 +37,7 @@ Replication Graph 경로에서는 Actor의 `IsNetRelevantFor`와 `GetNetPriority
 - 멀리 떨어진 Actor는 2D grid의 다른 셀에 두어 애초에 후보 목록에 넣지 않는다.
 - `GameState`처럼 모든 연결이 고려해야 할 Actor는 하나의 global list로 공유한다.
 - `PlayerController`나 소유 Pawn처럼 특정 연결만 고려할 Actor는 connection node에 둔다.
-- 팀 시야처럼 여러 연결이 같은 목록을 공유하면 custom team node 하나를 여러 connection에 연결할 수 있다.
+- 팀 시야처럼 여러 연결이 같은 목록을 공유하면 custom team node 하나를 여러 connection에 연결한다.
 - 이동 Actor는 grid의 `PrepareForReplication` 단계에서 점유 셀을 갱신한다.
 
 핵심은 매 프레임 관련성 규칙을 처음부터 재평가하는 대신, **Actor의 수명주기와 정책 이벤트가 목록을 유지하고 replication frame은 목록을 읽는 것**이다. 그 대가로 잘못된 라우팅, 제거 누락, owner·team·dormancy 변경 처리 누락이 곧 네트워크 버그가 된다.
@@ -57,7 +56,7 @@ RepGraph를 이해할 때 다음 세 층을 분리하면 좋다.
 
 ## Actor가 노드에 들어가고 나오는 흐름
 
-Actor가 추가되고 제거될 때의 흐름은 다음과 같다.
+Actor가 추가되고 제거될 때는 아래 순서로 흐른다.
 
 ```mermaid
 flowchart TD
@@ -100,14 +99,14 @@ public header가 RepGraph 타입을 노출한다면 `PublicDependencyModuleNames
 
 ### 2. 먼저 `UBasicReplicationGraph`로 연결 확인
 
-custom graph를 작성하기 전에 driver 설정과 접속이 정상인지 확인하려면 공식 최소 구현을 사용할 수 있다.
+custom graph를 작성하기 전에 driver 설정과 접속이 정상인지 확인하려면 공식 최소 구현을 사용한다.
 
 ```ini
 [/Script/OnlineSubsystemUtils.IpNetDriver]
 ReplicationDriverClassName="/Script/ReplicationGraph.BasicReplicationGraph"
 ```
 
-[`UBasicReplicationGraph`](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/ReplicationGraph/UBasicReplicationGraph)는 `NetCullDistanceSquared`, `bAlwaysRelevant`, `bOnlyRelevantToOwner`만 지원하고 이 값을 Actor별 runtime에 바꿀 수 없다. 따라서 smoke test와 작은 prototype에는 유용하지만, owner나 relevancy가 바뀌는 실제 게임의 완성형 정책으로 보기는 어렵다.
+[`UBasicReplicationGraph`](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/ReplicationGraph/UBasicReplicationGraph)는 `NetCullDistanceSquared`, `bAlwaysRelevant`, `bOnlyRelevantToOwner`만 지원하고 이 값을 Actor별 runtime에 바꿀 수 없다. smoke test와 작은 prototype에는 유용하지만, owner나 relevancy가 바뀌는 실제 게임의 완성형 정책으로 보기는 어렵다.
 
 ### 3. custom graph 지정
 
@@ -166,11 +165,11 @@ enum class EMyClassRepPolicy : uint8
 
 **Connection graph node**는 특정 connection의 gather 과정에만 참여한다. 해당 connection의 controller, pawn, view target, owner-only Actor, visible streaming level Actor를 관리하는 데 적합하다. 여러 connection이 같은 팀 목록을 봐야 한다면 custom node 하나를 공유해 각 connection에 붙일 수도 있다.
 
-노드가 반환한 Actor도 replication period나 dormancy, distance, bandwidth 때문에 그 frame에 전송되지 않을 수 있다. 그러므로 여기서 말하는 “always relevant”는 **항상 후보가 될 정책**에 가깝지 “매 frame 패킷을 보낸다”는 보장이 아니다.
+노드가 반환한 Actor도 replication period나 dormancy, distance, bandwidth 때문에 그 frame에 전송되지 않을 수 있다. 여기서 말하는 “always relevant”는 **항상 후보가 될 정책**에 가깝지 “매 frame 패킷을 보낸다”는 보장이 아니다.
 
 ## 연결 하나가 후보를 모아 전송하기까지
 
-`ServerReplicateActors`는 RepGraph의 replication frame마다 실행된다. 게임 tick과 흔히 같은 속도로 보일 수 있지만 의미상 “매 게임 tick에 반드시 한 번”이라고 계약하면 안 된다. 연결별 전체 흐름은 다음과 같다.
+`ServerReplicateActors`는 RepGraph의 replication frame마다 실행된다. 게임 tick과 흔히 같은 속도로 보일 수 있지만 의미상 “매 게임 tick에 반드시 한 번”이라고 계약하면 안 된다. 연결별 전체 흐름은 이렇다.
 
 ```mermaid
 flowchart TD
@@ -186,7 +185,7 @@ flowchart TD
   I --> J["FastShared·stale channel·destruction 처리"]
 ```
 
-단계를 더 정확히 읽으면 다음과 같다.
+각 단계를 더 정확히 읽어 보자.
 
 1. 요청한 root node가 `PrepareForReplication`에서 frame 공통 상태를 갱신한다. dynamic grid는 이때 이동 Actor의 셀을 갱신한다.
 2. connection의 viewer와 view target, visible streaming level을 준비한다.
@@ -196,7 +195,7 @@ flowchart TD
 6. connection의 bandwidth budget이 허용하는 순서대로 Actor channel을 열거나 갱신한다. 포화되면 남은 후보는 starved 처리된다.
 7. 설정된 경우 FastShared 후보를 별도 budget으로 처리한 뒤 stale channel과 destruction info를 정리한다.
 
-`GatherActorListsForConnection`은 3단계까지만 책임진다. 따라서 gather log에 Actor가 보인다는 사실과 실제 packet에 property가 실렸다는 사실을 구분해야 한다. 반대로 `ForceNetUpdate`는 관련 없는 Actor를 관련 있게 만들지 않는다. 이미 관련성 후보가 된 Actor의 schedule을 앞당기는 기능이다.
+`GatherActorListsForConnection`은 3단계까지만 책임진다. gather log에 Actor가 보인다는 사실과 실제 packet에 property가 실렸다는 사실을 구분해야 한다. 반대로 `ForceNetUpdate`는 관련 없는 Actor를 관련 있게 만들지 않는다. 이미 관련성 후보가 된 Actor의 schedule을 앞당기는 기능이다.
 
 ## 서로 다른 네 가지 축을 한 설정처럼 다루지 않기
 
@@ -215,7 +214,7 @@ grid, static/dynamic route, frequency bucket은 비슷해 보이지만 서로 �
 
 ### `UReplicationGraphNode_ActorList`
 
-명시적인 Actor 목록을 보관하는 기본 building block이다. global root로 등록하면 모든 connection이 이 목록을 gather할 수 있다. 게임 전체에서 고려할 `GameState`류를 담을 수 있지만, 실제 전송 주기와 bandwidth 검사는 뒤에 남아 있다.
+명시적인 Actor 목록을 보관하는 기본 building block이다. global root로 등록하면 모든 connection이 이 목록을 gather한다. 게임 전체에서 고려할 `GameState`류를 담을 수 있지만, 실제 전송 주기와 bandwidth 검사는 뒤에 남아 있다.
 
 ### `UReplicationGraphNode_AlwaysRelevant_ForConnection`
 
@@ -261,7 +260,7 @@ Dormancy는 “grid에 들어갈 것인가”와 별개로 connection별 전송�
 
 엔진에 포함된 `BasicReplicationGraph`와 ShooterGame의 `ShooterReplicationGraph`는 최소 구성과 게임별 확장을 비교할 수 있는 출발점이다. source와 module dependency가 있다는 사실만으로 runtime에 RepGraph가 활성화됐다고 판단하면 안 된다. 실제 NetDriver 설정도 함께 확인한다.
 
-샘플 구현에서 참고할 만한 패턴은 다음과 같다.
+샘플 구현에서는 아래 패턴을 참고할 만하다.
 
 - class route를 `NotRouted`, all-connections, static, dynamic, dormancy 정책으로 분류한다.
 - global grid와 global actor list를 분리한다.
@@ -284,7 +283,7 @@ Dormancy는 “grid에 들어갈 것인가”와 별개로 connection별 전송�
 6. **포화 확인:** priority가 낮아 계속 starved 되는지 connection bandwidth와 prioritized list를 본다.
 7. **dirty state 확인:** Actor가 실제로 복제됐지만 보낼 property 변화가 없거나 condition 때문에 빠진 것은 아닌지 확인한다.
 
-사용 중인 엔진 branch에 따라 명령 이름과 지원 범위가 다를 수 있지만, 대표적인 RepGraph 디버깅 명령은 다음과 같다.
+사용 중인 엔진 branch에 따라 명령 이름과 지원 범위가 다를 수 있지만, 대표적인 RepGraph 디버깅 명령을 적으면 아래와 같다.
 
 ```text
 Net.RepGraph.PrintGraph nclass
@@ -309,7 +308,7 @@ Net.RepGraph.Lists.Stats
 - 실제 송수신 bytes와 packet loss
 - graph node와 grid가 유지하는 memory
 
-[Network Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/network-insights-in-unreal-engine)를 사용하면 trace에서 packet과 replicated object를 확인할 수 있다. RepGraph 적용 뒤 CPU는 줄었지만 bytes가 그대로인 결과도 정상이다. 그것은 후보 탐색 최적화와 payload 최적화가 다른 문제라는 뜻이다.
+[Network Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/network-insights-in-unreal-engine)를 사용해 trace에서 packet과 replicated object를 확인한다. RepGraph 적용 뒤 CPU는 줄었지만 bytes가 그대로인 결과도 정상이다. 그것은 후보 탐색 최적화와 payload 최적화가 다른 문제라는 뜻이다.
 
 ## 자주 생기는 설계 오류
 

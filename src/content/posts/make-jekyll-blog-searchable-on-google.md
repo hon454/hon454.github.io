@@ -3,7 +3,6 @@ published: 2023-01-21
 author: Jihoon Jeon
 title: Jekyll 블로그를 Google Search Console에 연결하는 방법
 description: Jekyll·Chirpy 블로그를 URL-prefix 속성에 추가하고 HTML meta tag로 소유권을 확인한 뒤 sitemap과 색인 상태를 점검하는 순서를 정리합니다.
-image: https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80
 category: Jekyll
 tags:
   - jekyll
@@ -116,7 +115,7 @@ https://example.github.io/robots.txt
 https://example.github.io/sitemap.xml
 ```
 
-확인할 내용은 다음과 같다.
+아래 항목을 확인한다.
 
 - 두 URL이 `200 OK`로 열리는가?
 - sitemap 안의 host와 path가 실제 공개 URL과 일치하는가?
@@ -174,7 +173,7 @@ Search Console의 **Sitemaps** 화면에는 `sitemap.xml`을 제출한다. sitem
 - 중요한 URL만 실제 URL 테스트와 색인 생성 요청을 사용했는가?
 - Page indexing과 Performance를 구분해 측정하는가?
 
-소유권 확인은 출발점이다. 실제 검색 상태를 관리하려면 crawl 가능한 페이지, 일관된 canonical, 올바른 sitemap과 robots 정책, URL Inspection과 Page indexing report를 함께 봐야 한다. 마지막으로 검색 결과에 실제로 나타났는지는 Performance의 impression과 query로 확인한다.
+소유권 확인만으로 끝나지 않는다. 실제 검색 상태를 관리하려면 crawl 가능한 페이지, 일관된 canonical, 올바른 sitemap과 robots 정책, URL Inspection과 Page indexing report를 함께 봐야 한다. 검색 결과에 실제로 나타났는지는 Performance의 impression과 query로 확인한다.
 
 ## 참고 자료
 

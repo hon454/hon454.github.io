@@ -4,6 +4,7 @@ updated: 2026-08-24
 author: Jihoon Jeon
 title: Jekyll에서 Astro 기반 블로그로, 그리고 Firefly를 선택한 이유
 description: Jekyll로 운영하던 GitHub Pages 블로그를 Astro 기반으로 옮긴 이유와, 콘텐츠 중심 구조·Svelte 인터랙션·개인화 기능을 갖춘 Firefly를 최종 테마로 선택한 기준을 정리합니다.
+image: ./images/1.avif
 category: 블로그
 tags:
   - astro
@@ -13,7 +14,7 @@ tags:
   - migration
 ---
 
-GitHub Pages 블로그의 기반을 Jekyll에서 Astro로 옮기고 최종적으로 Firefly를 채택했다. Jekyll이 더 이상 쓸 수 없는 도구여서가 아니다. Markdown으로 글을 쓰고 Git으로 이력을 관리한 뒤 정적 페이지로 배포하는 흐름은 여전히 단순하고 견고하다. 다만 블로그를 오래 운영하다 보니 글을 담는 방식만큼 사이트를 고치고 확장하는 방식도 중요해졌다.
+GitHub Pages 블로그의 기반을 Jekyll에서 [Astro](https://astro.build/)로 옮기고 최종적으로 [Firefly](https://github.com/CuteLeaf/Firefly)를 채택했다. Jekyll이 더 이상 쓸 수 없는 도구여서가 아니다. Markdown으로 글을 쓰고 Git으로 이력을 관리한 뒤 정적 페이지로 배포하는 흐름은 여전히 단순하고 견고하다. 다만 블로그를 오래 운영하다 보니 글을 담는 방식만큼 사이트를 고치고 확장하는 방식도 중요해졌다.
 
 이번 선택은 테마 하나만 바꾸는 일이 아니었다. 콘텐츠가 특정 서비스에 묶이지 않는다는 원칙은 그대로 두고, 익숙한 개발 환경에서 화면과 기능을 다룰 수 있는 기반으로 옮기려 했다.
 
@@ -36,6 +37,8 @@ Astro의 콘텐츠 컬렉션에서는 글의 메타데이터를 스키마로 관
 ## Firefly를 선택한 기준
 
 Astro는 좋은 기반이지만 블로그에 필요한 기능을 모두 직접 조립하려면 적지 않은 시간이 든다. Firefly에는 콘텐츠 중심 블로그를 운영하는 데 필요한 구조가 이미 갖춰져 있었고, 내가 원하는 확장 방향과도 잘 맞았다.
+
+::github{repo="CuteLeaf/Firefly"}
 
 처음 눈에 들어온 건 이전에 사용하던 Jekyll 테마 Chirpy와 닮은 점이 많아서였다. 글을 중심에 두고 사이드바와 카테고리, 태그, 검색으로 콘텐츠를 탐색하는 방식이 익숙했다. 기반 기술을 바꾸더라도 독자가 글을 찾고 읽는 경험까지 완전히 낯설게 만들 필요는 없었다.
 

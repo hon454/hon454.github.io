@@ -18,7 +18,7 @@ sourceLink: "https://velog.io/@hon454/캐스팅-시-LNK1120-에러-발생"
 
 > 이 글은 2021년 7월, **Unreal Engine 4.26.2**에서 겪은 문제를 당시 엔진 구조를 기준으로 다시 검토해 옮긴 기록이다. 이후 엔진 버전의 동작을 소급해서 적용하지 않았다.
 
-Rider의 Unreal 클래스 생성 기능으로 `UInterface`를 만든 뒤, 그 인터페이스를 다른 게임 모듈에서 사용했다. 헤더는 정상적으로 include되고 컴파일도 진행됐지만 링크 단계에서 다음 오류가 발생했다.
+Rider의 Unreal 클래스 생성 기능으로 `UInterface`를 만든 뒤, 그 인터페이스를 다른 게임 모듈에서 사용했다. 헤더 include와 컴파일은 정상이었지만 링크 단계에서 다음 오류가 발생했다.
 
 ```text
 unresolved external symbol
@@ -28,7 +28,7 @@ referenced in function ...
 LNK1120: 1 unresolved externals
 ```
 
-`Build.cs`의 모듈 의존성은 이미 설정되어 있었다. 오류의 핵심은 의존 모듈을 찾지 못한 것이 아니라, `UDefaultAI`가 들어 있는 DLL에서 reflection용 심볼을 외부로 내보내지 않았다는 점이었다.
+`Build.cs`의 모듈 의존성은 이미 설정되어 있었다. 의존 모듈을 찾지 못한 것이 아니라, `UDefaultAI`가 들어 있는 DLL에서 reflection용 심볼을 외부로 내보내지 않은 탓이었다.
 
 ## 문제가 된 선언
 
@@ -61,7 +61,7 @@ public:
 };
 ```
 
-다른 모듈에서 `Cast<IDefaultAI>(Object)` 같은 reflection 기반 경로를 사용하면 `UDefaultAI::StaticClass()`와 그 내부의 `GetPrivateStaticClass()` 심볼도 필요하다. 하지만 `UDefaultAI`에는 `AI_API`가 없어서 modular build의 다른 DLL이 해당 심볼을 가져올 수 없었다.
+다른 모듈에서 `Cast<IDefaultAI>(Object)` 같은 reflection 기반 경로를 사용하려면 `UDefaultAI::StaticClass()`와 그 내부의 `GetPrivateStaticClass()` 심볼도 필요하다. 그러나 `UDefaultAI`에는 `AI_API`가 없었고, modular build의 다른 DLL은 해당 심볼을 가져올 수 없었다.
 
 ## 두 타입 모두 export한다
 
@@ -89,13 +89,13 @@ public:
 };
 ```
 
-당시 UE4의 모듈 API 매크로는 modular build에서 다음처럼 바뀌었다.
+당시 UE4의 모듈 API 매크로는 modular build의 빌드 대상에 따라 바뀌었다.
 
 - 타입을 정의하는 모듈을 빌드할 때: `__declspec(dllexport)`
 - 타입을 사용하는 모듈을 빌드할 때: `__declspec(dllimport)`
 - monolithic build일 때: 빈 매크로
 
-따라서 Editor와 같은 DLL 구성에서만 오류가 드러나고 monolithic target에서는 우연히 통과할 수 있다. 특정 빌드에서 통과했다는 사실만으로 export 선언이 올바르다고 판단하면 안 된다.
+이 때문에 오류는 Editor와 같은 DLL 구성에서만 드러나고, monolithic target에서는 우연히 통과할 수 있다. 특정 빌드에서 통과했다는 사실만으로 export 선언이 올바르다고 판단하면 안 된다.
 
 ## `Build.cs` 의존성도 별도로 필요하다
 
@@ -114,7 +114,7 @@ PublicDependencyModuleNames.AddRange(new[]
 - `Build.cs`는 어떤 모듈의 include·link 환경을 사용할지 정한다.
 - `AI_API`는 그 DLL에서 어떤 클래스와 함수를 외부에 공개할지 정한다.
 
-헤더 경로가 보이는데 `GetPrivateStaticClass`, vtable 또는 함수 구현에서 unresolved external이 발생한다면 다음 순서로 확인한다.
+헤더 경로가 보이는데 `GetPrivateStaticClass`, vtable 또는 함수 구현에서 unresolved external이 발생한다면 아래 순서로 확인한다.
 
 1. 사용하는 모듈의 `Build.cs`에 정의 모듈이 들어 있는가?
 2. 외부에서 쓰는 클래스·함수에 `*_API` 매크로가 있는가?

@@ -31,11 +31,11 @@ virtual float PlayAnimMontage(
     FName StartSectionName = NAME_None);
 ```
 
-문제는 반환값을 “현재 설정으로 실제 재생되는 시간”이라고 해석하기 쉽다는 점이다. UE 4.26에서 이 함수는 `InPlayRate`, Montage의 `RateScale`, `StartSectionName`이 반영된 남은 시간을 반환하지 않았다.
+이 반환값은 “현재 설정으로 실제 재생되는 시간”이라고 해석하기 쉽다. 하지만 UE 4.26에서 이 함수는 `InPlayRate`, Montage의 `RateScale`, `StartSectionName`이 반영된 남은 시간을 반환하지 않았다.
 
 ## 내부에서는 기본 반환 형식을 사용한다
 
-당시 구현은 `UAnimInstance::Montage_Play`를 다음처럼 호출했다.
+당시 구현은 `UAnimInstance::Montage_Play`를 아래와 같이 호출했다.
 
 ```cpp
 float ACharacter::PlayAnimMontage(
@@ -68,7 +68,7 @@ float ACharacter::PlayAnimMontage(
 }
 ```
 
-`Montage_Play`의 세 번째 인자는 다음 enum이며, 기본값은 `MontageLength`였다.
+`Montage_Play`의 세 번째 인자는 아래 enum이며, 기본값은 `MontageLength`였다.
 
 ```cpp
 enum class EMontagePlayReturnType : uint8
@@ -78,7 +78,7 @@ enum class EMontagePlayReturnType : uint8
 };
 ```
 
-따라서 `ACharacter::PlayAnimMontage`는 `MontageToPlay->SequenceLength`를 반환한다. 재생 속도를 바꾸더라도 반환값은 원본 전체 길이다.
+`ACharacter::PlayAnimMontage`는 이 기본값을 그대로 사용해 `MontageToPlay->SequenceLength`를 반환한다. 재생 속도를 바꾸더라도 반환값은 원본 전체 길이다.
 
 ```cpp
 // UE 4.27.2의 Montage_Play 반환 부분을 단순화한 형태
@@ -113,7 +113,7 @@ if (Duration > 0.f && StartSectionName != NAME_None)
 }
 ```
 
-이 `Duration`도 **전체 Montage를 처음부터 재생한다고 가정한 속도 보정 길이**다. 시작 Section, Section 연결 관계, 반복 Section, runtime의 `Montage_SetNextSection`, blend out과 interruption까지 포함한 실제 종료 시점은 표현하지 못한다.
+이때 얻는 `Duration`도 **전체 Montage를 처음부터 재생한다고 가정한 속도 보정 길이**다. 시작 Section, Section 연결 관계, 반복 Section, runtime의 `Montage_SetNextSection`, blend out과 interruption까지 포함한 실제 종료 시점은 표현하지 못한다.
 
 ## 원문의 수식은 제한적으로만 맞는다
 
@@ -125,7 +125,7 @@ const float Duration =
     (InPlayRate * AnimMontage->RateScale);
 ```
 
-UE 4.26의 `Montage_Play(..., EMontagePlayReturnType::Duration)` 내부 계산과 같은 형태이므로, **전체 Montage가 순서대로 한 번 재생되는 단순한 경우**에는 맞는다. 그러나 다음 상황에서는 실제 종료시간이 아니다.
+UE 4.26의 `Montage_Play(..., EMontagePlayReturnType::Duration)` 내부 계산과 같은 형태이므로, **전체 Montage가 순서대로 한 번 재생되는 단순한 경우**에는 맞는다. 다만 아래 상황에서는 실제 종료시간이 아니다.
 
 - `StartSectionName`으로 중간에서 시작한다.
 - Section이 반복되거나 runtime에 다음 Section을 바꾼다.
@@ -133,7 +133,7 @@ UE 4.26의 `Montage_Play(..., EMontagePlayReturnType::Duration)` 내부 계산�
 - blend out이나 notify 시점을 기다리는 것이 목적이다.
 - 0 또는 비정상적인 Play Rate를 전달한다.
 
-게임플레이 로직을 정확한 종료 시점에 연결하려는 목적이라면 float 길이로 timer를 예약하기보다 Montage 종료 delegate, Blueprint의 `On Completed`·`On Blend Out`·`On Interrupted`, Anim Notify를 사용한다. 길이 반환값은 재생 성공 여부와 단순한 예상 시간을 얻는 용도로 제한하는 편이 안전하다.
+게임플레이 로직을 정확한 종료 시점에 연결하려면 float 길이로 timer를 예약하기보다 Montage 종료 delegate, Blueprint의 `On Completed`·`On Blend Out`·`On Interrupted`, Anim Notify를 사용한다. 길이 반환값은 재생 성공 여부와 단순한 예상 시간을 얻는 용도로만 쓰는 편이 안전하다.
 
 ## 참고 자료
 

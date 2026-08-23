@@ -17,7 +17,7 @@ sourceLink: "https://velog.io/@hon454/ue4-서버-최적화-팁"
 
 > 이 글은 2021년 8~9월에 작성한 `NetDormancy 이해`와 `Networking in UE4: Server Optimizations` 메모를 **Unreal Engine 4.26~4.27** 기준으로 합쳐 옮긴 글이다. 당시 잘못 이해했던 `DORM_Initial`, `NetUpdateFrequency`, Multicast RPC 부분은 같은 시점의 엔진 소스와 문서에 맞춰 교정했다.
 
-UE4 서버 리플리케이션 최적화의 출발점은 payload 몇 byte를 줄이는 것보다, 불필요한 Actor를 복제 후보에 올리지 않는 것이다. 당시 Epic 문서가 제시한 우선순위도 다음과 같았다.
+UE4 서버 리플리케이션 최적화는 payload 몇 byte를 줄이기 전에 불필요한 Actor부터 복제 후보에서 빼야 한다. 당시 Epic 문서도 아래 순서로 최적화하길 권했다.
 
 1. 필요 없는 Actor의 replication을 끈다.
 2. `NetUpdateFrequency`를 가능한 낮춘다.
@@ -69,14 +69,14 @@ UE 4.27의 `FlushNetDormancy`는 `DORM_Initial`을 `DORM_DormantAll`로 바꾸�
 
 ## `FlushNetDormancy`와 `ForceNetUpdate`
 
-두 함수는 비슷해 보이지만 의도를 구분할 수 있다.
+두 함수는 비슷해 보이지만 쓰임이 다르다.
 
 - `FlushNetDormancy()`: dormant Actor의 변경사항을 다시 전송할 수 있게 한다.
 - `ForceNetUpdate()`: 다음 정규 update 간격을 기다리지 않고 Actor를 replication 대상으로 당긴다.
 
 UE 4.27의 `AActor::ForceNetUpdate()`는 Actor가 `DORM_Awake`보다 높은 dormancy 상태라면 내부에서 `FlushNetDormancy()`도 호출했다. 따라서 dormant Actor에서 `ForceNetUpdate`가 결과적으로 flush를 수행한다는 원문의 메모는 맞았다.
 
-다만 코드를 읽는 사람에게 의도를 드러내기 위해서는 다음처럼 선택하는 편이 좋다.
+코드에서 의도를 드러내려면 용도에 맞춰 고르는 편이 좋다.
 
 - “이 dormant Actor의 상태가 바뀌었다” → `FlushNetDormancy`
 - “깨어 있는 Actor를 지금 한 번 더 빨리 보내고 싶다” → `ForceNetUpdate`
@@ -85,7 +85,7 @@ UE 4.27의 `AActor::ForceNetUpdate()`는 Actor가 `DORM_Awake`보다 높은 dorm
 
 원문은 Multicast RPC가 `FlushNetDormancy`를 강제로 호출한다고 적었다. 하지만 UE 4.27의 기본 `UNetDriver::ProcessRemoteFunction` 경로에는 Multicast 호출만으로 Actor의 dormancy를 flush하는 처리가 없다. 당시 구현도 connection에 대한 relevancy와 Actor channel 상태를 전제로 RPC를 보냈다.
 
-Dormant Actor에서 중요한 상태가 바뀐다면 다음 순서를 사용한다.
+Dormant Actor에서 중요한 상태가 바뀐다면 아래 순서로 처리한다.
 
 1. 서버에서 `FlushNetDormancy()`를 호출한다.
 2. replicated property를 변경한다.
@@ -107,7 +107,7 @@ MinNetUpdateFrequency = 1.f;
 - `NetUpdateFrequency`: adaptive 범위의 최대 빈도
 - `MinNetUpdateFrequency`: adaptive 범위의 최소 빈도
 
-변화가 잦을 때는 최대치 쪽으로, 의미 있는 변화가 오랫동안 없으면 최소치 쪽으로 update 빈도를 조절한다. 원문의 “`NetUpdateFrequency`를 크게 하고 `ForceNetUpdate`를 사용”이라는 메모는 adaptive 범위의 최대치를 말한 것으로는 이해할 수 있지만, 일반 규칙으로 적용하면 오히려 비용을 늘린다.
+변화가 잦으면 최대치 쪽으로, 의미 있는 변화가 오랫동안 없으면 최소치 쪽으로 update 빈도를 조절한다. 원문의 “`NetUpdateFrequency`를 크게 하고 `ForceNetUpdate`를 사용”이라는 메모는 adaptive 범위의 최대치를 뜻했다면 설명이 된다. 하지만 일반 규칙으로 적용하면 오히려 비용을 늘린다.
 
 ## 전송량을 줄이는 당시의 실전 항목
 
@@ -147,7 +147,7 @@ netprofile disable
 Engine/Binaries/DotNET/NetworkProfiler.exe
 ```
 
-Actor 수, RPC 호출 횟수, property payload를 측정한 뒤 replication off, update frequency, dormancy, relevancy, payload 순서로 줄인다. 추측만으로 bit flag부터 만드는 것보다 큰 비용이 어디에서 발생하는지 먼저 확인하는 편이 효과적이다.
+Actor 수, RPC 호출 횟수, property payload를 측정한 뒤 replication off, update frequency, dormancy, relevancy, payload 순서로 줄인다. 추측으로 bit flag부터 만들기보다 큰 비용이 어디에서 발생하는지 확인하는 일이 먼저다.
 
 ## 참고 자료
 

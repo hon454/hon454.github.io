@@ -12,7 +12,7 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 	mode: "local",
 
 	// 기본 음량(0~1)
-	volume: 0.7,
+	volume: 0.3,
 
 	// 재생 모드: 'list'=목록 반복, 'one'=한 곡 반복, 'random'=무작위 재생
 	playMode: "list",
@@ -42,16 +42,44 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 
 	// 로컬 음악 설정(mode가 'local'일 때 사용)
 	// 1. 가사 파일 경로를 지정할 수 있습니다.
-	// lrc: "/assets/music/lrc/使一颗心免于哀伤-哼唱.lrc",
+	// lrc: "/assets/music/lrc/example.lrc",
 	// 2. 또는 가사 문자열을 직접 입력할 수 있습니다.
 	// lrc: "[00:00.00]가사 내용...",
 	local: {
 		playlist: [
 			{
-				name: "한 마음이 슬픔에서 벗어나도록",
-				artist: "로빈 / HOYO-MiX / Chevy",
-				url: "/assets/music/使一颗心免于哀伤-哼唱.mp3",
-				cover: "/assets/music/cover/109951169585655912.webp",
+				name: "Dream Culture",
+				artist: "Kevin MacLeod",
+				url: "/assets/music/free-bgm/dream-culture.mp3",
+				cover: "/assets/music/cover/kevin-macleod.svg",
+				lrc: "",
+			},
+			{
+				name: "BT GIRLS",
+				artist: "MusMus",
+				url: "/assets/music/free-bgm/bt-girls.mp3",
+				cover: "/assets/music/cover/musmus.svg",
+				lrc: "",
+			},
+			{
+				name: "Wallpaper",
+				artist: "Kevin MacLeod",
+				url: "/assets/music/free-bgm/wallpaper.mp3",
+				cover: "/assets/music/cover/kevin-macleod.svg",
+				lrc: "",
+			},
+			{
+				name: "プラスチックアドベンチャー",
+				artist: "MusMus",
+				url: "/assets/music/free-bgm/plastic-adventure.mp3",
+				cover: "/assets/music/cover/musmus.svg",
+				lrc: "",
+			},
+			{
+				name: "Carefree",
+				artist: "Kevin MacLeod",
+				url: "/assets/music/free-bgm/carefree.mp3",
+				cover: "/assets/music/cover/kevin-macleod.svg",
 				lrc: "",
 			},
 		],

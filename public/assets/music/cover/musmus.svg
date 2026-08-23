@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+	<title id="title">MusMus music cover</title>
+	<desc id="desc">A colorful abstract cover for MusMus background music</desc>
+	<defs>
+		<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0" stop-color="#ffd6e8" />
+			<stop offset="0.5" stop-color="#b8f2e6" />
+			<stop offset="1" stop-color="#8ec5fc" />
+		</linearGradient>
+		<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+			<feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#31415f" flood-opacity="0.2" />
+		</filter>
+	</defs>
+	<rect width="512" height="512" rx="96" fill="url(#bg)" />
+	<circle cx="398" cy="112" r="78" fill="#fff" opacity="0.42" />
+	<circle cx="92" cy="400" r="104" fill="#fff" opacity="0.28" />
+	<path d="M151 321V151h44v170a67 67 0 1 1-44-63z" fill="#fff" filter="url(#shadow)" />
+	<path d="M195 151c69 12 103-11 137-36v65c-39 25-78 38-137 27z" fill="#fff" />
+	<text x="256" y="430" text-anchor="middle" fill="#31415f" font-family="Arial, sans-serif" font-size="42" font-weight="700" letter-spacing="5">MusMus</text>
+</svg>

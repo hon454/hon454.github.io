@@ -75,10 +75,11 @@ export const booknavConfig: BooknavGroup[] = [
 		weight: 90,
 		items: [
 			{
-				title: "Firefly",
-				url: "https://github.com/CuteLeaf/Firefly",
-				desc: "깔끔하고 아름다운 Astro 개인 블로그 테마 템플릿",
-				icon: "/favicon/firefly-32.png",
+				title: "Skills For Real Engineers",
+				url: "https://github.com/mattpocock/skills",
+				desc: "실무 소프트웨어 개발을 위한 작고 조합 가능한 AI 에이전트 스킬 모음",
+				icon: "https://www.aihero.dev/favicon.svg",
+				invertInDark: true,
 				weight: 10,
 			},
 		],

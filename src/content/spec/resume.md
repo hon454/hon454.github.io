@@ -147,10 +147,11 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 
 ## 오픈소스
 
-### [Firefly](https://github.com/CuteLeaf/Firefly) — 오픈소스 기여
+### [Firefly](https://github.com/CuteLeaf/Firefly)
 
 **환경:** Astro 7, Svelte 5, TypeScript, Node.js, Merman, Mermaid
 
+- **[GitHub 저장소 카드 정적 렌더링](https://github.com/CuteLeaf/Firefly/pull/588)** — 방문자 브라우저에서 호출하던 GitHub API를 빌드 시점 캐시로 전환했습니다. Markdown·MDX의 저장소 참조를 자동 수집하고, API 장애나 사용량 제한 시 기존 캐시를 재사용하며, 빌드 전용 토큰이 결과물에 노출되지 않도록 구성해 카드의 로딩 실패와 잘못된 수치 표시를 해결했습니다.
 - **[Mermaid 렌더러 마이그레이션](https://github.com/CuteLeaf/Firefly/pull/584)** — 빌드 시 Mermaid 다이어그램을 생성하는 Merman을 WebAssembly 기반 패키지에서 Node.js 기반 최신 버전으로 전환했습니다. 변경된 렌더링 API와 옵션 구조에 맞춰 플러그인·테마 타입을 수정하고 기존 라이트·다크 테마의 배경색과 출력 형태를 유지했습니다.
 - **[Astro 레이아웃 슬롯 수정](https://github.com/CuteLeaf/Firefly/pull/587)** — 페이지별 `<head>` 콘텐츠가 중간 UI 컴포넌트에서 소비되어 최상위 레이아웃으로 전달되지 않던 구조를 추적하고, 슬롯 전달 위치를 수정했습니다.
 - **[한국어 문서화](https://github.com/CuteLeaf/Firefly/pull/583)** — 설치·구성·배포와 Markdown 확장 기능을 다루는 프로젝트 README의 한국어 번역본을 작성하고, 각 언어 문서에 한국어 탐색 경로를 연결했습니다.
@@ -179,11 +180,11 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 - 공개 저장소의 비로그인 경로와 GitHub App Device Flow 기반 비공개 저장소 접근을 함께 지원하고, 최소 읽기 권한·다중 계정·설치 범위 확인·토큰 자동 갱신을 구현했습니다.
 - 페이지 단위 메타데이터 배치와 행 단위 캐시·백그라운드 재검증으로 API 요청을 제어하고, GitHub의 SPA 탐색과 DOM 변경에도 리뷰어 표시가 유지되도록 구성했습니다.
 
-### [bevy_vrm1 PR #57](https://github.com/not-elm/bevy_vrm1/pull/57)
+### [bevy_vrm1](https://github.com/not-elm/bevy_vrm1)
 
 **환경:** Rust, Bevy, WGSL, WebGPU
 
-- Chrome·WebGPU에서 MToon VRM이 표시된 직후 화면 전체가 검게 변하지만 Metal 네이티브에서는 나타나지 않는 문제를 재현하고, 조명 단계별 비교로 원인을 `apply_emissive_light`에 격리했습니다.
+- **[WebGPU 렌더링 오류 분석·수정](https://github.com/not-elm/bevy_vrm1/pull/57)** — Chrome·WebGPU에서 MToon VRM이 표시된 직후 화면 전체가 검게 변하지만 Metal 네이티브에서는 나타나지 않는 문제를 재현하고, 조명 단계별 비교로 원인을 `apply_emissive_light`에 격리했습니다.
 - MToon의 `EMISSIVE_TEXTURE` 비트가 Standard Material 플래그의 같은 비트와 충돌한 상태에서 `PbrInput.flags`의 미정의 값을 읽어 바인딩되지 않은 텍스처를 샘플링하고, NaN·Inf가 HDR 톤매핑·Bloom 경로로 전파되는 것을 확인했습니다.
 - WGSL이 MToon uniform의 `material.flags`를 읽도록 수정하고, Rust의 `MtoonFlags`가 `emissive_texture` 존재 여부에 따라 `EMISSIVE_TEXTURE` 비트를 설정하도록 보완했습니다.
 

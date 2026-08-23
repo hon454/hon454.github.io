@@ -40,7 +40,7 @@ const pages = resolvePageToggles({
 
 export const siteConfig: SiteConfig = {
 	// 사이트 제목
-	title: "Jihoon Jeon의 블로그",
+	title: "Steady Spiral",
 
 	// 사이트 부제목
 	subtitle: "개발과 일상을 기록하는 공간",
@@ -50,7 +50,7 @@ export const siteConfig: SiteConfig = {
 
 	// 사이트 설명
 	description:
-		"Firefly는 Astro 프레임워크와 Fuwari 템플릿을 바탕으로 만든 산뜻하고 현대적인 개인 블로그 테마입니다. 기술 애호가와 콘텐츠 제작자를 위해 풍부한 기능과 높은 사용자 지정 가능성을 제공합니다.",
+		"느리더라도 멈추지 않고, 개발과 일상의 배움을 꾸준히 기록하는 공간입니다.",
 
 	// 사이트 키워드
 	keywords: [
@@ -88,12 +88,20 @@ export const siteConfig: SiteConfig = {
 	// OpenGraph 이미지 기능을 사용하면 배열에 PNG 형식의 favicon 아이콘이 있어야 합니다.
 	favicon: [
 		{
-			// 아이콘 파일 경로
-			src: "/favicon/firefly-32.png",
-			// 선택 사항: 테마 지정 'light' | 'dark'
-			// theme: "light",
-			// 선택 사항: 아이콘 크기
-			// sizes: "32x32",
+			src: "/favicon/steady-spiral-192.png",
+			sizes: "192x192",
+		},
+		{
+			src: "/favicon/steady-spiral-180.png",
+			sizes: "180x180",
+		},
+		{
+			src: "/favicon/steady-spiral-128.png",
+			sizes: "128x128",
+		},
+		{
+			src: "/favicon/steady-spiral-32.png",
+			sizes: "32x32",
 		},
 	],
 
@@ -110,12 +118,12 @@ export const siteConfig: SiteConfig = {
 		// Astro 아이콘 라이브러리는 valueDark 설정이 필요 없으며 아이콘이 테마에 맞춰 자동 전환됩니다.
 		logo: {
 			type: "image",
-			value: "assets/images/logo/firefly-light.png",
-			valueDark: "assets/images/logo/firefly-dark.png",
-			alt: "🍀",
+			value: "/assets/images/logo/steady-spiral-light.png",
+			valueDark: "/assets/images/logo/steady-spiral-dark.png",
+			alt: "Steady Spiral logo",
 		},
 		// 내비게이션 바 제목
-		title: "Firefly",
+		title: "Steady Spiral",
 		// 내비게이션 바가 화면 전체 너비를 채울지 여부
 		widthFull: false,
 		// 내비게이션 메뉴 정렬: left 왼쪽 정렬, center 가운데 정렬

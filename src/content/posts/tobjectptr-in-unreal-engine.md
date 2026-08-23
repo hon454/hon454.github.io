@@ -3,7 +3,6 @@ published: 2025-01-26
 author: Jihoon Jeon
 title: '언리얼 엔진 TObjectPtr 이해하기: UPROPERTY, GC와 안전한 API 설계'
 description: UE5의 TObjectPtr가 raw UObject 포인터와 어떻게 다르며, UPROPERTY·가비지 컬렉션·직렬화·컨테이너·함수 API에서 어떻게 사용하는지 정리합니다.
-image: https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80
 category: Unreal Engine
 tags:
   - unreal-engine
@@ -18,7 +17,7 @@ UE5는 raw UObject pointer member의 대체재로 `TObjectPtr`를 도입했다. 
 1. `TObjectPtr`라는 wrapper만 사용한다고 대상 UObject가 자동으로 살아남지는 않는다.
 2. Editor의 optional late resolution은 `TSoftObjectPtr`처럼 asset을 요청할 때 load하는 public lazy-loading API가 아니다.
 
-한 줄 결론은 다음과 같다.
+핵심부터 말하면 이렇다.
 
 > 오래 보관하는 reflected UObject member에는 `UPROPERTY() TObjectPtr<T>`를 기본으로 사용하고, 함수의 borrowed parameter·return과 짧은 local에는 raw `T*`를 사용한다.
 

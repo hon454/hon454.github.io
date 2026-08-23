@@ -3,7 +3,6 @@ published: 2023-01-19
 author: Jihoon Jeon
 title: Unreal Engine Construction Script를 안전하게 사용하는 법
 description: Construction Script와 C++ OnConstruction의 정확한 호출 시점, 에디터 재실행 비용과 순환 변경 위험, 멱등하고 빠른 제작 도구로 설계하는 방법을 정리합니다.
-image: https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80
 category: Unreal Engine
 tags:
   - unreal-engine
@@ -38,13 +37,13 @@ void AMyProceduralActor::OnConstruction(const FTransform& Transform)
 }
 ```
 
-둘을 완전히 같은 단계라고 부르면 세부 순서를 놓친다. `ExecuteConstruction`의 흐름은 대략 다음과 같다.
+둘을 완전히 같은 단계라고 부르면 세부 순서를 놓친다. `ExecuteConstruction`은 대략 아래 순서로 흐른다.
 
 1. native component와 Blueprint의 Simple Construction Script 컴포넌트를 준비한다.
 2. Blueprint `UserConstructionScript`를 실행한다.
 3. Blueprint로 만든 컴포넌트까지 생성·등록한 뒤 virtual `OnConstruction`을 호출한다.
 
-따라서 C++ `OnConstruction`은 Blueprint Construction Script가 끝난 뒤 실행되는 마지막 알림에 가깝다. C++로 override할 때도 `Super::OnConstruction`을 호출하고, Blueprint 파생 클래스가 추가한 컴포넌트나 값을 어느 단계에서 읽는지 실제 클래스 계층으로 검증해야 한다.
+C++ `OnConstruction`은 Blueprint Construction Script가 끝난 뒤 실행되는 마지막 알림에 가깝다. C++로 override할 때도 `Super::OnConstruction`을 호출하고, Blueprint 파생 클래스가 추가한 컴포넌트나 값을 어느 단계에서 읽는지 실제 클래스 계층으로 검증해야 한다.
 
 ## 생성자, Construction, `BeginPlay`의 역할 분리
 
@@ -169,9 +168,9 @@ void AProceduralFence::OnConstruction(const FTransform& Transform)
 
 ## 재실행은 컴포넌트의 수명도 바꾼다
 
-`RerunConstructionScripts`는 construction에서 자동 생성한 컴포넌트를 파괴하고 다시 만든 뒤, 보존 가능한 instance data를 복원하려 한다. 따라서 Construction Script에서 추가한 component의 raw pointer나 외부 Actor가 보관한 참조가 다음 재실행 뒤에도 같은 객체를 가리킨다고 가정하면 안 된다.
+`RerunConstructionScripts`는 construction에서 자동 생성한 컴포넌트를 파괴하고 다시 만든 뒤, 보존 가능한 instance data를 복원하려 한다. Construction Script에서 추가한 component의 raw pointer나 외부 Actor가 보관한 참조가 다음 재실행 뒤에도 같은 객체를 가리킨다고 가정하면 안 된다.
 
-안전한 선택은 다음과 같다.
+아래 방법 중 하나를 선택한다.
 
 - 고정된 핵심 컴포넌트는 가능하면 C++ constructor 또는 Blueprint Components 패널에서 만든다.
 - 가변적인 다수 요소는 ISM/HISM, spline mesh처럼 한 owner가 명확히 관리하는 표현을 사용한다.
@@ -223,7 +222,7 @@ void RebuildBakedFence();
 
 Construction Script는 네트워크 동기화 메커니즘이 아니다. 서버에서 실행한 Construction Script의 부작용이 클라이언트에 그대로 재생되거나 복제된다고 보장되지 않는다. 클라이언트에 복제로 생성된 Actor는 초기 replicated property를 받기 전에 construction 단계를 지날 수 있다.
 
-따라서 다음처럼 책임을 나눈다.
+책임은 아래처럼 나눈다.
 
 - 서버가 authoritative gameplay 값을 정한다.
 - 동기화할 값은 `Replicated` 또는 `ReplicatedUsing`으로 선언한다.
@@ -250,7 +249,7 @@ Construction Script가 빠르고 결정적이어야 하는 이유는 성능만�
 - 여러 Actor의 상태를 양방향으로 바꿈 → 단방향 owner나 별도 coordinator
 - 호출마다 누적되는 spawn, append, random, 외부 I/O → 명시적인 reset/rebuild 또는 별도 명령
 
-Construction Script의 장점은 “아무 초기화나 넣을 수 있다”는 데 있지 않다. **편집 가능한 입력을 즉시 확인 가능한 파생 결과로 바꾸고, 필요할 때 얼마든지 버리고 다시 만들 수 있다는 것**이 핵심이다. 이 계약을 지키면 Construction Script는 에디터를 불안정하게 만드는 숨은 이벤트가 아니라, 디자이너가 신뢰할 수 있는 작은 절차적 제작 도구가 된다.
+Construction Script는 “아무 초기화나 넣을 수 있다”는 생각으로 쓰는 곳이 아니다. **편집 가능한 입력을 즉시 확인 가능한 파생 결과로 바꾸고, 필요할 때 얼마든지 버리고 다시 만드는 도구**다. 이 계약을 지키면 Construction Script는 에디터를 불안정하게 만드는 숨은 이벤트가 아니라 디자이너가 신뢰할 수 있는 작은 절차적 제작 도구가 된다.
 
 ## 참고 자료
 

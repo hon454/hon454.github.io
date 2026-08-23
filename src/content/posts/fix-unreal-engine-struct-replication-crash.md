@@ -3,7 +3,6 @@ published: 2023-01-21
 author: Jihoon Jeon
 title: Unreal Engine replicated USTRUCT 배열 assertion을 정확히 고치기
 description: 반사 가능한 내부 필드가 없는 USTRUCT 배열을 복제할 때 발생한 FRepLayout assertion의 원인과, UPROPERTY·NotReplicated·custom NetSerialize의 정확한 경계를 설명합니다.
-image: https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80
 category: Unreal Engine
 tags:
   - unreal-engine
@@ -22,15 +21,15 @@ check(
     SharedParams.Cmds[CmdIndex + 1].Type == ERepLayoutCmdType::DynamicArray);
 ```
 
-이 문제는 구조체 내부의 전송할 멤버에 `UPROPERTY()`를 붙여 해결할 수 있다. 이를 일반 규칙으로 정리하면 다음과 같다.
+이 문제는 구조체 내부에서 전송할 멤버에 `UPROPERTY()`를 붙여 해결한다. 일반 규칙은 아래와 같다.
 
 > 기본 reflection 기반 복제로 클라이언트에 보낼 `USTRUCT` 내부 필드는 모두 `UPROPERTY()`로 반사되어야 한다. 로컬 전용 C++ 필드까지 무조건 `UPROPERTY`여야 하는 것은 아니며, custom serializer는 또 다른 계약을 사용한다.
 
-또한 이 특정 assertion은 구조체 하나가 아니라 **동적 배열 비교 경로**에서 나온다. 실제 선언과 call stack이 `UPROPERTY(Replicated) TArray<FMagazine...>`처럼 빈 replication layout의 구조체 배열이 커진 상황과 일치하는지 함께 확인해야 한다.
+이 특정 assertion은 구조체 하나가 아니라 **동적 배열 비교 경로**에서 나온다. 실제 선언과 call stack이 `UPROPERTY(Replicated) TArray<FMagazine...>`처럼 빈 replication layout의 구조체 배열이 커진 상황과 일치하는지도 함께 확인해야 한다.
 
 ## 문제가 된 구조체
 
-문제가 된 구조체는 다음과 같은 형태였다.
+문제가 된 구조체는 아래 형태였다.
 
 ```cpp
 USTRUCT()
@@ -173,7 +172,7 @@ struct FMagazine_NetQuantize
 
 [Unreal Engine property 문서](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-uproperties)는 `NotReplicated`가 struct member의 기본 복제를 건너뛰는 specifier라고 설명한다. 이 표현은 필드가 reflection, editor tooling, 복사나 다른 serialization에는 보이되 네트워크 스키마에서는 제외된다는 의도를 드러낸다. `Transient`는 일반 asset/save serialization에서도 유지하지 않겠다는 별도 선택이다.
 
-평범한 non-`UPROPERTY` C++ 필드를 로컬 캐시로 둘 수도 있다. 다만 다음 차이를 감수해야 한다.
+평범한 non-`UPROPERTY` C++ 필드를 로컬 캐시로 둘 수도 있다. 다만 아래 차이는 감수해야 한다.
 
 - reflection 기반 복제, 저장, editor 노출과 property 비교가 그 필드를 보지 못한다.
 - reflection이 수행하는 struct 복사나 초기화 경로에서 기대한 의미가 유지되는지 별도로 검증해야 한다.

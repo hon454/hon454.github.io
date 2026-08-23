@@ -3,7 +3,6 @@ published: 2023-01-31
 author: Jihoon Jeon
 title: '효율적으로 Blueprint 만들기: Unreal Fest 2022 세션 요약'
 description: Unreal Fest 2022의 Making Better Blueprints 세션에서 다룬 그래프 정리, Pure 함수, Tick, 참조, 제작 도구, 재사용과 Actor 통신 원칙을 정리합니다.
-image: https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80
 category: Unreal Engine
 tags:
   - unreal-engine
@@ -146,7 +145,7 @@ Blueprint Header View는 선택한 Blueprint를 동등한 C++ 선언 형태로 �
 
 Construction Script는 runtime Tick이 아니다. 다만 editor에서 instance property와 transform을 바꾸거나 Blueprint를 compile하고 reconstruction할 때 반복 실행될 수 있다. **Run Construction Script on Drag**가 켜져 있으면 이동 중 여러 번 실행될 수 있다.
 
-따라서 같은 입력으로 다시 실행해도 같은 결과가 나오도록 만들고 다음 동작은 피한다.
+같은 입력으로 다시 실행해도 같은 결과가 나오도록 만들고 아래 동작은 피한다.
 
 - 이전 결과를 정리하지 않는 누적 spawn·append
 - asset 저장, 파일 I/O, network 요청

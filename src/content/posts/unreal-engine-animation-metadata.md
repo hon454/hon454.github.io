@@ -3,7 +3,6 @@ published: 2024-11-20
 author: Jihoon Jeon
 title: 'Unreal Engine 애니메이션 메타데이터: UAnimMetaData와 Metadata Curve'
 description: UAnimMetaData를 애니메이션 에셋에 저장해 런타임에서 조회하고 에디터 자동화로 관리하며, Metadata Curve·Notify·Animation Attribute·Asset Metadata와 구분하는 기준을 정리합니다.
-image: https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80
 category: Unreal Engine
 tags:
   - unreal-engine
@@ -32,7 +31,7 @@ Unreal에는 이름이 비슷한 metadata system이 여러 개 있다.
 
 `UAnimationAsset`은 `UAnimMetaData` instance 배열을 보관한다. metadata object는 animation asset의 subobject로 저장되므로 class property를 사용해 구조화된 data를 만들 수 있다.
 
-대표적인 용도는 다음과 같다.
+주로 아래 용도로 쓴다.
 
 - locomotion clip의 gameplay category와 권장 play rate
 - 특정 animation을 처리하는 custom pipeline option
@@ -123,7 +122,7 @@ float GetRecommendedPlayRate(const UAnimationAsset* AnimationAsset)
 
 ### AnimGraph 평가 중 직접 찾지 않기
 
-`UAnimationAsset::FindMetaDataByClass`를 animation worker thread에서 안전하게 호출할 수 있다고 가정하지 않는다. UObject metadata를 AnimGraph 평가 중 매번 직접 찾기보다 다음처럼 경계를 분리한다.
+`UAnimationAsset::FindMetaDataByClass`를 animation worker thread에서 안전하게 호출할 수 있다고 가정하지 않는다. UObject metadata를 AnimGraph 평가 중 매번 직접 찾기보다 경계를 아래처럼 분리한다.
 
 1. game thread의 asset 선택·initialization 단계에서 metadata를 읽는다.
 2. 필요한 bool, float, enum/tag를 animation instance/proxy의 thread-safe state로 복사한다.
@@ -139,7 +138,7 @@ Blueprint의 `FindMetaDataByClass`가 단일 object를 반환하더라도 저장
 - `FindMetaDataByClass`는 일치하는 **첫 instance**를 반환한다.
 - editor의 `GetMetaDataOfClass`는 일치하는 instance **array**를 반환한다.
 
-따라서 duplicate는 표현 가능하다. 첫 항목만 쓰는 gameplay code가 duplicate 입력을 받으면 어떤 object가 선택되는지 content ordering에 의존한다.
+duplicate도 표현할 수 있다. 첫 항목만 쓰는 gameplay code가 duplicate 입력을 받으면 어떤 object가 선택되는지 content ordering에 의존한다.
 
 Project가 class별 singleton을 원한다면 명시적으로 정책을 만든다.
 
@@ -168,7 +167,7 @@ PrivateDependencyModuleNames.AddRange(
 );
 ```
 
-주요 operation은 다음과 같다.
+주로 아래 operation을 쓴다.
 
 | 목적                              | Editor API                                |
 | --------------------------------- | ----------------------------------------- |
@@ -180,7 +179,7 @@ PrivateDependencyModuleNames.AddRange(
 | instance 또는 class별 제거        | `RemoveMetaData`, `RemoveMetaDataOfClass` |
 | 전체 제거                         | `RemoveAllMetaData`                       |
 
-직접 작성한 C++ editor tool의 기본 흐름은 다음과 같다.
+직접 작성한 C++ editor tool의 기본 흐름은 이렇다.
 
 ```cpp
 // Editor module only
@@ -250,7 +249,7 @@ const bool bTraversalActive = TraversalWeight >= 0.5f;
 
 `0.5f`는 engine의 보편 규칙이 아니라 이 gameplay system이 정한 threshold다. 연속 weight가 유용하면 bool로 바꾸지 않고 그대로 사용한다. curve가 없을 때의 fallback도 gameplay code에서 명시한다.
 
-Metadata Curve가 잘 맞는 경우는 다음과 같다.
+아래 상황에는 Metadata Curve가 잘 맞는다.
 
 - state machine transition이나 AnimGraph branch가 현재 pose mix의 성격을 읽음
 - animation layer가 특정 curve flag를 downstream graph로 전달함

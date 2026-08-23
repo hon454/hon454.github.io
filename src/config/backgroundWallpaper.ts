@@ -73,7 +73,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 홈페이지 배너 문구 사용 여부
 			enable: true,
 			// 홈페이지 배너 주 제목
-			title: "Just Keep Pedaling!",
+			title: "Just Keep Pedaling",
 			// 홈페이지 배너 주 제목 글자 크기
 			titleSize: "4.5rem",
 			// 홈페이지 배너 부제목

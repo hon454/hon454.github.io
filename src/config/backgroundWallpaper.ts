@@ -79,8 +79,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 홈페이지 배너 부제목
 			subtitle: [
 				"Life is like riding a bicycle.",
-				"To keep your balance,",
-				"you must keep moving.",
+				"To keep your balance, you must keep moving.",
 				"— Albert Einstein, in a letter to his son Eduard, 1930",
 			],
 			// 홈페이지 배너 부제목 글자 크기

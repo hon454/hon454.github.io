@@ -15,38 +15,38 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	 *
 	 * 이미지 한 장이나 무작위 이미지 API만 사용한다면 문자열 형식을 권장합니다.
 	 * desktop: "https://t.alcy.cc/pc",   // 무작위 이미지 API
-	 * desktop: "assets/images/DesktopWallpaper/2026-seoul-gravel-200k.avif", // 단일 이미지
+	 * desktop: "assets/images/DesktopWallpaper/b1.avif", // 단일 이미지
 	 *
 	 * mobile: "https://t.alcy.cc/mp", // 무작위 이미지 API
-	 * mobile: "assets/images/MobileWallpaper/2026-seoul-gravel-200k.avif", // 단일 이미지
+	 * mobile: "assets/images/MobileWallpaper/m1.avif", // 단일 이미지
 	 *
 	 * 여러 이미지를 배열로 설정할 수도 있으며 페이지를 새로 고칠 때마다 한 장을 무작위로 표시합니다.
 	 * desktop: [
-	 * "assets/images/DesktopWallpaper/2026-seoul-gravel-200k.avif",
-	 * "assets/images/DesktopWallpaper/mountain-bike.avif",
+	 * "assets/images/DesktopWallpaper/b1.avif",
+	 * "assets/images/DesktopWallpaper/b2.avif",
 	 * ],
 	 *
 	 * mobile:[
-	 *   "assets/images/MobileWallpaper/2026-seoul-gravel-200k.avif",
-	 *   "assets/images/MobileWallpaper/mountain-bike.avif",
+	 *   "assets/images/MobileWallpaper/m1.avif",
+	 *   "assets/images/MobileWallpaper/m2.avif",
 	 * ],
 	 */
 	src: {
 		// 데스크톱 배경 이미지(단일 이미지 또는 여러 이미지 무작위 표시 지원)
-		// desktop: "assets/images/DesktopWallpaper/2026-seoul-gravel-200k.avif",
+		// desktop: "assets/images/DesktopWallpaper/b1.avif",
 		desktop: [
-			"assets/images/DesktopWallpaper/2026-seoul-gravel-200k.avif",
-			"assets/images/DesktopWallpaper/mountain-bike.avif",
-			"assets/images/DesktopWallpaper/mtb-trail-riding.avif",
-			"assets/images/DesktopWallpaper/2026-seoul-gravel-bike-hike.avif",
+			"assets/images/DesktopWallpaper/b1.avif",
+			"assets/images/DesktopWallpaper/b2.avif",
+			"assets/images/DesktopWallpaper/b3.avif",
+			"assets/images/DesktopWallpaper/b4.avif",
 		],
 		// 모바일 배경 이미지(단일 이미지 또는 여러 이미지 무작위 표시 지원)
-		// mobile: "assets/images/MobileWallpaper/2026-seoul-gravel-200k.avif",
+		// mobile: "assets/images/MobileWallpaper/m1.avif",
 		mobile: [
-			"assets/images/MobileWallpaper/2026-seoul-gravel-200k.avif",
-			"assets/images/MobileWallpaper/mountain-bike.avif",
-			"assets/images/MobileWallpaper/mtb-trail-riding.avif",
-			"assets/images/MobileWallpaper/2026-seoul-gravel-bike-hike.avif",
+			"assets/images/MobileWallpaper/m1.avif",
+			"assets/images/MobileWallpaper/m2.avif",
+			"assets/images/MobileWallpaper/m3.avif",
+			"assets/images/MobileWallpaper/m4.avif",
 		],
 		// 배경 동영상 재생 주소
 		// 단일 동영상 경로(문자열) 또는 여러 동영상 반복 재생(배열, 위 배경화면 설정 참고)을 지원합니다.

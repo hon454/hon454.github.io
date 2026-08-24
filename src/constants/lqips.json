@@ -61,12 +61,12 @@
   "src:content/posts/images/jetbrains-space-docker-wsl2-vhdx-disk-full/hyper-v-vhdx-expand.webp": "e7ebedf5f5f5ededed",
   "src:content/posts/images/jetbrains-space-docker-wsl2-vhdx-disk-full/docker-vhdx-capacity.webp": "f3f2f2f4f4f4f1f1f2",
   "src:content/posts/images/jetbrains-space-docker-wsl2-vhdx-disk-full/docker-desktop-wsl-integration.webp": "e1e9f4e7eef6f8f8f9",
-  "src:assets/images/DesktopWallpaper/2026-seoul-gravel-200k.avif": "8b7a77887a746d5c5b",
-  "src:assets/images/DesktopWallpaper/mountain-bike.avif": "667d4a9daa814e5d3a",
-  "src:assets/images/MobileWallpaper/2026-seoul-gravel-200k.avif": "8e757180686860443c",
-  "src:assets/images/MobileWallpaper/mountain-bike.avif": "7d8c5c79806e35332d",
-  "src:assets/images/MobileWallpaper/mtb-trail-riding.avif": "4b5b2f55613452553c",
-  "src:assets/images/MobileWallpaper/2026-seoul-gravel-bike-hike.avif": "b2a9989d93848a6c57",
-  "src:assets/images/DesktopWallpaper/mtb-trail-riding.avif": "455425505d2b576235",
-  "src:assets/images/DesktopWallpaper/2026-seoul-gravel-bike-hike.avif": "a49f85948b767a694f"
+  "src:assets/images/MobileWallpaper/m4.avif": "b2a9989d93848a6c57",
+  "src:assets/images/MobileWallpaper/m3.avif": "4b5b2f55613452553c",
+  "src:assets/images/MobileWallpaper/m2.avif": "7d8c5c79806e35332d",
+  "src:assets/images/MobileWallpaper/m1.avif": "8e757180686860443c",
+  "src:assets/images/DesktopWallpaper/b4.avif": "a49f85948b767a694f",
+  "src:assets/images/DesktopWallpaper/b3.avif": "455425505d2b576235",
+  "src:assets/images/DesktopWallpaper/b2.avif": "667d4a9daa814e5d3a",
+  "src:assets/images/DesktopWallpaper/b1.avif": "8b7a77887a746d5c5b"
 }

@@ -14,7 +14,7 @@ draft: true
 lang: ko
 ---
 
-많은 Unreal Interface를 구현한 클래스에서 generated code를 컴파일하면 아래와 비슷한 오류가 발생할 수 있다.
+많은 Unreal Interface를 구현한 클래스에서는 generated code를 컴파일할 때 아래와 비슷한 오류가 발생하기도 한다.
 
 ```text
 error C2607: static assertion failed
@@ -27,11 +27,11 @@ UE_ARRAY_COUNT(Z_Construct_UClass_..._Statics::InterfaceParams) < 64
 
 ## 적용 범위
 
-이 제한은 오류를 만든 정확한 엔진 버전의 생성 코드와 `FClassParams` 표현에 종속된다. 원문 사례에서는 구현 interface 개수를 담는 필드가 6비트로 표현됐고 generated code가 64 미만을 요구했다. 최신 버전에서도 같은 숫자라고 가정하지 말고, 설치한 엔진의 generated code와 `Class.h`를 확인해야 한다.
+이 제한은 오류를 만든 정확한 엔진 버전의 생성 코드와 `FClassParams` 표현에 종속된다. 원문 사례에서는 구현 interface 개수를 담는 필드가 6비트로 표현됐고 generated code가 64 미만을 요구했다. 최신 버전에서도 같은 숫자라고 가정해서는 안 된다. 설치한 엔진의 generated code와 `Class.h`를 확인해야 한다.
 
 ## 원인
 
-하나의 `UCLASS`가 직접 또는 부모 클래스를 통해 구현하는 reflected Unreal Interface의 총수가 해당 버전의 표현 한계를 넘었다. C++ 다중 상속 목록만 세면 부족하다. 부모 클래스가 구현한 interface와 Blueprint 계층에서 추가된 interface도 최종 class metadata에 포함될 수 있다.
+하나의 `UCLASS`가 직접 또는 부모 클래스를 통해 구현하는 reflected Unreal Interface의 총수가 해당 버전의 표현 한계를 넘었다. C++ 다중 상속 목록만 세면 부족하다. 부모 클래스가 구현한 interface와 Blueprint 계층에서 추가된 interface도 최종 class metadata에 포함되기도 한다.
 
 ## 재현 및 진단
 
@@ -43,14 +43,14 @@ UE_ARRAY_COUNT(Z_Construct_UClass_..._Statics::InterfaceParams) < 64
 
 ## 해결 방법
 
-가장 안전한 해결은 한 클래스가 구현하는 interface 수를 줄이는 것이다.
+가장 안전하게 해결하려면 한 클래스가 구현하는 interface 수를 줄인다.
 
 - 기능별로 component를 두고 interface 구현을 component로 이동한다.
 - 매우 작은 interface 여러 개가 항상 함께 쓰인다면 응집도 높은 하나의 계약으로 합친다.
 - 단순 질의는 gameplay tag, capability registry 또는 명시적 component 조회로 대체한다.
 - 상속 계층의 중복 interface 선언을 제거한다.
 
-엔진의 bit field나 assertion을 넓히는 패치는 engine fork 전체의 reflection ABI와 serialization 영향을 검토해야 한다. 프로젝트 코드만 컴파일되게 숫자를 바꾸는 임시 수정으로 취급하면 안 된다.
+엔진의 bit field나 assertion을 넓히려면 engine fork 전체에서 reflection ABI와 serialization에 미치는 영향을 검토해야 한다. 프로젝트 코드만 컴파일되게 숫자를 바꾸는 임시 수정으로 취급해서는 안 된다.
 
 ## 검증 방법
 

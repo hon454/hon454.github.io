@@ -24,11 +24,11 @@ UE5 IK Retargeter로 애니메이션을 변환한 뒤 root의 상하 움직임�
 
 ## 적용 버전
 
-원문은 UE5 초기 IK Rig/IK Retargeter UI를 기준으로 한다. UE 5.6 이후에는 Retarget Root, root settings, operation stack 표현이 달라질 수 있으므로 이름보다는 역할을 기준으로 확인한다.
+원문은 UE5 초기 IK Rig/IK Retargeter UI를 기준으로 한다. UE 5.6 이후에는 Retarget Root, root settings, operation stack 표현이 버전에 따라 달라지므로 이름보다는 역할을 기준으로 확인한다.
 
 ## 원인
 
-source와 target rig에 root를 담당하는 chain이 없거나 Retargeter의 chain mapping에서 root 변위가 전달되지 않았다. pelvis를 root 이동 전달용 chain처럼 별도로 매핑한 구성도 실제 root translation과 충돌할 수 있었다.
+source와 target rig에 root를 담당하는 chain이 없거나 Retargeter의 chain mapping에서 root 변위가 전달되지 않았다. pelvis를 root 이동 전달용 chain처럼 별도로 매핑하면 실제 root translation과 충돌하는 경우도 있었다.
 
 ## 재현 및 진단
 
@@ -40,11 +40,11 @@ source와 target rig에 root를 담당하는 chain이 없거나 Retargeter의 ch
 
 ## 해결 방법
 
-원문 사례에서는 source와 target에 Root chain을 추가하고 서로 매핑했다. 그다음 root chain의 translation mode를 `Globally Scaled`로 설정해 전진 변위를 복원하고 중복으로 만들었던 Pelvis chain과 그 mapping은 제거했다.
+원문 사례에서는 source와 target에 Root chain을 추가하고 서로 매핑했다. root chain의 translation mode를 `Globally Scaled`로 설정해 전진 변위를 복원했다. 중복으로 만들었던 Pelvis chain과 그 mapping은 제거했다.
 
 ![Root chain을 매핑한 IK Retargeter 설정](./images/ue5-root-motion-ik-retargeting/root-chain-mapping-after.webp)
 
-`Globally Scaled`는 source와 target의 전체 크기 차이를 고려해 translation을 전달할 때 유용하다. 스켈레톤 비율과 원하는 이동 방식에 따라 `Absolute`나 현재 버전의 root translation 설정이 더 적절할 수도 있다.
+`Globally Scaled`는 source와 target의 전체 크기 차이를 고려해 translation을 전달할 때 유용하다. 스켈레톤 비율과 원하는 이동 방식에 따라 `Absolute`나 현재 버전의 root translation 설정이 더 적절한 경우도 있다.
 
 ## 검증 방법
 
@@ -55,7 +55,7 @@ source와 target rig에 root를 담당하는 chain이 없거나 Retargeter의 ch
 
 ## 주의점
 
-Pelvis chain 제거는 모든 rig의 일반 해법이 아니다. 현재 retarget operation이 pelvis motion을 별도로 요구한다면 유지해야 한다. 핵심은 root 이동을 전달하는 chain과 pelvis 자세 보정이 중복으로 같은 bone을 제어하지 않도록 설정을 이해하는 것이다.
+Pelvis chain 제거는 모든 rig의 일반 해법이 아니다. 현재 retarget operation이 pelvis motion을 별도로 요구한다면 유지해야 한다. root 이동을 전달하는 chain과 pelvis 자세 보정이 같은 bone을 중복으로 제어하지 않도록 설정을 이해해야 한다.
 
 ## 참고 자료
 

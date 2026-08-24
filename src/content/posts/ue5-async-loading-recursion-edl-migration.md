@@ -22,7 +22,7 @@ AsyncLoadingThread.RecursionNotAllowed.Increment() == 1
 
 ## 문제 현상
 
-특정 map 또는 asset 묶음을 비동기로 불러올 때 AsyncLoading thread가 처리 중이던 로드 구간에 다시 진입해 assertion이 발생했다. UE4에서 선택적으로 쓰던 Event Driven Loader 설정과 UE5의 기본 로드 경로 차이 때문에 전환 직후 드러날 수 있다.
+특정 map 또는 asset 묶음을 비동기로 불러올 때 AsyncLoading thread가 처리 중이던 로드 구간에 다시 진입해 assertion이 발생했다. UE4에서 선택적으로 쓰던 Event Driven Loader 설정과 UE5의 기본 로드 경로 차이 때문에 전환 직후 드러나기도 한다.
 
 ## 적용 범위
 
@@ -38,25 +38,25 @@ UE4에서 UE5로 asset과 custom C++ serialization 코드를 함께 이관한 �
 
 ## 재현 및 진단
 
-1. assertion 전 전체 call stack과 마지막으로 로드한 package 이름을 수집한다.
+1. assertion 전 전체 call stack과 마지막으로 로드한 package 이름을 수집해 둔다.
 2. `LoadObject`, `StaticLoadObject`, `TryLoad`, synchronous streamable handle 호출을 검색한다.
-3. 이 호출이 constructor, `Serialize`, `PostLoad`와 async callback 안에서 실행되는지 분류한다.
-4. 문제가 되는 map의 asset dependency를 줄여 최소 재현 package를 찾는다.
-5. stale cooked output을 배제한 clean cook에서 다시 확인한다.
-6. custom engine이라면 exact upstream revision과 AsyncLoading 관련 diff를 비교한다.
+3. 이 호출이 constructor, `Serialize`, `PostLoad`와 async callback 안에서 실행되는지 나눠 본다.
+4. 문제가 되는 map의 asset dependency를 줄여 최소 재현 package를 찾아낸다.
+5. stale cooked output을 배제한 clean cook에서 다시 확인해 본다.
+6. custom engine이라면 exact upstream revision과 AsyncLoading 관련 diff도 비교한다.
 
 ## 해결 방법
 
 로드 도중 다시 진입하는 동기 load를 제거하고 dependency를 soft reference와 상위 단계의 명시적 async request로 옮긴다. callback에서는 이미 완료된 object를 사용하고 같은 package graph를 다시 로드하지 않는다.
 
-잘못된 asset reference나 redirect가 원인이라면 해당 asset을 새 버전에서 다시 저장하고 redirect를 정리한 뒤 전체 recook한다. assertion 자체를 끄거나 EDL 동작을 억지로 과거 방식으로 되돌리면 상태 손상을 숨길 수 있으므로 해결책으로 보지 않는다.
+잘못된 asset reference나 redirect가 원인이라면 해당 asset을 새 버전에서 다시 저장하고 redirect를 정리한 뒤 전체 recook한다. assertion 자체를 끄거나 EDL 동작을 억지로 과거 방식으로 되돌리면 상태 손상을 숨길 우려가 있어 해결책으로 보지 않는다.
 
 ## 검증 방법
 
-- editor, standalone과 packaged build에서 동일한 map 순서를 반복한다.
+- editor, standalone과 packaged build에서 동일한 map 순서를 반복해 본다.
 - cold start와 이미 asset cache가 채워진 두 상황을 시험한다.
-- 여러 번의 level transition과 비동기 취소 경로를 확인한다.
-- package 이름을 포함한 로드 로그에서 같은 package의 재진입이 사라졌는지 본다.
+- 여러 번의 level transition과 비동기 취소 경로를 확인해 둔다.
+- package 이름을 포함한 로드 로그에서 같은 package의 재진입이 사라졌는지 살펴본다.
 
 ## 주의점
 

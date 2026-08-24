@@ -28,7 +28,7 @@ Docker Desktop이 WSL2 distribution의 virtual disk에 container data를 저장�
 
 ## 원인
 
-Windows host volume의 남은 공간과 WSL2 ext4 filesystem의 크기는 별개다. 오래된 환경에서는 virtual disk의 최대 크기 또는 partition/filesystem 크기가 먼저 한계에 닿을 수 있다. 이미지, volume, database WAL과 search index가 계속 늘면서 Linux 쪽 사용률이 100%가 됐다.
+Windows host volume의 남은 공간과 WSL2 ext4 filesystem의 크기는 별개다. 오래된 환경에서는 virtual disk의 최대 크기 또는 partition/filesystem 크기가 먼저 한계에 닿기도 한다. 이미지, volume, database WAL과 search index가 계속 늘면서 Linux 쪽 사용률이 100%가 됐다.
 
 ## 재현 및 진단
 
@@ -39,7 +39,7 @@ wsl --list --verbose
 wsl --system -d <distribution> df -h
 ```
 
-Docker가 사용하는 distribution 이름과 data location은 Docker Desktop 버전에 따라 달라질 수 있다. VHDX 경로를 추측해 수정하지 말고 Docker Desktop 설정과 `wsl --list`로 먼저 식별한다.
+Docker가 사용하는 distribution 이름과 data location은 Docker Desktop 버전에 따라 달라지기도 한다. VHDX 경로를 추측해 수정하지 말고 Docker Desktop 설정과 `wsl --list`로 먼저 식별한다.
 
 ## 해결 방법
 
@@ -50,7 +50,7 @@ wsl --shutdown
 wsl --manage <distribution> --resize 1536GB
 ```
 
-명령이 지원되지 않는 구버전은 WSL을 업데이트하는 편이 우선이다. 불가피하게 수동으로 처리할 때는 backup을 만든 뒤 VHDX를 확장하고, 내부 partition과 ext4 filesystem까지 별도로 늘려야 한다.
+명령이 지원되지 않는 구버전은 WSL을 업데이트하는 편이 우선이다. 불가피하게 수동으로 처리할 때는 backup을 만든 뒤 VHDX를 확장하고 내부 partition과 ext4 filesystem까지 별도로 늘려야 한다.
 
 ![Hyper-V 도구에서 VHDX 확장 단계를 연 화면](./images/jetbrains-space-docker-wsl2-vhdx-disk-full/hyper-v-vhdx-expand.webp)
 
@@ -62,14 +62,14 @@ wsl --manage <distribution> --resize 1536GB
 
 ## 검증 방법
 
-- WSL의 `df -h`와 block device 크기가 모두 늘었는지 확인한다.
+- WSL의 `df -h`와 block device 크기가 모두 늘었는지 확인해 본다.
 - Docker Desktop과 대상 container를 시작해 database recovery log를 점검한다.
-- 쓰기·index 생성과 backup 복구 시험을 수행한다.
+- 쓰기·index 생성과 backup 복구 시험을 수행해 본다.
 - 며칠간 disk growth와 alert threshold를 모니터링한다.
 
 ## 주의점
 
-VHDX 확장은 host filesystem, virtual disk, partition과 ext4 filesystem을 함께 다루는 작업이다. 중간에 전원을 끄거나 잘못된 distribution의 disk를 수정하면 데이터가 손상될 수 있다. 확장만 반복하지 말고 log·artifact·volume retention도 함께 고친다.
+VHDX 확장은 host filesystem, virtual disk, partition과 ext4 filesystem을 함께 다루는 작업이다. 중간에 전원을 끄거나 잘못된 distribution의 disk를 수정하면 데이터가 손상될 위험이 있다. 확장만 반복하지 말고 log·artifact·volume retention도 함께 고친다.
 
 ## 참고 자료
 

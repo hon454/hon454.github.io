@@ -20,17 +20,17 @@ lang: ko
 
 ## 문제 현상
 
-크래시가 나타난 시점은 전체화면 전환이었지만 실제 call stack에서는 attached actor를 순회하는 동일한 프레임이 반복됐다.
+크래시는 전체화면 전환 때 나타났지만 실제 call stack에서는 attached actor를 순회하는 동일한 프레임이 반복됐다.
 
 ![ForEachAttachedActors가 반복된 스택 오버플로 call stack](./images/unreal-editor-fullscreen-foreachattachedactors-crash/foreach-attached-actors-stack-overflow.webp)
 
 ## 적용 범위
 
-런타임에 `NewObject`로 scene component를 만들고 다른 actor가 소유한 component나 socket에 부착하는 코드가 있는 UE 프로젝트에 해당한다. 종료·월드 정리 시점에만 크래시가 보인다면 생성 당시의 owner와 attachment 관계도 함께 확인할 가치가 있다.
+대상은 런타임에 `NewObject`로 scene component를 만드는 UE 프로젝트다. 이를 다른 actor가 소유한 component나 socket에 부착하는 코드가 있었다. 종료·월드 정리 시점에만 크래시가 보인다면 생성 당시의 owner와 attachment 관계도 함께 확인할 가치가 있다.
 
 ## 원인
 
-문제가 된 코드는 새 `UStaticMeshComponent`의 Outer를 현재 객체로 지정한 뒤 별도의 전시 actor에 owned component로 추가했다. 그 component를 또 다른 actor가 소유한 mesh에 다시 붙였다. 이 때문에 UObject 소유권, actor의 owned component 목록, scene attachment 계층이 서로 다른 대상을 가리켰다.
+문제가 된 코드는 새 `UStaticMeshComponent`의 Outer를 현재 객체로 지정했다. 그런 다음 별도의 전시 actor에 owned component로 추가했다. 이 component를 또 다른 actor가 소유한 mesh에 붙이면서 UObject 소유권, actor의 owned component 목록, scene attachment 계층이 서로 다른 대상을 가리켰다.
 
 ```cpp
 UStaticMeshComponent* DisplayComponent =
@@ -75,7 +75,7 @@ DisplayComponent->AttachToComponent(
     SocketName);
 ```
 
-핵심은 특정 API 이름이 아니라, 누가 component를 소유하고 파괴할지 명확하게 만드는 것이다. component를 `DisplayActor`가 소유해야 하는지 `ItemActor`가 소유해야 하는지는 실제 생명주기에 맞춰 하나로 정해야 한다.
+특정 API 이름보다 component를 소유하고 파괴할 주체를 명확히 정하는 일이 중요하다. component를 `DisplayActor`가 소유할지 `ItemActor`가 소유할지는 실제 생명주기에 맞춰 하나로 정해야 한다.
 
 ## 검증 방법
 
@@ -86,7 +86,7 @@ DisplayComponent->AttachToComponent(
 
 ## 주의점
 
-`AddOwnedComponent`, `AddInstanceComponent`, `RegisterComponent`는 서로 완전히 같은 역할이 아니다. 생성 방식과 editor instance component로서의 저장 필요 여부에 맞게 선택해야 한다. 단순히 종료 전에 component를 강제 삭제해 call stack만 없애면 잘못된 소유 관계가 다른 경로에서 다시 나타날 수 있다.
+`AddOwnedComponent`, `AddInstanceComponent`, `RegisterComponent`는 서로 완전히 같은 역할이 아니다. 생성 방식과 editor instance component로서의 저장 필요 여부에 맞게 선택해야 한다. 종료 전에 component를 강제 삭제해 call stack만 없애면 잘못된 소유 관계가 다른 경로에서 다시 나타날 여지가 있다.
 
 ## 참고 자료
 

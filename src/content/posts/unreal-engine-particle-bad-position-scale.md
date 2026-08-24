@@ -42,26 +42,26 @@ Cascade particle system과 MacroUV 또는 object position/scale 계산 경로에
 
 ## 재현 및 진단
 
-1. 로그 직전 component location, rotation, scale과 parent transform을 기록한다.
-2. 각 float에 `FMath::IsFinite` 검사를 넣어 최초 invalid 값이 생기는 지점을 찾는다.
-3. world origin, Z=0, camera near plane과 큰 좌표에서 각각 비교한다.
+1. 로그 직전 component location, rotation, scale과 parent transform을 기록해 둔다.
+2. 각 float에 `FMath::IsFinite` 검사를 넣어 최초 invalid 값이 생기는 지점을 찾아낸다.
+3. world origin, Z=0, camera near plane과 큰 좌표에서 각각 비교해 본다.
 4. MacroUV를 끄거나 position/radius를 바꿔 해당 경로와의 관련성을 확인한다.
-5. 같은 asset을 새 level의 독립 component로 재현한다.
+5. 같은 asset을 새 level의 독립 component로 재현해 본다.
 
 ## 해결 방법
 
-invalid transform이 발견되면 값을 만드는 gameplay/attachment 코드를 고친다. MacroUV 설정이 실제 effect와 맞지 않다면 position과 radius를 유효한 범위로 조정한다. 작은 Z offset으로만 회피할 수 있다면 workaround의 근거와 적용 범위를 주석으로 남기고, exact engine revision의 `GetObjectPositionAndScale` 구현과 관련 issue를 계속 확인한다.
+invalid transform이 발견되면 값을 만드는 gameplay/attachment 코드를 고친다. MacroUV 설정이 실제 effect와 맞지 않다면 position과 radius를 유효한 범위로 조정한다. 작은 Z offset만으로 회피된다면 workaround의 근거와 적용 범위를 주석으로 남기고 exact engine revision의 `GetObjectPositionAndScale` 구현과 관련 issue를 계속 확인한다.
 
 ## 검증 방법
 
-- 원점과 원점 밖, 여러 camera angle과 FOV에서 로그를 확인한다.
+- 원점과 원점 밖, 여러 camera angle과 FOV에서 로그를 확인해 본다.
 - component attach/detach, pooling과 level transition을 반복한다.
-- Development와 Shipping에 가까운 render 설정에서 시각 결과를 비교한다.
-- 로그가 없어졌을 뿐 아니라 particle의 크기·MacroUV가 올바른지 확인한다.
+- Development와 Shipping에 가까운 render 설정에서 시각 결과를 서로 비교한다.
+- 로그가 없어졌을 뿐 아니라 particle의 크기·MacroUV가 올바른지도 살핀다.
 
 ## 주의점
 
-좌표에 임의의 epsilon을 더하면 잘못된 transform이나 projection 문제를 숨길 수 있다. `W == 0` 검사를 제거하거나 무조건 1로 바꾸면 화면 위치와 크기가 왜곡되므로 엔진을 수정하기 전에 입력값부터 추적한다.
+좌표에 임의의 epsilon을 더하면 잘못된 transform이나 projection 문제를 숨길 위험이 있다. `W == 0` 검사를 제거하거나 무조건 1로 바꾸면 화면 위치와 크기가 왜곡되므로 엔진을 수정하기 전에 입력값부터 추적한다.
 
 ## 참고 자료
 

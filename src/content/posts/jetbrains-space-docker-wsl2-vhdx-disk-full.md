@@ -1,6 +1,7 @@
 ---
 title: "Docker Desktop WSL2 VHDX 용량 부족 복구"
 published: 2023-09-26
+updated: 2026-08-24
 description: "JetBrains Space On-Premises 서비스에서 No space left on device가 발생한 사례를 통해 Docker Desktop의 WSL2 VHDX 용량을 진단하고 확장하는 방법을 정리합니다."
 image: ""
 tags:
@@ -10,7 +11,7 @@ tags:
   - disk-space
   - jetbrains-space
 category: DevOps
-draft: true
+draft: false
 lang: ko
 ---
 

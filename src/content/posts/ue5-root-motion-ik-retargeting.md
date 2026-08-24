@@ -1,6 +1,7 @@
 ---
 title: "UE5 IK Retargeter에서 Root Motion이 앞으로 이동하지 않을 때"
 published: 2023-12-11
+updated: 2026-08-24
 description: "UE5 IK Retargeter 결과에서 수직 Root Motion은 보이지만 전진 이동이 사라질 때 Root chain과 translation 설정을 점검하는 방법을 설명합니다."
 image: ""
 tags:
@@ -10,7 +11,7 @@ tags:
   - ik-retargeter
   - ue5
 category: Unreal Engine
-draft: true
+draft: false
 lang: ko
 ---
 

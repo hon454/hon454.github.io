@@ -1,6 +1,7 @@
 ---
 title: "TeamCity 환경 변수와 buildAgent.properties 우선순위"
 published: 2023-03-31
+updated: 2026-08-24
 description: "TeamCity 프로젝트에 같은 이름의 환경 변수가 있을 때 agent의 buildAgent.properties 값이 무시되는 이유와 안전한 설정 분리 방법을 설명합니다."
 image: ""
 tags:
@@ -10,7 +11,7 @@ tags:
   - build-agent
   - configuration
 category: TeamCity
-draft: true
+draft: false
 lang: ko
 ---
 

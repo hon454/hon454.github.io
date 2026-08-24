@@ -1,6 +1,7 @@
 ---
 title: "FParticleSystemSceneProxy의 잘못된 위치·스케일 로그 진단"
 published: 2023-11-15
+updated: 2026-08-24
 description: "ParticleSystemSceneProxy에서 projection W가 0이거나 NDC 값이 무한대로 기록될 때 transform과 MacroUV 설정을 점검하는 방법을 정리합니다."
 image: ""
 tags:
@@ -10,7 +11,7 @@ tags:
   - projection
   - debugging
 category: Unreal Engine
-draft: true
+draft: false
 lang: ko
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: "MoveDirectlyToward가 NavMesh 없이 멈출 때 확인할 것"
 published: 2023-05-30
+updated: 2026-08-24
 description: "Unreal Engine의 MoveDirectlyToward는 내비게이션을 우회하도록 설계됐지만 이동하지 않을 때가 있습니다. API 계약과 pawn·path following 설정을 기준으로 진단합니다."
 image: ""
 tags:
@@ -10,7 +11,7 @@ tags:
   - path-following
   - navigation
 category: Unreal Engine
-draft: true
+draft: false
 lang: ko
 ---
 

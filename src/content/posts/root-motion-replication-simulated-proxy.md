@@ -1,6 +1,7 @@
 ---
 title: "Root Motion 중 이동 리플리케이션이 멈춘 것처럼 보일 때"
 published: 2023-08-23
+updated: 2026-08-24
 description: "네트워크 Root Motion Montage가 재생되는 동안 simulated proxy의 일반 ReplicatedMovement 보정 경로가 달라지는 이유와 안전한 점검 순서를 설명합니다."
 image: ""
 tags:
@@ -10,7 +11,7 @@ tags:
   - animation-montage
   - replication
 category: Unreal Engine
-draft: true
+draft: false
 lang: ko
 ---
 

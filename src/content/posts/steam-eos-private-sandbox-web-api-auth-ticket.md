@@ -1,6 +1,7 @@
 ---
 title: "Steam 인증 티켓과 EOS Private Sandbox 권한 확인"
 published: 2023-11-13
+updated: 2026-08-24
 description: "Steam Web API 인증 티켓을 사용한 EOS 로그인 실패가 Private Sandbox의 Player Group과 Deployment 권한 누락에서 발생한 사례를 정리합니다."
 image: ""
 tags:
@@ -10,7 +11,7 @@ tags:
   - authentication
   - sandbox
 category: Unreal Engine
-draft: true
+draft: false
 lang: ko
 ---
 

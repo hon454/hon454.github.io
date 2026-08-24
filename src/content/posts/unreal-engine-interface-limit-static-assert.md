@@ -1,6 +1,7 @@
 ---
 title: "Unreal C++ Interface 64개 제한과 C2607 진단"
 published: 2023-12-19
+updated: 2026-08-24
 description: "UnrealHeaderTool 생성 코드에서 interface 배열 개수 제한 static_assert와 C2607이 발생할 때 상속된 interface까지 포함해 원인을 찾는 방법을 정리합니다."
 image: ""
 tags:
@@ -10,7 +11,7 @@ tags:
   - unreal-header-tool
   - compiler-error
 category: Unreal Engine
-draft: true
+draft: false
 lang: ko
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: "Particle Bounding Box와 화면 각도별 컬링 문제"
 published: 2023-09-12
+updated: 2026-08-24
 description: "Unreal Engine Cascade 파티클이 카메라 각도에 따라 사라질 때 bounds 시각화와 Fixed Relative Bounding Box로 컬링 범위를 교정하는 방법을 설명합니다."
 image: ""
 tags:
@@ -10,7 +11,7 @@ tags:
   - bounds
   - culling
 category: Unreal Engine
-draft: true
+draft: false
 lang: ko
 ---
 

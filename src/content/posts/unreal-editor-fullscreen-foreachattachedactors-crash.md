@@ -1,6 +1,7 @@
 ---
 title: "전체화면 PIE 종료 시 ForEachAttachedActors 재귀 크래시"
 published: 2024-01-17
+updated: 2026-08-24
 description: "전체화면 PIE를 종료할 때 AActor::ForEachAttachedActors가 재귀하며 스택 오버플로를 일으킨 사례를 컴포넌트 소유권과 부착 계층 관점에서 정리합니다."
 image: ""
 tags:
@@ -10,7 +11,7 @@ tags:
   - attachment
   - crash
 category: Unreal Engine
-draft: true
+draft: false
 lang: ko
 ---
 

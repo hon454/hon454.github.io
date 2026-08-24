@@ -1,6 +1,7 @@
 ---
 title: "UE4→UE5 전환 후 AsyncLoading 재귀 assertion 진단"
 published: 2023-11-03
+updated: 2026-08-24
 description: "UE4 프로젝트를 UE5로 옮긴 뒤 패키징 빌드에서 AsyncLoadingThread RecursionNotAllowed assertion이 발생할 때 재진입 로드를 찾는 절차를 정리합니다."
 image: ""
 tags:
@@ -10,7 +11,7 @@ tags:
   - migration
   - crash
 category: Unreal Engine
-draft: true
+draft: false
 lang: ko
 ---
 

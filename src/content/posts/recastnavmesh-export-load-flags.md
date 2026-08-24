@@ -1,6 +1,7 @@
 ---
 title: "RecastNavMesh export/load flags 크래시 진단"
 published: 2024-05-18
+updated: 2026-08-24
 description: "특정 저장 데이터를 불러올 때 RecastNavMesh의 export와 load flags가 일치하지 않아 발생한 크래시를 지도 내 내비게이션 데이터 관점에서 진단합니다."
 image: ""
 tags:
@@ -10,7 +11,7 @@ tags:
   - crash
   - debugging
 category: Unreal Engine
-draft: true
+draft: false
 lang: ko
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: "Rider 대용량 파일 코드 분석 제한 조정하기"
 published: 2023-04-10
+updated: 2026-08-24
 description: "JetBrains Rider가 큰 소스 파일의 code insight를 끌 때 파일별 분석 수준과 전역 크기 제한을 구분해 조정하는 방법을 설명합니다."
 image: ""
 tags:
@@ -10,7 +11,7 @@ tags:
   - large-files
   - performance
 category: Rider
-draft: true
+draft: false
 lang: ko
 ---
 

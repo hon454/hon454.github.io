@@ -11,7 +11,7 @@ tags:
   - codex
 ---
 
-최근 트렌딩된 Agent Skill 가운데 `eli5`가 눈에 들어왔다. 이름 자체는 익숙했다. **Explain Like I'm Five**라는 말 그대로 아무것도 모르는 사람에게 설명하듯 쉽게 풀어 달라는 뜻이다.
+최근 트렌딩된 Agent Skill 가운데 `eli5`가 눈에 들어왔다. 계기는 [Claude Code 팀의 Thariq Shihipar가 X에 올린 소개 글](https://x.com/trq212/status/2090884854590382515?s=20)이었다. 그는 Anthropic 내부에서 요즘 이 스킬을 많이 쓴다고 적었다. 이름 자체는 익숙했다. **Explain Like I'm Five**라는 말 그대로 아무것도 모르는 사람에게 설명하듯 쉽게 풀어 달라는 뜻이다.
 
 이번에 눈에 들어온 건 이름보다 스킬 설명이었다. 맥락이나 배경지식이 없는 사람에게 큰 그림과 적은 글로 HTML 설명 자료를 만들어 준다고 적혀 있었다.
 
@@ -35,6 +35,8 @@ tags:
 ## 반가움 다음에 찾아온 충격
 
 출처를 따라가 보니 내가 본 `eli5`는 [`anthropics/claude-plugins-community`](https://github.com/anthropics/claude-plugins-community/tree/main/eli5)에 등록된 Claude용 커뮤니티 플러그인이었다. manifest에 표시된 작성자는 Thariq Shihipar이고 최초 커밋 날짜는 2026년 8월 21일이다.
+
+Thariq가 후속 글에서 든 사용 예도 낯설지 않았다. 그는 설명 자료를 만들거나 문제를 깊게 파고들 때 `eli5`를 쓴다며 모듈의 작동 방식, 트레이드오프를 택한 이유, 장애 원인을 묻는 예를 들었다. 내가 PR과 리뷰 요청을 이해하려고 사이드 챗을 열던 방식과 거의 같은 결이었다.
 
 이 저장소는 이름에 `anthropics`가 들어가지만 Anthropic이 직접 유지하는 공식 플러그인 모음은 아니다. README는 이곳을 심사를 통과한 커뮤니티 플러그인의 읽기 전용 미러라고 설명하며 공식 플러그인 저장소를 따로 안내한다. 그래서 이 글에서는 `eli5`를 Anthropic 공식 스킬이라고 부르지 않고 Claude용 커뮤니티 스킬로 표현한다.
 
@@ -140,5 +142,6 @@ tags:
 
 ## 참고
 
+- [Thariq Shihipar의 ELI5 소개 X 게시물](https://x.com/trq212/status/2090884854590382515?s=20)
 - [Claude Plugins Community의 `eli5`](https://github.com/anthropics/claude-plugins-community/tree/main/eli5)
 - [OpenAI 공식 문서: Build skills](https://learn.chatgpt.com/docs/build-skills)

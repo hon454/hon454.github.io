@@ -3,6 +3,7 @@ import type { CollectionConfig } from "astro/content/config";
 import { glob } from "astro/loaders";
 import { type ZodType, z } from "astro/zod";
 import {
+	getPostCategorySlug,
 	isPostCategoryName,
 	POST_CATEGORY_NAMES,
 } from "./constants/post-categories";
@@ -45,10 +46,7 @@ type ContentCollection<T> = CollectionConfig<
 const postTagSchema = z
 	.string()
 	.trim()
-	.regex(
-		/^[a-z0-9][a-z0-9+]*(?:-[a-z0-9+]+)*$/,
-		"Tags must use lowercase kebab-case",
-	);
+	.regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Tags must use lowercase kebab-case");
 
 const postTagsSchema = z
 	.array(postTagSchema)
@@ -67,31 +65,42 @@ const postCategorySchema = z
 
 const postsCollection: ContentCollection<PostData> = defineCollection({
 	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts" }),
-	schema: z.object({
-		title: z.string(),
-		published: z.date(),
-		updated: z.date().optional(),
-		draft: z.boolean().optional().default(false),
-		description: z.string().optional().default(""),
-		image: z.string().optional().default(""),
-		tags: postTagsSchema.optional().default([]),
-		category: postCategorySchema.optional().nullable().default(""),
-		lang: z.string().optional().default(""),
-		pinned: z.boolean().optional().default(false),
-		author: z.string().optional().default(""),
-		sourceLink: z.string().optional().default(""),
-		licenseName: z.string().optional().default(""),
-		licenseUrl: z.string().optional().default(""),
-		comment: z.boolean().optional().default(true),
-		password: z.string().optional().default(""),
-		passwordHint: z.string().optional().default(""),
+	schema: z
+		.object({
+			title: z.string(),
+			published: z.date(),
+			updated: z.date().optional(),
+			draft: z.boolean().optional().default(false),
+			description: z.string().optional().default(""),
+			image: z.string().optional().default(""),
+			tags: postTagsSchema.optional().default([]),
+			category: postCategorySchema.optional().nullable().default(""),
+			lang: z.string().optional().default(""),
+			pinned: z.boolean().optional().default(false),
+			author: z.string().optional().default(""),
+			sourceLink: z.string().optional().default(""),
+			licenseName: z.string().optional().default(""),
+			licenseUrl: z.string().optional().default(""),
+			comment: z.boolean().optional().default(true),
+			password: z.string().optional().default(""),
+			passwordHint: z.string().optional().default(""),
 
-		/* For internal use */
-		prevTitle: z.string().default(""),
-		prevSlug: z.string().default(""),
-		nextTitle: z.string().default(""),
-		nextSlug: z.string().default(""),
-	}),
+			/* For internal use */
+			prevTitle: z.string().default(""),
+			prevSlug: z.string().default(""),
+			nextTitle: z.string().default(""),
+			nextSlug: z.string().default(""),
+		})
+		.superRefine(({ category, tags }, context) => {
+			const categorySlug = getPostCategorySlug(category);
+			if (categorySlug && tags.includes(categorySlug)) {
+				context.addIssue({
+					code: "custom",
+					message: `Do not repeat the category as the "${categorySlug}" tag`,
+					path: ["tags"],
+				});
+			}
+		}),
 });
 
 const specCollection: ContentCollection<Record<string, never>> =

@@ -95,7 +95,7 @@ const jsonLd = {
 	},
 	headline: entry.data.title,
 	description: entry.data.description || entry.data.title,
-	keywords: entry.data.tags,
+	keywords: entry.data.tags.length > 0 ? entry.data.tags : undefined,
 	articleSection: entry.data.category || undefined,
 	author: {
 		"@type": "Person",
@@ -140,11 +140,15 @@ const relatedPosts = await getRelatedPosts(entry, 5);
       />
     )
   }
-  <meta
-    slot="head"
-    content={entry.data.tags.join(", ")}
-    data-pagefind-meta="tags[content]"
-  />
+  {
+    entry.data.tags.length > 0 && (
+      <meta
+        slot="head"
+        content={entry.data.tags.join(", ")}
+        data-pagefind-meta="tags[content]"
+      />
+    )
+  }
   {
     entry.data.tags.map((tag) => (
       <meta

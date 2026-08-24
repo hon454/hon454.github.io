@@ -8,7 +8,6 @@ tags:
   - teamcity
   - ci-cd
   - environment-variables
-  - devops
 category: 개발 인프라
 draft: false
 lang: ko

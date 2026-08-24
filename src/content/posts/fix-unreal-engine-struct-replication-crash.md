@@ -13,7 +13,7 @@ tags:
   - debugging
 ---
 
-`USTRUCT` 배열을 replicated property로 사용한 뒤 첫 원소를 추가했을 때, `FRepLayout` 내부의 다음 assertion에서 실행이 멈출 수 있다.
+`USTRUCT` 배열을 replicated property로 사용한 뒤 첫 원소를 추가했을 때, `FRepLayout` 내부의 다음 assertion에서 실행이 멈추기도 한다.
 
 ```cpp
 check(
@@ -21,9 +21,9 @@ check(
     SharedParams.Cmds[CmdIndex + 1].Type == ERepLayoutCmdType::DynamicArray);
 ```
 
-이 문제는 구조체 내부에서 전송할 멤버에 `UPROPERTY()`를 붙여 해결한다. 일반 규칙은 아래와 같다.
+이 문제는 구조체 내부에서 전송할 멤버에 `UPROPERTY()`를 붙여 해결한다. 규칙은 간단하다.
 
-> 기본 reflection 기반 복제로 클라이언트에 보낼 `USTRUCT` 내부 필드는 모두 `UPROPERTY()`로 반사되어야 한다. 로컬 전용 C++ 필드까지 무조건 `UPROPERTY`여야 하는 것은 아니며, custom serializer는 또 다른 계약을 사용한다.
+> 기본 reflection 기반 복제로 클라이언트에 보낼 `USTRUCT` 내부 필드는 모두 `UPROPERTY()`로 반사되어야 한다. 로컬 전용 C++ 필드까지 무조건 `UPROPERTY`여야 하는 것은 아니며 custom serializer는 또 다른 계약을 사용한다.
 
 이 특정 assertion은 구조체 하나가 아니라 **동적 배열 비교 경로**에서 나온다. 실제 선언과 call stack이 `UPROPERTY(Replicated) TArray<FMagazine...>`처럼 빈 replication layout의 구조체 배열이 커진 상황과 일치하는지도 함께 확인해야 한다.
 
@@ -54,11 +54,49 @@ TArray<FMagazine_NetQuantize> Magazines;
 
 replication은 배열 값과 shadow state를 비교하면서 내부 reflected property를 따라 change handle을 만든다. 실제 배열이 shadow보다 커졌는데 원소 내부에서 만들 수 있는 handle이 하나도 없으면, 배열 command가 기대한 형태와 맞지 않아 위 assertion에 도달할 수 있다.
 
-즉 원인은 C++ 구조체의 byte 수가 0이어서가 아니다. C++에는 세 필드가 있지만, **기본 복제 스키마가 보는 필드 수가 0개**라는 불일치가 핵심이다.
+원인은 C++ 구조체의 byte 수가 0이어서가 아니다. C++에는 세 필드가 있지만 **기본 복제 스키마가 보는 필드 수가 0개**라는 불일치가 핵심이다.
+
+## 최소 재현: 구조체 하나에서도 같은 계약
+
+같은 문제는 이름이나 실제 데이터 종류와 무관하게 더 작은 구조체에서도 만들 수 있다.
+
+```cpp
+USTRUCT()
+struct FReplicatedPayload
+{
+    GENERATED_BODY()
+
+    TArray<uint8> Data;
+};
+
+UCLASS()
+class APayloadOwner : public AActor
+{
+    GENERATED_BODY()
+
+    UPROPERTY(Replicated)
+    FReplicatedPayload Payload;
+};
+```
+
+바깥 `Payload` property가 replicated라고 해도 내부 `Data`는 reflection에 등록되지 않는다. Actor가 **구조체를 전송 대상으로 등록하는 것**과 구조체가 **전송할 내부 field를 제공하는 것**은 서로 다른 계약이다. 기본 serializer를 사용한다면 내부 선언도 다음처럼 반사해야 한다.
+
+```cpp
+USTRUCT()
+struct FReplicatedPayload
+{
+    GENERATED_BODY()
+
+    UPROPERTY()
+    TArray<uint8> Data;
+};
+```
+
+이 최소 사례는 배열 assertion이 아니더라도 “바깥 property에 `Replicated`를 붙였으니 구조체 내부 일반 C++ field도 자동 전송된다”는 오해를 판별하는 데 유용하다. 실제 오류가 `TArray<FReplicatedPayload>`에서 발생했다면 아래의 동적 배열 진단과 함께 적용한다.
 
 ## 기본 reflection 복제에 맞는 수정
 
-클라이언트로 보내야 하는 필드를 모두 반사하고, Actor의 바깥 property를 replicated property로 등록한다.
+클라이언트로 보내야 하는 필드를 모두 반사하고 Actor의 바깥 property를 replicated property로 등록한다.
 
 ```cpp
 // MagazineNetQuantize.h
@@ -83,7 +121,7 @@ struct FMagazine_NetQuantize
 };
 ```
 
-구조체 내부 필드에 다시 `Replicated`를 붙이지 않는다는 점에 주목한다. Actor의 `Magazines`가 replication 단위이고, 기본 struct serializer가 그 안의 reflected field를 순회한다.
+구조체 내부 필드에는 다시 `Replicated`를 붙이지 않는다. Actor의 `Magazines`가 replication 단위이며 기본 struct serializer가 그 안의 reflected field를 순회하기 때문이다.
 
 ```cpp
 // MagazineOwner.h
@@ -137,7 +175,7 @@ void AMagazineOwner::OnRep_Magazines()
 }
 ```
 
-이 구성에는 네 층의 계약이 모두 필요하다.
+이 구성은 네 층의 계약을 모두 갖춰야 한다.
 
 1. `AMagazineOwner`가 실제로 복제되도록 `bReplicates = true`다.
 2. 바깥 property에 `Replicated` 또는 `ReplicatedUsing`이 있다.
@@ -148,7 +186,7 @@ void AMagazineOwner::OnRep_Magazines()
 
 ## “모든 멤버”가 아니라 “보낼 멤버”
 
-구조체 안에 서버나 클라이언트가 로컬로만 계산하는 캐시가 있을 수 있다. 그 값은 복제 스키마에서 명시적으로 제외하면 된다.
+구조체 안에는 서버나 클라이언트가 로컬로만 계산하는 캐시가 있기도 한다. 그 값은 복제 스키마에서 명시적으로 제외하면 된다.
 
 ```cpp
 USTRUCT(BlueprintType)
@@ -170,13 +208,13 @@ struct FMagazine_NetQuantize
 };
 ```
 
-[Unreal Engine property 문서](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-uproperties)는 `NotReplicated`가 struct member의 기본 복제를 건너뛰는 specifier라고 설명한다. 이 표현은 필드가 reflection, editor tooling, 복사나 다른 serialization에는 보이되 네트워크 스키마에서는 제외된다는 의도를 드러낸다. `Transient`는 일반 asset/save serialization에서도 유지하지 않겠다는 별도 선택이다.
+[Unreal Engine property 문서](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-uproperties)는 `NotReplicated`가 struct member의 기본 복제를 건너뛰는 specifier라고 설명한다. 이렇게 선언하면 필드는 reflection, editor tooling, 복사나 다른 serialization에 남겨 두되 네트워크 스키마에서는 제외한다는 의도가 분명해진다. `Transient`는 일반 asset/save serialization에서도 유지하지 않겠다는 별도 선택이다.
 
-평범한 non-`UPROPERTY` C++ 필드를 로컬 캐시로 둘 수도 있다. 다만 아래 차이는 감수해야 한다.
+평범한 non-`UPROPERTY` C++ 필드를 로컬 캐시로 두는 방법도 있다. 다만 아래 차이는 감수해야 한다.
 
 - reflection 기반 복제, 저장, editor 노출과 property 비교가 그 필드를 보지 못한다.
 - reflection이 수행하는 struct 복사나 초기화 경로에서 기대한 의미가 유지되는지 별도로 검증해야 한다.
-- `UObject` 참조를 추적해야 하는 필드를 무심코 non-`UPROPERTY`로 두면 garbage collection과 수명 관리가 깨질 수 있다.
+- `UObject` 참조를 추적해야 하는 필드를 무심코 non-`UPROPERTY`로 두면 garbage collection과 수명 관리가 깨질 위험이 있다.
 - 복제 상태와 로컬 캐시가 함께 복사되거나 reset되는 시점을 코드가 직접 책임져야 한다.
 
 따라서 단순 POD 파생 캐시가 아니라 엔진 수명과 serialization에 참여해야 하는 값이라면 `UPROPERTY(NotReplicated)`로 의도를 표현하는 편이 안전하다.
@@ -199,17 +237,17 @@ struct TStructOpsTypeTraits<FCompressedMagazineSnapshot>
 };
 ```
 
-`WithNetSerializer = true`가 올바르게 등록되면 `FStructProperty::NetSerializeItem`은 해당 native 함수를 호출한다. 이 경우 함수가 일반 C++ field를 직접 encoding할 수 있으므로 “모든 field는 `UPROPERTY`여야 한다”는 기본 serializer 규칙의 예외가 된다.
+`WithNetSerializer = true`가 올바르게 등록되면 `FStructProperty::NetSerializeItem`은 해당 native 함수를 호출한다. 이 경우 함수가 일반 C++ field를 직접 encoding하므로 “모든 field는 `UPROPERTY`여야 한다”는 기본 serializer 규칙의 예외가 된다.
 
-그러나 `WithNetSerializer`는 전송 형식만 바꾼다. non-`UPROPERTY` 상태의 **변경 감지**까지 자동으로 해결하지는 않는다. 기본 `UScriptStruct` 비교는 reflected property를 사용하므로, custom payload만 바뀌었을 때 새 값이 dirty로 잡히지 않을 수 있다. 이런 상태를 직접 직렬화한다면 정확한 `operator==`와 `WithIdenticalViaEquality`, 또는 `Identical` 구현과 `WithIdentical` trait까지 함께 설계해야 한다. 배열에 첫 원소를 추가할 때는 전송되지만 기존 원소의 native field만 바꿀 때 누락되는 식의 교묘한 버그가 될 수 있다.
+그러나 `WithNetSerializer`는 전송 형식만 바꾼다. non-`UPROPERTY` 상태의 **변경 감지**까지 자동으로 해결하지는 않는다. 기본 `UScriptStruct` 비교는 reflected property를 사용하므로 custom payload만 바뀌었을 때 새 값이 dirty로 잡히지 않는 경우가 있다. 이런 상태를 직접 직렬화한다면 정확한 `operator==`와 `WithIdenticalViaEquality`, 또는 `Identical` 구현과 `WithIdentical` trait까지 함께 설계해야 한다. 배열에 첫 원소를 추가할 때는 전송되지만 기존 원소의 native field만 바꾸면 누락되는 식의 교묘한 버그가 생기기도 한다.
 
-하지만 custom serializer에는 더 큰 책임이 따른다.
+custom serializer를 선택하면 더 큰 책임이 따른다.
 
-- 송신과 수신이 정확히 같은 field 순서와 bit 수를 사용해야 한다.
-- enum, index, count, string 길이와 정수 범위를 역직렬화 전에 제한한다.
-- `UObject` 참조는 raw address가 아니라 `UPackageMap`을 통한 network reference로 처리한다.
-- 이전 클라이언트와 protocol version 호환성을 설계한다.
-- equality/change detection과 실패 시 `bOutSuccess` 의미를 검증한다.
+- 송신과 수신은 정확히 같은 field 순서와 bit 수를 사용해야 한다.
+- enum, index, count, string 길이와 정수 범위는 역직렬화 전에 제한한다.
+- `UObject` 참조는 raw address가 아니라 `UPackageMap`을 통한 network reference로 처리해야 한다.
+- 이전 클라이언트와 protocol version 호환성을 설계해 둔다.
+- equality/change detection과 실패 시 `bOutSuccess` 의미를 검증해 둔다.
 
 구조체 이름에 `_NetQuantize`를 붙이는 것만으로 quantization이나 `NetSerialize`가 생기지 않는다. 엔진의 `FVector_NetQuantize` 같은 타입은 이름 때문이 아니라 실제 serializer와 traits가 구현되어 있어 동작한다.
 
@@ -217,7 +255,7 @@ struct TStructOpsTypeTraits<FCompressedMagazineSnapshot>
 
 ### 1. assertion 줄보다 전체 call stack을 본다
 
-같은 `FRepLayout` 함수라도 배열 비교, shadow state, custom delta serialization 등 진입 경로가 다를 수 있다. 이 진단은 call stack이 `CompareProperties_Array_r` 계열로 이어지고, 실제 property가 `TArray<USTRUCT>`이며, inner reflected field가 0개일 때 직접 적용된다.
+같은 `FRepLayout` 함수라도 배열 비교, shadow state, custom delta serialization 등 진입 경로가 서로 다르기도 한다. 이 진단은 call stack이 `CompareProperties_Array_r` 계열로 이어지고 실제 property가 `TArray<USTRUCT>`이며 inner reflected field가 0개일 때 직접 적용된다.
 
 ### 2. 최소 스키마를 적는다
 
@@ -235,9 +273,9 @@ struct TStructOpsTypeTraits<FCompressedMagazineSnapshot>
 `USTRUCT`, `UPROPERTY`, container type을 바꾸면 UHT가 만드는 타입 정보와 이미 생성된 replication layout, Actor channel의 shadow state가 모두 영향을 받는다. Live Coding의 object reinstancing이 많은 변경을 처리하더라도, 실행 중인 멀티플레이 세션의 기존 layout까지 안전하게 교체됐다고 가정하지 않는다.
 
 1. PIE, standalone client와 server를 모두 종료한다.
-2. editor를 닫는다.
+2. editor도 닫아 둔다.
 3. 정상적인 전체 target build를 수행한다.
-4. 새 editor/process에서 다시 재현한다.
+4. 새 editor/process에서 다시 재현해 본다.
 
 반사 변경 직후에만 문제가 남는다면 stale binary와 generated code도 조사한다. 무작정 `Intermediate` 전체를 지우기 전에 source control 상태와 정확한 build target을 먼저 확인한다.
 
@@ -246,13 +284,13 @@ struct TStructOpsTypeTraits<FCompressedMagazineSnapshot>
 다음 순서를 dedicated server 또는 별도 server/client process에서 확인한다.
 
 1. 초기 빈 배열로 접속한다.
-2. 서버에서 첫 원소를 추가한다.
+2. 서버에서 첫 원소를 추가해 본다.
 3. 기존 원소의 각 field를 하나씩 변경한다.
-4. 두 번째 원소를 추가하고 첫 원소를 제거한다.
-5. late join client가 최종 배열 전체를 받는지 확인한다.
-6. 클라이언트 `OnRep`가 event log가 아니라 최종 상태 적용으로 동작하는지 확인한다.
+4. 두 번째 원소를 추가하고 첫 원소는 제거한다.
+5. late join client가 최종 배열 전체를 받는지 확인해 본다.
+6. 클라이언트 `OnRep`가 event log가 아니라 최종 상태 적용으로 동작하는지도 살핀다.
 
-이 assertion은 특히 “0개에서 1개로 증가”하는 순간에 드러날 수 있으므로 초기 값만 비교하는 테스트로는 놓치기 쉽다.
+이 assertion은 특히 “0개에서 1개로 증가”하는 순간에 드러나기도 한다. 초기 값만 비교하는 테스트로는 놓치기 쉽다.
 
 ## 빠른 판별표
 
@@ -265,7 +303,7 @@ struct TStructOpsTypeTraits<FCompressedMagazineSnapshot>
 | 수정 후에만 이상한 layout crash        | PIE 종료, full rebuild, process restart 후 재현                 |
 | `_NetQuantize` 이름인데 압축되지 않음  | 실제 `NetSerialize`와 traits 구현 여부 확인                     |
 
-이 문제의 교훈은 단순히 macro를 더 붙이는 것이 아니다. C++ memory layout, Unreal reflection layout, network serialization layout은 서로 같은 것이 아니다. 기본 복제를 사용할 때는 **바깥 property와 전송할 내부 field를 모두 reflection에 명시하고**, 제외할 field는 의도적으로 표시한다. custom serializer를 선택했다면 그 순간부터 wire format과 변경 감지를 직접 책임진다.
+핵심은 단순히 macro를 더 붙이는 데 있지 않다. C++ memory layout, Unreal reflection layout, network serialization layout은 서로 다르다. 기본 복제를 사용할 때는 **바깥 property와 전송할 내부 field를 모두 reflection에 명시하고**, 제외할 field는 의도적으로 표시한다. custom serializer를 선택한 순간부터는 wire format과 변경 감지를 직접 책임져야 한다.
 
 ## 참고 자료
 

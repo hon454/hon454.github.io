@@ -8,9 +8,8 @@ tags:
   - rider
   - jetbrains
   - code-analysis
-  - large-files
   - performance
-category: Rider
+category: 개발 도구
 draft: false
 lang: ko
 ---

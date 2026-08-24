@@ -3,15 +3,11 @@ published: 2024-11-18
 author: Jihoon Jeon
 title: 'UE 5.3의 Instanced UObject와 Instanced Struct'
 description: UE 5.3에서 owner별로 편집 가능한 다형 데이터를 만들 때 Instanced UObject와 FInstancedStruct·TInstancedStruct를 고르는 기준, 설정 방법과 직렬화 경계를 설명합니다.
-category: Unreal Engine
+category: 언리얼 엔진
 tags:
-  - unreal-engine
   - cpp
   - instanced-properties
-  - instanced-uobject
-  - instanced-struct
-  - data-table
-  - garbage-collection
+  - uobject
 ---
 
 한 Asset 안에서 서로 다른 파생 type의 설정 조각을 추가하고 Details 패널에서 바로 편집하고 싶을 때가 있다. 예를 들면 아이템마다 `StackLimit`, `Cooldown`, `GrantedAbility` 규칙을 원하는 조합으로 갖게 하는 경우다.

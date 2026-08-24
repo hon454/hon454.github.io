@@ -2,6 +2,10 @@ import { defineCollection } from "astro:content";
 import type { CollectionConfig } from "astro/content/config";
 import { glob } from "astro/loaders";
 import { type ZodType, z } from "astro/zod";
+import {
+	isPostCategoryName,
+	POST_CATEGORY_NAMES,
+} from "./constants/post-categories";
 
 type PostData = {
 	title: string;
@@ -38,6 +42,29 @@ type ContentCollection<T> = CollectionConfig<
 	ReturnType<typeof glob>
 >;
 
+const postTagSchema = z
+	.string()
+	.trim()
+	.regex(
+		/^[a-z0-9][a-z0-9+]*(?:-[a-z0-9+]+)*$/,
+		"Tags must use lowercase kebab-case",
+	);
+
+const postTagsSchema = z
+	.array(postTagSchema)
+	.max(5, "Use at most five focused tags per post")
+	.refine((tags) => new Set(tags).size === tags.length, {
+		message: "Tags must be unique within a post",
+	});
+
+const postCategorySchema = z
+	.string()
+	.trim()
+	.refine(
+		(category) => category === "" || isPostCategoryName(category),
+		`Category must be one of: ${POST_CATEGORY_NAMES.join(", ")}`,
+	);
+
 const postsCollection: ContentCollection<PostData> = defineCollection({
 	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts" }),
 	schema: z.object({
@@ -47,8 +74,8 @@ const postsCollection: ContentCollection<PostData> = defineCollection({
 		draft: z.boolean().optional().default(false),
 		description: z.string().optional().default(""),
 		image: z.string().optional().default(""),
-		tags: z.array(z.string()).optional().default([]),
-		category: z.string().optional().nullable().default(""),
+		tags: postTagsSchema.optional().default([]),
+		category: postCategorySchema.optional().nullable().default(""),
 		lang: z.string().optional().default(""),
 		pinned: z.boolean().optional().default(false),
 		author: z.string().optional().default(""),

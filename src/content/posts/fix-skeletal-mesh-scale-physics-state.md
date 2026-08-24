@@ -4,14 +4,10 @@ updated: 2026-08-24
 author: Jihoon Jeon
 title: 'UE4 Skeletal Mesh Scale 복원 후 래그돌 물리가 깨질 때'
 description: UE 4.26에서 Skeletal Mesh를 거의 0까지 축소했다가 복원한 뒤 래그돌 Physics State가 잘못된 크기로 남는 문제와 RecreatePhysicsState를 이용한 해결 방법을 기록합니다.
-category: Unreal Engine
+category: 언리얼 엔진
 tags:
-  - unreal-engine
   - ue4
-  - cpp
-  - skeletal-mesh
   - physics
-  - ragdoll
   - debugging
 sourceLink: "https://velog.io/@hon454/SkeletalMesh의-Scale-조정-시-물리가-정상적으로-작동하지-않는-문제"
 ---

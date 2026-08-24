@@ -3,13 +3,11 @@ published: 2023-01-21
 author: Jihoon Jeon
 title: Jekyll 블로그를 Google Search Console에 연결하는 방법
 description: Jekyll·Chirpy 블로그를 URL-prefix 속성에 추가하고 HTML meta tag로 소유권을 확인한 뒤 sitemap과 색인 상태를 점검하는 순서를 정리합니다.
-category: Jekyll
+category: 블로그
 tags:
   - jekyll
-  - chirpy
-  - github-pages
-  - google-search-console
   - seo
+  - search-console
   - sitemap
 ---
 

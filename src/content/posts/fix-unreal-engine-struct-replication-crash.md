@@ -3,13 +3,10 @@ published: 2023-01-21
 author: Jihoon Jeon
 title: Unreal Engine replicated USTRUCT 배열 assertion을 정확히 고치기
 description: 반사 가능한 내부 필드가 없는 USTRUCT 배열을 복제할 때 발생한 FRepLayout assertion의 원인과, UPROPERTY·NotReplicated·custom NetSerialize의 정확한 경계를 설명합니다.
-category: Unreal Engine
+category: 언리얼 엔진
 tags:
-  - unreal-engine
   - networking
   - replication
-  - ustruct
-  - uproperty
   - debugging
 ---
 

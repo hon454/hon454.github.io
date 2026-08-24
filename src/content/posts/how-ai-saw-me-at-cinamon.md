@@ -6,10 +6,10 @@ description: 시나몬을 떠나며 Slack, Linear와 개발 기록을 AI에게 �
 image: ./images/how-ai-saw-me-at-cinamon/cinamon-team-farewell.avif
 category: 커리어
 tags:
-  - career-retrospective
-  - engineering
+  - career
+  - retrospective
   - teamwork
-  - cinamon
+  - ai
 ---
 
 회사를 떠나게 됐다. 2024년 6월에 시나몬에 입사했으니 2년 조금 넘게 다녔다.

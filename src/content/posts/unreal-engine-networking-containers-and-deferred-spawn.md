@@ -3,13 +3,11 @@ published: 2023-01-16
 author: Jihoon Jeon
 title: 'Unreal Engine 네트워크 코드의 두 가지 함정: 컨테이너 복제와 Deferred Spawn'
 description: TMap과 TSet을 직접 복제할 수 없는 이유와 안전한 배열·Fast Array 대안, 그리고 Actor가 BeginPlay에 들어가기 전에 초기값을 전달하는 Deferred Spawn의 정확한 생명주기를 정리합니다.
-category: Unreal Engine
+category: 언리얼 엔진
 tags:
-  - unreal-engine
   - networking
   - replication
   - deferred-spawn
-  - actor-lifecycle
   - cpp
 ---
 

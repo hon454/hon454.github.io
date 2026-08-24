@@ -3,14 +3,11 @@ published: 2023-01-31
 author: Jihoon Jeon
 title: '효율적으로 Blueprint 만들기: Unreal Fest 2022 세션 요약'
 description: Unreal Fest 2022의 Making Better Blueprints 세션에서 다룬 그래프 정리, Pure 함수, Tick, 참조, 제작 도구, 재사용과 Actor 통신 원칙을 정리합니다.
-category: Unreal Engine
+category: 언리얼 엔진
 tags:
-  - unreal-engine
   - blueprint
-  - unreal-fest
   - performance
   - architecture
-  - editor-tools
 ---
 
 Unreal Fest 2022의 [Making Better Blueprints](https://www.youtube.com/watch?v=Od8rzSWv-iE) 세션은 Blueprint 작업을 **Cleanliness, Creation, Classes & Sharing, Communication**이라는 네 가지 관점으로 정리했다.

@@ -1,3 +1,4 @@
+import { getPostCategorySlug } from "@constants/post-categories";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 
@@ -51,7 +52,8 @@ export function getCategoryUrl(category: string | null): string {
 		category.trim().toLowerCase() === i18n(I18nKey.uncategorized).toLowerCase()
 	)
 		return url("/archive/?uncategorized=true");
-	return url(`/archive/?category=${encodeURIComponent(category.trim())}`);
+	const categoryToken = getPostCategorySlug(category) ?? category.trim();
+	return url(`/archive/?category=${encodeURIComponent(categoryToken)}`);
 }
 
 export function getDir(path: string): string {

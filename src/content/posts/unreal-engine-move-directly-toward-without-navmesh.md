@@ -5,12 +5,10 @@ updated: 2026-08-24
 description: "Unreal Engine의 MoveDirectlyToward는 내비게이션을 우회하도록 설계됐지만 이동하지 않을 때가 있습니다. API 계약과 pawn·path following 설정을 기준으로 진단합니다."
 image: ""
 tags:
-  - unreal-engine
-  - ai
+  - game-ai
   - behavior-tree
-  - path-following
   - navigation
-category: Unreal Engine
+category: 언리얼 엔진
 draft: false
 lang: ko
 ---

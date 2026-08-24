@@ -5,12 +5,11 @@ updated: 2026-08-24
 description: "FunctionalTesting 모듈의 EComparisonMethod를 런타임 코드에서 사용해 Shipping 빌드가 깨질 때 프로젝트 전용 enum으로 의존성을 분리하는 방법을 설명합니다."
 image: ""
 tags:
-  - unreal-engine
   - shipping-build
-  - functional-testing
+  - testing
   - build-configuration
   - cpp
-category: Unreal Engine
+category: 언리얼 엔진
 draft: false
 lang: ko
 ---

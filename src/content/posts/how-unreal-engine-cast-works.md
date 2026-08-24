@@ -3,9 +3,8 @@ published: 2024-01-29
 author: Jihoon Jeon
 title: Unreal Engine의 C++ Cast<T> 함수는 어떻게 동작하는가?
 description: Unreal의 Cast<T>가 C++ RTTI 대신 UClass reflection, cast flags, IsA와 IsChildOf를 사용하는 경로와 API별 선택 기준, Blueprint interface 예외를 설명합니다.
-category: Unreal Engine
+category: 언리얼 엔진
 tags:
-  - unreal-engine
   - cpp
   - casting
   - reflection

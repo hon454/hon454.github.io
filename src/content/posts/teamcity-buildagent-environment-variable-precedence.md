@@ -6,11 +6,10 @@ description: "TeamCity 프로젝트에 같은 이름의 환경 변수가 있을 
 image: ""
 tags:
   - teamcity
-  - ci
+  - ci-cd
   - environment-variables
-  - build-agent
-  - configuration
-category: TeamCity
+  - devops
+category: 개발 인프라
 draft: false
 lang: ko
 ---

@@ -56,6 +56,44 @@ replication은 배열 값과 shadow state를 비교하면서 내부 reflected pr
 
 즉 원인은 C++ 구조체의 byte 수가 0이어서가 아니다. C++에는 세 필드가 있지만, **기본 복제 스키마가 보는 필드 수가 0개**라는 불일치가 핵심이다.
 
+## 최소 재현: 구조체 하나에서도 같은 계약
+
+같은 문제는 이름이나 실제 데이터 종류와 무관하게 더 작은 구조체에서도 만들 수 있다.
+
+```cpp
+USTRUCT()
+struct FReplicatedPayload
+{
+    GENERATED_BODY()
+
+    TArray<uint8> Data;
+};
+
+UCLASS()
+class APayloadOwner : public AActor
+{
+    GENERATED_BODY()
+
+    UPROPERTY(Replicated)
+    FReplicatedPayload Payload;
+};
+```
+
+바깥 `Payload` property가 replicated라고 해도 내부 `Data`는 reflection에 등록되지 않는다. 즉 Actor가 **구조체를 전송 대상으로 등록하는 것**과 구조체가 **전송할 내부 field를 제공하는 것**은 서로 다른 계약이다. 기본 serializer를 사용할 경우 내부 선언도 다음처럼 반사해야 한다.
+
+```cpp
+USTRUCT()
+struct FReplicatedPayload
+{
+    GENERATED_BODY()
+
+    UPROPERTY()
+    TArray<uint8> Data;
+};
+```
+
+이 최소 사례는 배열 assertion이 아니더라도 “바깥 property에 `Replicated`를 붙였으니 구조체 내부 일반 C++ field도 자동 전송된다”는 오해를 판별하는 데 유용하다. 실제 오류가 `TArray<FReplicatedPayload>`에서 발생했다면 아래의 동적 배열 진단과 함께 적용한다.
+
 ## 기본 reflection 복제에 맞는 수정
 
 클라이언트로 보내야 하는 필드를 모두 반사하고, Actor의 바깥 property를 replicated property로 등록한다.

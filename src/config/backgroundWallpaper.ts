@@ -13,21 +13,17 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	 * 3. 원격 URL: "https://example.com/banner.jpg"
 	 * 주의: 원격 URL과 public 디렉터리의 이미지는 최적화하지 않으므로 로딩 속도에 영향을 주지 않도록 파일 크기를 충분히 줄이세요.
 	 *
-	 * 기본 예시 이미지인 d1-d6, m1-m6은 교체하지 않는 것이 좋습니다. 공간을 아끼려면 삭제해도 됩니다.
-	 * 향후 예시 이미지가 바뀌면 같은 이름의 사용자 이미지가 덮어써질 수 있습니다.
-	 * 따라서 직접 만든 이미지에는 d1-d6, m1-m6이 아닌 다른 이름을 사용하세요.
-	 *
 	 * 이미지 한 장이나 무작위 이미지 API만 사용한다면 문자열 형식을 권장합니다.
 	 * desktop: "https://t.alcy.cc/pc",   // 무작위 이미지 API
-	 * desktop: "assets/images/DesktopWallpaper/d1.avif", // 단일 이미지
+	 * desktop: "assets/images/DesktopWallpaper/b1.avif", // 단일 이미지
 	 *
 	 * mobile: "https://t.alcy.cc/mp", // 무작위 이미지 API
 	 * mobile: "assets/images/MobileWallpaper/m1.avif", // 단일 이미지
 	 *
 	 * 여러 이미지를 배열로 설정할 수도 있으며 페이지를 새로 고칠 때마다 한 장을 무작위로 표시합니다.
 	 * desktop: [
-	 * "assets/images/DesktopWallpaper/d1.avif",
-	 * "assets/images/DesktopWallpaper/d2.avif",
+	 * "assets/images/DesktopWallpaper/b1.avif",
+	 * "assets/images/DesktopWallpaper/b2.avif",
 	 * ],
 	 *
 	 * mobile:[
@@ -37,14 +33,12 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	 */
 	src: {
 		// 데스크톱 배경 이미지(단일 이미지 또는 여러 이미지 무작위 표시 지원)
-		// desktop: "assets/images/DesktopWallpaper/d1.avif",
+		// desktop: "assets/images/DesktopWallpaper/b1.avif",
 		desktop: [
-			"assets/images/DesktopWallpaper/d1.avif",
-			"assets/images/DesktopWallpaper/d2.avif",
-			"assets/images/DesktopWallpaper/d3.avif",
-			"assets/images/DesktopWallpaper/d4.avif",
-			"assets/images/DesktopWallpaper/d5.avif",
-			"assets/images/DesktopWallpaper/d6.avif",
+			"assets/images/DesktopWallpaper/b1.avif",
+			"assets/images/DesktopWallpaper/b2.avif",
+			"assets/images/DesktopWallpaper/b3.avif",
+			"assets/images/DesktopWallpaper/b4.avif",
 		],
 		// 모바일 배경 이미지(단일 이미지 또는 여러 이미지 무작위 표시 지원)
 		// mobile: "assets/images/MobileWallpaper/m1.avif",
@@ -53,8 +47,6 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			"assets/images/MobileWallpaper/m2.avif",
 			"assets/images/MobileWallpaper/m3.avif",
 			"assets/images/MobileWallpaper/m4.avif",
-			"assets/images/MobileWallpaper/m5.avif",
-			"assets/images/MobileWallpaper/m6.avif",
 		],
 		// 배경 동영상 재생 주소
 		// 단일 동영상 경로(문자열) 또는 여러 동영상 반복 재생(배열, 위 배경화면 설정 참고)을 지원합니다.

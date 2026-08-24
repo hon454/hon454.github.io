@@ -22,11 +22,11 @@ AsyncLoadingThread.RecursionNotAllowed.Increment() == 1
 
 ## 문제 현상
 
-특정 map 또는 asset 묶음을 비동기로 불러올 때 AsyncLoading thread가 이미 처리 중인 로드 구간으로 다시 진입한 것으로 감지됐다. UE4에서 선택적으로 쓰던 Event Driven Loader 설정과 UE5의 기본 로드 경로 차이 때문에 전환 직후 드러날 수 있다.
+특정 map 또는 asset 묶음을 비동기로 불러올 때 AsyncLoading thread가 처리 중이던 로드 구간에 다시 진입해 assertion이 발생했다. UE4에서 선택적으로 쓰던 Event Driven Loader 설정과 UE5의 기본 로드 경로 차이 때문에 전환 직후 드러날 수 있다.
 
 ## 적용 범위
 
-UE4에서 UE5로 asset과 custom C++ serialization 코드를 함께 이관했고 cooked build에서만 재현되는 경우에 해당한다. 이 글은 원문에 최종 offending asset이 남아 있지 않아 확정 해법이 아니라 진단 초안으로 유지한다.
+UE4에서 UE5로 asset과 custom C++ serialization 코드를 함께 이관한 뒤 cooked build에서만 재현되는 경우를 다룬다. 원문에는 최종 offending asset이 남아 있지 않으므로 확정 해법이 아닌 진단 초안으로 유지한다.
 
 ## 가능한 원인
 
@@ -47,9 +47,9 @@ UE4에서 UE5로 asset과 custom C++ serialization 코드를 함께 이관했고
 
 ## 해결 방법
 
-로드 중 재진입하는 동기 load를 제거하고 dependency를 soft reference와 상위 단계의 명시적 async request로 옮긴다. callback에서는 이미 완료된 object를 소비하고 같은 package graph를 다시 로드하지 않는다.
+로드 도중 다시 진입하는 동기 load를 제거하고 dependency를 soft reference와 상위 단계의 명시적 async request로 옮긴다. callback에서는 이미 완료된 object를 사용하고 같은 package graph를 다시 로드하지 않는다.
 
-잘못된 asset reference나 redirect가 원인이면 해당 asset을 새 버전에서 다시 저장하고 redirect를 정리한 뒤 전체 recook한다. assertion 자체를 끄거나 EDL 동작을 억지로 과거 방식으로 되돌리는 것은 상태 손상을 숨길 수 있어 해결로 보지 않는다.
+잘못된 asset reference나 redirect가 원인이라면 해당 asset을 새 버전에서 다시 저장하고 redirect를 정리한 뒤 전체 recook한다. assertion 자체를 끄거나 EDL 동작을 억지로 과거 방식으로 되돌리면 상태 손상을 숨길 수 있으므로 해결책으로 보지 않는다.
 
 ## 검증 방법
 
@@ -60,7 +60,7 @@ UE4에서 UE5로 asset과 custom C++ serialization 코드를 함께 이관했고
 
 ## 주의점
 
-call stack 없이 “UE5에서는 EDL이 항상 켜져서 생긴다”고 단정할 수 없다. UE5의 async loading 구현도 minor version마다 바뀌므로 exact engine source를 근거로 조사해야 한다.
+call stack만으로 “UE5에서는 EDL이 항상 켜져서 생긴다”고 단정할 수 없다. UE5의 async loading 구현도 minor version마다 바뀌므로 exact engine source를 확인하며 조사해야 한다.
 
 ## 참고 자료
 

@@ -14,23 +14,23 @@ draft: true
 lang: ko
 ---
 
-저장 데이터를 불러온 뒤 F11로 전체화면 PIE를 종료하면 editor가 `AActor::ForEachAttachedActors` 안에서 스택 오버플로로 종료되는 문제가 있었다.
+저장 데이터를 불러온 뒤 F11로 전체화면 PIE를 종료하면 editor가 `AActor::ForEachAttachedActors` 안에서 스택 오버플로를 일으키며 종료됐다.
 
 ![전체화면 PIE에서 문제를 재현한 게임 화면](./images/unreal-editor-fullscreen-foreachattachedactors-crash/pie-fullscreen-reproduction.webp)
 
 ## 문제 현상
 
-재현 시점은 전체화면 전환 자체였지만 실제 call stack은 attached actor를 순회하는 동일한 프레임이 반복되는 형태였다.
+크래시가 나타난 시점은 전체화면 전환이었지만 실제 call stack에서는 attached actor를 순회하는 동일한 프레임이 반복됐다.
 
 ![ForEachAttachedActors가 반복된 스택 오버플로 call stack](./images/unreal-editor-fullscreen-foreachattachedactors-crash/foreach-attached-actors-stack-overflow.webp)
 
 ## 적용 범위
 
-런타임에 `NewObject`로 scene component를 만들고, 다른 actor가 소유한 component나 socket에 부착하는 코드가 있는 UE 프로젝트에 해당한다. 종료·월드 정리 시점에만 크래시가 보인다면 생성 당시의 owner와 attachment 관계도 함께 확인할 가치가 있다.
+런타임에 `NewObject`로 scene component를 만들고 다른 actor가 소유한 component나 socket에 부착하는 코드가 있는 UE 프로젝트에 해당한다. 종료·월드 정리 시점에만 크래시가 보인다면 생성 당시의 owner와 attachment 관계도 함께 확인할 가치가 있다.
 
 ## 원인
 
-문제가 된 코드는 새 `UStaticMeshComponent`의 Outer를 현재 객체로 지정한 뒤 별도의 전시 actor에 owned component로 추가했다. 다시 그 component를 또 다른 actor가 소유한 mesh에 붙이면서 UObject 소유권, actor의 owned component 목록, scene attachment 계층이 서로 다른 대상을 가리켰다.
+문제가 된 코드는 새 `UStaticMeshComponent`의 Outer를 현재 객체로 지정한 뒤 별도의 전시 actor에 owned component로 추가했다. 그 component를 또 다른 actor가 소유한 mesh에 다시 붙였다. 이 때문에 UObject 소유권, actor의 owned component 목록, scene attachment 계층이 서로 다른 대상을 가리켰다.
 
 ```cpp
 UStaticMeshComponent* DisplayComponent =
@@ -43,7 +43,7 @@ DisplayComponent->AttachToComponent(
     SocketName);
 ```
 
-이 불일치는 월드를 정리하며 attached actor를 순회할 때 순환 관계처럼 드러났다. F11은 문제를 만든 원인이 아니라 숨어 있던 잘못된 계층을 종료 경로에서 노출한 계기였다.
+이 불일치는 월드를 정리하면서 attached actor를 순회할 때 순환 관계처럼 드러났다. F11은 문제의 원인이 아니다. 숨어 있던 잘못된 계층이 종료 경로에서 노출된 계기였다.
 
 ## 재현 조건
 

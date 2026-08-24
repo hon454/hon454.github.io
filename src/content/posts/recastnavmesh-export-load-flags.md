@@ -14,7 +14,7 @@ draft: true
 lang: ko
 ---
 
-특정 저장 데이터를 불러오는 도중 다음과 같은 오류와 함께 게임이 종료되는 경우가 있었다.
+특정 저장 데이터를 불러오다 아래 오류가 발생하며 게임이 종료됐다.
 
 ```text
 RecastNavMesh /Game/Maps/<MapName>.<MapName>:PersistentLevel.RecastNavMesh-Default
@@ -23,17 +23,17 @@ was found in memory and is an export but does not have all load flags.
 
 ## 문제 현상
 
-모든 지도나 새 게임에서 발생하지 않고, 특정 지도를 참조하는 저장 데이터를 복원할 때만 재현됐다. 오류 문자열은 메모리에 이미 존재하는 `RecastNavMesh` 객체가 패키지 export로도 발견됐지만, 현재 로드가 요구하는 flags를 갖추지 못했다고 말한다.
+모든 지도나 새 게임에서 발생한 것은 아니다. 특정 지도를 참조하는 저장 데이터를 복원할 때만 재현됐다. 오류 문자열을 보면 메모리에 이미 존재하는 `RecastNavMesh` 객체가 패키지 export로도 발견됐지만, 현재 로드가 요구하는 flags를 갖추지 못한 상태다.
 
 ## 적용 범위
 
-이 글은 Unreal Engine에서 Recast 기반 내비게이션을 사용하고, 오류 경로에 지도 패키지의 `RecastNavMesh-Default`가 직접 나타나는 경우를 대상으로 한다. 같은 load flags 오류라도 다른 객체가 지목되면 그 객체의 생성·저장 경로부터 별도로 조사해야 한다.
+이 글은 Unreal Engine에서 Recast 기반 내비게이션을 사용하며 오류 경로에 지도 패키지의 `RecastNavMesh-Default`가 직접 나타나는 경우를 다룬다. 같은 load flags 오류라도 다른 객체가 지목되면 그 객체의 생성·저장 경로부터 별도로 조사해야 한다.
 
 ## 원인
 
 이 사례에서는 문제가 된 지도에 `Nav Mesh Bounds Volume`이 없는 상태와 저장된 내비게이션 객체가 맞물려 있었다. Unreal은 유효한 내비게이션 영역을 기준으로 Recast 내비게이션 데이터를 생성한다. 지도의 bounds를 제거하거나 내비게이션 데이터를 다시 저장하는 과정에서 패키지 안의 export와 런타임 생성 상태가 어긋난 것으로 판단했다.
 
-다만 오류 한 줄만으로 원인을 일반화할 수는 없다. stale cooked asset, 서로 다른 엔진 버전에서 만든 저장 데이터, 지도 redirect나 패키징 결과가 섞인 경우에도 비슷한 로드 불일치가 생길 수 있다.
+다만 오류 한 줄만으로 원인을 일반화해서는 안 된다. stale cooked asset이나 서로 다른 엔진 버전에서 만든 저장 데이터, 지도 redirect, 패키징 결과가 섞인 경우에도 비슷한 로드 불일치가 생기기도 한다.
 
 ## 재현 및 진단
 
@@ -45,9 +45,9 @@ was found in memory and is an export but does not have all load flags.
 
 ## 해결 방법
 
-문제가 된 지도에 이동 가능한 영역을 포함하도록 `Nav Mesh Bounds Volume`을 추가한 뒤 지도를 저장하고 내비게이션 데이터를 다시 생성했다. 이후 새 빌드와 새 프로세스에서 같은 저장 데이터를 불러왔을 때 크래시가 사라졌다.
+문제가 된 지도에 이동 가능한 영역을 포함하도록 `Nav Mesh Bounds Volume`을 추가했다. 이어서 지도를 저장하고 내비게이션 데이터를 다시 생성했다. 이후 새 빌드와 새 프로세스에서 같은 저장 데이터를 불러오자 크래시가 사라졌다.
 
-이 수정은 해당 지도에 내비게이션이 실제로 필요한 경우에만 적절하다. 내비게이션을 사용하지 않는 지도라면 bounds를 억지로 추가하기 전에 왜 저장 데이터가 그 지도의 `RecastNavMesh`를 참조하는지 먼저 확인해야 한다.
+이 수정은 해당 지도에 내비게이션이 실제로 필요한 경우에만 적절하다. 내비게이션을 사용하지 않는 지도라면 bounds를 억지로 추가하기 전에 저장 데이터가 그 지도의 `RecastNavMesh`를 참조하는 이유부터 확인해야 한다.
 
 ## 검증 방법
 
@@ -58,7 +58,7 @@ was found in memory and is an export but does not have all load flags.
 
 ## 주의점
 
-`Nav Mesh Bounds Volume`을 다시 제거하면 생성된 내비게이션 객체도 저장 과정에서 달라질 수 있다. 오류를 숨기기 위해 load flags 검사를 우회하거나 저장 데이터를 무조건 폐기하면 패키지 상태 불일치의 원인이 남는다.
+`Nav Mesh Bounds Volume`을 다시 제거하면 생성된 내비게이션 객체도 저장 과정에서 달라지기도 한다. 오류를 숨기려고 load flags 검사를 우회하거나 저장 데이터를 무조건 폐기하면 패키지 상태 불일치의 원인이 남는다.
 
 ## 참고 자료
 

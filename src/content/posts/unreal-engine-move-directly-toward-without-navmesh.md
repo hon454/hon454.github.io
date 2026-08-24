@@ -36,11 +36,11 @@ Epic의 `UBTTask_MoveDirectlyToward` 문서는 이 task가 navigation system을 
 
 ## 재현 및 진단
 
-1. Behavior Tree debugger에서 task 진입·종료 상태와 blackboard 값을 확인한다.
-2. AIController, pawn, movement component와 path following component의 유효성을 로그로 남긴다.
-3. `MoveTo`와 `MoveDirectlyToward`를 같은 goal로 비교한다.
-4. NavMesh 유무만 바꾸고 나머지 actor·collision 설정은 고정한다.
-5. task source에서 실제 이동 요청과 failure 조건을 확인한다.
+1. Behavior Tree debugger에서 task 진입·종료 상태와 blackboard 값을 살펴본다.
+2. AIController, pawn, movement component와 path following component의 유효성은 로그로 남겨 둔다.
+3. `MoveTo`와 `MoveDirectlyToward`를 같은 goal로 놓고 비교한다.
+4. NavMesh 유무만 바꾸고 나머지 actor·collision 설정은 고정해 둔다.
+5. task source에서 실제 이동 요청과 failure 조건을 직접 확인해 본다.
 
 ## 해결 방법
 
@@ -50,10 +50,10 @@ NavMesh를 추가하는 것은 일반 `MoveTo`도 함께 필요하거나 level�
 
 ## 검증 방법
 
-- 빈 level과 NavMesh level에서 같은 pawn을 시험한다.
+- 빈 level과 NavMesh level에서 같은 pawn을 시험해 본다.
 - actor goal과 vector goal, 가까운 거리와 먼 거리를 비교한다.
-- success, failure, abort 결과와 실제 이동 거리를 함께 기록한다.
-- dedicated server에서 authoritative movement도 확인한다.
+- success, failure, abort 결과와 실제 이동 거리는 함께 기록해 둔다.
+- dedicated server에서 authoritative movement도 확인해 본다.
 
 ## 주의점
 

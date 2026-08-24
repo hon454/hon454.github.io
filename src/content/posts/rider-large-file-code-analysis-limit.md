@@ -18,7 +18,7 @@ lang: ko
 
 ## 문제 현상
 
-editor 상단에 파일이 너무 커서 code insight를 제공할 수 없다는 알림이 나타나거나, 작은 파일에서는 보이는 오류가 큰 파일에서 표시되지 않는다.
+editor 상단에 파일이 너무 커서 code insight를 제공할 수 없다는 알림이 나타나거나 작은 파일에서는 보이는 오류가 큰 파일에서 표시되지 않는다.
 
 ## 적용 범위
 
@@ -26,14 +26,14 @@ Rider의 IntelliJ platform editor limit 또는 ReSharper backend analysis limit�
 
 ## 원인
 
-대용량 파일 분석은 parsing, index와 inspection 비용이 커서 IDE가 성능 보호를 위해 제한한다. 과거 기록에서 하나의 “기본 300KB”로 설명되기도 했지만 현재 JetBrains 안내는 platform의 `idea.max.intellisense.filesize` 기본값을 약 2.5MB로 설명하고, C#의 ReSharper analysis에는 별도의 300,000-byte threshold가 있을 수 있다고 구분한다.
+대용량 파일 분석은 parsing, index와 inspection 비용이 커서 IDE가 성능 보호를 위해 제한한다. 과거 기록에서 하나의 “기본 300KB”로 설명되기도 했지만 현재 JetBrains 안내는 platform의 `idea.max.intellisense.filesize` 기본값을 약 2.5MB로 설명하고 C#의 ReSharper analysis에는 별도의 300,000-byte threshold가 있을 수 있다고 구분한다.
 
 ## 재현 및 진단
 
-1. 알림 문구가 file size limit인지 inspection severity 문제인지 확인한다.
-2. 상태 표시줄의 Highlighting level이 `None`, `Syntax`, `All Problems` 중 무엇인지 본다.
-3. `Help | Diagnostic Tools | Special Files and Folders` 또는 custom properties에서 현재 제한 설정을 확인한다.
-4. 파일 byte 수와 generated/minified file 여부를 확인한다.
+1. 알림 문구를 보고 file size limit인지 inspection severity 문제인지 구분한다.
+2. 상태 표시줄의 Highlighting level이 `None`, `Syntax`, `All Problems` 중 무엇인지 살펴본다.
+3. `Help | Diagnostic Tools | Special Files and Folders` 또는 custom properties에서 현재 제한 설정을 확인해 둔다.
+4. 파일 byte 수와 generated/minified file 여부도 점검한다.
 
 ## 해결 방법
 
@@ -48,9 +48,9 @@ idea.max.intellisense.filesize=5000
 ## 검증 방법
 
 - IDE를 재시작한 뒤 문제 파일에서 completion과 inspection이 복구되는지 확인한다.
-- CPU, memory와 indexing 시간을 관찰한다.
-- 작은 파일의 분석 성능이 악화되지 않았는지 확인한다.
-- command-line build 결과와 Rider 표시가 일치하는지 비교한다.
+- CPU, memory와 indexing 시간을 살펴본다.
+- 작은 파일의 분석 성능이 악화되지 않았는지 확인해 둔다.
+- command-line build 결과와 Rider 표시가 일치하는지도 비교해 본다.
 
 ## 주의점
 

@@ -1,7 +1,7 @@
 ---
 title: "Docker Desktop WSL2 VHDX 용량 부족 복구"
 published: 2023-09-26
-description: "JetBrains Space On-Premises 서비스에서 No space left on device가 발생한 사례를 바탕으로 Docker Desktop의 WSL2 VHDX 용량을 진단하고 확장하는 방법을 정리합니다."
+description: "JetBrains Space On-Premises 서비스에서 No space left on device가 발생한 사례를 통해 Docker Desktop의 WSL2 VHDX 용량을 진단하고 확장하는 방법을 정리합니다."
 image: ""
 tags:
   - docker
@@ -18,13 +18,13 @@ Docker Desktop의 WSL2 backend에서 운영하던 서비스의 PostgreSQL과 Ela
 
 ## 문제 현상
 
-container 재시작으로 회복되지 않고 database write와 index allocation이 계속 실패했다. Windows 탐색기 여유 공간만 확인하면 원인을 놓치기 쉽다.
+container를 재시작해도 회복되지 않았고 database write와 index allocation은 계속 실패했다. Windows 탐색기의 여유 공간만 봐서는 원인을 놓치기 쉽다.
 
 ![Docker Desktop 데이터 VHDX가 용량 한계에 도달한 화면](./images/jetbrains-space-docker-wsl2-vhdx-disk-full/docker-vhdx-capacity.webp)
 
 ## 적용 범위
 
-Docker Desktop이 WSL2 distribution의 virtual disk에 container data를 저장하는 Windows 환경에 해당한다. 원문은 JetBrains Space On-Premises에서 발견했지만 같은 원리는 다른 Docker workload에도 적용된다.
+Docker Desktop이 WSL2 distribution의 virtual disk에 container data를 저장하는 Windows 환경을 다룬다. 처음 문제를 발견한 곳은 JetBrains Space On-Premises였지만 다른 Docker workload도 원리는 같다.
 
 ## 원인
 
@@ -32,7 +32,7 @@ Windows host volume의 남은 공간과 WSL2 ext4 filesystem의 크기는 별개
 
 ## 재현 및 진단
 
-PowerShell과 WSL에서 서로 다른 층을 확인한다.
+PowerShell과 WSL에서 각기 다른 층을 확인한다.
 
 ```powershell
 wsl --list --verbose
@@ -43,7 +43,7 @@ Docker가 사용하는 distribution 이름과 data location은 Docker Desktop �
 
 ## 해결 방법
 
-최근 WSL에서는 먼저 지원되는 resize 명령을 사용한다.
+최근 WSL에서는 지원되는 resize 명령부터 사용한다.
 
 ```powershell
 wsl --shutdown
@@ -58,7 +58,7 @@ wsl --manage <distribution> --resize 1536GB
 
 ![WSL에서 Docker data block device를 확인한 화면](./images/jetbrains-space-docker-wsl2-vhdx-disk-full/wsl-docker-data-block-device.webp)
 
-용량 확장과 별도로 사용하지 않는 image·build cache·volume을 식별해 보존 정책에 맞게 정리한다. database volume은 서비스 backup을 확보하기 전에 삭제하지 않는다.
+디스크를 늘린 다음에는 사용하지 않는 image·build cache·volume을 찾아 보존 정책에 맞게 정리한다. database volume은 서비스 backup을 확보하기 전에 삭제하지 않는다.
 
 ## 검증 방법
 
@@ -69,7 +69,7 @@ wsl --manage <distribution> --resize 1536GB
 
 ## 주의점
 
-VHDX 확장은 host filesystem, virtual disk, partition과 ext4 filesystem이 연결된 작업이다. 중간 단계에서 전원을 끄거나 잘못된 distribution의 disk를 수정하면 데이터가 손상될 수 있다. 확장만 반복하지 말고 log·artifact·volume retention도 함께 고친다.
+VHDX 확장은 host filesystem, virtual disk, partition과 ext4 filesystem을 함께 다루는 작업이다. 중간에 전원을 끄거나 잘못된 distribution의 disk를 수정하면 데이터가 손상될 수 있다. 확장만 반복하지 말고 log·artifact·volume retention도 함께 고친다.
 
 ## 참고 자료
 

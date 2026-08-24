@@ -30,11 +30,11 @@ Unreal의 networked Root Motion Montage는 단순히 server transform만 복제�
 
 ## 재현 및 진단
 
-1. server, autonomous proxy, simulated proxy에서 `LocalRole`, montage 이름과 position을 기록한다.
-2. `IsPlayingNetworkedRootMotionMontage`, `RepRootMotion`과 movement mode를 비교한다.
-3. montage 시작 RPC가 server 권한을 거쳐 관련 client에 전달되는지 확인한다.
-4. AnimInstance의 Root Motion Mode가 역할별로 예상한 값인지 확인한다.
-5. packet loss와 latency에서 montage 시작·중단·blend out을 반복한다.
+1. server, autonomous proxy, simulated proxy에서 `LocalRole`, montage 이름과 position을 기록해 둔다.
+2. `IsPlayingNetworkedRootMotionMontage`, `RepRootMotion`과 movement mode를 서로 비교한다.
+3. montage 시작 RPC가 server 권한을 거쳐 관련 client에 전달되는지 확인해 본다.
+4. AnimInstance의 Root Motion Mode가 역할별로 예상한 값인지도 살핀다.
+5. packet loss와 latency에서 montage 시작·중단·blend out을 반복해 본다.
 
 ## 해결 방법
 
@@ -44,10 +44,10 @@ Unreal의 networked Root Motion Montage는 단순히 server transform만 복제�
 
 ## 검증 방법
 
-- listen server와 dedicated server에서 각각 두 client 이상으로 시험한다.
+- listen server와 dedicated server에서 각각 두 client 이상으로 시험해 본다.
 - montage 시작·중단·연속 재생과 late join을 확인한다.
-- 높은 latency와 packet loss에서 위치 오차, montage position과 correction 횟수를 측정한다.
-- root motion이 없는 montage와 같은 이동을 비교한다.
+- 높은 latency와 packet loss에서는 위치 오차, montage position과 correction 횟수를 측정해 둔다.
+- root motion이 없는 montage와 같은 이동을 비교해 본다.
 
 ## 주의점
 

@@ -34,10 +34,10 @@ renderer는 모든 particle을 매 frame 개별 확인하지 않고 component의
 
 ## 재현 및 진단
 
-1. Cascade viewport에서 bounds 표시를 켠다.
-2. effect의 최대 수명 동안 입자·trail이 box 밖으로 나가는지 확인한다.
-3. level viewport에서 카메라를 돌리며 사라지는 순간의 bounds를 비교한다.
-4. component scale과 parent transform이 bounds에 미치는 영향도 확인한다.
+1. Cascade viewport에서 bounds 표시를 켜 둔다.
+2. effect의 최대 수명 동안 입자·trail이 box 밖으로 나가는지 확인해 본다.
+3. level viewport에서 카메라를 돌리며 사라지는 순간의 bounds를 서로 비교한다.
+4. component scale과 parent transform이 bounds에 미치는 영향도 살핀다.
 
 ## 해결 방법
 
@@ -51,10 +51,10 @@ Particle System의 Fixed Relative Bounding Box를 켜고, effect가 실제로 �
 
 ## 검증 방법
 
-- 가까운 거리와 먼 거리, 넓은 FOV와 좁은 FOV에서 카메라를 360도 회전한다.
+- 가까운 거리와 먼 거리, 넓은 FOV와 좁은 FOV에서 카메라를 360도 회전해 본다.
 - effect lifetime 전체와 spawn burst 순간을 확인한다.
-- list/grid가 아니라 실제 게임의 component scale과 attachment 상태에서 시험한다.
-- `stat initviews` 등으로 컬링과 primitive 수가 과도하게 늘지 않는지 확인한다.
+- list/grid가 아니라 실제 게임의 component scale과 attachment 상태에서 시험해 본다.
+- `stat initviews` 등으로 컬링과 primitive 수가 과도하게 늘지 않는지도 살핀다.
 
 ## 주의점
 

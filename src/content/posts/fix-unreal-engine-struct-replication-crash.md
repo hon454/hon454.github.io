@@ -21,7 +21,7 @@ check(
     SharedParams.Cmds[CmdIndex + 1].Type == ERepLayoutCmdType::DynamicArray);
 ```
 
-이 문제는 구조체 내부에서 전송할 멤버에 `UPROPERTY()`를 붙여 해결한다. 일반 규칙은 아래와 같다.
+이 문제는 구조체 내부에서 전송할 멤버에 `UPROPERTY()`를 붙여 해결한다. 규칙은 간단하다.
 
 > 기본 reflection 기반 복제로 클라이언트에 보낼 `USTRUCT` 내부 필드는 모두 `UPROPERTY()`로 반사되어야 한다. 로컬 전용 C++ 필드까지 무조건 `UPROPERTY`여야 하는 것은 아니며, custom serializer는 또 다른 계약을 사용한다.
 
@@ -54,7 +54,7 @@ TArray<FMagazine_NetQuantize> Magazines;
 
 replication은 배열 값과 shadow state를 비교하면서 내부 reflected property를 따라 change handle을 만든다. 실제 배열이 shadow보다 커졌는데 원소 내부에서 만들 수 있는 handle이 하나도 없으면, 배열 command가 기대한 형태와 맞지 않아 위 assertion에 도달할 수 있다.
 
-즉 원인은 C++ 구조체의 byte 수가 0이어서가 아니다. C++에는 세 필드가 있지만, **기본 복제 스키마가 보는 필드 수가 0개**라는 불일치가 핵심이다.
+원인은 C++ 구조체의 byte 수가 0이어서가 아니다. C++에는 세 필드가 있지만 **기본 복제 스키마가 보는 필드 수가 0개**라는 불일치가 핵심이다.
 
 ## 최소 재현: 구조체 하나에서도 같은 계약
 
@@ -79,7 +79,7 @@ class APayloadOwner : public AActor
 };
 ```
 
-바깥 `Payload` property가 replicated라고 해도 내부 `Data`는 reflection에 등록되지 않는다. 즉 Actor가 **구조체를 전송 대상으로 등록하는 것**과 구조체가 **전송할 내부 field를 제공하는 것**은 서로 다른 계약이다. 기본 serializer를 사용할 경우 내부 선언도 다음처럼 반사해야 한다.
+바깥 `Payload` property가 replicated라고 해도 내부 `Data`는 reflection에 등록되지 않는다. Actor가 **구조체를 전송 대상으로 등록하는 것**과 구조체가 **전송할 내부 field를 제공하는 것**은 서로 다른 계약이다. 기본 serializer를 사용한다면 내부 선언도 다음처럼 반사해야 한다.
 
 ```cpp
 USTRUCT()
@@ -121,7 +121,7 @@ struct FMagazine_NetQuantize
 };
 ```
 
-구조체 내부 필드에 다시 `Replicated`를 붙이지 않는다는 점에 주목한다. Actor의 `Magazines`가 replication 단위이고, 기본 struct serializer가 그 안의 reflected field를 순회한다.
+구조체 내부 필드에는 다시 `Replicated`를 붙이지 않는다. Actor의 `Magazines`가 replication 단위이며 기본 struct serializer가 그 안의 reflected field를 순회하기 때문이다.
 
 ```cpp
 // MagazineOwner.h
@@ -175,7 +175,7 @@ void AMagazineOwner::OnRep_Magazines()
 }
 ```
 
-이 구성에는 네 층의 계약이 모두 필요하다.
+이 구성은 네 층의 계약을 모두 갖춰야 한다.
 
 1. `AMagazineOwner`가 실제로 복제되도록 `bReplicates = true`다.
 2. 바깥 property에 `Replicated` 또는 `ReplicatedUsing`이 있다.
@@ -208,7 +208,7 @@ struct FMagazine_NetQuantize
 };
 ```
 
-[Unreal Engine property 문서](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-uproperties)는 `NotReplicated`가 struct member의 기본 복제를 건너뛰는 specifier라고 설명한다. 이 표현은 필드가 reflection, editor tooling, 복사나 다른 serialization에는 보이되 네트워크 스키마에서는 제외된다는 의도를 드러낸다. `Transient`는 일반 asset/save serialization에서도 유지하지 않겠다는 별도 선택이다.
+[Unreal Engine property 문서](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-uproperties)는 `NotReplicated`가 struct member의 기본 복제를 건너뛰는 specifier라고 설명한다. 이렇게 선언하면 필드는 reflection, editor tooling, 복사나 다른 serialization에 남겨 두되 네트워크 스키마에서는 제외한다는 의도가 분명해진다. `Transient`는 일반 asset/save serialization에서도 유지하지 않겠다는 별도 선택이다.
 
 평범한 non-`UPROPERTY` C++ 필드를 로컬 캐시로 둘 수도 있다. 다만 아래 차이는 감수해야 한다.
 
@@ -239,9 +239,9 @@ struct TStructOpsTypeTraits<FCompressedMagazineSnapshot>
 
 `WithNetSerializer = true`가 올바르게 등록되면 `FStructProperty::NetSerializeItem`은 해당 native 함수를 호출한다. 이 경우 함수가 일반 C++ field를 직접 encoding할 수 있으므로 “모든 field는 `UPROPERTY`여야 한다”는 기본 serializer 규칙의 예외가 된다.
 
-그러나 `WithNetSerializer`는 전송 형식만 바꾼다. non-`UPROPERTY` 상태의 **변경 감지**까지 자동으로 해결하지는 않는다. 기본 `UScriptStruct` 비교는 reflected property를 사용하므로, custom payload만 바뀌었을 때 새 값이 dirty로 잡히지 않을 수 있다. 이런 상태를 직접 직렬화한다면 정확한 `operator==`와 `WithIdenticalViaEquality`, 또는 `Identical` 구현과 `WithIdentical` trait까지 함께 설계해야 한다. 배열에 첫 원소를 추가할 때는 전송되지만 기존 원소의 native field만 바꿀 때 누락되는 식의 교묘한 버그가 될 수 있다.
+그러나 `WithNetSerializer`는 전송 형식만 바꾼다. non-`UPROPERTY` 상태의 **변경 감지**까지 자동으로 해결하지는 않는다. 기본 `UScriptStruct` 비교는 reflected property를 사용하므로 custom payload만 바뀌었을 때 새 값이 dirty로 잡히지 않을 수 있다. 이런 상태를 직접 직렬화한다면 정확한 `operator==`와 `WithIdenticalViaEquality`, 또는 `Identical` 구현과 `WithIdentical` trait까지 함께 설계해야 한다. 배열에 첫 원소를 추가할 때는 전송되지만 기존 원소의 native field만 바꾸면 누락되는 식의 교묘한 버그가 생길 수 있다.
 
-하지만 custom serializer에는 더 큰 책임이 따른다.
+custom serializer를 선택하면 더 큰 책임이 따른다.
 
 - 송신과 수신이 정확히 같은 field 순서와 bit 수를 사용해야 한다.
 - enum, index, count, string 길이와 정수 범위를 역직렬화 전에 제한한다.
@@ -290,7 +290,7 @@ struct TStructOpsTypeTraits<FCompressedMagazineSnapshot>
 5. late join client가 최종 배열 전체를 받는지 확인한다.
 6. 클라이언트 `OnRep`가 event log가 아니라 최종 상태 적용으로 동작하는지 확인한다.
 
-이 assertion은 특히 “0개에서 1개로 증가”하는 순간에 드러날 수 있으므로 초기 값만 비교하는 테스트로는 놓치기 쉽다.
+이 assertion은 특히 “0개에서 1개로 증가”하는 순간에 드러날 수 있다. 초기 값만 비교하는 테스트로는 놓치기 쉽다.
 
 ## 빠른 판별표
 
@@ -303,7 +303,7 @@ struct TStructOpsTypeTraits<FCompressedMagazineSnapshot>
 | 수정 후에만 이상한 layout crash        | PIE 종료, full rebuild, process restart 후 재현                 |
 | `_NetQuantize` 이름인데 압축되지 않음  | 실제 `NetSerialize`와 traits 구현 여부 확인                     |
 
-이 문제의 교훈은 단순히 macro를 더 붙이는 것이 아니다. C++ memory layout, Unreal reflection layout, network serialization layout은 서로 같은 것이 아니다. 기본 복제를 사용할 때는 **바깥 property와 전송할 내부 field를 모두 reflection에 명시하고**, 제외할 field는 의도적으로 표시한다. custom serializer를 선택했다면 그 순간부터 wire format과 변경 감지를 직접 책임진다.
+핵심은 단순히 macro를 더 붙이는 데 있지 않다. C++ memory layout, Unreal reflection layout, network serialization layout은 서로 다르다. 기본 복제를 사용할 때는 **바깥 property와 전송할 내부 field를 모두 reflection에 명시하고**, 제외할 field는 의도적으로 표시한다. custom serializer를 선택한 순간부터는 wire format과 변경 감지를 직접 책임져야 한다.
 
 ## 참고 자료
 

@@ -14,21 +14,21 @@ draft: true
 lang: ko
 ---
 
-UE5 IK Retargeter로 애니메이션을 변환한 뒤 root의 상하 움직임은 남지만 전진 이동이 사라지는 문제가 있었다.
+UE5 IK Retargeter로 애니메이션을 변환한 뒤 root의 상하 움직임은 남았지만 전진 이동은 사라졌다.
 
 ![Root Motion 전진 이동이 사라진 리타기팅 결과](./images/ue5-root-motion-ik-retargeting/root-motion-retargeting-before.webp)
 
 ## 문제 현상
 
-원본 애니메이션에는 root bone의 전진 변위가 있지만 retarget 결과는 제자리에서 재생됐다. pelvis 동작은 대체로 정상이라 animation asset의 Root Motion 설정만 바꿔서는 해결되지 않았다.
+원본 애니메이션에는 root bone의 전진 변위가 있지만 retarget 결과는 제자리에서 재생됐다. pelvis 동작은 대체로 정상이어서 animation asset의 Root Motion 설정만 바꿔서는 문제가 해결되지 않았다.
 
 ## 적용 버전
 
-원문은 UE5 초기 IK Rig/IK Retargeter UI를 기준으로 한다. UE 5.6 이후에는 Retarget Root, root settings, operation stack 표현이 달라질 수 있으므로 이름보다 역할을 기준으로 확인한다.
+원문은 UE5 초기 IK Rig/IK Retargeter UI를 기준으로 한다. UE 5.6 이후에는 Retarget Root, root settings, operation stack 표현이 달라질 수 있으므로 이름보다는 역할을 기준으로 확인한다.
 
 ## 원인
 
-source와 target rig에 root를 담당하는 chain이 없거나, Retargeter의 chain mapping에서 root 변위가 전달되지 않았다. pelvis를 root 이동 전달용 chain처럼 별도로 매핑한 구성도 실제 root translation과 충돌할 수 있었다.
+source와 target rig에 root를 담당하는 chain이 없거나 Retargeter의 chain mapping에서 root 변위가 전달되지 않았다. pelvis를 root 이동 전달용 chain처럼 별도로 매핑한 구성도 실제 root translation과 충돌할 수 있었다.
 
 ## 재현 및 진단
 
@@ -40,7 +40,7 @@ source와 target rig에 root를 담당하는 chain이 없거나, Retargeter의 c
 
 ## 해결 방법
 
-원문 사례에서는 source와 target에 Root chain을 추가하고 서로 매핑한 뒤, root chain의 translation mode를 `Globally Scaled`로 설정해 전진 변위를 복원했다. 중복으로 만들었던 Pelvis chain과 그 mapping은 제거했다.
+원문 사례에서는 source와 target에 Root chain을 추가하고 서로 매핑했다. 그다음 root chain의 translation mode를 `Globally Scaled`로 설정해 전진 변위를 복원하고 중복으로 만들었던 Pelvis chain과 그 mapping은 제거했다.
 
 ![Root chain을 매핑한 IK Retargeter 설정](./images/ue5-root-motion-ik-retargeting/root-chain-mapping-after.webp)
 

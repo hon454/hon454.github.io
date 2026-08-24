@@ -14,7 +14,7 @@ draft: true
 lang: ko
 ---
 
-많은 Unreal Interface를 구현한 클래스에서 generated code를 컴파일할 때 다음과 비슷한 오류가 발생할 수 있다.
+많은 Unreal Interface를 구현한 클래스에서 generated code를 컴파일하면 아래와 비슷한 오류가 발생할 수 있다.
 
 ```text
 error C2607: static assertion failed
@@ -23,7 +23,7 @@ UE_ARRAY_COUNT(Z_Construct_UClass_..._Statics::InterfaceParams) < 64
 
 ## 문제 현상
 
-직접 작성한 `.cpp`가 아니라 `.gen.cpp`의 `FImplementedInterfaceParams` 배열과 `FClassParams` 초기화 부근에서 실패한다. 그래서 처음에는 UHT 생성 오류처럼 보이지만, 실제 입력은 클래스가 구현한다고 선언한 reflected interface 집합이다.
+오류는 직접 작성한 `.cpp`가 아니라 `.gen.cpp`의 `FImplementedInterfaceParams` 배열과 `FClassParams` 초기화 부근에서 난다. 처음에는 UHT 생성 오류처럼 보이지만 실제 입력은 클래스가 구현한다고 선언한 reflected interface 집합이다.
 
 ## 적용 범위
 

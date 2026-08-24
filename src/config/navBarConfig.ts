@@ -36,20 +36,6 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		],
 	});
 
-	// 소셜과 하위 메뉴
-	links.push({
-		name: "소셜",
-		url: "#",
-		icon: "material-symbols:group",
-		children: [
-			// 친구 링크
-			LinkPresets.Friends,
-
-			// 방명록
-			LinkPresets.Guestbook,
-		],
-	});
-
 	// 내 메뉴와 하위 메뉴
 	links.push({
 		name: "내 공간",

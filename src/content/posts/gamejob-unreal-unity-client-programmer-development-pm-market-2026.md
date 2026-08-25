@@ -9,7 +9,9 @@ category: 커리어
 tags:
   - unreal-engine
   - unity
-  - job-market
+  - client-programmer
+  - development-pm
+  - career
 ---
 
 이직 준비를 시작하면서 내가 해 온 일을 늘어놓기 전에, 지금 채용 시장이 무엇을 증거로 보는지부터 확인했다. 2026년 8월 22일 게임잡에서 Unreal·Unity 클라이언트 및 엔진 개발, 개발 PM 공고를 다시 찾았다. 상세 업무와 자격 요건은 [공개 이력서](/resume)에 하나씩 대조했다.

@@ -3,12 +3,13 @@ published: 2025-01-26
 author: Jihoon Jeon
 title: '언리얼 엔진 TObjectPtr 이해하기: UPROPERTY, GC와 안전한 API 설계'
 description: UE5의 TObjectPtr가 raw UObject 포인터와 어떻게 다르며, UPROPERTY·가비지 컬렉션·직렬화·컨테이너·함수 API에서 어떻게 사용하는지 정리합니다.
-category: 언리얼 엔진
+category: Unreal Engine
 tags:
+  - unreal-engine
   - cpp
   - tobjectptr
   - garbage-collection
-  - uobject
+  - object-reference
 ---
 
 UE5는 raw UObject pointer member의 대체재로 `TObjectPtr`를 도입했다. 사용할 때 먼저 구분할 점은 두 가지다.

@@ -4,11 +4,13 @@ updated: 2026-08-24
 author: Jihoon Jeon
 title: 'UE4 BlueprintCallable 함수에 실행 핀이 보이지 않는 이유'
 description: UE 4.27에서 const BlueprintCallable 함수가 자동으로 Pure 노드가 되는 조건과 BlueprintPure=false로 실행 핀을 복원하는 방법을 설명합니다.
-category: 언리얼 엔진
+category: Unreal Engine
 tags:
+  - unreal-engine
   - ue4
   - cpp
   - blueprint
+  - ufunction
 sourceLink: "https://velog.io/@hon454/BlueprintCallable-함수에-실행Exec핀이-없는-경우"
 ---
 

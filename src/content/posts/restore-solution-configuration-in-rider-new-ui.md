@@ -4,12 +4,14 @@ author: Jihoon Jeon
 title: Rider 2022.3 New UI에서 Solution Configuration 선택기가 보이지 않을 때
 description: Rider 2022.3 New UI에서 사라진 Solution Configuration 선택기를 ActiveConfiguration action으로 복원하는 방법과 Unreal 빌드 구성의 의미를 정리합니다.
 image: ./images/restore-solution-configuration-in-rider-new-ui/rider-2022-3-restored-solution-configuration-selector.avif
-category: 개발 도구
+category: Rider
 tags:
   - jetbrains
   - rider
   - unreal-engine
+  - ide
   - build-configuration
+  - troubleshooting
 ---
 
 Rider 2022.3의 **New UI Preview**를 켜면 VS Code처럼 가벼운 텍스트 에디터에 가까운 인상을 준다. 처음에는 다소 가벼워 보였지만, 사용하다 보니 UI가 아이콘 위주로 큼직하게 배치돼 필요한 기능이 더 눈에 띄는 장점도 있었다.

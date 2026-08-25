@@ -3,10 +3,12 @@ published: 2024-11-20
 author: Jihoon Jeon
 title: 'Unreal Engine 애니메이션 메타데이터: UAnimMetaData와 Metadata Curve'
 description: UAnimMetaData를 애니메이션 에셋에 저장해 런타임에서 조회하고 에디터 자동화로 관리하며, Metadata Curve·Notify·Animation Attribute·Asset Metadata와 구분하는 기준을 정리합니다.
-category: 언리얼 엔진
+category: Unreal Engine
 tags:
+  - unreal-engine
   - animation
-  - animation-metadata
+  - anim-metadata
+  - animation-curves
   - editor-scripting
   - cpp
 ---

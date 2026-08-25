@@ -5,11 +5,12 @@ updated: 2026-08-24
 description: "네트워크 Root Motion Montage가 재생되는 동안 simulated proxy의 일반 ReplicatedMovement 보정 경로가 달라지는 이유와 안전한 점검 순서를 설명합니다."
 image: ""
 tags:
+  - unreal-engine
   - networking
   - root-motion
-  - animation
+  - animation-montage
   - replication
-category: 언리얼 엔진
+category: Unreal Engine
 draft: false
 lang: ko
 ---

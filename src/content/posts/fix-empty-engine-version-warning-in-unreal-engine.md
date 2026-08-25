@@ -3,11 +3,14 @@ published: 2023-10-20
 author: Jihoon Jeon
 title: 'Unreal Engine “Asset has been saved with empty engine version” 경고 안전하게 해결하기'
 description: Asset package의 SavedByEngineVersion changelist가 0일 때 발생하는 경고의 정확한 의미와, nonzero-CL 엔진에서 ResavePackages로 metadata를 복구하고 결과를 검증하는 안전 절차를 설명합니다.
-category: 언리얼 엔진
+category: Unreal Engine
 tags:
+  - unreal-engine
+  - asset
+  - package
   - migration
   - commandlet
-  - debugging
+  - troubleshooting
 ---
 
 UE 4.27-Plus 사내 project를 UE 5.3.1로 옮길 때 많은 Asset에서 다음 경고가 나타났다.

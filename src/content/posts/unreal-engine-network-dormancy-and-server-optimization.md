@@ -4,12 +4,14 @@ updated: 2026-08-24
 author: Jihoon Jeon
 title: 'UE4 Net Dormancy와 서버 리플리케이션 최적화'
 description: UE 4.26~4.27의 Net Dormancy 상태, FlushNetDormancy와 ForceNetUpdate의 차이, Adaptive NetUpdateFrequency, RPC와 프로퍼티 복제 최적화 기준을 정리합니다.
-category: 언리얼 엔진
+category: Unreal Engine
 tags:
+  - unreal-engine
+  - ue4
   - networking
   - replication
-  - network-dormancy
-  - performance
+  - dormancy
+  - optimization
 sourceLink: "https://velog.io/@hon454/ue4-서버-최적화-팁"
 ---
 

@@ -5,10 +5,12 @@ updated: 2026-08-24
 description: "UnrealHeaderTool 생성 코드에서 interface 배열 개수 제한 static_assert와 C2607이 발생할 때 상속된 interface까지 포함해 원인을 찾는 방법을 정리합니다."
 image: ""
 tags:
+  - unreal-engine
   - cpp
-  - interfaces
+  - interface
+  - unreal-header-tool
   - compiler-error
-category: 언리얼 엔진
+category: Unreal Engine
 draft: false
 lang: ko
 ---

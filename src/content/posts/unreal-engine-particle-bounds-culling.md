@@ -5,11 +5,12 @@ updated: 2026-08-24
 description: "Unreal Engine Cascade 파티클이 카메라 각도에 따라 사라질 때 bounds 시각화와 Fixed Relative Bounding Box로 컬링 범위를 교정하는 방법을 설명합니다."
 image: ""
 tags:
+  - unreal-engine
   - particles
-  - rendering
+  - cascade
+  - bounds
   - culling
-  - debugging
-category: 언리얼 엔진
+category: Unreal Engine
 draft: false
 lang: ko
 ---

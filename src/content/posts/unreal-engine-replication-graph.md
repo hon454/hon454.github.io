@@ -3,11 +3,13 @@ published: 2023-01-26
 author: Jihoon Jeon
 title: 'Unreal Engine Replication Graph: 라우팅에서 전송까지'
 description: Replication Graph가 줄이는 비용과 노드 라우팅, 연결별 후보 수집, Grid·빈도·우선순위 설계와 디버깅 절차를 정리합니다.
-category: 언리얼 엔진
+category: Unreal Engine
 tags:
+  - unreal-engine
   - networking
-  - replication
+  - replication-graph
   - performance
+  - scalability
   - cpp
 ---
 

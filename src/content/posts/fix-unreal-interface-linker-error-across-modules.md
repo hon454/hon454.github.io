@@ -4,11 +4,14 @@ updated: 2026-08-24
 author: Jihoon Jeon
 title: 'UE4 다른 모듈의 UInterface 캐스팅에서 LNK1120이 발생할 때'
 description: UE 4.26에서 다른 모듈의 UInterface를 사용할 때 GetPrivateStaticClass 링크 오류가 발생한 원인과 두 인터페이스 타입에 모듈 API 매크로를 적용하는 방법을 정리합니다.
-category: 언리얼 엔진
+category: Unreal Engine
 tags:
+  - unreal-engine
   - ue4
   - cpp
+  - uinterface
   - modules
+  - linker
   - debugging
 sourceLink: "https://velog.io/@hon454/캐스팅-시-LNK1120-에러-발생"
 ---

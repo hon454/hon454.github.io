@@ -5,10 +5,12 @@ updated: 2026-08-24
 description: "Steam Web API 인증 티켓을 사용한 EOS 로그인 실패가 Private Sandbox의 Player Group과 Deployment 권한 누락에서 발생한 사례를 정리합니다."
 image: ""
 tags:
+  - unreal-engine
   - steam
   - epic-online-services
   - authentication
-category: 언리얼 엔진
+  - sandbox
+category: Unreal Engine
 draft: false
 lang: ko
 ---

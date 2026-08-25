@@ -7,8 +7,10 @@ image: ""
 tags:
   - docker
   - wsl2
-  - debugging
-category: 개발 인프라
+  - vhdx
+  - disk-space
+  - jetbrains-space
+category: DevOps
 draft: false
 lang: ko
 ---

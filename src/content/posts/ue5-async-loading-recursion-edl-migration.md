@@ -5,11 +5,12 @@ updated: 2026-08-24
 description: "UE4 프로젝트를 UE5로 옮긴 뒤 패키징 빌드에서 AsyncLoadingThread RecursionNotAllowed assertion이 발생할 때 재진입 로드를 찾는 절차를 정리합니다."
 image: ""
 tags:
-  - ue5
+  - unreal-engine
   - async-loading
+  - edl
   - migration
-  - debugging
-category: 언리얼 엔진
+  - crash
+category: Unreal Engine
 draft: false
 lang: ko
 ---

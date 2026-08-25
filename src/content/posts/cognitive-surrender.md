@@ -2,8 +2,8 @@
 title: AI가 짠 코드를 나는 정말 이해하고 있었을까
 published: 2026-08-22
 description: AI가 만드는 코드의 속도를 따라가지 못하면서 느낀 인지적 압도와 인지적 항복, 그리고 코드를 승인하는 사람의 책임에 대한 고민.
-tags: [AI, 에이전틱 코딩, 게임 개발, 개발 문화]
-category: 개발
+tags: [ai, agentic-coding, development-culture]
+category: 개발 이야기
 slug: cognitive-surrender
 image: ./images/cognitive-surrender.avif
 ---

@@ -5,10 +5,8 @@ title: 'C++ 캐스팅 안전하게 고르기: static_cast, dynamic_cast, const_c
 description: C++23 규칙을 기준으로 네 가지 named cast와 C-style cast의 실제 의미, 숫자·상속·cv·비트 변환의 실패 조건과 undefined behavior, Unreal Engine의 RTTI 경계를 정리합니다.
 category: C++
 tags:
-  - cpp
   - casting
   - rtti
-  - undefined-behavior
   - unreal-engine
 ---
 

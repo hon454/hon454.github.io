@@ -169,6 +169,8 @@ function initialActive(categoryName: string): {
 </style>
 
 <script>
+  import { resolvePostCategory } from "@constants/post-categories";
+
   let delayedCategoryBarScrollTimer: number | undefined;
 
   function getCategoryBarState(bar: HTMLElement, currentUrl: URL) {
@@ -183,7 +185,8 @@ function initialActive(categoryName: string): {
       isHome,
       isArchive,
       isCategories,
-      activeCategory: currentUrl.searchParams.get("category") || "",
+      activeCategory:
+        resolvePostCategory(currentUrl.searchParams.get("category")) || "",
       hasTag: currentUrl.searchParams.has("tag"),
       hasUncategorized: currentUrl.searchParams.has("uncategorized"),
     };

@@ -4,12 +4,11 @@ author: Jihoon Jeon
 title: JetBrains 발표 세션 퀴즈를 맞히고 Rider 1년권을 얻었다!
 description: JetBrains의 Unreal Engine용 Rider 웨비나를 보다가 예상 밖의 PlayStation 퀴즈를 맞히고 Rider 1년 이용권을 받은 경험을 기록합니다.
 image: ./images/winning-a-one-year-jetbrains-rider-license/jetbrains-rider-webinar-2023.avif
-category: Rider
+category: 개발 도구
 tags:
   - jetbrains
   - rider
   - unreal-engine
-  - webinar
 ---
 
 Unity를 사용할 때부터 Rider를 써 왔다. Unreal Engine에서도 별다른 학습 없이 그때그때 필요한 기능을 찾아 주먹구구식으로 사용하고 있었는데, 마침 JetBrains에서 [Unreal Engine으로 게임 제작하기: Rider로 아이디어를 더 쉽게 구현](https://www.youtube.com/watch?v=sUSyxJGyrho) 라이브 세션을 열어 퇴근 후 시청했다.

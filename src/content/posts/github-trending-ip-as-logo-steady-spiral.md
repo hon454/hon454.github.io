@@ -4,13 +4,12 @@ published: 2026-08-24T09:00:00+09:00
 author: Jihoon Jeon
 description: GitHub에서 빠르게 주목받은 ip-as-logo Agent Skill로 달팽이 로고 후보를 만들고, Steady Spiral의 favicon과 라이트·다크 모드 로고로 적용한 과정을 기록합니다.
 image: ./images/ip-as-logo-steady-spiral/ip-as-logo-wall.webp
-category: 개발
+category: 블로그
 tags:
-  - AI
-  - Agent Skill
-  - 이미지 생성
-  - 브랜딩
-  - Astro
+  - ai
+  - agent-skill
+  - branding
+  - astro
 ---
 
 블로그 이름을 **Steady Spiral**로 바꿨다. 홈 화면의 문구는 **Just Keep Pedaling**로 남겼다.

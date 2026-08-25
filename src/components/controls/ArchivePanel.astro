@@ -1,5 +1,9 @@
 ---
 import { siteConfig } from "@/config";
+import {
+	POST_CATEGORY_NAME_BY_TOKEN,
+	POST_CATEGORY_SLUG_BY_NAME,
+} from "@/constants/post-categories";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import { getSortedPostsList } from "@/utils/content-utils";
@@ -50,6 +54,8 @@ const i18nStrings = {
 const tagsBaseUrl = url("/tags/");
 const categoriesBaseUrl = url("/categories/");
 const foldOnFilter = collapseAllButFirst;
+const categoryNameByToken = POST_CATEGORY_NAME_BY_TOKEN;
+const categorySlugByName = POST_CATEGORY_SLUG_BY_NAME;
 ---
 
 <archive-panel
@@ -163,7 +169,16 @@ const foldOnFilter = collapseAllButFirst;
   }
 </style>
 
-<script is:inline define:vars={{ i18nStrings, tagsBaseUrl, categoriesBaseUrl }}>
+<script
+  is:inline
+  define:vars={{
+    i18nStrings,
+    tagsBaseUrl,
+    categoriesBaseUrl,
+    categoryNameByToken,
+    categorySlugByName,
+  }}
+>
   class ArchivePanel extends HTMLElement {
     constructor() {
       super();
@@ -176,8 +191,11 @@ const foldOnFilter = collapseAllButFirst;
     init() {
       const params = new URLSearchParams(window.location.search);
       const tags = params.has("tag") ? params.getAll("tag") : [];
-      const categories = params.has("category") ? params.getAll("category") : [];
+      const rawCategories = params.has("category") ? params.getAll("category") : [];
+      const categories = rawCategories.map((category) => this.resolveCategory(category));
       const uncategorized = params.get("uncategorized");
+
+      this.canonicalizeCategoryParams(rawCategories, categories);
 
       const hasFilter = tags.length > 0 || categories.length > 0 || !!uncategorized;
 
@@ -187,6 +205,30 @@ const foldOnFilter = collapseAllButFirst;
       }
 
       this.bindYearToggles();
+    }
+
+    resolveCategory(category) {
+      const normalized = category.trim().toLocaleLowerCase("en-US");
+      return categoryNameByToken[normalized] || category.trim();
+    }
+
+    canonicalizeCategoryParams(rawCategories, categories) {
+      if (rawCategories.length === 0) return;
+
+      const canonicalCategories = categories.map(
+        (category) => categorySlugByName[category] || category,
+      );
+      const alreadyCanonical = rawCategories.every(
+        (category, index) => category === canonicalCategories[index],
+      );
+      if (alreadyCanonical) return;
+
+      const canonicalUrl = new URL(window.location.href);
+      canonicalUrl.searchParams.delete("category");
+      canonicalCategories.forEach((category) => {
+        canonicalUrl.searchParams.append("category", category);
+      });
+      window.history.replaceState(window.history.state, "", canonicalUrl);
     }
 
     // 按筛选条件隐藏不匹配的文章行，重算每年计数，隐藏空年份，重新折叠

@@ -3,14 +3,11 @@ published: 2023-01-15
 author: Jihoon Jeon
 title: Unreal Engine 멀티프로세스 디버깅에서 중단점이 비활성화될 때
 description: 실행 중인 Unreal Editor나 멀티플레이 클라이언트에 디버거를 연결했지만 중단점이 활성화되지 않을 때, 심볼 상태를 진단하고 Windows의 attach 시 모듈 제한을 안전하게 조정하는 방법을 정리합니다.
-category: Unreal Engine
+category: 언리얼 엔진
 tags:
-  - unreal-engine
   - debugging
-  - windows
   - rider
   - visual-studio
-  - troubleshooting
 ---
 
 Unreal Engine 프로젝트에서 PIE 멀티플레이나 별도 클라이언트를 실행한 뒤 IDE의 **Attach to Process**로 새 프로세스에 연결하면, 디버거 연결은 성공했는데 프로젝트 코드의 중단점은 비활성 상태로 남을 때가 있다. 특히 프로세스가 시작된 직후에는 정상이고 시간이 지난 뒤 연결할 때만 실패한다면 Windows의 attach 시 모듈 제한을 의심한다.

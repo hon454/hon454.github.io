@@ -5,12 +5,10 @@ updated: 2026-08-24
 description: "전체화면 PIE를 종료할 때 AActor::ForEachAttachedActors가 재귀하며 스택 오버플로를 일으킨 사례를 컴포넌트 소유권과 부착 계층 관점에서 정리합니다."
 image: ""
 tags:
-  - unreal-engine
-  - actor
-  - component
-  - attachment
+  - actor-lifecycle
   - crash
-category: Unreal Engine
+  - debugging
+category: 언리얼 엔진
 draft: false
 lang: ko
 ---

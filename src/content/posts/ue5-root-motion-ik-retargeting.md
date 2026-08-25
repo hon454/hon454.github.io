@@ -5,11 +5,12 @@ updated: 2026-08-24
 description: "UE5 IK Retargeter 결과에서 수직 Root Motion은 보이지만 전진 이동이 사라질 때 Root chain과 translation 설정을 점검하는 방법을 설명합니다."
 image: ""
 tags:
-  - ue5
+  - unreal-engine
   - animation
   - root-motion
   - ik-retargeter
-category: 언리얼 엔진
+  - ue5
+category: Unreal Engine
 draft: false
 lang: ko
 ---

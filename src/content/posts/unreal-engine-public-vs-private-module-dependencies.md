@@ -3,11 +3,13 @@ published: 2023-10-22
 author: Jihoon Jeon
 title: 'Unreal Build.cs 모듈 의존성: Public, Private, Include-only, Dynamic'
 description: Public 헤더와 Private cpp라는 단순 규칙을 넘어, Unreal Build Tool의 다섯 가지 모듈 목록이 compile 환경·link·runtime load를 어떻게 전파하는지 설명합니다.
-category: 언리얼 엔진
+category: Unreal Engine
 tags:
+  - unreal-engine
   - unreal-build-tool
+  - build-cs
   - modules
-  - build-configuration
+  - iwyu
   - cpp
 ---
 

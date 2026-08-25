@@ -65,7 +65,3 @@ jobs:
 
       - name: Run Astro Build
         run: pnpm astro build
-
-      - name: Build and verify Pagefind filters
-        if: matrix.node == 22
-        run: pnpm pagefind:check

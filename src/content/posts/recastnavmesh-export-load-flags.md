@@ -5,10 +5,12 @@ updated: 2026-08-24
 description: "특정 저장 데이터를 불러올 때 RecastNavMesh의 export와 load flags가 일치하지 않아 발생한 크래시를 지도 내 내비게이션 데이터 관점에서 진단합니다."
 image: ""
 tags:
+  - unreal-engine
   - navigation
   - recast-navmesh
+  - crash
   - debugging
-category: 언리얼 엔진
+category: Unreal Engine
 draft: false
 lang: ko
 ---

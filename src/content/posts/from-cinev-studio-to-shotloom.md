@@ -4,11 +4,11 @@ author: Jihoon Jeon
 title: CineV Studio에서 Shotloom으로 전환한 이유
 description: Unreal Engine 기반 시네마틱 편집기를 웹 우선 샷 제어 시스템으로 재정의하고 Rust, Bevy, WASM과 WebGPU를 선택한 배경을 정리합니다.
 image: ./images/from-cinev-studio-to-shotloom/cinev-logo-thumbnail.avif
-category: 개발 이야기
+category: 개발
 tags:
   - shotloom
+  - cinev-studio
   - retrospective
-  - product-development
 ---
 
 CineV Studio는 Unreal Engine 기반의 시네마틱 편집 도구였다. 높은 수준의 그래픽스와 애니메이션 기능을 활용해 캐릭터, 카메라와 타임라인을 직접 편집할 수 있었지만, 제품이 웹·생성형 AI 중심의 제작 환경으로 확장되면서 기존 구조의 운영 비용과 확장 한계가 커졌다.

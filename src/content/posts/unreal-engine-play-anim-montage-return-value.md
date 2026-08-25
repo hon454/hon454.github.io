@@ -4,12 +4,13 @@ updated: 2026-08-24
 author: Jihoon Jeon
 title: 'UE4 ACharacter::PlayAnimMontage 반환값이 실제 재생시간과 다른 이유'
 description: UE 4.26의 ACharacter::PlayAnimMontage가 Play Rate와 Rate Scale이 반영되지 않은 원본 몽타주 길이를 반환하던 이유와 안전한 대안을 설명합니다.
-category: 언리얼 엔진
+category: Unreal Engine
 tags:
+  - unreal-engine
   - ue4
   - cpp
   - animation
-  - animation-montage
+  - montage
 sourceLink: "https://velog.io/@hon454/ACharacterPlayAnimMontage의-반환값에-대하여"
 ---
 

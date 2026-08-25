@@ -3,11 +3,13 @@ published: 2023-01-19
 author: Jihoon Jeon
 title: Unreal Engine Construction Script를 안전하게 사용하는 법
 description: Construction Script와 C++ OnConstruction의 정확한 호출 시점, 에디터 재실행 비용과 순환 변경 위험, 멱등하고 빠른 제작 도구로 설계하는 방법을 정리합니다.
-category: 언리얼 엔진
+category: Unreal Engine
 tags:
+  - unreal-engine
   - blueprint
   - construction-script
   - actor-lifecycle
+  - editor-tools
   - performance
 ---
 

@@ -5,10 +5,12 @@ updated: 2026-08-24
 description: "ParticleSystemSceneProxy에서 projection W가 0이거나 NDC 값이 무한대로 기록될 때 transform과 MacroUV 설정을 점검하는 방법을 정리합니다."
 image: ""
 tags:
+  - unreal-engine
   - particles
   - rendering
+  - projection
   - debugging
-category: 언리얼 엔진
+category: Unreal Engine
 draft: false
 lang: ko
 ---

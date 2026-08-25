@@ -3,11 +3,13 @@ published: 2025-09-14
 author: Jihoon Jeon
 title: 'Unreal Engine UObject 가비지 컬렉션: 참조 그래프와 안전한 수명 관리'
 description: UObject 참조 그래프, 강한·약한·소프트 참조, 소멸 단계와 클러스터, 점진적 GC의 제약을 정리합니다.
-category: 언리얼 엔진
+category: Unreal Engine
 tags:
+  - unreal-engine
   - cpp
   - garbage-collection
   - uobject
+  - object-reference
 ---
 
 Unreal Engine의 UObject garbage collection을 이해하는 핵심은 “pointer가 몇 개인가”가 아니라 **Root Set에서 GC가 아는 strong reference를 따라 대상에 도달할 수 있는가**이다. `Outer`, C++ smart pointer, 파괴 요청, 강제 GC의 역할을 이 참조 그래프와 구분해야 한다.

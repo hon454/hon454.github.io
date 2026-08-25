@@ -5,11 +5,12 @@ updated: 2026-08-24
 description: "FFastArraySerializer가 한 번의 업데이트에서 허용된 변경·삭제 개수를 넘었다고 경고할 때 dirty 표시와 대량 변경 설계를 점검하는 방법을 정리합니다."
 image: ""
 tags:
+  - unreal-engine
   - networking
   - replication
-  - fast-array-serializer
+  - fast-array
   - debugging
-category: 언리얼 엔진
+category: Unreal Engine
 draft: false
 lang: ko
 ---

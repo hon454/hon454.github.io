@@ -74,7 +74,7 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 
 2021.10 — 2023.12 · 프리랜서
 
-#### [길고양이 이야기 2 (Street Cat's Tale 2)](https://store.steampowered.com/app/2356450/A_Street_Cats_Tale_2_Outside_is_Dangerous/)
+#### [길고양이 이야기 2](https://store.steampowered.com/app/2356450/A_Street_Cats_Tale_2_Outside_is_Dangerous/)
 
 **환경:** Unity, C#, Steamworks, Stove SDK, GitLab, Synology NAS
 

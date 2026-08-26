@@ -51,6 +51,23 @@ which owns the page grid, sidebars, navbar, wallpaper, and footer.
 - `dynamic`: Markdown microblog entries with publication date, pinned state,
   and location.
 
+## Blog Writing Guidance
+
+For tasks that create, rewrite, polish, or review authored blog content in
+`src/content/posts`, or when the user asks for the established hon454 voice:
+
+- Always read `.agents/docs/blog-writing/voice-profile.md` first.
+- For drafting or creating a post, then read `.agents/docs/blog-writing/writing.md`.
+- For editing or auditing existing prose, then read `.agents/docs/blog-writing/editing.md`.
+- Read `.agents/docs/blog-writing/examples.md` only when examples would help resolve
+  voice or genre choices.
+- Before handing off changed prose, read `.agents/docs/blog-writing/evaluation.md`
+  and perform its contextual review.
+
+The files in `.agents/docs/blog-writing/` are the single source of truth for blog
+voice and editing policy. Do not duplicate those rules in skills or invoke a
+general humanizer as a required stage.
+
 ### Path Aliases
 
 `tsconfig.json` maps `@components/*`, `@assets/*`, `@constants/*`, `@utils/*`,

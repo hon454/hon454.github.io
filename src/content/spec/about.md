@@ -12,10 +12,24 @@
 
 ## 🎵 Music Credits
 
-이 사이트의 배경음은 각 제작자의 무료 음원 이용 조건에 따라 사용합니다.
+이 사이트의 배경음은 각 제공 사이트의 무료 음원 이용 조건에 따라 사용합니다.
 
-- **プラスチックアドベンチャー**, **BT GIRLS** — [MusMus](https://musmus.main.jp/) ([이용 조건](https://musmus.main.jp/info.html))
-- **[Dream Culture](https://www.incompetech.com/music/royalty-free/index.html?isrc=USUAN1300046)**, **[Wallpaper](https://www.incompetech.com/music/royalty-free/index.html?isrc=USUAN1100843)**, **[Carefree](https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400037)** — [Kevin MacLeod / incompetech](https://incompetech.com/) ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/))
+### [MusMus](https://musmus.main.jp/)
+
+**제작자:** MusMus
+
+- [プラスチックアドベンチャー](https://musmus.main.jp/music_movie_03.html)
+- [BT GIRLS](https://musmus.main.jp/music_movie.html)
+- **이용 조건:** [MusMus 공식 이용 조건](https://musmus.main.jp/info.html)
+
+### [incompetech](https://incompetech.com/)
+
+**제작자:** Kevin MacLeod
+
+- [Dream Culture](https://www.incompetech.com/music/royalty-free/index.html?isrc=USUAN1300046)
+- [Wallpaper](https://www.incompetech.com/music/royalty-free/index.html?isrc=USUAN1100843)
+- [Carefree](https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400037)
+- **이용 조건:** [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 ---
 

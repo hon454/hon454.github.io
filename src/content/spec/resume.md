@@ -11,7 +11,7 @@ Unreal Engine·C++로 오픈월드 멀티플레이와 대규모 AI·애니메이
 - **재현 가능한 파이프라인** — REST·WebSocket 비동기 연동, VRM·glTF·ONNX 데이터 검증·변환, CI/CD·계약/회귀 테스트·ADR로 실패와 변경을 추적
 - **AI 에이전트 기반 개발** — 개인화한 커스텀 에이전트 하네스를 운용하고 명세·계획·ADR과 테스트 주도 개발을 AI가 추적할 수 있는 하나의 개발 맥락으로 연결하며, 실제 작업에서 드러난 제약과 개선점을 지침에 축적해 작업 정확도와 재현성을 향상
 
-## 게임 개발 경력
+## 경력
 
 ### 시나몬(Cinamon) — 클라이언트 프로그래머
 
@@ -49,6 +49,13 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 - **Shipping 설정** — Unreal Shipping 빌드가 외부 `Game.ini` override를 제한하고 검증 실패 설정을 삭제하는 원인을 추적한 뒤, `Dev.ini`로 임시 `UserDir` 실행 환경을 생성하는 런처를 구현해 원본 설정을 보존했습니다.
 - **개발·배포 운영** — GitLab CI에 개발 빌드 아티팩트와 다운로드 안내를 구성해 기획·QA가 develop 빌드를 직접 검증할 수 있게 했습니다. runner 종속 경로와 렌더링 후처리 병목을 제거하고, 패키징 문맥과 운영 절차를 Slack 알림과 개발자 문서에 남겼습니다.
 
+### 팀스파르타 — 언리얼 게임 개발 코스 튜터
+
+2024.12 — 2025.07 · 프리랜서
+
+- 수강생 질의응답과 학습 상담, 과제·팀 프로젝트 코드 리뷰, 이력서·포트폴리오 피드백과 모의 면접을 담당했습니다.
+- 담당 최종 프로젝트 팀과 수강생이 각각 최우수 팀과 최우수 수강생으로 선정됐습니다.
+
 ### 작두스튜디오 — 클라이언트 프로그래머
 
 2021.01 — 2024.06 · 정규직
@@ -63,6 +70,19 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 - **월드 상태·플랫폼** — 커스텀 Destructible Mesh와 Instanced Foliage 리스폰을 구현하고 Steamworks 업적을 연동했습니다.
 - **엔진·출시 기반** — UE4에서 UE5로 마이그레이션하고 Shared DDC와 TeamCity 빌드·패키징 자동화를 구성해 2024년 5월 1.0 정식 출시를 지원했습니다. JetBrains Space·Nginx·Certbot 기반 개발 인프라도 구축했습니다.
 
+### Ppiyo Game Studios — 인디 게임 개발자
+
+2021.10 — 2023.12 · 프리랜서
+
+#### [길고양이 이야기 2 (Street Cat's Tale 2)](https://store.steampowered.com/app/2356450/A_Street_Cats_Tale_2_Outside_is_Dangerous/)
+
+**환경:** Unity, C#, Steamworks, Stove SDK, GitLab, Synology NAS
+
+- **핵심 게임 시스템** — 환경설정, 세이브·로드, 퀘스트, 대화, 이동, 컷신과 UI 등 2D 퍼즐 어드벤처의 주요 시스템을 개발했습니다.
+- **플랫폼·상점 연동** — PlayStation·Nintendo Switch·Xbox 3종 컨트롤러 입력과 Steamworks 업적, Stove SDK 구매 인증을 구현했습니다. 출시판은 Steam 업적 22개를 제공합니다.
+- **출시·프로젝트 성과** — 2023년 2월 [STOVE(Windows)](https://store.onstove.com/ko/games/1654/), 같은 해 6월 Steam(Windows·macOS) 출시판 개발에 참여했습니다. 두 상점 출시판은 5개 언어를 지원하며, 프로젝트는 텀블벅에서 [후원자 222명, 7,846,024원(목표 156%)](https://tumblbug.com/astreetcatstale2)을 모금해 펀딩에 성공했습니다.
+- **개발 운영** — Synology NAS에 팀용 GitLab을 구축해 소스 코드와 개발 이력을 관리했습니다.
+
 ### 누라임게임즈 — 게임 개발자 인턴
 
 2020.07 — 2020.08 · 인턴
@@ -72,6 +92,17 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 **환경:** Unity, C#, JavaScript, GameSparks, Android
 
 - **클라이언트·백엔드 연동** — 인턴 기간에 Android 3D 방치형 대전 액션 게임의 캠페인 모드와 GameSparks 기반 보상 시스템을 구현했습니다.
+
+### Imagine Tempest — 인디 게임 개발자
+
+2019.06 — 2020.04 · 프리랜서
+
+#### [Vapor World](https://store.steampowered.com/app/1996090/Vapor_World_Over_The_Mind/)
+
+**환경:** Unity, C#, Universal Render Pipeline
+
+- **게임 디자인·클라이언트** — 게임 디자인과 스토리·세계관을 구성하고 입력·이동·전투 등 2D 액션 어드벤처의 클라이언트 시스템을 개발했습니다. Unity 2D Light와 Universal Render Pipeline으로 9개 인물의 정신세계를 연결하는 출품 빌드 제작에 참여했습니다.
+- **프로젝트 성과** — 참여 기간 중 [제11회 경기 게임오디션 공동 2위](https://gnews.gg.go.kr/news/news_detail.do?number=201909261915326127C056&s_code=C056)에 선정돼 프로젝트가 개발지원금 3,000만원을 확보했습니다. MWU Korea Awards 2019 PC & Console Top 3는 합류 직전인 2019년 5월 프로젝트가 선정된 이력입니다.
 
 ### 클릭트(Clicked, Inc.) — VR 소프트웨어 엔지니어
 
@@ -99,42 +130,7 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 
 - **레벨·콘텐츠 디자인** — 인턴 기간에 모바일 퍼즐 게임 4종(Slots·SAMURAI STEPS·Pitter Patter·DRAWLINE)의 레벨·콘텐츠 디자인, 사운드 발주와 QA를 담당했습니다.
 
-## 프로젝트 경력
-
-### Ppiyo Game Studios — 리드 게임 개발자
-
-2021.10 — 2023.12 · 프리랜서
-
-#### [길고양이 이야기 2 (Street Cat's Tale 2)](https://store.steampowered.com/app/2356450/A_Street_Cats_Tale_2_Outside_is_Dangerous/)
-
-**환경:** Unity, C#, Steamworks, Stove SDK, GitLab, Synology NAS
-
-- **핵심 게임 시스템** — 환경설정, 세이브·로드, 퀘스트, 대화, 이동, 컷신과 UI 등 2D 퍼즐 어드벤처의 주요 시스템을 개발했습니다.
-- **플랫폼·상점 연동** — PlayStation·Nintendo Switch·Xbox 3종 컨트롤러 입력과 Steamworks 업적, Stove SDK 구매 인증을 구현했습니다. 출시판은 Steam 업적 22개를 제공합니다.
-- **출시·프로젝트 성과** — 2023년 2월 [STOVE(Windows)](https://store.onstove.com/ko/games/1654/), 같은 해 6월 Steam(Windows·macOS) 출시판 개발에 참여했습니다. 두 상점 출시판은 5개 언어를 지원하며, 프로젝트는 텀블벅에서 [후원자 222명, 7,846,024원(목표 156%)](https://tumblbug.com/astreetcatstale2)을 모금해 펀딩에 성공했습니다.
-- **개발 운영** — Synology NAS에 팀용 GitLab을 구축해 소스 코드와 개발 이력을 관리했습니다.
-
-### Imagine Tempest — 인디 게임 개발자
-
-2019.06 — 2020.04 · 프리랜서
-
-#### Vapor World
-
-**환경:** Unity, C#, Universal Render Pipeline
-
-- **게임 디자인·클라이언트** — 게임 디자인과 스토리·세계관을 구성하고 입력·이동·전투 등 2D 액션 어드벤처의 클라이언트 시스템을 개발했습니다. Unity 2D Light와 Universal Render Pipeline으로 9개 인물의 정신세계를 연결하는 출품 빌드 제작에 참여했습니다.
-- **프로젝트 성과** — 참여 기간 중 [제11회 경기 게임오디션 공동 2위](https://gnews.gg.go.kr/news/news_detail.do?number=201909261915326127C056&s_code=C056)에 선정돼 프로젝트가 개발지원금 3,000만원을 확보했습니다. MWU Korea Awards 2019 PC & Console Top 3는 합류 직전인 2019년 5월 프로젝트가 선정된 이력입니다.
-
-## 교육·멘토링
-
-### 팀스파르타 — 언리얼 게임 개발 코스 튜터
-
-2024.12 — 2025.07 · 프리랜서
-
-- 수강생 질의응답과 학습 상담, 과제·팀 프로젝트 코드 리뷰, 이력서·포트폴리오 피드백과 모의 면접을 담당했습니다.
-- 담당 최종 프로젝트 팀과 수강생이 각각 최우수 팀과 최우수 수강생으로 선정됐습니다.
-
-### 기타 활동
+## 기타 활동
 
 - **아주대학교 미디어프로젝트 자문·멘토** — 2026년 2학기 · 예정
 - **아주대학교 미디어프로젝트 자문·멘토** — 2026년 1학기 · 2026.03 — 2026.05

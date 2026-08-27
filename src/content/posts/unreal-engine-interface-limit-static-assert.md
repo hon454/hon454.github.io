@@ -7,7 +7,7 @@ image: ""
 tags:
   - unreal-engine
   - cpp
-  - interface
+  - uinterface
   - unreal-header-tool
   - compiler-error
 category: Unreal Engine

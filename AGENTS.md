@@ -68,6 +68,11 @@ The files in `.agents/docs/blog-writing/` are the single source of truth for blo
 voice and editing policy. Do not duplicate those rules in skills or invoke a
 general humanizer as a required stage.
 
+### Post Tags
+
+- Use English lowercase kebab-case for post `tags` (e.g. `agent-skill`).
+- Reuse existing tags for the same concept and remove duplicates within each post.
+
 ### Path Aliases
 
 `tsconfig.json` maps `@components/*`, `@assets/*`, `@constants/*`, `@utils/*`,

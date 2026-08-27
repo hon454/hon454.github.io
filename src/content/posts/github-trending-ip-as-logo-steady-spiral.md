@@ -6,11 +6,11 @@ description: GitHub에서 빠르게 주목받은 ip-as-logo Agent Skill로 달�
 image: ./images/ip-as-logo-steady-spiral/ip-as-logo-wall.webp
 category: 개발
 tags:
-  - AI
-  - Agent Skill
-  - 이미지 생성
-  - 브랜딩
-  - Astro
+  - ai
+  - agent-skill
+  - image-generation
+  - branding
+  - astro
 ---
 
 블로그 이름을 **Steady Spiral**로 바꿨다. 홈 화면의 문구는 **Just Keep Pedaling**로 남겼다.

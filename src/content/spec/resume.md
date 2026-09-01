@@ -80,7 +80,7 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 
 - **핵심 게임 시스템** — 환경설정, 세이브·로드, 퀘스트, 대화, 이동, 컷신과 UI 등 2D 퍼즐 어드벤처의 주요 시스템을 개발했습니다.
 - **컨트롤러·상점 연동** — PlayStation·Nintendo Switch·Xbox 3종 컨트롤러 입력과 Steamworks 업적, Stove SDK 구매 인증을 구현했습니다. 출시판은 Steam 업적 22개를 제공합니다.
-- **개발부터 출시까지** — 주요 게임 시스템 구현, 컨트롤러·상점 SDK 연동, 다국어 빌드 준비와 출시 빌드 검수·대응까지 클라이언트 개발 전 과정에 참여했습니다. 2023년 2월 [STOVE(Windows)](https://store.onstove.com/ko/games/1654/), 같은 해 6월 Steam(Windows·macOS)에 출시했으며 두 출시판은 5개 언어를 지원합니다.
+- **개발부터 출시까지** — 주요 게임 시스템 구현, 컨트롤러·상점 SDK 연동, 다국어 빌드 준비와 출시 빌드 검수·대응까지 클라이언트 개발 전 과정에 참여했습니다. 2023년 2월 [STOVE(Windows)](https://store.onstove.com/ko/games/1654/), 같은 해 6월 Steam(Windows·macOS)에 출시했으며 두 PC 출시판은 5개 언어를 지원합니다. 참여 기간 이후인 2024년 6월 27일에는 [Nintendo Switch](https://www.nintendo.com/us/store/products/a-street-cats-tale-2-outside-is-dangerous-switch/)로도 출시됐습니다.
 - **프로젝트 성과** — 프로젝트는 텀블벅에서 [후원자 222명, 7,846,024원(목표 156%)](https://tumblbug.com/astreetcatstale2)을 모금했고, G-STAR 2023 Indie Awards에서 Games for Impact를 수상했습니다.
 - **개발 운영** — Synology NAS에 팀용 GitLab을 구축해 소스 코드와 개발 이력을 관리했습니다.
 

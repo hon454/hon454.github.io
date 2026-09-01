@@ -1,7 +1,5 @@
 [hon454@naver.com](mailto:hon454@naver.com) · [LinkedIn](https://www.linkedin.com/in/jihoon-jeon-b7ab83116) · [GitHub](https://github.com/hon454)
 
-마지막 갱신: 2026.09.01
-
 ## 프로필
 
 8년차 게임 클라이언트 프로그래머입니다. 최근 약 6년간 Unreal Engine·C++로 오픈월드 멀티플레이와 대규모 AI·애니메이션, 제작 도구를 개발했습니다. Unity·C#으로 PC 게임의 주요 시스템과 플랫폼 연동을 구현해 출시까지 경험했고, 최근에는 Rust·Bevy·React 기반 브라우저 3D 제작 도구로 실시간 시스템 개발 범위를 넓혔습니다. 개인 오픈소스 Grimoire를 포함한 커스텀 에이전트 하네스를 직접 개발·운용하며 요구사항·ADR·테스트·PR을 연결해 작업의 추적성과 재현성을 높여 왔습니다.
@@ -17,7 +15,7 @@
 
 ### 시나몬(Cinamon) — 클라이언트 프로그래머
 
-2024.06 — 2026.08 · 정규직 · 2026.08.31 퇴사
+2024.06 — 2026.08 · 정규직
 
 **역할:** CINEVStudio의 Action·Prop 제작 흐름에서 시작해 Shotloom 초기 개발의 Rust core·Bevy runtime·React/Tauri editor·외부 AI 서비스 통합으로 범위를 확장했습니다. 기획·아트·TA·QA·서비스 팀의 요구를 구현 단위와 데이터 계약으로 정리하고, 코드 리뷰·기술면접·문서·개발 도구로 팀 실행을 지원했습니다.
 
@@ -96,7 +94,7 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 
 - **클라이언트·백엔드 연동** — 인턴 기간에 Android 3D 방치형 대전 액션 게임의 캠페인 모드와 GameSparks 기반 보상 시스템을 구현했습니다.
 
-### 이메진 템페스트 스튜디오(Imagine Tempest) — 인디 게임 개발자
+### 이메진 템페스트 스튜디오 — 인디 게임 개발자
 
 2019.06 — 2020.04 · 프리랜서
 

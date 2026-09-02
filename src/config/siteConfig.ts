@@ -130,8 +130,11 @@ export const siteConfig: SiteConfig = {
 		menuAlign: "center",
 		// 내비게이션 바 아이콘과 제목이 테마 색상을 따를지 여부
 		followTheme: false,
-		// 내비게이션 바를 위쪽에 고정해 항상 표시할지 여부
-		stickyNavbar: true,
+		// 내비게이션 바 모드:
+		// "static": 문서 흐름에 따라 스크롤하면 사라짐
+		// "fixed": 화면 위쪽에 항상 고정
+		// "dynamic": 아래로 스크롤하면 숨고 위로 스크롤하면 표시
+		navbarMode: "dynamic",
 	},
 
 	// 사이트 시작일. 운영 일수를 계산할 때 사용합니다.
@@ -260,9 +263,9 @@ export const siteConfig: SiteConfig = {
 		// dynamic 모드는 브라우저에서 API를 실시간으로 요청해 항상 최신 데이터를 표시합니다.
 		mode: "dynamic",
 		// Bangumi API 주소
-		apiUrl: "https://bgmapi.anibt.net",
+		apiUrl: "https://api.bangumi.pro",
 		// 상세 페이지 주소
-		subjectBaseUrl: "https://bgmmi.anibt.net/subject/",
+		subjectBaseUrl: "https://api.bangumi.pro/subject/",
 		// 항목 유형 정렬. 배열에 적은 순서대로 먼저 표시합니다.
 		// 선택값: "anime" | "book" | "music" | "game" | "real" ("real" 유형은 아직 지원하지 않음)
 		// 나열하지 않은 유형은 기본 순서에 따라 뒤에 배치합니다.
@@ -271,6 +274,8 @@ export const siteConfig: SiteConfig = {
 		// categories: {
 		// 	game: false, // 게임 카테고리 표시 비활성화
 		// },
+		// NSFW 처리: "off" 필터링 안 함, "blur" 표지만 흐림, "hide" 항목 숨김
+		nsfw: "hide",
 	},
 
 	// ── VNDB 설정 ──────────────────────────────────
@@ -289,8 +294,8 @@ export const siteConfig: SiteConfig = {
 		vnBaseUrl: "https://vndb.org/",
 		// 비공개 목록 접근 토큰. static 모드에서만 사용합니다. 실제 토큰을 공개 저장소에 커밋하지 마세요!
 		apiToken: "",
-		// NSFW 게임 표지 흐리게 처리
-		blurNsfw: true,
+		// 기존 표지 흐림 동작을 유지합니다.
+		nsfw: "blur",
 	},
 
 	// ── MyAnimeList 설정 ──────────────────────────────────
@@ -305,6 +310,8 @@ export const siteConfig: SiteConfig = {
 		animeBaseUrl: "https://myanimelist.net/anime/",
 		// 만화 항목 상세 페이지 주소. 끝에 /가 있어야 합니다.
 		mangaBaseUrl: "https://myanimelist.net/manga/",
+		// NSFW 처리: "off" 필터링 안 함, "blur" 표지만 흐림, "hide" 항목 숨김
+		nsfw: "hide",
 	},
 
 	// ── 이미지 최적화 설정 ──────────────────────────────────

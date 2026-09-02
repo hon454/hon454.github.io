@@ -1,6 +1,7 @@
 ---
 title: Firefly 블로그 가이드
 published: 2026-08-24
+updated: 2026-09-02
 description: Firefly 기본 예제 글을 정리하면서 실제로 사용하는 글 작성법, Markdown 확장, 다이어그램, 내부 링크, 암호화와 레이아웃 설정을 한곳에 모았습니다.
 image: ./images/firefly2.avif
 tags: [firefly, astro, markdown, blog]
@@ -54,8 +55,21 @@ slug: my-new-post
 | `slug` | 파일 이름과 다른 공개 URL이 필요할 때 지정 |
 | `password` | 빌드 시 글 내용을 암호화할 비밀번호 |
 | `passwordHint` | 비밀번호 입력 화면에 표시할 힌트 |
+| `series` | 여러 글을 같은 시리즈로 묶는 이름 |
+| `seriesOrder` | 시리즈 안에서 글을 표시할 순서 |
 
 `slug`는 한 번 공개한 뒤 바꾸면 기존 링크가 깨질 수 있으므로 짧은 영문과 하이픈 조합으로 처음부터 정해 두는 편이 좋다.
+
+## 글을 시리즈로 묶기
+
+연속해서 읽을 글은 같은 `series` 이름을 지정하고 `seriesOrder`로 순서를 정한다.
+
+```yaml
+series: Unreal Engine 네트워킹
+seriesOrder: 1
+```
+
+시리즈가 지정된 글에는 같은 시리즈의 글 목록이 표시된다. `/series/`에서는 전체 시리즈를 글 수가 많은 순서로 보여 주며, 각 시리즈 안에서는 `seriesOrder`가 작은 글부터 정렬한다. `seriesOrder`를 생략한 글은 순서를 지정한 글 뒤에 배치된다.
 
 ## Markdown과 MDX
 

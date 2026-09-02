@@ -31,6 +31,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			// 태그
 			LinkPresets.Tags,
 
+			// 시리즈
+			LinkPresets.Series,
+
 			// 블로그 가이드
 			LinkPresets.BlogGuide,
 		],
@@ -155,6 +158,11 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		name: "태그",
 		url: "/tags/",
 		icon: "material-symbols:tag-rounded",
+	},
+	Series: {
+		name: "시리즈",
+		url: "/series/",
+		icon: "material-symbols:layers",
 	},
 	Friends: {
 		name: "친구 링크",

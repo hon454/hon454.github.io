@@ -137,7 +137,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			// 컴포넌트 위치
 			position: "top",
 			// 글 상세 페이지 표시 여부
-			showOnPostPage: true,
+			showOnPostPage: false,
 			// 컴포넌트 전용 설정
 			specificConfig: {
 				siteInfo: {

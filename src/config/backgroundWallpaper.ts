@@ -130,25 +130,6 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 전환 효과: 'fade' 페이드 | 'zoom' 확대·축소 | 'slide' 슬라이드 | 'kenburns' 회전식 전환
 			transitionEffect: "zoom",
 		},
-	},
-	// Banner 모드 전용 설정
-	banner: {
-		// 이미지 위치
-		// 'top', 'center', 'bottom', 'left top', 'right bottom', '25% 75%', '10px 20px' 등 모든 CSS object-position 값을 지원합니다.
-		// 백분율 설정이 익숙하지 않다면 'center' 가운데, 'top' 위쪽 가운데, 'bottom' 아래쪽 가운데, 'left' 왼쪽 가운데, 'right' 오른쪽 가운데를 사용하세요.
-		position: "0% 20%",
-		// 글 배너 정보: "description"은 설명을, "meta"는 날짜·글자 수·읽기 시간을 표시합니다.
-		postInfo: {
-			mode: "description",
-		},
-		// 내비게이션 바 설정
-		navbar: {
-			// 내비게이션 바 투명 모드: "semi" 반투명, "semifull" 동적 투명, "none" 불투명
-			transparentMode: "semi",
-			// 유리 효과 흐림 정도. 0이면 내비게이션 바의 유리 효과를 끕니다.
-			// 주의: 내비게이션 하위 메뉴와 플로팅 패널은 항상 유리 효과를 유지하며 이 값에 따르되 최솟값이 있습니다.
-			blur: 12,
-		},
 		// 물결 애니메이션 설정. 사용하면 페이지 성능과 메모리 사용량에 영향을 주므로 필요에 따라 켜세요.
 		waves: {
 			enable: {
@@ -170,6 +151,25 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			height: "10%",
 		},
 	},
+	// Banner 모드 전용 설정
+	banner: {
+		// 이미지 위치
+		// 'top', 'center', 'bottom', 'left top', 'right bottom', '25% 75%', '10px 20px' 등 모든 CSS object-position 값을 지원합니다.
+		// 백분율 설정이 익숙하지 않다면 'center' 가운데, 'top' 위쪽 가운데, 'bottom' 아래쪽 가운데, 'left' 왼쪽 가운데, 'right' 오른쪽 가운데를 사용하세요.
+		position: "0% 20%",
+		// 글 배너 정보: "description"은 설명을, "meta"는 날짜·글자 수·읽기 시간을 표시합니다.
+		postInfo: {
+			mode: "description",
+		},
+		// 내비게이션 바 설정
+		navbar: {
+			// 내비게이션 바 투명 모드: "semi" 반투명, "semifull" 동적 투명, "none" 불투명
+			transparentMode: "semi",
+			// 유리 효과 흐림 정도. 0이면 내비게이션 바의 유리 효과를 끕니다.
+			// 주의: 내비게이션 하위 메뉴와 플로팅 패널은 항상 유리 효과를 유지하며 이 값에 따르되 최솟값이 있습니다.
+			blur: 12,
+		},
+	},
 	// 투명 오버레이 모드 전용 설정
 	overlay: {
 		// 배경화면을 배경 레이어에 유지하는 z-index
@@ -182,10 +182,12 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		cardOpacity: 0.6,
 	},
 	// 전체 화면 배경화면 모드 전용 설정
-	// 전체 화면 모드에서는 배경화면을 화면에 고정하고 첫 화면 중앙에 제목을 표시합니다. 콘텐츠 영역은 첫 화면 아래에서 시작해 스크롤할 때 배경화면을 덮습니다.
+	// "classic"은 문서 흐름 안에 전체 화면 배경을 배치하고, "hero"는 첫 화면 배경을 고정합니다.
 	// 배경화면 흐림(blur), 카드 불투명도(cardOpacity), z-index(zIndex)는 위 overlay 모드 설정을 재사용합니다.
 	// 배경 투명도(opacity)는 적용되지 않습니다(전체 화면 배경은 불투명). 내비게이션 바 투명 모드는 fullscreen.navbar.transparentMode가 제어하며 banner 설정과 무관합니다.
 	fullscreen: {
+		// 전체 화면 배경 레이아웃: "classic" 문서 흐름형, "hero" 고정형
+		layout: "classic",
 		// 이미지 위치
 		position: "center",
 		// 전체 화면 배경화면 모드의 내비게이션 바 설정

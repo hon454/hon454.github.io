@@ -10,45 +10,32 @@ series: Firefly 업스트림 반영 기록
 seriesOrder: 1
 ---
 
-Firefly 업스트림을 6.16.3에서 6.16.6 기준으로 반영했다. 개인 콘텐츠와 설정은 유지하고, 충돌한 기능은 새 업스트림 방향에 맞춰 통합했다.
+[Firefly](https://github.com/CuteLeaf/Firefly) 업스트림 기준을 6.16.3에서 6.16.6으로 올렸다. 이번 버전에서는 내비게이션 동작, 시리즈, 미디어 목록 필터링, OG 이미지와 구조화 데이터 처리가 달라졌다. 기존 글과 Steady Spiral 설정은 그대로 유지했다.
 
-이 블로그는 Firefly에서 파생했지만 Git 이력을 직접 공유하지 않는다. 따라서 업스트림 브랜치를 병합하지 않고, 이전에 반영한 커밋부터 새 대상 커밋까지의 변경분만 가져오는 방식으로 관리한다.
+## 화면과 탐색
 
-## 반영 범위
+내비게이션은 `dynamic` 모드로 변경했다. 아래로 스크롤하면 숨고 위로 스크롤하면 다시 나타난다. 배너와 전체 화면 배경에서 사용하는 투명 모드도 새 설정 구조에 맞췄다.
 
-- 업스트림 저장소: [CuteLeaf/Firefly](https://github.com/CuteLeaf/Firefly)
-- 이전 기준: [`c17fea3e9`](https://github.com/CuteLeaf/Firefly/commit/c17fea3e9f2caa4108c1832b8b47552e509b45b4), Firefly 6.16.3
-- 새 기준: [`f7c93c932`](https://github.com/CuteLeaf/Firefly/commit/f7c93c932c3241239f6f0d330e0b5c1bc701ce45), Firefly 6.16.6
-- 반영 PR: [hon454.github.io #90](https://github.com/hon454/hon454.github.io/pull/90)
+모바일 내비게이션 패널은 화면 전체를 안정적으로 덮도록 구조가 바뀌었다. 밝은 테마와 어두운 테마를 전환하는 버튼의 동작과 표시도 함께 정리됐다.
 
-## 주요 변경
+## 시리즈
 
-- 내비게이션을 아래로 스크롤할 때 숨고 위로 스크롤할 때 나타나는 `dynamic` 모드로 변경했다.
-- 배너와 전체 화면 배경의 내비게이션 투명 모드를 새 설정 구조에 맞추고 흐림 값을 12로 조정했다.
-- 글의 `series`와 `seriesOrder`, 글 안의 시리즈 탐색, `/series/` 인덱스를 추가했다.
-- Bangumi, VNDB, MyAnimeList의 NSFW 처리를 공통 설정으로 정리했다.
-- OG 이미지 생성을 Satori에서 Takumi 기반으로 교체했다. 이 블로그에서는 `generateOgImages: false` 설정을 유지한다.
-- 구조화 데이터와 이미지 경로 처리, 모바일 내비게이션 패널, Pagefind 실행 스크립트 변경을 반영했다.
+여러 글을 `series`와 `seriesOrder`로 묶을 수 있게 됐다. 시리즈를 지정한 글에는 같은 묶음의 글 목록이 표시되고, `/series/`에서는 전체 시리즈를 모아 볼 수 있다.
 
-## 로컬에서 유지한 항목
+이 글을 `Firefly 업스트림 반영 기록` 시리즈의 첫 글로 지정했다. 다음 업스트림 반영부터 같은 시리즈에 순서대로 추가할 예정이다. 설정 방법은 [Firefly 블로그 가이드](/posts/firefly-blog-guide/)에도 정리했다.
 
-- 프로필, 사이트 제목, 로고와 favicon을 포함한 Steady Spiral 브랜딩
-- 기존 글과 동적 콘텐츠
-- 이미 삭제한 Firefly 예제 글 13개
-- 글 페이지의 데스크톱·태블릿 `siteInfo` 숨김과 모바일 하단 표시 설정
-- 로컬에서 사용 중인 Satteri 의존성과 OG 이미지 생성 비활성화 설정
+## 미디어 목록
 
-삭제한 예제 글은 다시 가져오지 않았다. 새로 추가된 시리즈 사용법은 [Firefly 블로그 가이드](/posts/firefly-blog-guide/)에 옮겼다.
+Bangumi, VNDB, MyAnimeList의 NSFW 처리가 공통 설정을 사용하도록 바뀌었다. 현재 설정에서는 Bangumi와 MyAnimeList의 해당 항목을 숨기고, VNDB 표지는 흐리게 표시한다.
 
-## 검증
+## OG 이미지와 구조화 데이터
 
-다음 검사를 통과한 뒤 하나의 업스트림 반영 커밋으로 `main`에 병합했다.
+OG 이미지 생성은 Satori 대신 Takumi를 사용한다. 이 블로그에서는 자동 생성을 계속 꺼 두었지만, 나중에 기능을 켤 때는 새 구현을 사용하게 된다.
 
-```text
-pnpm check
-pnpm type-check
-pnpm build
-pnpm exec biome check ./src ./scripts
-```
+글과 프로필에 들어가는 구조화 데이터도 추가됐다. 게시자 로고, 프로필 이미지와 글 표지가 실제 배포 주소를 사용하도록 이미지 경로 처리도 함께 반영했다.
 
-GitHub Actions에서도 Node.js 22와 23의 Astro 검사와 빌드, 코드 품질 검사가 모두 통과했다.
+## 기존 설정
+
+프로필과 사이트 제목, 로고, favicon을 포함한 Steady Spiral 브랜딩은 유지했다. 기존 글과 동적 콘텐츠도 손대지 않았다. 이전에 삭제한 Firefly 예제 글은 다시 추가하지 않았다.
+
+이번 반영 기준은 Firefly 6.16.6의 [`f7c93c932`](https://github.com/CuteLeaf/Firefly/commit/f7c93c932c3241239f6f0d330e0b5c1bc701ce45) 커밋이다.

@@ -5,7 +5,7 @@ description: 카테고리 바의 휠 가로 스크롤 수정과 전체 화면 �
 image: ./images/firefly2.avif
 tags: [firefly, astro]
 category: 블로그
-draft: true
+draft: false
 series: Firefly 업스트림 반영 기록
 seriesOrder: 2
 ---

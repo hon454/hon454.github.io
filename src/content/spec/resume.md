@@ -161,6 +161,14 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 - GitHub Pull Request 목록에서 사용자·팀 리뷰어와 최신 리뷰 상태를 인라인으로 보여주는 Chrome 확장 프로그램을 개발해 [Chrome Web Store](https://chromewebstore.google.com/detail/github-pulls-show-reviewe/hoocgjopdboeghdkfjlkngkkpbiljggk)에 배포했습니다.
 - 비로그인 공개 저장소와 GitHub App Device Flow 기반 비공개 저장소 접근을 지원하고, 페이지 단위 API 배치와 행 단위 캐시로 GitHub SPA 탐색 중에도 리뷰어 표시가 유지되도록 구성했습니다.
 
+### [Firefly](https://github.com/CuteLeaf/Firefly) — Contributor
+
+**환경:** Astro 7, Svelte 5, TypeScript, Node.js, Merman, Mermaid
+
+- **빌드·렌더링 개선** — [GitHub 저장소 카드](https://github.com/CuteLeaf/Firefly/pull/588)를 빌드 시점 캐시로 전환해 API 장애와 사용량 제한에 대응하고, [Mermaid 렌더러](https://github.com/CuteLeaf/Firefly/pull/584)를 Node.js 기반 최신 버전으로 마이그레이션하면서 기존 테마의 출력 형태를 유지했습니다.
+- **입력 상호작용 개선** — [카테고리 바 휠 스크롤](https://github.com/CuteLeaf/Firefly/pull/613)의 누적 이동 손실과 입력 지연을 제거하고, 가로 트랙패드 제스처를 보존하면서 목록 경계에서는 페이지 스크롤이 이어지도록 개선했습니다.
+- **레이아웃·문서화** — 페이지별 `<head>` 콘텐츠가 최상위 레이아웃으로 전달되지 않던 [Astro 슬롯 구조](https://github.com/CuteLeaf/Firefly/pull/587)를 수정하고, 설치·구성·배포와 Markdown 확장 기능을 다룬 [한국어 문서](https://github.com/CuteLeaf/Firefly/pull/583)를 작성했습니다.
+
 ### [bevy_vrm1](https://github.com/not-elm/bevy_vrm1) — Contributor
 
 **환경:** Rust, Bevy, WGSL, WebGPU
@@ -168,13 +176,6 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 - **[WebGPU 렌더링 오류 분석·수정](https://github.com/not-elm/bevy_vrm1/pull/57)** — Chrome·WebGPU에서 MToon VRM이 표시된 직후 화면 전체가 검게 변하지만 Metal 네이티브에서는 나타나지 않는 문제를 재현하고, 조명 단계별 비교로 원인을 `apply_emissive_light`에 격리했습니다.
 - MToon의 `EMISSIVE_TEXTURE` 비트가 Standard Material 플래그의 같은 비트와 충돌한 상태에서 `PbrInput.flags`의 미정의 값을 읽어 바인딩되지 않은 텍스처를 샘플링하고, NaN·Inf가 HDR 톤매핑·Bloom 경로로 전파되는 것을 확인했습니다.
 - WGSL이 MToon uniform의 `material.flags`를 읽도록 수정하고, Rust의 `MtoonFlags`가 `emissive_texture` 존재 여부에 따라 `EMISSIVE_TEXTURE` 비트를 설정하도록 보완했습니다.
-
-### [Firefly](https://github.com/CuteLeaf/Firefly) — Contributor
-
-**환경:** Astro 7, Svelte 5, TypeScript, Node.js, Merman, Mermaid
-
-- **빌드·렌더링 개선** — [GitHub 저장소 카드](https://github.com/CuteLeaf/Firefly/pull/588)를 빌드 시점 캐시로 전환해 API 장애와 사용량 제한에 대응하고, [Mermaid 렌더러](https://github.com/CuteLeaf/Firefly/pull/584)를 Node.js 기반 최신 버전으로 마이그레이션하면서 기존 테마의 출력 형태를 유지했습니다.
-- **레이아웃·문서화** — 페이지별 `<head>` 콘텐츠가 최상위 레이아웃으로 전달되지 않던 [Astro 슬롯 구조](https://github.com/CuteLeaf/Firefly/pull/587)를 수정하고, 설치·구성·배포와 Markdown 확장 기능을 다룬 [한국어 문서](https://github.com/CuteLeaf/Firefly/pull/583)를 작성했습니다.
 
 ## 수상 및 선정
 

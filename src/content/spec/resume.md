@@ -17,7 +17,7 @@
 
 2024.06 — 2026.08 · 정규직
 
-**역할:** CINEVStudio의 Action·Prop 제작 흐름에서 시작해 Shotloom 초기 개발의 Rust core·Bevy runtime·React/Tauri editor·외부 AI 서비스 통합으로 범위를 확장했습니다. 기획·아트·TA·QA·서비스 팀의 요구를 구현 단위와 데이터 계약으로 정리하고, 코드 리뷰·기술면접·문서·개발 도구로 팀 실행을 지원했습니다.
+CINEVStudio의 Action·Prop 제작 흐름에서 시작해 Shotloom 초기 개발의 Rust core·Bevy runtime·React/Tauri editor·외부 AI 서비스 통합으로 범위를 확장했습니다. 기획·아트·TA·QA·서비스 팀의 요구를 구현 단위와 데이터 계약으로 정리하고, 코드 리뷰·기술면접·문서·개발 도구로 팀 실행을 지원했습니다.
 
 #### Shotloom
 
@@ -139,7 +139,7 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 
 ## 오픈소스
 
-### [Grimoire](https://github.com/hon454/grimoire)
+### [Grimoire](https://github.com/hon454/grimoire) — Maintainer
 
 **환경:** Python, Codex Skills, Codex Plugins, GitHub CLI, Git
 
@@ -147,7 +147,21 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 - **Human-in-the-loop 자동화** — PR 맥락 수집부터 피드백 번역·분류, 사용자 의사결정, 구현·검증, 리뷰어 후속 대응까지 하나의 흐름으로 연결했습니다. 대화와 작업이 바뀌어도 결정 상태를 이어가고, 원격 변경은 사용자 확인과 검증을 통과한 뒤에만 수행하도록 설계했습니다.
 - **신뢰 가능한 에이전트 운영** — 사용자·프로젝트별 실행 맥락을 자동으로 구성하고, task handoff와 Git 정리·충돌 해결처럼 실수 비용이 큰 작업에는 대상 재검증과 fail-closed 보호 장치를 적용했습니다. Python 표준 라이브러리 기반 테스트로 주요 동작과 보호 장치를 검증합니다.
 
-### [bevy_vrm1](https://github.com/not-elm/bevy_vrm1)
+### [Copy Selection Context](https://github.com/hon454/copy-selection-context) — Maintainer
+
+**환경:** Kotlin, IntelliJ Platform SDK, Gradle, JUnit 5, MockK, GitHub Actions
+
+- **AI 코드 컨텍스트 공유** — 에디터의 선택 영역이나 현재 줄을 파일 경로·라인 번호·코드가 포함된 형식으로 복사하는 IntelliJ Platform 플러그인을 개발해 [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/30262-copy-selection-context)에 배포했습니다. 다중 caret, 사용자 정의 템플릿, 복사 이력과 GitHub·GitLab permalink를 지원합니다.
+- **검증·배포 자동화** — 경로·선택 영역·템플릿·permalink 생성을 테스트하고, GitHub Actions에서 빌드·버전 검증·GitHub Release·서명된 Marketplace 배포를 자동화했습니다.
+
+### [GitHub Pulls Show Reviewers](https://github.com/hon454/github-pulls-show-reviewers) — Maintainer
+
+**환경:** TypeScript, WXT, React, Chrome Extension Manifest V3, GitHub REST API, Vitest, Playwright
+
+- GitHub Pull Request 목록에서 사용자·팀 리뷰어와 최신 리뷰 상태를 인라인으로 보여주는 Chrome 확장 프로그램을 개발해 [Chrome Web Store](https://chromewebstore.google.com/detail/github-pulls-show-reviewe/hoocgjopdboeghdkfjlkngkkpbiljggk)에 배포했습니다.
+- 비로그인 공개 저장소와 GitHub App Device Flow 기반 비공개 저장소 접근을 지원하고, 페이지 단위 API 배치와 행 단위 캐시로 GitHub SPA 탐색 중에도 리뷰어 표시가 유지되도록 구성했습니다.
+
+### [bevy_vrm1](https://github.com/not-elm/bevy_vrm1) — Contributor
 
 **환경:** Rust, Bevy, WGSL, WebGPU
 
@@ -155,26 +169,12 @@ Unreal Engine·Pixel Streaming 기반 제작 도구를 브라우저 우선의 �
 - MToon의 `EMISSIVE_TEXTURE` 비트가 Standard Material 플래그의 같은 비트와 충돌한 상태에서 `PbrInput.flags`의 미정의 값을 읽어 바인딩되지 않은 텍스처를 샘플링하고, NaN·Inf가 HDR 톤매핑·Bloom 경로로 전파되는 것을 확인했습니다.
 - WGSL이 MToon uniform의 `material.flags`를 읽도록 수정하고, Rust의 `MtoonFlags`가 `emissive_texture` 존재 여부에 따라 `EMISSIVE_TEXTURE` 비트를 설정하도록 보완했습니다.
 
-### [Firefly](https://github.com/CuteLeaf/Firefly)
+### [Firefly](https://github.com/CuteLeaf/Firefly) — Contributor
 
 **환경:** Astro 7, Svelte 5, TypeScript, Node.js, Merman, Mermaid
 
 - **빌드·렌더링 개선** — [GitHub 저장소 카드](https://github.com/CuteLeaf/Firefly/pull/588)를 빌드 시점 캐시로 전환해 API 장애와 사용량 제한에 대응하고, [Mermaid 렌더러](https://github.com/CuteLeaf/Firefly/pull/584)를 Node.js 기반 최신 버전으로 마이그레이션하면서 기존 테마의 출력 형태를 유지했습니다.
 - **레이아웃·문서화** — 페이지별 `<head>` 콘텐츠가 최상위 레이아웃으로 전달되지 않던 [Astro 슬롯 구조](https://github.com/CuteLeaf/Firefly/pull/587)를 수정하고, 설치·구성·배포와 Markdown 확장 기능을 다룬 [한국어 문서](https://github.com/CuteLeaf/Firefly/pull/583)를 작성했습니다.
-
-### [Copy Selection Context](https://github.com/hon454/copy-selection-context)
-
-**환경:** Kotlin, IntelliJ Platform SDK, Gradle, JUnit 5, MockK, GitHub Actions
-
-- **AI 코드 컨텍스트 공유** — 에디터의 선택 영역이나 현재 줄을 파일 경로·라인 번호·코드가 포함된 형식으로 복사하는 IntelliJ Platform 플러그인을 개발해 [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/30262-copy-selection-context)에 배포했습니다. 다중 caret, 사용자 정의 템플릿, 복사 이력과 GitHub·GitLab permalink를 지원합니다.
-- **검증·배포 자동화** — 경로·선택 영역·템플릿·permalink 생성을 테스트하고, GitHub Actions에서 빌드·버전 검증·GitHub Release·서명된 Marketplace 배포를 자동화했습니다.
-
-### [GitHub Pulls Show Reviewers](https://github.com/hon454/github-pulls-show-reviewers)
-
-**환경:** TypeScript, WXT, React, Chrome Extension Manifest V3, GitHub REST API, Vitest, Playwright
-
-- GitHub Pull Request 목록에서 사용자·팀 리뷰어와 최신 리뷰 상태를 인라인으로 보여주는 Chrome 확장 프로그램을 개발해 [Chrome Web Store](https://chromewebstore.google.com/detail/github-pulls-show-reviewe/hoocgjopdboeghdkfjlkngkkpbiljggk)에 배포했습니다.
-- 비로그인 공개 저장소와 GitHub App Device Flow 기반 비공개 저장소 접근을 지원하고, 페이지 단위 API 배치와 행 단위 캐시로 GitHub SPA 탐색 중에도 리뷰어 표시가 유지되도록 구성했습니다.
 
 ## 수상 및 선정
 

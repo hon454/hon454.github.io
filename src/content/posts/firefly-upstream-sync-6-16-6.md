@@ -5,7 +5,7 @@ description: Firefly 6.16.3 이후 6.16.6까지의 업스트림 변경을 개인
 image: ./images/firefly2.avif
 tags: [firefly, astro]
 category: 블로그
-draft: true
+draft: false
 series: Firefly 업스트림 반영 기록
 seriesOrder: 1
 ---

@@ -27,7 +27,7 @@
     "@astrojs/check": "^0.9.10",
     "@astrojs/cloudflare": "^14.2.3",
     "@astrojs/markdown-remark": "^7.2.4",
-    "@astrojs/markdown-satteri": "^0.3.7",
+    "@astrojs/markdown-satteri": "^0.4.0",
     "@astrojs/mdx": "^7.0.7",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
@@ -90,7 +90,7 @@
     "tsx": "^4.23.12",
     "typescript": "^6.0.3",
     "unist-util-visit": "^5.1.0",
-    "wrangler": "^4.124.0"
+    "wrangler": "^4.127.1"
   },
   "devDependencies": {
     "@astrojs/ts-plugin": "^1.10.11",
@@ -105,6 +105,6 @@
     "postcss-import": "^16.1.1",
     "postcss-nesting": "^14.0.1",
     "rehype-callouts": "^2.2.0",
-    "subset-font": "^2.5.0"
+    "subset-font": "^2.7.0"
   }
 }

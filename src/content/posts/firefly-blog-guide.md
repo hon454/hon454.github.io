@@ -75,7 +75,7 @@ seriesOrder: 1
 
 프로젝트는 블로그 글과 별도로 `src/content/projects/` 아래에 `.md` 또는 `.mdx` 파일로 작성한다. [프로젝트 목록](/projects/)의 카드와 상세 상단은 Frontmatter를 사용하고, 상세 하단에는 Markdown 본문을 README처럼 표시한다. 페이지 사용 여부는 `src/config/siteConfig.ts`의 `pages.projects`로 정한다.
 
-이 절은 upstream의 프로젝트 작성 예제를 한국어로 옮겨 통합한 내용이다. 실제 파일 구성은 [Firefly 테마 예제](/projects/firefly/)의 `src/content/projects/firefly.md`와 `src/content/projects/images/firefly.avif`를 참고하면 된다.
+이 절은 upstream의 프로젝트 작성 예제를 한국어로 옮겨 통합한 내용이다. 실제 파일 구성은 [Copy Selection Context](/projects/copy-selection-context/)의 `src/content/projects/copy-selection-context.md`와 `src/content/projects/images/copy-selection-context.webp`를 참고하면 된다.
 
 ### 프로젝트 Frontmatter
 
@@ -107,29 +107,25 @@ seriesOrder: 1
 
 ### 프로젝트 파일 예시
 
-다음은 Firefly 예제를 바탕으로 설명과 링크 이름을 한국어로 바꾼 Frontmatter다. 본문은 마지막 `---` 아래에 이어서 작성한다.
+다음은 Copy Selection Context 프로젝트의 주요 Frontmatter다. 본문은 마지막 `---` 아래에 이어서 작성한다.
 
 ```yaml
 ---
-title: "Firefly"
-slug: firefly
-published: 2025-10-01
+title: "Copy Selection Context"
+published: 2026-02-18
 draft: false
-order: 100
-description: "다양한 기능을 제공하는 오픈 소스 블로그 테마."
-image: "images/firefly.avif"
-status: "published"
+description: "JetBrains IDE에서 파일 경로, 줄 번호와 코드를 함께 복사하는 플러그인. AI에 전달할 코드 문맥을 준비할 때 사용한다."
+image: "images/copy-selection-context.webp"
+lang: ko
 tags:
-  - astro
-  - svelte
+  - jetbrains-plugin
+  - developer-tools
 link:
   - label: "GitHub"
     icon: "fa7-brands:github"
-    value: "https://github.com/CuteLeaf/Firefly"
-  - label: "문서"
-    icon: "material-symbols:menu-book"
-    value: "https://docs-firefly.cuteleaf.cn"
-lang: "ko"
+    value: "https://github.com/hon454/copy-selection-context"
+  - label: "JetBrains Marketplace"
+    value: "https://plugins.jetbrains.com/plugin/30262-copy-selection-context"
 ---
 ```
 

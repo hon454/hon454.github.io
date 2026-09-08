@@ -5,7 +5,7 @@ description: Firefly 6.16.7 이후 083603e4c까지의 변경을 반영하고 프
 image: ./images/firefly3.avif
 tags: [firefly, astro]
 category: 블로그
-draft: true
+draft: false
 ---
 
 Firefly 업스트림에 프로젝트 페이지와 몰입 읽기가 추가됐다. [지난 반영](/posts/firefly-upstream-sync-6-16-6/)의 `0f2fab602`부터 `083603e4c`까지 변경을 가져왔다. 테마 버전은 6.16.7, Astro는 7.2.10이다.
@@ -16,15 +16,17 @@ Firefly 업스트림에 프로젝트 페이지와 몰입 읽기가 추가됐다.
 
 [프로젝트 목록](/projects/)을 활성화했다. 내비게이션의 ‘내 공간’에서도 들어갈 수 있다. 프로젝트는 블로그 글과 별도 컬렉션이며, 이름·설명·태그로 검색하거나 상태로 필터링한다.
 
-현재 목록에는 upstream의 [Firefly 테마 예제](/projects/firefly/)와 [작성 가이드 예제](/projects/example-project/)를 그대로 두었다. 개인 프로젝트 소개로 바꾸기 전이라 본문도 중국어 원문이다. 화면의 상태와 검색 안내는 사이트 언어인 한국어로 표시된다.
+upstream 반영 당시에는 Firefly 테마 예제와 작성 가이드 예제를 함께 두었다. 글을 발행하면서 작성 가이드 내용은 [Firefly 블로그 가이드의 프로젝트 작성하기](/posts/firefly-blog-guide/#프로젝트-작성하기)에 한국어로 옮겨 통합했다. 기존 작성 가이드 주소도 해당 절로 연결된다.
+
+프로젝트 목록에는 upstream의 [Firefly 테마 예제](/projects/firefly/)를 남겼다. 개인 프로젝트 소개로 바꾸기 전이라 본문은 중국어 원문이고, 화면의 상태와 검색 안내는 사이트 언어인 한국어로 표시된다.
 
 나중에 내용을 바꿀 파일은 다음과 같다.
 
 - `src/content/projects/firefly.md`: Firefly 소개, 상태, 태그와 외부 링크
-- `src/content/projects/example-project.md`: frontmatter 필드와 상태 값 사용 가이드
+- `src/content/posts/firefly-blog-guide.md`: 프로젝트 Frontmatter 필드와 상태 값 사용 가이드
 - `src/content/projects/images/firefly.avif`: Firefly 예제 표지
 
-목록 카드와 상세 상단은 frontmatter를 사용하고, 상세 본문은 Markdown을 렌더링한다. `order`가 클수록 먼저 나오며 같은 값이면 `published`가 최신인 순서로 정렬된다. 예제 가이드는 표지가 비어 있어 이미지 없이 표시된다.
+목록 카드와 상세 상단은 frontmatter를 사용하고, 상세 본문은 Markdown을 렌더링한다. `order`가 클수록 먼저 나오며 같은 값이면 `published`가 최신인 순서로 정렬된다.
 
 ## 몰입 읽기
 
@@ -46,7 +48,7 @@ upstream에서 배경 모드 전환 처리와 텍스트 잔상 관련 CSS를 수
 
 ## 확인한 범위
 
-`pnpm check`, `pnpm type-check`, `pnpm build`를 통과했다. 프로덕션 미리보기에서 프로젝트 두 예제와 표지를 확인했고, 상태 필터와 검색도 동작했다. 모바일에서는 메뉴 링크를 누른 뒤 패널이 닫히고 프로젝트 상세로 이동하는 것을 확인했다.
+`pnpm check`, `pnpm type-check`, `pnpm build`를 통과했다. upstream 반영 당시 프로덕션 미리보기에서 프로젝트 두 예제와 표지를 확인했고, 상태 필터와 검색도 동작했다. 모바일에서는 메뉴 링크를 누른 뒤 패널이 닫히고 프로젝트 상세로 이동하는 것을 확인했다.
 
 개발 서버에서 표시 설정을 일시적으로 켜 배너·전체 화면·오버레이·배경 없음 전환을 확인했다. 새 글의 표지는 목록형과 격자형에서 확인했으며, 몰입 읽기 진입·목차 이동·접기·종료도 확인했다. 별도 성능 벤치마크를 실행한 것은 아니다.
 

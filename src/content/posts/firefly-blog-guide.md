@@ -1,8 +1,8 @@
 ---
 title: Firefly 블로그 가이드
 published: 2026-08-24
-updated: 2026-09-02
-description: Firefly 기본 예제 글을 정리하면서 실제로 사용하는 글 작성법, Markdown 확장, 다이어그램, 내부 링크, 암호화와 레이아웃 설정을 한곳에 모았습니다.
+updated: 2026-09-08
+description: Firefly 기본 예제 글을 정리하면서 실제로 사용하는 글과 프로젝트 작성법, Markdown 확장, 다이어그램, 내부 링크, 암호화와 레이아웃 설정을 한곳에 모았습니다.
 image: ./images/firefly2.avif
 tags: [firefly, astro, markdown, blog]
 category: 블로그
@@ -70,6 +70,83 @@ seriesOrder: 1
 ```
 
 시리즈가 지정된 글에는 같은 시리즈의 글 목록이 표시된다. `/series/`에서는 전체 시리즈를 글 수가 많은 순서로 보여 주며, 각 시리즈 안에서는 `seriesOrder`가 작은 글부터 정렬한다. `seriesOrder`를 생략한 글은 순서를 지정한 글 뒤에 배치된다.
+
+## 프로젝트 작성하기
+
+프로젝트는 블로그 글과 별도로 `src/content/projects/` 아래에 `.md` 또는 `.mdx` 파일로 작성한다. [프로젝트 목록](/projects/)의 카드와 상세 상단은 Frontmatter를 사용하고, 상세 하단에는 Markdown 본문을 README처럼 표시한다. 페이지 사용 여부는 `src/config/siteConfig.ts`의 `pages.projects`로 정한다.
+
+이 절은 upstream의 프로젝트 작성 예제를 한국어로 옮겨 통합한 내용이다. 실제 파일 구성은 [Firefly 테마 예제](/projects/firefly/)의 `src/content/projects/firefly.md`와 `src/content/projects/images/firefly.avif`를 참고하면 된다.
+
+### 프로젝트 Frontmatter
+
+| 필드 | 타입 | 용도 |
+| --- | --- | --- |
+| `title` | string | 필수. 프로젝트 이름 |
+| `slug` | string | 파일 이름과 다른 공개 URL 지정 |
+| `published` | date | 필수. 날짜와 정렬 기준 |
+| `draft` | boolean | 프로덕션에서 숨길지 여부 |
+| `order` | number | 수동 정렬 순서 |
+| `description` | string | 카드·상세·메타데이터의 설명 |
+| `image` | string | 목록과 상세의 표지 이미지 |
+| `tags` | string[] | 목록과 상세에 표시할 태그 |
+| `link` | array | 외부 링크 버튼 목록 |
+| `status` | string | 프로젝트 상태 |
+| `lang` | string | 페이지 언어 |
+
+`title`과 `published`를 제외한 필드는 선택 사항이다. `slug`는 글과 마찬가지로 파일 이름과 다른 공개 URL이 필요할 때 지정한다. 날짜는 `2025-10-01` 형식으로 쓴다.
+
+`draft`의 기본값은 `false`다. `true`로 바꾸면 프로덕션 목록과 상세에서 제외되며, `pnpm dev`에서는 확인할 수 있다.
+
+`order`는 값이 클수록 먼저 표시한다. 생략한 프로젝트는 값을 지정한 프로젝트 뒤에 배치한다. 값이 같거나 둘 다 없으면 `published`가 최신인 순서로, 날짜까지 같으면 제목으로 정렬한다. `order: 0`도 순서를 지정한 값으로 취급한다.
+
+`image`는 전체 URL, `public` 루트 경로(`/images/cover.png`), 프로젝트 파일 기준 상대 경로(`images/cover.png`)를 지원한다. 비워 두면 목록은 기본 아이콘을 표시하고 상세는 표지를 생략한다.
+
+`link`의 각 항목은 `{ label, icon, value }` 형식이다. `label`은 표시 이름, `value`는 연결할 URL이다. `icon`에는 `fa7-brands:github` 같은 astro-icon 이름이나 이미지 URL을 넣는다. 비워 두면 `label`의 첫 글자를 아이콘 대신 표시한다.
+
+`status`는 아래의 표준 키를 사용하며 생략하면 상태를 표시하지 않는다. `lang`에는 `ko`, `zh_CN` 같은 언어 코드를 넣고, 비우면 사이트 언어를 사용한다.
+
+### 프로젝트 파일 예시
+
+다음은 Firefly 예제를 바탕으로 설명과 링크 이름을 한국어로 바꾼 Frontmatter다. 본문은 마지막 `---` 아래에 이어서 작성한다.
+
+```yaml
+---
+title: "Firefly"
+slug: firefly
+published: 2025-10-01
+draft: false
+order: 100
+description: "다양한 기능을 제공하는 오픈 소스 블로그 테마."
+image: "images/firefly.avif"
+status: "published"
+tags:
+  - astro
+  - svelte
+link:
+  - label: "GitHub"
+    icon: "fa7-brands:github"
+    value: "https://github.com/CuteLeaf/Firefly"
+  - label: "문서"
+    icon: "material-symbols:menu-book"
+    value: "https://docs-firefly.cuteleaf.cn"
+lang: "ko"
+---
+```
+
+### 프로젝트 상태와 검색
+
+`status`는 번역한 문구 대신 표준 키를 넣는다. 화면에는 사이트 언어에 맞는 이름과 상태별 색상·아이콘이 표시된다.
+
+| 키 | 한국어 표시 | 의미 |
+| --- | --- | --- |
+| `planning` | 계획 중 | 구상하거나 준비하는 프로젝트 |
+| `developing` | 개발 중 | 개발을 진행하는 프로젝트 |
+| `published` | 출시됨 | 공개한 프로젝트 |
+| `archived` | 보관됨 | 보관 상태로 전환한 프로젝트 |
+
+예를 들어 공개한 프로젝트는 `status: "published"`로 작성한다. 표준 키가 아닌 문자열은 회색으로 원문 그대로 표시되며, 해당 문자열에 대응하는 상태 필터는 생성되지 않는다. ‘전체’ 목록에서는 계속 볼 수 있다.
+
+목록 상단에서는 상태별로 필터링하고 이름·설명·태그로 검색할 수 있다. 상태와 검색어를 함께 지정하면 두 조건에 모두 맞는 프로젝트만 표시한다.
 
 ## Markdown과 MDX
 

@@ -90,6 +90,18 @@ export const en: Translation = {
 		"A curated collection of useful sites, organized by category.",
 	[Key.searchBooknav]: "Search bookmarks...",
 	[Key.booknavEmpty]: "No bookmarks yet.",
+
+	// Project showcase
+	[Key.projects]: "Projects",
+	[Key.projectsDescription]: "Here are the projects I've built",
+	[Key.projectDetails]: "View details",
+	[Key.projectBack]: "Back to projects",
+	[Key.projectEmpty]: "No projects yet",
+	[Key.projectSearch]: "Search projects",
+	[Key.projectStatusPlanning]: "Planning",
+	[Key.projectStatusDeveloping]: "In Development",
+	[Key.projectStatusPublished]: "Published",
+	[Key.projectStatusArchived]: "Archived",
 	[Key.guestbook]: "Guestbook",
 	[Key.guestbookDescription]:
 		"Welcome to leave your mark here, share your thoughts and suggestions",
@@ -511,4 +523,11 @@ export const en: Translation = {
 	[Key.videoPrev]: "Previous video",
 	[Key.videoNext]: "Next video",
 	[Key.videoLoadError]: "Video failed to load",
+
+	// Immersive Reading
+	[Key.immersiveReading]: "Immersive Reading",
+	[Key.enterImmersiveReading]: "Enter Immersive Reading",
+	[Key.exitImmersiveReading]: "Exit Immersive Reading",
+	[Key.tocExpand]: "Expand directory",
+	[Key.tocCollapse]: "Collapse directory",
 };

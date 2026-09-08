@@ -48,6 +48,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 			// 일상
 			LinkPresets.Dynamic,
 
+			// 프로젝트
+			LinkPresets.Projects,
+
 			// 갤러리
 			LinkPresets.Gallery,
 
@@ -181,6 +184,12 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/dynamic/",
 		icon: "material-symbols:forum-rounded",
 		pageKey: "dynamic",
+	},
+	Projects: {
+		name: "프로젝트",
+		url: "/projects/",
+		icon: "material-symbols:rocket-launch",
+		pageKey: "projects",
 	},
 	Gallery: {
 		name: "갤러리",

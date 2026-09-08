@@ -19,6 +19,8 @@ const pages = resolvePageToggles({
 
 	// 소식 페이지 토글
 	dynamic: true,
+	// 프로젝트 페이지 토글
+	projects: true,
 	// 갤러리 페이지 토글
 	gallery: true,
 	// 북마크 페이지 토글
@@ -242,10 +244,27 @@ export const siteConfig: SiteConfig = {
 		showLastModified: true,
 		// 글이 오래된 것으로 판단하는 기준(일). 이 기간을 초과해야 "마지막 수정" 카드를 표시합니다.
 		outdatedThreshold: 30,
-		// 공유 포스터 생성 기능 사용 여부
-		sharePoster: true,
+		// 글 페이지의 공유 버튼 표시 여부
+		share: true,
+		// 이전 글과 다음 글 내비게이션 표시 여부
+		postNavigation: true,
+		// 관련 글 추천 표시 여부
+		relatedPosts: true,
+		// 무작위 글 추천 표시 여부
+		randomPosts: true,
 		// OpenGraph 이미지 기능. 사용하면 렌더링 시간이 크게 늘어나므로 로컬 디버깅 중에는 권장하지 않습니다.
 		generateOgImages: false,
+		// 몰입 읽기 설정: 데스크톱 글 상세에서 본문 카드와 전용 목차를 표시합니다.
+		immersiveReading: {
+			// false이면 몰입 읽기 버튼을 숨깁니다.
+			enable: true,
+			// 글 페이지 진입 시 기본 활성화 여부
+			defaultOn: false,
+			// 몰입 읽기에서 목차 표시 여부
+			tocEnabled: true,
+			// 목차 위치: "left" | "right"
+			tocPosition: "left",
+		},
 	},
 
 	// ── Bilibili 설정 ──────────────────────────────────

@@ -88,6 +88,18 @@ export const zh_CN: Translation = {
 	[Key.booknavDescription]: "收藏一些好用的网站，按分类整理",
 	[Key.searchBooknav]: "搜索书签...",
 	[Key.booknavEmpty]: "暂无书签",
+
+	// 项目展示页
+	[Key.projects]: "项目",
+	[Key.projectsDescription]: "这里展示我开发过的项目",
+	[Key.projectDetails]: "查看详情",
+	[Key.projectBack]: "返回项目列表",
+	[Key.projectEmpty]: "暂无项目",
+	[Key.projectSearch]: "搜索项目",
+	[Key.projectStatusPlanning]: "计划中",
+	[Key.projectStatusDeveloping]: "开发中",
+	[Key.projectStatusPublished]: "已发布",
+	[Key.projectStatusArchived]: "已归档",
 	[Key.guestbook]: "留言",
 	[Key.guestbookDescription]: "欢迎在这里留下你的足迹，分享你的想法和建议",
 	[Key.untitled]: "无标题",
@@ -499,4 +511,11 @@ export const zh_CN: Translation = {
 	[Key.videoPrev]: "上一个视频",
 	[Key.videoNext]: "下一个视频",
 	[Key.videoLoadError]: "视频加载失败",
+
+	// 沉浸阅读
+	[Key.immersiveReading]: "沉浸阅读",
+	[Key.enterImmersiveReading]: "进入沉浸阅读",
+	[Key.exitImmersiveReading]: "退出沉浸阅读",
+	[Key.tocExpand]: "展开目录",
+	[Key.tocCollapse]: "折叠目录",
 };

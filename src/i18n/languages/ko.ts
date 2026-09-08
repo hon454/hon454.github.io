@@ -89,6 +89,18 @@ export const ko: Translation = {
 	[Key.booknavDescription]: "유용한 사이트를 카테고리별로 모았습니다.",
 	[Key.searchBooknav]: "북마크 검색...",
 	[Key.booknavEmpty]: "북마크가 없습니다.",
+
+	// 프로젝트 쇼케이스
+	[Key.projects]: "프로젝트",
+	[Key.projectsDescription]: "프로젝트 소개와 기록을 모았습니다",
+	[Key.projectDetails]: "자세히 보기",
+	[Key.projectBack]: "프로젝트 목록으로 돌아가기",
+	[Key.projectEmpty]: "아직 프로젝트가 없습니다",
+	[Key.projectSearch]: "프로젝트 검색",
+	[Key.projectStatusPlanning]: "계획 중",
+	[Key.projectStatusDeveloping]: "개발 중",
+	[Key.projectStatusPublished]: "출시됨",
+	[Key.projectStatusArchived]: "보관됨",
 	[Key.guestbook]: "방명록",
 	[Key.guestbookDescription]:
 		"이곳에 흔적을 남기고 생각과 제안을 공유해 주세요",
@@ -508,4 +520,11 @@ export const ko: Translation = {
 	[Key.videoPrev]: "이전 영상",
 	[Key.videoNext]: "다음 영상",
 	[Key.videoLoadError]: "영상을 불러오지 못했습니다",
+
+	// 몰입형 읽기
+	[Key.immersiveReading]: "몰입형 읽기",
+	[Key.enterImmersiveReading]: "몰입형 읽기 시작",
+	[Key.exitImmersiveReading]: "몰입형 읽기 종료",
+	[Key.tocExpand]: "목차 펼치기",
+	[Key.tocCollapse]: "목차 접기",
 };

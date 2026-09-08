@@ -89,6 +89,18 @@ export const ja: Translation = {
 	[Key.booknavDescription]: "便利なサイトをカテゴリ別に集めました",
 	[Key.searchBooknav]: "ブックマークを検索...",
 	[Key.booknavEmpty]: "ブックマークがありません",
+
+	// プロジェクト展示ページ
+	[Key.projects]: "プロジェクト",
+	[Key.projectsDescription]: "私が開発したプロジェクトです",
+	[Key.projectDetails]: "詳細を見る",
+	[Key.projectBack]: "プロジェクト一覧へ戻る",
+	[Key.projectEmpty]: "プロジェクトはまだありません",
+	[Key.projectSearch]: "プロジェクトを検索",
+	[Key.projectStatusPlanning]: "計画中",
+	[Key.projectStatusDeveloping]: "開発中",
+	[Key.projectStatusPublished]: "公開済み",
+	[Key.projectStatusArchived]: "アーカイブ",
 	[Key.guestbook]: "ゲストブック",
 	[Key.guestbookDescription]:
 		"ここに足跡を残して、あなたの考えや提案を共有してください",
@@ -509,4 +521,11 @@ export const ja: Translation = {
 	[Key.videoPrev]: "前の動画",
 	[Key.videoNext]: "次の動画",
 	[Key.videoLoadError]: "動画の読み込みに失敗しました",
+
+	// 没入型リーディング
+	[Key.immersiveReading]: "没入型リーディング",
+	[Key.enterImmersiveReading]: "没入型リーディングに入る",
+	[Key.exitImmersiveReading]: "没入型リーディングを終了する",
+	[Key.tocExpand]: "目錄を開く",
+	[Key.tocCollapse]: "目錄をたたむ",
 };

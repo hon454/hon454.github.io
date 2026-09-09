@@ -2,6 +2,7 @@
 title: "GitHub Pulls Show Reviewers"
 published: 2026-04-20
 draft: false
+status: published
 description: "GitHub PR 목록에서 요청된 리뷰어와 팀, 리뷰 상태를 바로 확인하는 Chrome 확장 프로그램."
 image: "images/github-pulls-show-reviewers.webp"
 lang: ko

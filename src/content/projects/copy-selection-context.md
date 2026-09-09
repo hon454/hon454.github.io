@@ -2,6 +2,7 @@
 title: "Copy Selection Context"
 published: 2026-02-18
 draft: false
+status: published
 description: "JetBrains IDE에서 파일 경로, 줄 번호와 코드를 함께 복사하는 플러그인. AI에 전달할 코드 문맥을 준비할 때 사용한다."
 image: "images/copy-selection-context.webp"
 lang: ko

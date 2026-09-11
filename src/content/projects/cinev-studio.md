@@ -1,5 +1,5 @@
 ---
-title: 'CINEV Studio'
+title: 'CineV - Studio'
 published: 2024-06-25
 description: 'AI 영상 제작 서비스 CINEV의 Unreal Engine 기반 시네마틱 편집기. 액션·소품 시스템, 편집 UI, 생성 모션 연동과 제작·실행 자동화를 개발했다.'
 image: ./images/cinev-studio/cover.webp

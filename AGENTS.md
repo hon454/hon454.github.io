@@ -157,7 +157,10 @@ untyped `subset-font` package. Avoid unrelated formatting churn.
 There is no dedicated unit-test framework configured. Before submitting
 changes, run `pnpm check`, `pnpm type-check`, and `pnpm build` for rendering,
 content, or generated-asset work. For visual or interactive changes, verify
-with `pnpm dev` or `pnpm preview` and include screenshots in the PR. Name future
+with `pnpm dev` or `pnpm preview` and describe the results in the PR.
+Attach or upload screenshots only when the user explicitly requests screenshot
+attachments. Local screenshots may be used for QA, but do not commit them or
+include them in PR descriptions or comments without that request. Name future
 tests near the feature they cover, using the local file name as the stem.
 
 ## Deployment
@@ -209,9 +212,12 @@ history with `upstream`. Treat Firefly updates as vendored source updates.
   when relevant. Keep commands, paths, and identifiers in their original form.
 - When contributing to the upstream project, use English for PR titles,
   descriptions, comments, and review replies.
-- Record validation commands and results in the PR body. Include screenshots
-  for visual or interactive changes, link related issues when available, and
-  report known failures rather than omitting them.
+- Record validation commands and results in the PR body, link related issues
+  when available, and report known failures rather than omitting them.
+- Do not upload or attach screenshots to a PR unless the user explicitly requests
+  screenshot attachments. A request to create or update a PR, or a visual change
+  by itself, does not authorize screenshot attachments. Omit the Screenshots
+  section unless attachments were explicitly requested.
 - Discuss major features or design changes in an issue or discussion before
   implementation.
 

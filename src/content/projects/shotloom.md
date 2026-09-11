@@ -2,7 +2,7 @@
 title: "Shotloom — 브라우저 3D 편집기 개발"
 published: 2026-09-11
 description: "Rust·Bevy·WebGPU와 React로 캐릭터 로딩, Undo/Redo, 카메라·포즈 키프레임, 저장·복구를 구현하고 CineV의 장면 생성·편집 흐름에 연결한 프로젝트."
-image: ./images/shotloom/deployed-07-camera-fov-34.png
+image: ./images/shotloom/cover.webp
 tags:
   - shotloom
   - rust
@@ -13,7 +13,7 @@ tags:
   - ai-agent
 lang: ko
 draft: false
-status: developing
+status: published
 order: 1
 ---
 

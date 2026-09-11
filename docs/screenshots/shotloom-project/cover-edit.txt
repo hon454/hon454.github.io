@@ -1,0 +1,6 @@
+Tool: built-in ImageGen (image edit)
+Final asset: src/content/projects/images/shotloom/cover.webp
+Web delivery: 1600 x 800 px, WebP quality 92, 24,336 bytes.
+
+Prompt:
+Use case: text-localization. Edit the provided CINEV STUDIO cover image for a Shotloom project cover. Preserve the exact white stylized CINEV logo, its shape, proportions and placement, the flat near-black background (#111115), generous empty margins, and the minimalist composition. Change ONLY the small gray word STUDIO beneath the logo to the exact uppercase text SHOTLOOM (S H O T L O O M). Use the same thin sans-serif style, wide tracking, gray color, and centered baseline as the original subtitle. No other text or decoration. Maintain the original wide 2:1 canvas aspect ratio; output 1600x800 if possible. Keep all logo content centered and fully inside the middle safe area for website card cropping. Crisp antialiased logo and typography, flat background, no texture, no gradient, no shadows.

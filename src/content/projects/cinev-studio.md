@@ -19,6 +19,10 @@ CINEV Studio는 이 흐름에서 3D 장면을 확인하고 수정하는 Unreal E
 
 *CINEV의 제작 흐름. 강조한 Studio 클라이언트에서 액션 데이터·편집 UI·모션·카메라를 담당했다.*
 
+아래 튜토리얼은 스토리 입력부터 3D 장면 편집, 컷 편집과 영상 출력까지의 제작 과정을 보여준다. 영상의 22초부터는 Studio에서 카메라 구도와 클립 길이, 캐릭터 배치를 조정하는 화면을 볼 수 있다.
+
+<iframe class="video-embed" src="https://www.youtube.com/embed/8Pq8nM0Rm-w" title="CINEV Build Storyboard 튜토리얼: 스토리 입력부터 3D 장면 편집과 영상 출력까지" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ![Studio의 QA 실행 화면. TestMap에 캐릭터와 소품을 배치하고 타임라인을 편집한다.](./images/cinev-studio/studio-editor.webp)
 
 중앙 뷰포트에서 장면을 확인하고, 하단 타임라인에서 캐릭터별 클립을 편집한다. 아래 공식 기능 소개 이미지에는 행동 라이브러리에서 선택한 액션을 타임라인에 배치하는 흐름이 나타나 있다.

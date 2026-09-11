@@ -35,6 +35,12 @@ CINEV Studio는 이 흐름에서 3D 장면을 확인하고 수정하는 Unreal E
 
 C++과 UMG를 중심으로 Action·Prop 시스템과 편집 UI를 개발하고, Sequencer·MovieScene의 애니메이션·카메라 재생을 편집 조작에 연결했다. 생성 모션을 가져오는 비동기 연동, 저장·내보내기, headless 실행과 빌드 자동화도 담당했다. 콘텐츠 제작자의 입력 오류를 줄이는 작업부터 편집 결과를 안정적으로 재생하고 출력하는 경로까지 개발 범위를 맡았다.
 
+### 웹툰 애니메이션 제작 사례
+
+<iframe class="video-embed" src="https://www.youtube.com/embed/NQJT8oN7NGg" title="CINEV Studio를 활용한 무조건 이혼한다 애니메이션 제작 과정" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+*CINEV Studio로 [『무조건 이혼한다』](https://m.comic.naver.com/webtoon/list?titleId=842623)를 애니메이션화하는 과정. [완성 영상 · 네이버 컷츠 1화](https://comic.naver.com/cuts/embed?id=KW-cuts:0-cuts_6502-1).*
+
 ## 액션 데이터 작성 과정의 휴먼 에러 줄이기
 
 Unit Action은 애니메이션을 장면에서 재생할 수 있는 행동으로 정의한 데이터다. 의자에 앉는 액션이라면 재생할 모션과 구간, 타깃으로 받을 소품, 상호작용 조건과 시점을 함께 구성해야 한다. 콘텐츠 제작자는 이 정보를 조합해 사용자가 라이브러리에서 선택할 액션을 만든다.

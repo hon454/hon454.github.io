@@ -15,17 +15,7 @@ CINEV는 사용자가 입력한 이야기를 바탕으로 캐릭터, 배경, 행
 
 CINEV Studio는 이 흐름에서 3D 장면을 확인하고 수정하는 Unreal Engine 기반 시네마틱 편집기다. 사용자는 캐릭터와 소품을 배치하고, 행동·표정·카메라 클립을 타임라인에 올려 위치와 재생 시간을 조정한다. AI가 구성한 결과를 사용자의 의도에 맞게 편집하는 작업이 여기서 이루어진다.
 
-```mermaid
-flowchart TD
-    subgraph Product[CINEV · AI 영상 제작 서비스]
-        direction TB
-        Story[사용자 스토리] --> Generate[AI 기반 해석 · 타임라인 구성]
-        Generate --> Studio[담당: CINEV Studio 클라이언트]
-        Studio --> Video
-        Video[영상 렌더링 · 출력]
-    end
-    style Studio fill:#edf4f2,stroke:#54756b,color:#243b34
-```
+<img src="/diagrams/cinev-studio/production-flow.svg" width="945" height="588" alt="CINEV 제작 흐름: 사용자 스토리에서 AI 구성, Studio 편집을 거쳐 영상으로 출력한다." loading="lazy" decoding="async" />
 
 *CINEV의 제작 흐름. 강조한 Studio 클라이언트에서 액션 데이터·편집 UI·모션·카메라를 담당했다.*
 
@@ -81,17 +71,7 @@ TArray<TObjectPtr<UCinevActionTargetRequirement>> TargetRequirements;
 
 예를 들어 같은 원본 모션을 여러 액션에서 사용하더라도 재생 구간이나 상호작용 시점은 다를 수 있다. 원본 `AnimSequence`는 공유하고, 액션별 설정은 별도의 Composite에서 관리하도록 분리했다. 한 액션의 설정을 수정하기 위해 공유 원본의 Notify·Curve를 함께 바꾸지 않아도 된다.
 
-```mermaid
-flowchart TD
-    Table[UnitAction 목록] --> A[액션 A · DataAsset]
-    Table --> B[액션 B · DataAsset]
-    A --> CA[Composite A]
-    B --> CB[Composite B]
-    CA --> Sequence[공유 원본 AnimSequence]
-    CB --> Sequence
-    A --> TargetA[액션 A의 타깃 조건]
-    B --> TargetB[액션 B의 타깃 조건]
-```
+<img src="/diagrams/cinev-studio/action-assets.svg" width="1100" height="670" alt="액션별 DataAsset과 Composite는 분리하고 원본 AnimSequence는 공유한다." loading="lazy" decoding="async" />
 
 ![AnimComposite 프로토타입. 원본 모션을 확인하며 재생 구간과 Notify·Curve를 구성한다.](./images/cinev-studio/animation-composite.webp)
 
@@ -142,14 +122,7 @@ void UCinevStoryEditorUIStateBase::Enter()
 
 공통 진입 처리에서는 위 세 함수를 Base State의 가상 함수로 선언하고 Default State에 적용했다. Default State는 필요한 뷰포트 위젯을 배치하고, 선택 편집 모드에 진입한 뒤 기본 키보드 전략을 설정한다.
 
-```mermaid
-flowchart TD
-    Request[상태 전환 요청] --> Exit[기존 상태 Exit]
-    Exit --> Enter[새 상태 Enter]
-    Enter --> View[1. 뷰포트와 레이아웃 설정]
-    View --> Mode[2. 편집 모드 설정]
-    Mode --> Input[3. 입력 전략 설정]
-```
+<img src="/diagrams/cinev-studio/state-entry.svg" width="1111" height="588" alt="기존 상태를 종료한 뒤 새 상태에서 뷰포트, 편집 모드, 입력 전략을 순서대로 설정한다." loading="lazy" decoding="async" />
 
 변경의 가치는 편집 모드별 처리 위치와 진입 순서를 명시한 데 있다. 레이아웃 문제는 뷰포트 설정에서, 선택 동작 문제는 편집 모드에서, 단축키 문제는 입력 전략에서 추적할 수 있다. 새 상태도 같은 세 가지 책임을 구현하므로 기존의 큰 위젯 안에 분기를 계속 추가하던 범위를 나눌 수 있다.
 

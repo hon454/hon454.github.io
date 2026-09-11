@@ -1,5 +1,34 @@
 @reference "tailwindcss";
 
+/* Keep the project catalogue compact without hiding keyboard access. */
+.custom-md .project-cases {
+  details {
+    border-bottom: 1px solid var(--line-color);
+    padding-block: 1rem;
+  }
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    line-height: 1.6;
+    padding-block: 0.25rem;
+  }
+
+  summary:hover {
+    color: var(--primary);
+  }
+
+  summary:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 4px;
+    border-radius: 0.25rem;
+  }
+
+  details[open] > summary {
+    margin-bottom: 0.75rem;
+  }
+}
+
 .custom-md {
   overflow-wrap: break-word;
 
@@ -221,4 +250,3 @@ body.wallpaper-transparent .custom-md {
     background-color: color-mix(in oklch, var(--btn-plain-bg-active) 68%, transparent);
   }
 }
-

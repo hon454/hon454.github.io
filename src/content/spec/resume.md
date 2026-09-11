@@ -19,7 +19,7 @@
 
 CINEVStudio의 Action·Prop 제작 흐름에서 시작해 Shotloom 초기 개발의 Rust core·Bevy runtime·React/Tauri editor·외부 AI 서비스 통합으로 범위를 확장했습니다. 기획·아트·TA·QA·서비스 팀의 요구를 구현 단위와 데이터 계약으로 정리하고, 코드 리뷰·기술면접·문서·개발 도구로 팀 실행을 지원했습니다.
 
-#### Shotloom
+#### [Shotloom](/projects/shotloom/)
 
 2026.04 — 2026.08
 

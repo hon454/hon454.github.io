@@ -1,9 +1,0 @@
-{
-  "name": "editor-reliability-labs",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "description": "Independent, synthetic examples of reliable editor boundaries",
-  "engines": { "node": ">=24.0.0" },
-  "scripts": { "test": "node --test test/*.test.ts", "demo": "node demo.ts" }
-}

@@ -30,7 +30,7 @@ Shotloom은 생성형 영상 제작에 사용할 장면을 브라우저에서 �
 | 직접 맡은 범위 | 캐릭터·자산, 편집·저장, 카메라·포즈·타임라인, 생성 파이프라인, 서비스 통합과 검증 |
 | 팀과의 역할 구분 | 기술 스택 선정과 초기 scaffold는 팀이 담당. 나는 선택된 환경에서 구현·통합·검증을 진행 |
 
-[코드 예제 다운로드](/projects/shotloom/editor-reliability-labs.zip) · [세부 구현](#전체-구현-사례) · [이력서](/resume/)
+[세부 구현](#전체-구현-사례) · [이력서](/resume/)
 
 ## Unreal 경험을 새 실행 환경으로 옮기기
 
@@ -47,8 +47,6 @@ Unreal에서 다뤘던 좌표계, 애니메이션, 카메라와 에셋 로딩을
 Shotloom에서는 React가 저작 UI를, Rust 코어가 제품 모델과 검증을, Bevy가 실행과 렌더링을 맡는다. UI는 편집 의도를 command로 보내고, 확정된 결과는 event로 받는다. ECS의 entity와 component를 저장 형식으로 삼지 않고 shot·clip·asset을 표현하는 BundleModel을 유지했다.
 
 ![React 저작 UI, 제품 모델과 Bevy 런타임의 책임 분리. Web과 Native는 Rust 코어를 공유한다.](./images/shotloom/02-architecture.png)
-
-[아키텍처 SVG 원본](/projects/shotloom/diagrams/02-architecture.svg)
 
 ### 캐릭터 로딩은 선택과 저장까지 이어져야 한다
 
@@ -68,11 +66,9 @@ BundleEditor의 mutation 경계에 검증, DirtySet과 snapshot 생명주기를 
 
 ![편집 의도를 검증·transaction·변경 이력으로 확정하고 저장·복원 뒤 런타임에 반영하는 흐름.](./images/shotloom/03-edit-persistence.png)
 
-아래는 이 경계를 작은 모델로 재작성한 예제다. 실제 제품은 Rust 기반이며, 여기서는 조작 단위의 이력을 설명하기 위해 TypeScript를 사용했다.
+아래 코드는 실제 Rust 구현의 편집 규칙을 TypeScript 형태로 단순화한 예시다. 주요 조작 순서와 상태 변화를 보여주며, 보조 클래스와 함수의 구현은 생략했다.
 
 ```ts title="드래그 여러 단계, Undo 한 번"
-import { DocumentSession } from "./src/document-session.ts";
-
 const editor = new DocumentSession({ items: [{ id: "actor", x: 0 }] });
 editor.begin();
 for (const x of [1, 2, 3]) {
@@ -82,7 +78,7 @@ editor.finish(true);
 editor.undo(); // x = 0
 ```
 
-예제는 작은 문서를 복사·동결하고, 제품은 persistent collection으로 snapshot의 구조를 공유한다. 검증 실패 시 현재 상태 유지, 취소 시 시작 상태 복원, Undo 이후 새 편집의 redo 분기 정리를 검증한다.
+검증에 실패하면 현재 상태를 유지하고, 조작을 취소하면 시작 상태를 복원한다. Undo 이후 새 편집이 발생하면 이전 redo 분기를 정리한다.
 
 ### 저장 성공과 복구 가능성도 별개다
 
@@ -97,7 +93,7 @@ if (previous) await store.backup(previous);
 await store.replace(next);
 ```
 
-이 순서의 전제는 호출자가 워크스페이스의 소유권 잠금을 갖고 있고, `backup`이 저장과 검증을 완료해야 성공한다는 것이다. 공개 예제에서는 저장 어댑터를 주입해 백업 실패가 기존 문서를 지우지 않는지 확인한다.
+이 순서의 전제는 호출자가 워크스페이스의 소유권 잠금을 갖고 있고, `backup`이 저장과 검증을 완료해야 성공한다는 것이다. 백업이 실패하면 기존 문서를 유지하고 교체를 중단한다.
 
 ![로컬에서 저장한 뒤 페이지를 다시 연 상태. 캐릭터, 세 포즈 후보, 할당된 clip과 frame 0·60의 카메라 키가 복원되었다.](./images/shotloom/local-12-restored.png)
 
@@ -108,8 +104,6 @@ await store.replace(next);
 schema 4 전환에서는 프레임과 독립적인 key ID를 두고, camera의 unbounded Euler scalar와 bone별 quaternion pose를 구분했다. 키를 다른 프레임으로 옮겨도 같은 키로 식별하고, 위치·회전의 일부 채널만 편집할 수 있도록 모델·평가기·writer와 UI를 연결했다.
 
 ```ts title="회전 횟수와 회전 방향"
-import { scalarCameraAngle, poseRotation } from "./src/animation.ts";
-
 scalarCameraAngle(0, 720, 0.5); // 360: 두 바퀴 회전 의도 보존
 poseRotation([0, 0, 0, 1], [0, 0, 0, -1], 0.5);
 // quaternion의 부호가 반대여도 같은 방향
@@ -122,8 +116,6 @@ poseRotation([0, 0, 0, 1], [0, 0, 0, -1], 0.5);
 UI가 재시도한 요청을 새 편집으로 처리하면 키가 두 번 바뀔 수 있다. 오래된 화면이 보낸 명령이 최신 상태를 덮어쓰는 문제도 있다. shot revision과 transaction ID를 검사하고, 이미 처리한 동일 요청에는 같은 결과를 반환하도록 했다. 같은 ID에 다른 내용을 넣는 경우는 거부했다.
 
 ```ts title="같은 요청의 재전송"
-import { RevisionGate } from "./src/revision-gate.ts";
-
 const gate = new RevisionGate("document-a");
 const command = { id: "edit-1", epoch: "document-a", revision: 0, payload: "move:3" };
 let applied = 0;
@@ -132,7 +124,7 @@ const retry = gate.execute(command, () => { applied += 1; });
 console.assert(first === retry && applied === 1);
 ```
 
-중복 이력은 메모리에 무제한으로 쌓지 않는다. 제품에서는 epoch와 4,096개 FIFO 경계를 명시했다. 공개 예제 역시 bounded cache를 사용하며, 프로세스가 재시작돼도 유지되는 exactly-once 보장을 제공하지는 않는다.
+중복 이력은 메모리에 무제한으로 쌓지 않는다. 제품에서는 epoch와 4,096개 FIFO 경계를 명시했다. 이 메모리 기반 중복 제어는 프로세스가 재시작돼도 유지되는 exactly-once 보장을 제공하지는 않는다.
 
 ![frame 0과 60에 카메라 키를 만든 뒤 frame 30으로 이동한 화면. FOV는 27 → 31.59 → 38로 확인했다. 내부 focal-length 채널의 평가 결과이므로 FOV 자체의 단순 선형 보간은 아니다.](./images/shotloom/local-09-camera-keyframe-midpoint.png)
 
@@ -142,11 +134,9 @@ console.assert(first === retry && applied === 1);
 
 이 문제에서 보존해야 할 것은 지나간 모든 입력보다 현재 사용자의 의도였다. 진행 중인 작업 하나와 최신 대기 입력 하나를 유지하는 방식으로 입력 누적을 줄였다. manual scrub·play·pause·stop은 대기 drag를 대체하고, shot을 바꾼 뒤 이전 shot의 intent가 적용되지 않도록 했다.
 
-공개 예제는 그중 하나의 비동기 실행기와 최신 의도를 다룬다. 실패하면 호출자에게 오류를 돌려주고, 종료할 때는 진행 중인 작업이 끝날 때까지 기다린다.
+아래 코드는 하나의 비동기 실행기와 최신 의도를 다룬다. 실패하면 호출자에게 오류를 돌려주고, 종료할 때는 진행 중인 작업이 끝날 때까지 기다린다.
 
 ```ts title="최신 입력 하나만 대기시키기"
-import { LatestIntent } from "./src/latest-intent.ts";
-
 const applied: number[] = [];
 const scrub = new LatestIntent<number>(async frame => { applied.push(frame); });
 const requests = [10, 20, 30].map(frame => scrub.submit(frame));
@@ -155,7 +145,7 @@ console.assert(applied.at(-1) === 30);
 await scrub.close();
 ```
 
-수정 후 50회 반복 scrub에서 점진적인 지연과 선형 RSS 증가가 재현되지 않았고, 30개 CameraKey를 둔 Pilot의 최종 frame 정합성을 확인했다. 일반화 예제에는 별도로 10,000개 입력을 주입해 처리 중인 요청과 마지막 의도만 전달되는지 검증하는 테스트를 두었다.
+수정 후 50회 반복 scrub에서 점진적인 지연과 선형 RSS 증가가 재현되지 않았고, 30개 CameraKey를 둔 Pilot의 최종 frame 정합성을 확인했다.
 
 ## 5. 생성 입력과 실제 결과물이 같은 작업을 가리키게 하기
 
@@ -172,14 +162,12 @@ S2M 결과에는 인물, shot, camera와 외부 자산 참조가 함께 들어�
 검증한 파일과 renderer가 읽은 파일이 다르면 결과의 출처를 설명할 수 없다. 같은 URL도 다시 읽는 시점에는 다른 내용일 수 있다. render provenance에서는 입력 bytes를 캡처하고, 그 bytes의 hash와 실제 renderer가 소비하는 입력을 연결했다.
 
 ```ts title="한 번 캡처한 입력의 출처 기록"
-import { renderCaptured } from "./src/artifact-pipeline.ts";
-
 const input = new Uint8Array([1, 2, 3]);
 const result = await renderCaptured(input, async bytes => bytes.slice());
 console.assert(result.digest.length === 64); // SHA-256
 ```
 
-위 예제의 renderer는 입력을 복사하는 합성 어댑터다. 테스트에서는 캡처 직후 원본 배열을 바꿔도 hash와 renderer 입력이 같은 캡처에서 나오는지 확인한다.
+위 코드의 renderer는 입력을 복사하는 합성 어댑터다. 캡처 직후 원본 배열이 바뀌어도 hash와 renderer 입력은 같은 캡처에서 나와야 한다.
 
 출력 단계에도 완료의 기준이 필요했다. 카메라 출력은 WebM 성공 이후 첫·마지막 PNG를 만들고 패키지로 발행하는 순서로 구성했다. PNG 추출이나 발행만 실패하면 앞서 성공한 렌더를 다시 수행하지 않도록 재시도 범위를 나눴다.
 
@@ -220,29 +208,7 @@ Shotloom의 초기 저장소 탐색 경로와 문서 기반은 팀이 만들었�
 
 모델과 추론 수준은 문서·커뮤니티의 활용 방법과 실제 작업 결과를 바탕으로 조정했다. 컴파일과 단위 테스트, 실제 브라우저 실행, 입력·렌더 결과 대조를 서로 다른 검증 단계로 두었다.
 
-## 코드 예제
-
-[Editor Reliability Labs](/projects/shotloom/editor-reliability-labs.zip)는 편집·회전·비동기 처리·복구 로직을 합성 데이터로 일반화한 독립 예제다. Node.js 24 이상에서 설치 없이 실행할 수 있다.
-
-```sh
-node --test test/*.test.ts
-node demo.ts
-```
-
-| 모듈 | 읽을 내용 |
-|---|---|
-| `document-session.ts` | 후보 검증, transaction, Undo/Redo와 immutable snapshot |
-| `latest-intent.ts` | 진행 중 하나와 최신 대기 입력 하나, 종료와 실패 처리 |
-| `revision-gate.ts` | stale revision, 동일 요청 재전송, ID 충돌과 bounded dedupe |
-| `animation.ts` | 카메라 다회전, quaternion 보간과 키 식별 |
-| `asset-boundaries.ts` | 업로드 제한, 좌표 변환, 중복 로딩과 캐시 |
-| `selection.ts` | 정확한 대상 선택과 optional preview 실패 격리 |
-| `artifact-pipeline.ts` | 입력 bytes 고정, 단계별 출력과 재시도 |
-| `recovery.ts` | 같은 작업 복원, 백업 후 다른 작업으로 교체 |
-
-2026년 9월 11일 Node.js 24.15.0에서 테스트 17개를 통과했고 TypeScript 5.9.3 strict 검사를 완료했다. [README](/projects/shotloom/code-labs/README.md)에 어댑터의 전제와 생략한 범위를, [테스트 코드](/projects/shotloom/code-labs/test/reliability.test.ts)에 실패 주입 사례를 남겼다. 프로세스를 넘는 내구성, 실제 GPU renderer와 파일시스템의 원자적 발행은 이 샘플의 구현 범위 밖이다.
-
-### 로컬 검증의 제한
+## 로컬 검증의 제한
 
 로컬에서 VRM import, 포즈 후보 생성·할당, 카메라 키, 저장 후 재열기를 확인했다. Export는 초기 준비 단계의 `INITIAL_READINESS_FAILED`로 실패해 출력 완료를 확인하지 못했다. 초기 실행의 `wgpu createBuffer RangeError`도 원인 확인이 남아 있다.
 
@@ -276,8 +242,6 @@ const gravity = rotateY180([0, -1, 0]);
 // collider: [-1, 0, -2], gravity: [0, -1, 0]
 ```
 
-[구현 코드](/projects/shotloom/code-labs/src/asset-boundaries.ts)
-
 </details>
 
 <details id="case-03"><summary>03. VRM 로딩 전에 업로드 용량 검사</summary>
@@ -290,8 +254,6 @@ VRM upload staging에 용량 제한과 preflight 검사를 적용했다. 실제 
 admitSizes([4, 4], 5, 8); // 허용
 admitSizes([4, 5], 5, 8); // 누적 예산 초과 → 예외
 ```
-
-[구현 코드](/projects/shotloom/code-labs/src/asset-boundaries.ts)
 
 </details>
 
@@ -327,8 +289,6 @@ editor.edit(() => ({ items: [{ id: "actor", x: 3 }] }));
 editor.finish(true); // 검증을 통과한 조작만 이력으로 확정
 ```
 
-[구현 코드](/projects/shotloom/code-labs/src/document-session.ts)
-
 </details>
 
 <details id="case-07"><summary>07. 연속 드래그를 한 번에 되돌리는 Undo/Redo</summary>
@@ -345,8 +305,6 @@ for (const x of [1, 2, 3]) {
 editor.finish(true);
 editor.undo(); // 드래그 시작 전 위치로 한 번에 복원
 ```
-
-[구현 코드](/projects/shotloom/code-labs/src/document-session.ts)
 
 </details>
 
@@ -369,8 +327,6 @@ const document = await enterWorkspace(runId, store, compose);
 // 같은 run: restore
 // 다른 run: compose → backup 성공 → replace
 ```
-
-[구현 코드](/projects/shotloom/code-labs/src/recovery.ts)
 
 ![저장 후 재열기](./images/shotloom/local-12-restored.png)
 
@@ -406,8 +362,6 @@ const thumbnail = await cache.get(cacheKey, renderHeadshot);
 // 실패한 promise는 캐시에서 제거되어 다음 요청이 재시도할 수 있다.
 ```
 
-[구현 코드](/projects/shotloom/code-labs/src/asset-boundaries.ts)
-
 ![캐릭터 헤드샷이 표시된 Inspector](./images/shotloom/local-03-vrm-imported.png)
 
 </details>
@@ -441,8 +395,6 @@ const preview = optionalPreview(decodeThumbnail);
 if (preview.kind === "unavailable") showPlaceholder();
 // preview 실패는 문서의 검증 결과와 분리한다.
 ```
-
-[구현 코드](/projects/shotloom/code-labs/src/selection.ts)
 
 ![재열기 후 유지된 포즈 preview](./images/shotloom/local-12-restored.png)
 
@@ -478,8 +430,6 @@ const selected = selectExact(shots, {
 }); // 정확히 하나가 아니면 실패
 ```
 
-[구현 코드](/projects/shotloom/code-labs/src/selection.ts)
-
 </details>
 
 <details id="case-19"><summary>19. 실제 렌더 입력 bytes와 출처 기록 연결</summary>
@@ -493,8 +443,6 @@ const receipt = await renderCaptured(inputBytes, render);
 console.log(receipt.digest); // 렌더에 사용한 캡처의 SHA-256
 writeImage(receipt.image);
 ```
-
-[구현 코드](/projects/shotloom/code-labs/src/artifact-pipeline.ts)
 
 </details>
 
@@ -510,8 +458,6 @@ const output = new OutputSession({
 });
 await output.run(); // 모든 선행 단계가 성공해야 publish 호출
 ```
-
-[구현 코드](/projects/shotloom/code-labs/src/artifact-pipeline.ts)
 
 </details>
 
@@ -537,8 +483,6 @@ poseRotation([0, 0, 0, 1], [0, 0, 0, -1], 0.5);
 // quaternion 부호가 반대여도 같은 회전
 ```
 
-[구현 코드](/projects/shotloom/code-labs/src/animation.ts)
-
 ![카메라 키 사이의 frame 30 평가](./images/shotloom/local-09-camera-keyframe-midpoint.png)
 
 </details>
@@ -555,8 +499,6 @@ const first = gate.execute(command, applyAtomically);
 const retry = gate.execute(command, applyAtomically);
 console.assert(first === retry); // 부작용은 한 번
 ```
-
-[구현 코드](/projects/shotloom/code-labs/src/revision-gate.ts)
 
 </details>
 
@@ -596,8 +538,6 @@ catch (error) { showRetry(error); }
 await output.run(); // 실패가 PNG 단계였다면 video를 재사용
 ```
 
-[구현 코드](/projects/shotloom/code-labs/src/artifact-pipeline.ts)
-
 </details>
 
 ### 런타임 오류와 개발 도구의 잘못된 성공 잡기
@@ -623,8 +563,6 @@ scrub.submit(20);
 scrub.submit(30);
 await completion; // 마지막 입력까지 처리한 뒤 완료
 ```
-
-[구현 코드](/projects/shotloom/code-labs/src/latest-intent.ts)
 
 </details>
 
@@ -674,8 +612,6 @@ await enterWorkspace(sourceRun, store, async () => {
 }); // 소유권 잠금은 호출자가 보유한 상태
 ```
 
-[구현 코드](/projects/shotloom/code-labs/src/recovery.ts)
-
 ![CineV 입력으로 구성한 proxy 장면](./images/shotloom/deployed-06-imported-scene.png)
 
 </details>
@@ -693,17 +629,14 @@ if (previous) await store.backup(previous); // 실패하면 중단
 await store.replace(next);
 ```
 
-[구현 코드](/projects/shotloom/code-labs/src/recovery.ts)
-
 ![다른 작업을 열기 전 백업](./images/shotloom/deployed-05-backup-before-entry.png)
 
 </details>
 
 </div>
 
-## 관련 프로젝트와 코드
+## 관련 글
 
 - [CINEVStudio에서 Shotloom으로 전환한 배경](/posts/from-cinev-studio-to-shotloom/)
 - [Rust와 AI 에이전틱 코딩에서 다시 본 TDD](/posts/tdd-game-development-rust-ai-agent/)
-- [일반화 코드 ZIP](/projects/shotloom/editor-reliability-labs.zip)
 - [이력서](/resume/)

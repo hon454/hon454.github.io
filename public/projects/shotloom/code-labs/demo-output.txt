@@ -1,6 +1,0 @@
-After drag: { items: [ { id: 'actor', x: 3 } ] }
-After one undo: { items: [ { id: 'actor', x: 0 } ] }
-Two-turn camera midpoint: 360
-Render video once
-Synthetic readback failure
-Publish complete package: [ 'video.webm', 'first.png', 'last.png' ]

@@ -87,5 +87,21 @@
   "src:content/projects/images/cinev-studio/animation-composite.webp": "5a5f64595d6335373b",
   "src:content/projects/images/cinev-studio/action-table.webp": "222222212121242424",
   "src:content/projects/images/cinev-studio/action-feature.webp": "c3bec08e8787928e9a",
-  "src:content/projects/images/cinev-studio/action-asset.webp": "262626242424212121"
+  "src:content/projects/images/cinev-studio/action-asset.webp": "262626242424212121",
+  "src:content/projects/images/shotloom/local-12-restored.png": "b9b5b3c5c2c5e5e3e7",
+  "src:content/projects/images/shotloom/local-09-camera-keyframe-midpoint.png": "8a8d94bdbdc2edebef",
+  "src:content/projects/images/shotloom/local-06-pose-candidates.png": "bbb6b3c6c2c6e3e1e5",
+  "src:content/projects/images/shotloom/local-04-transform-x-1.png": "b7b3b1d8d5d4edecf1",
+  "src:content/projects/images/shotloom/local-03-vrm-imported.png": "b7b4b1d8d5d4edecf1",
+  "src:content/projects/images/shotloom/deployed-11-cinev-additional-shot.png": "e6e4e4dfdadae4e1e1",
+  "src:content/projects/images/shotloom/deployed-10-sent-confirmation.png": "6f70744d4b4e3b353e",
+  "src:content/projects/images/shotloom/deployed-08-generated-shot.png": "282626282424221f1f",
+  "src:content/projects/images/shotloom/deployed-06-imported-scene.png": "6f6f73535154332e39",
+  "src:content/projects/images/shotloom/deployed-05-backup-before-entry.png": "0e0e0e0d0d0d0e0e0f",
+  "src:content/projects/images/shotloom/06-cinev-entry.png": "0f1021080e1f080e21",
+  "src:content/projects/images/shotloom/05-output-package.png": "0a1224080e1f0a0e1f",
+  "src:content/projects/images/shotloom/04-production-compiler.png": "0a1323090e21090f22",
+  "src:content/projects/images/shotloom/03-edit-persistence.png": "1012220a0e21090f22",
+  "src:content/projects/images/shotloom/02-architecture.png": "070b1b0d102806101d",
+  "src:content/projects/images/shotloom/cover.webp": "212124252528141318"
 }

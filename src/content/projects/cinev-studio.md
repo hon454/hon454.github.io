@@ -19,6 +19,10 @@ CINEV Studio는 이 흐름에서 3D 장면을 확인하고 수정하는 Unreal E
 
 *CINEV의 제작 흐름. 강조한 Studio 클라이언트에서 액션 데이터·편집 UI·모션·카메라를 담당했다.*
 
+<iframe class="video-embed" src="https://www.youtube.com/embed/8Pq8nM0Rm-w" title="CINEV Build Storyboard 튜토리얼" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+*CINEV Studio를 활용한 장면 편집과 영상 제작 튜토리얼.*
+
 ![Studio의 QA 실행 화면. TestMap에 캐릭터와 소품을 배치하고 타임라인을 편집한다.](./images/cinev-studio/studio-editor.webp)
 
 중앙 뷰포트에서 장면을 확인하고, 하단 타임라인에서 캐릭터별 클립을 편집한다. 아래 공식 기능 소개 이미지에는 행동 라이브러리에서 선택한 액션을 타임라인에 배치하는 흐름이 나타나 있다.
@@ -30,6 +34,12 @@ CINEV Studio는 이 흐름에서 3D 장면을 확인하고 수정하는 Unreal E
 *장면의 시간대를 바꿔 조명을 조정하는 공식 시연. 캐릭터·배경과 시각 자료는 팀의 결과물이다.*
 
 C++과 UMG를 중심으로 Action·Prop 시스템과 편집 UI를 개발하고, Sequencer·MovieScene의 애니메이션·카메라 재생을 편집 조작에 연결했다. 생성 모션을 가져오는 비동기 연동, 저장·내보내기, headless 실행과 빌드 자동화도 담당했다. 콘텐츠 제작자의 입력 오류를 줄이는 작업부터 편집 결과를 안정적으로 재생하고 출력하는 경로까지 개발 범위를 맡았다.
+
+### 웹툰 애니메이션 제작 사례
+
+<iframe class="video-embed" src="https://www.youtube.com/embed/NQJT8oN7NGg" title="CINEV Studio를 활용한 무조건 이혼한다 애니메이션 제작 과정" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+*CINEV Studio로 [『무조건 이혼한다』](https://m.comic.naver.com/webtoon/list?titleId=842623)를 애니메이션화하는 과정. [완성 영상 · 네이버 컷츠 1화](https://comic.naver.com/cuts/embed?id=KW-cuts:0-cuts_6502-1).*
 
 ## 액션 데이터 작성 과정의 휴먼 에러 줄이기
 

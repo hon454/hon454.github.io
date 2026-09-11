@@ -27,9 +27,7 @@
 <!-- Please describe how you tested your changes. -->
 
 
-## Screenshots (if applicable)
-
-<!-- If you made any UI changes, please include screenshots. -->
+<!-- Add a Screenshots section only when the user explicitly requests screenshot attachments. Do not upload or attach QA screenshots by default. -->
 
 
 ## Additional Notes

@@ -42,6 +42,8 @@ lang: ko
 | [Subsystem](#subsystems) | 공통 서비스의 수명과 메시지 구독 계약 정리 | `UGameInstanceSubsystem`, `GameplayTag`, 리스너 핸들 |
 | [Shot 모델](#shot-model) | 샷 상태의 소유권과 저장·복원 경로 재구성 | `UObject`, `TWeakObjectPtr`, `FGuid`, `FFrameNumber` |
 
+아래 코드는 프로젝트에서 적용한 설계를 중심으로 이름과 구조를 일반화했다. 핵심을 보여주기 위해 주변 구현은 생략했다.
+
 <a id="data-authoring"></a>
 
 ## 1. DataTable 중심 입력을 계층형 액션 에셋으로 전환
@@ -56,17 +58,53 @@ lang: ko
 
 `Notify`와 `NotifyState`에는 Instanced `UObject`인 `Modifier`를 두었다. `DefaultToInstanced`·`EditInlineNew`와 `UPROPERTY(Instanced)`를 사용해 이벤트의 시점과 동작별 설정을 같은 위치에서 편집하게 했다. 조건 값의 조합에는 Struct를, 객체별 동작 확장에는 `UObject`를 사용했다.
 
-```cpp title="조건 데이터와 Notify의 Modifier 필드 발췌"
-// 액션의 대상 데이터: 필요한 조건 타입을 조합
-UPROPERTY(EditAnywhere, BlueprintReadWrite, NoClear, meta = (ExcludeBaseStruct))
-TArray<TInstancedStruct<FCinevActionTargetRequirementBase>> TargetRequirements;
+<details open>
+<summary>조건 데이터의 조합과 이벤트 객체의 소유 구조</summary>
 
-// AnimNotify: 이벤트에 속한 Modifier를 인라인으로 편집
-UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn))
-TObjectPtr<UCinevUnitActionModifierBase_WithNotify> UnitActionModifier;
+```cpp nocollapse wrap title="계층형 입력 구조의 핵심 선언"
+USTRUCT()
+struct FTargetRequirement
+{
+    GENERATED_BODY()
+};
+
+USTRUCT()
+struct FDistanceRequirement : public FTargetRequirement
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, meta = (ClampMin = "0"))
+    float MaxDistance = 100.f;
+};
+
+UCLASS()
+class UActionDefinition : public UDataAsset
+{
+    GENERATED_BODY()
+public:
+    UPROPERTY(EditAnywhere, meta = (ExcludeBaseStruct))
+    TArray<TInstancedStruct<FTargetRequirement>> Requirements;
+};
+
+UCLASS(Abstract, EditInlineNew, DefaultToInstanced)
+class UActionModifier : public UObject
+{
+    GENERATED_BODY()
+};
+
+UCLASS()
+class UActionEvent : public UAnimNotify
+{
+    GENERATED_BODY()
+public:
+    UPROPERTY(EditAnywhere, Instanced)
+    TObjectPtr<UActionModifier> Modifier;
+};
 ```
 
-서로 다른 두 소유 타입에서 발췌한 필드다. 조건 데이터의 타입 조합과 이벤트 설정 객체의 소유를 구분한다.
+조건 배열에는 거리·자세 등 필요한 Struct 타입을 추가한다. 이벤트에는 구체적인 `UActionModifier` 파생 객체를 인라인으로 생성해 설정한다. 조건 목록과 이벤트 객체는 각각 필요한 위치에서 소유한다.
+
+</details>
 
 ![액션 에셋 안에서 대상과 요구조건을 계층적으로 편집하는 프로토타입](./images/cinev-studio/action-asset.webp)
 
@@ -115,6 +153,43 @@ TObjectPtr<UCinevUnitActionModifierBase_WithNotify> UnitActionModifier;
 
 액션 시작 위치 검증과 경로 길이 스코어링을 단일 파이프라인으로 통합해 중복 순회를 제거했다. 후보 탈락 사유와 점수 기여도를 추적하는 디버깅 기능도 구축했다. 후보가 조건 검사에서 제외됐는지, 점수 평가에서 어떤 항목이 영향을 줬는지를 확인할 수 있도록 했다.
 
+<details>
+<summary>시작 위치 검증과 경로 점수 평가</summary>
+
+```cpp nocollapse wrap title="후보별 검증 결과와 경로 평가"
+TMap<FName, float> PathLengths;
+TMap<FName, FString> Rejected;
+
+for (const FActionCandidate& Candidate : Candidates)
+{
+    const FStartValidation Start = ValidateStart(Candidate, Context);
+    if (!Start.bValid)
+    {
+        Rejected.Add(Candidate.Id, Start.Reason);
+        continue;
+    }
+
+    // 검증으로 확정한 위치를 그대로 사용한다.
+    const TOptional<float> Length =
+        FindPathLength(Context.ActorLocation, Start.Location);
+    if (!Length.IsSet())
+    {
+        Rejected.Add(Candidate.Id, TEXT("No reachable path"));
+        continue;
+    }
+
+    PathLengths.Add(Candidate.Id, Length.GetValue());
+}
+
+// 점수 계산에는 저장한 길이를 사용한다. 경로를 다시 탐색하지 않는다.
+const TMap<FName, float> Scores = NormalizePathScores(PathLengths);
+Trace.Record(TEXT("PathLength"), Scores, Rejected);
+```
+
+`ValidateStart`·`FindPathLength`·`Trace`는 평가 흐름을 보여주기 위한 자체 함수와 기록기다. 점수 정규화와 자세별 예외 처리는 생략했다. 핵심은 검증과 평가가 같은 시작 위치를 사용하고, 탈락 사유도 결과로 남기는 데 있다.
+
+</details>
+
 샷 JSON 파서도 초기 상태·카메라·블록·섹션 단위로 나누고 타입 검사와 `TOptional` 반환을 도입했다. 외부 입력을 읽는 처리와 월드 상태를 판단하는 처리의 책임을 구분해 조건 평가와 실행 로직을 개별적으로 확장할 수 있도록 했다.
 
 <a id="motion-integration"></a>
@@ -132,6 +207,45 @@ HTTP/JSON API를 연동하고 생성 요청을 성별과 설정 가능한 배치
 <img src="/diagrams/cinev-studio/motion.svg" width="1174" height="404" alt="비동기 모션 생성 결과를 집계하고 본 변환, 선택, 편집 적용과 실패 처리를 나눈다" loading="lazy" decoding="async" />
 
 *성공한 결과의 변환·적용과 실패 처리를 나누고 편집 흐름에 연결한다.*
+
+<details>
+<summary>비동기 응답의 수명 관리와 부분 성공 처리</summary>
+
+```cpp nocollapse wrap title="생성 결과를 편집 상태에 전달하는 콜백"
+const TWeakObjectPtr<UMotionWorkspace> WeakOwner(this);
+
+Client.GenerateBatch(Requests,
+    [WeakOwner](FMotionBatchResult Result)
+    {
+        // 전송 계층의 콜백 스레드와 UObject 접근을 분리한다.
+        AsyncTask(ENamedThreads::GameThread,
+            [WeakOwner, Result = MoveTemp(Result)]() mutable
+            {
+                UMotionWorkspace* Owner = WeakOwner.Get();
+                if (!Owner)
+                {
+                    return;
+                }
+
+                for (FMotionResponse& Item : Result.Items)
+                {
+                    if (Item.bSucceeded)
+                    {
+                        Owner->GeneratedMotions.Add(MoveTemp(Item.Motion));
+                    }
+                    else
+                    {
+                        Owner->GenerationErrors.Add(MoveTemp(Item.Error));
+                    }
+                }
+                Owner->OnResultsChanged.Broadcast();
+            });
+    });
+```
+
+`Client`와 응답 타입은 일반화한 전송 계층이며 응답에는 값 데이터만 담는 것으로 표현했다. 성공 결과와 오류를 각각 누적하고, 살아 있는 편집 객체에만 변경을 알리는 부분이다. 본 변환과 저장 로직은 별도 단계에서 처리한다.
+
+</details>
 
 ### 생성 결과를 선택·편집·저장하는 흐름
 
@@ -153,6 +267,43 @@ HTTP/JSON API를 연동하고 생성 요청을 성별과 설정 가능한 배치
 
 *편집 상태가 바뀔 때 화면·선택·입력을 함께 구성하고, 공유 상태의 변경을 전달한다.*
 
+<details>
+<summary>편집 상태에 따른 화면·선택·입력 구성</summary>
+
+```cpp nocollapse wrap title="대상 지정 상태의 진입과 종료"
+void UTargetPickingState::Enter()
+{
+    // Layout과 Managers는 편집기에서 정의한 객체다.
+    Layout->Apply(TargetPickingLayout);
+    Selection->SetMode(ESelectionMode::InteractionTarget);
+    Input->SetStrategy(TargetPickingInput);
+}
+
+void UTargetPickingState::Exit()
+{
+    Input->RemoveStrategy(TargetPickingInput);
+}
+
+void UEditorController::TransitionTo(UEditorState* Next)
+{
+    if (!IsValid(Next) || CurrentState == Next)
+    {
+        return;
+    }
+
+    if (CurrentState)
+    {
+        CurrentState->Exit();
+    }
+    CurrentState = Next;
+    CurrentState->Enter();
+}
+```
+
+각 상태는 진입할 때 레이아웃과 선택 모드, 입력 전략을 지정한다. 따라서 같은 뷰포트 클릭도 현재 상태에 맞게 해석한다. 위 객체들은 자체 UI 계층이며, `CurrentState` 등 소유 참조는 `UPROPERTY`로 관리한다.
+
+</details>
+
 선택 관리는 `SelectionManager`로, UI 내부의 공유 상태 전달은 자체 `Blackboard`의 변경 알림으로 정리했다. 기존 동작을 유지하며 상태별 처리를 옮기는 방식으로 전환했다.
 
 `Common Button`, `Common Modal`, `Common Context Menu`를 공통 모듈로 개발해 UI 컴포넌트를 템플릿화했다. 화면 구성과 상태 전환을 나누는 작업과 함께, 여러 화면에서 재사용할 컴포넌트도 정리했다.
@@ -170,6 +321,34 @@ HTTP/JSON API를 연동하고 생성 요청을 성별과 설정 가능한 배치
 <img src="/diagrams/cinev-studio/subsystems.svg" width="1119" height="528" alt="GameInstance 메시지 Subsystem의 발행, 구독 등록과 해제, 별도 토스트 서비스의 책임" loading="lazy" decoding="async" />
 
 *메시지를 전달하는 서비스의 수명과 이를 사용하는 구독자의 수명을 구분한다.*
+
+<details>
+<summary>Subsystem 구독의 등록과 해제</summary>
+
+```cpp nocollapse wrap title="UI Controller의 구독 등록과 해제"
+void UEditorController::Initialize(UGameInstance* GameInstance)
+{
+    Shutdown(); // 재초기화하더라도 중복 구독하지 않는다.
+    UEditorMessageSubsystem* Messages =
+        GameInstance->GetSubsystem<UEditorMessageSubsystem>();
+    if (!Messages)
+    {
+        return;
+    }
+
+    ShotChangedHandle = Messages->RegisterListener<FShotChanged>(
+        ShotChangedChannel, this, &UEditorController::OnShotChanged);
+}
+
+void UEditorController::Shutdown()
+{
+    ShotChangedHandle.Unregister();
+}
+```
+
+`UEditorMessageSubsystem`은 `UGameInstanceSubsystem` 기반의 자체 메시지 서비스다. `RegisterListener`는 구독자를 약한 참조로 보관하고 payload의 Struct 타입을 검사하며, 반환 핸들로 구독을 해제한다. Controller의 종료 경로에서 `Shutdown`을 호출해 서비스보다 먼저 사라지는 구독자를 정리한다.
+
+</details>
 
 저장·로드 요청과 샷 이벤트를 메시지로 이관하고 이후 토스트 설정과 요청 처리는 전용 `GameInstance` 서비스로 분리했다. `GameInstance`의 공통 서비스, `LocalPlayer`의 UI, `World`의 디버그 도구처럼 기능이 필요한 수명 범위에 맞춰 Subsystem을 활용했다.
 
@@ -198,6 +377,43 @@ HTTP/JSON API를 연동하고 생성 요청을 성별과 설정 가능한 배치
 ### 복합 편집 작업과 재계산 시점 관리
 
 타임라인 편집에는 GUID 기반 객체 추적과 `Command` 패턴을 적용해 Undo/Redo와 복합 작업의 원자성을 구현했다. 여러 변경을 하나의 편집 작업으로 묶었다. 중간 상태에서 불필요한 Link 재계산이 발생하지 않도록 했다. 타임라인 공통 편집 경로에서 객체 추적과 갱신 시점을 함께 관리했다.
+
+<details>
+<summary>복합 편집의 Undo와 갱신 시점 제어</summary>
+
+```cpp nocollapse wrap title="복합 명령의 Undo와 갱신 범위"
+bool FCompoundEdit::Undo()
+{
+    bool bSucceeded = true;
+    for (int32 Index = Commands.Num() - 1; Index >= 0; --Index)
+    {
+        // 하나가 실패해도 나머지 명령의 Undo는 수행한다.
+        const bool bUndone = Commands[Index]->Undo();
+        bSucceeded = bUndone && bSucceeded;
+    }
+    return bSucceeded;
+}
+
+bool UndoAndRefresh(FCompoundEdit& Edit, FTimelineModel& Timeline)
+{
+    bool bSucceeded;
+    {
+        // 스코프 종료 시 이전 억제 상태를 복원한다.
+        TGuardValue<bool> Guard(Timeline.bSuppressLinkInvalidation, true);
+        bSucceeded = Edit.Undo();
+    }
+
+    if (!Timeline.bSuppressLinkInvalidation)
+    {
+        Timeline.RebuildAffectedLinks();
+    }
+    return bSucceeded;
+}
+```
+
+`FCompoundEdit`와 `FTimelineModel`은 명령 묶음과 갱신 제어를 축약한 타입이다. 게임 스레드에서 수행하며, 각 명령이 기록한 영향 범위를 마지막에 재계산하는 것으로 표현했다. Undo를 역순으로 수행하는 것과 중간 갱신을 억제하는 것은 별개의 책임이다. 실패 시 자동 롤백까지 수행하는 트랜잭션을 의미하지는 않는다.
+
+</details>
 
 ## 개발 환경과 협업
 

@@ -11,21 +11,29 @@ lang: ko
 
 ## 프로젝트와 담당 역할
 
-**CINEVStudio**는 AI 애니메이션 제작 서비스 CINEV에서 3D 장면 제작과 연출을 담당하는 **Unreal Engine 5** 기반 도구다. AI가 구성한 장면을 바탕으로 캐릭터의 배치·행동·표정·대사·립싱크, 소품과의 상호작용, 카메라와 타임라인을 직접 조정한다. 생성 결과를 사용자가 편집하고 완성할 수 있는 제작 환경을 제공한다.
+**CINEV**는 사용자가 입력한 이야기를 바탕으로 캐릭터·배경·행동·대사·카메라를 구성하는 AI 애니메이션 제작 서비스다. **이야기 입력 → AI 장면 구성 → Studio 편집 → 영상 출력**으로 이어진다.
+
+**CINEVStudio**는 이 흐름에서 3D 장면 제작과 연출을 담당하는 **Unreal Engine 5** 기반 도구다. 사용자는 AI가 구성한 장면에서 캐릭터의 배치·행동·표정·대사·립싱크, 소품과의 상호작용, 카메라와 타임라인을 조정하고 편집한 장면을 영상으로 출력한다.
+
+콘텐츠팀은 Studio에서 사용할 액션의 조건과 이벤트를 Unreal Editor의 에셋으로 작성한다. 사용자가 Studio에서 그 데이터를 바탕으로 장면을 편집하는 작업과는 구분된다. 나는 데이터 작성 도구와 작성한 데이터를 실행·편집하는 경로를 함께 다뤘다.
+
+### 참여 기간과 대표 기여
+
+시나몬에서 **2024년 6월부터 2026년 4월까지 클라이언트 프로그래머**로 참여했다. 액션 데이터 입력 구조와 AI 결과의 해석·적용, 편집 UI와 공통 서비스, Shot 상태 모델을 개발했다.
+
+- **액션 조건을 타입별 입력 구조로 전환했다.** 사람이 문서와 대조하며 맞추던 조건·이벤트 관계를 에셋 구조에 반영하고, 필요한 조건만 추가해 값을 입력하도록 했다.
+- **AI 생성 모션을 선택·편집·저장까지 연결했다.** 비동기 생성 결과를 현재 장면에 적용하고, 편집 명령과 프로젝트 저장·복원 경로에 통합했다.
+- **샷 초기 상태의 소유권과 복원 경로를 정리했다.** 독립 Shot 모델이 초기 상태를 관리하게 하고, 실행 중 객체 참조와 저장용 식별자를 연결했다.
+
+### 제품 화면과 실제 제작 사례
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/8Pq8nM0Rm-w" title="CINEV Build Storyboard 튜토리얼" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 *장면 편집과 영상 제작 흐름을 보여주는 제품 튜토리얼.*
 
-시나몬에서 2024년 6월부터 2026년 4월까지 클라이언트 프로그래머로 참여했다. 액션 데이터 입력 구조와 AI 결과의 해석·적용, 편집 UI와 공통 서비스, Shot 상태 모델을 개발했다. 콘텐츠를 작성하는 도구와 작성한 데이터를 실행·편집하는 경로를 함께 다뤘다.
-
-액션 데이터를 입력할 때는 조건과 이벤트의 관계를 사람이 직접 맞춰야 했다. 이 관계를 타입과 에셋 구조에 반영했다. 외부 AI의 생성 결과를 현재 장면에서 실행하고 편집하는 처리도 구현했다. **객체·구조체 인스턴싱**, **Subsystem 수명**, **MovieScene의 프레임 표현**을 각 문제에 맞게 적용했다.
-
 ![CINEVStudio의 캐릭터 뷰포트와 액션 타임라인](./images/cinev-studio/studio-editor.webp)
 
-*중앙 뷰포트에서 장면을 확인하고 하단 타임라인에서 편집한다.*
-
-### 실제 콘텐츠 제작 사례
+*중앙 뷰포트에서 장면을 확인하고 하단 타임라인에서 편집한다. 화면과 콘텐츠는 팀의 결과물이다.*
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/NQJT8oN7NGg" title="CINEV Studio를 활용한 무조건 이혼한다 애니메이션 제작 과정" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -38,9 +46,9 @@ lang: ko
 | [액션 데이터 입력](#data-authoring) | 타입별 조건과 이벤트 설정을 계층적으로 작성 | `DataAsset`, Instanced Struct·`UObject`, `AnimComposite` |
 | [AI 행동 해석](#action-interpreter) | 외부 행동 지시를 월드 문맥과 실행 가능한 액션으로 변환 | `Actor`·`Component`, `GameplayTag`, `Executor` |
 | [AI 모션 연동](#motion-integration) | 비동기 생성 결과를 타임라인 편집·저장에 통합 | HTTP/JSON, `Delegate`, 약한 `UObject` 참조 |
+| [Shot 모델](#shot-model) | 샷 상태의 소유권과 저장·복원 경로 재구성 | `UObject`, `TWeakObjectPtr`, `FGuid`, `FFrameNumber` |
 | [UI 상태 관리](#ui-state) | 화면 구성·선택·입력 처리를 편집 상태별로 분리 | `UUserWidget`, `LayoutSpec`, 자체 `Blackboard` |
 | [Subsystem](#subsystems) | 공통 서비스의 수명과 메시지 구독 계약 정리 | `UGameInstanceSubsystem`, `GameplayTag`, 리스너 핸들 |
-| [Shot 모델](#shot-model) | 샷 상태의 소유권과 저장·복원 경로 재구성 | `UObject`, `TWeakObjectPtr`, `FGuid`, `FFrameNumber` |
 
 아래 코드는 프로젝트에서 적용한 설계를 중심으로 이름과 구조를 일반화했다. 핵심을 보여주기 위해 주변 구현은 생략했다.
 
@@ -58,7 +66,7 @@ lang: ko
 
 `Notify`와 `NotifyState`에는 Instanced `UObject`인 `Modifier`를 두었다. `DefaultToInstanced`·`EditInlineNew`와 `UPROPERTY(Instanced)`를 사용해 이벤트의 시점과 동작별 설정을 같은 위치에서 편집하게 했다. 조건 값의 조합에는 Struct를, 객체별 동작 확장에는 `UObject`를 사용했다.
 
-<details open>
+<details>
 <summary>조건 데이터의 조합과 이벤트 객체의 소유 구조</summary>
 
 ```cpp nocollapse wrap title="계층형 입력 구조의 핵심 선언"
@@ -127,7 +135,9 @@ public:
 
 이렇게 작성한 데이터를 Generated Data Asset으로 모아 실행 경로에 연결했다. 애니메이션 메타데이터와 이벤트 시각·길이·`Modifier`를 생성 단계에서 정리해 런타임이 해당 정보를 읽기 위해 애니메이션 에셋에 접근하던 부분을 분리했다.
 
-<img src="/diagrams/cinev-studio/authoring.svg" width="1076" height="528" alt="액션 조건과 AnimComposite의 이벤트 설정, 테이블 메타데이터를 생성 에셋으로 통합하는 구조" loading="lazy" decoding="async" />
+<img src="/diagrams/cinev-studio/authoring.svg" width="440" height="478" alt="액션 조건과 AnimComposite의 이벤트 설정, 테이블 메타데이터를 생성 에셋으로 통합하는 구조" loading="lazy" decoding="async" />
+
+[액션 데이터 도식 원본 확대](/diagrams/cinev-studio/authoring.svg)
 
 *작성 목적에 맞춰 데이터를 나누고 생성 단계에서 실행용 정보로 모은다.*
 
@@ -137,7 +147,9 @@ public:
 
 <a id="action-interpreter"></a>
 
-## 2. AI 행동 지시의 해석·실행 계층
+## 2. AI 결과를 해석하고 편집 가능한 장면으로 연결
+
+### AI 행동 지시의 해석·실행 계층
 
 외부 AI 서비스가 행동명과 대상을 지정해도 클라이언트에서는 현재 장면에서 실행 가능한 액션을 판단해야 했다. 같은 지시라도 캐릭터의 자세, 소품과 컴포넌트, 점유 상태와 프레임 문맥에 따라 후보가 달라졌다.
 
@@ -145,11 +157,13 @@ public:
 
 서비스의 대상 참조를 실제 `Actor`·`Component` 문맥으로 채우고 `GameplayTag`로 식별한 행동과 액션별 요구조건을 현재 월드 상태와 대조했다. 자세·대상·점유 상태와 `NavMesh` 경로를 종합 평가하는 `Strategy`/`Functor` 기반 선택 파이프라인을 구현했다. 후보를 걸러내는 조건 검사와 점수 평가를 `Functor` 단위로 나눈 뒤, 선택한 액션을 `Executor`와 시퀀스 생성에 연결했다.
 
-<img src="/diagrams/cinev-studio/interpreter.svg" width="1076" height="404" alt="외부 행동 지시를 파싱하고 월드 문맥과 요구조건을 평가해 Executor로 연결한다" loading="lazy" decoding="async" />
+<img src="/diagrams/cinev-studio/interpreter.svg" width="440" height="572" alt="외부 행동 지시를 파싱하고 월드 문맥과 요구조건을 평가해 Executor로 연결한다" loading="lazy" decoding="async" />
+
+[AI 행동 해석 도식 원본 확대](/diagrams/cinev-studio/interpreter.svg)
 
 *행동 지시를 파싱한 뒤 대상 문맥 구성, 후보 평가, 실행으로 이어지는 처리 흐름.*
 
-### 평가 경로 통합과 판단 과정 추적
+#### 평가 경로 통합과 판단 과정 추적
 
 액션 시작 위치 검증과 경로 길이 스코어링을 단일 파이프라인으로 통합해 중복 순회를 제거했다. 후보 탈락 사유와 점수 기여도를 추적하는 디버깅 기능도 구축했다. 후보가 조건 검사에서 제외됐는지, 점수 평가에서 어떤 항목이 영향을 줬는지를 확인할 수 있도록 했다.
 
@@ -194,17 +208,19 @@ Trace.Record(TEXT("PathLength"), Scores, Rejected);
 
 <a id="motion-integration"></a>
 
-## 3. AI 모션 생성 결과를 편집기에 통합
+### AI 모션 생성 결과를 편집기에 통합
 
 **T2M(Text-to-Motion)** 요청은 비동기로 완료되고 여러 요청 중 일부만 성공할 수 있었다. 응답의 본 데이터는 프로젝트의 스켈레톤 표현으로 변환해야 했고 요청이 끝나기 전에 화면이나 프로젝트가 바뀌는 경우도 다뤄야 했다.
 
-### 생성 요청과 런타임 애니메이션 변환
+#### 생성 요청과 런타임 애니메이션 변환
 
 HTTP/JSON API를 연동하고 생성 요청을 성별과 설정 가능한 배치 크기로 나눠 처리했다. 일부 요청이 실패해도 성공한 결과는 보존했다. 반환된 ONNX 본 구조를 프로젝트의 스켈레톤 표현으로 변환하고 `Root Motion`을 보정해 런타임 애니메이션에 적용했다. S2M 입력의 비동기 씬 구성까지 이어지는 처리도 구현했다.
 
 생성 상태와 결과 목록을 관리하는 계층을 구성하고 약한 `UObject` 참조 기반 콜백과 `Delegate`로 결과를 편집기에 전달했다. 결과 조회 API와 선택 UI를 연결해 사용자가 생성된 모션을 고르고 타임라인에 적용하게 했다.
 
-<img src="/diagrams/cinev-studio/motion.svg" width="1174" height="404" alt="비동기 모션 생성 결과를 집계하고 본 변환, 선택, 편집 적용과 실패 처리를 나눈다" loading="lazy" decoding="async" />
+<img src="/diagrams/cinev-studio/motion.svg" width="440" height="598" alt="비동기 모션 생성 결과를 집계하고 본 변환, 선택, 편집 적용과 실패 처리를 나눈다" loading="lazy" decoding="async" />
+
+[AI 모션 연동 도식 원본 확대](/diagrams/cinev-studio/motion.svg)
 
 *성공한 결과의 변환·적용과 실패 처리를 나누고 편집 흐름에 연결한다.*
 
@@ -247,116 +263,17 @@ Client.GenerateBatch(Requests,
 
 </details>
 
-### 생성 결과를 선택·편집·저장하는 흐름
+#### 생성 결과를 선택·편집·저장하는 흐름
 
 `MotionSet` 데이터 모델과 프로젝트 저장·복원 기능을 구축했다. `ViewModel` 기반 `Prompt Workspace`, `Asset Picker`, `SidePanel` UI를 구현해 모션 생성부터 결과 선택과 편집까지 연결했다.
 
 결과 저장과 Undo/Redo는 프로젝트의 편집 명령 스택에 통합했다. 생성 모션도 다른 편집 작업처럼 적용을 취소하고 다시 적용할 수 있게 했다. API 응답을 받는 것부터 사용자가 선택·편집·저장하는 과정까지 담당했다.
 
-<a id="ui-state"></a>
-
-## 4. CommonUI를 참고한 UI 구성과 상태 관리
-
-일반 상태에서 뷰포트를 클릭하면 캐릭터를 선택하지만 액션 타깃을 지정하는 중에는 상호작용 대상을 선택해야 한다. 패널 표시와 선택 상태, 키보드·마우스 입력 처리가 함께 바뀌어야 했다. 초기에는 이 책임이 큰 위젯과 UI 관리 계층에 모여 있었다.
-
-**CommonUI**의 레이어·스택 접근을 참고한 팀의 UI 기반 위에서, UI Controller와 편집 State로 화면 구성과 상태 전환 책임을 나눴다. 실제 화면 계층은 `UUserWidget` 기반으로 구현했다.
-
-`LayoutSpec`으로 레이어별 위젯 구성을 기술하고, 위젯 레지스트리에서 `GameplayTag`로 필요한 인스턴스를 조회하게 했다. 상태 진입 처리는 뷰포트 구성, 편집 모드, 입력 전략으로 나누고 이전 상태의 종료와 새 상태의 진입을 연결했다.
-
-<img src="/diagrams/cinev-studio/ui.svg" width="942" height="404" alt="이전 상태 종료 후 화면 구성과 편집 모드, 입력 전략을 설정하고 Blackboard 변경을 전달한다" loading="lazy" decoding="async" />
-
-*편집 상태가 바뀔 때 화면·선택·입력을 함께 구성하고, 공유 상태의 변경을 전달한다.*
-
-<details>
-<summary>편집 상태에 따른 화면·선택·입력 구성</summary>
-
-```cpp nocollapse wrap title="대상 지정 상태의 진입과 종료"
-void UTargetPickingState::Enter()
-{
-    // Layout과 Managers는 편집기에서 정의한 객체다.
-    Layout->Apply(TargetPickingLayout);
-    Selection->SetMode(ESelectionMode::InteractionTarget);
-    Input->SetStrategy(TargetPickingInput);
-}
-
-void UTargetPickingState::Exit()
-{
-    Input->RemoveStrategy(TargetPickingInput);
-}
-
-void UEditorController::TransitionTo(UEditorState* Next)
-{
-    if (!IsValid(Next) || CurrentState == Next)
-    {
-        return;
-    }
-
-    if (CurrentState)
-    {
-        CurrentState->Exit();
-    }
-    CurrentState = Next;
-    CurrentState->Enter();
-}
-```
-
-각 상태는 진입할 때 레이아웃과 선택 모드, 입력 전략을 지정한다. 따라서 같은 뷰포트 클릭도 현재 상태에 맞게 해석한다. 위 객체들은 자체 UI 계층이며, `CurrentState` 등 소유 참조는 `UPROPERTY`로 관리한다.
-
-</details>
-
-선택 관리는 `SelectionManager`로, UI 내부의 공유 상태 전달은 자체 `Blackboard`의 변경 알림으로 정리했다. 기존 동작을 유지하며 상태별 처리를 옮기는 방식으로 전환했다.
-
-`Common Button`, `Common Modal`, `Common Context Menu`를 공통 모듈로 개발해 UI 컴포넌트를 템플릿화했다. 화면 구성과 상태 전환을 나누는 작업과 함께, 여러 화면에서 재사용할 컴포넌트도 정리했다.
-
-새 편집 상태를 추가할 때 필요한 화면과 조작을 상태 단위로 구성하게 됐다. 레이아웃은 화면 구성에서, 선택 동작은 편집 모드에서, 단축키는 입력 전략에서 다룰 수 있도록 처리 위치를 나눴다.
-
-<a id="subsystems"></a>
-
-## 5. Subsystem으로 공통 서비스와 구독 수명 정리
-
-편집 도메인이 UI를 직접 호출하면 서로의 변경과 수명이 얽힌다. 저장·로드 요청과 샷 변경 이벤트를 전달할 공통 계약이 필요했고 구독자가 종료될 때 등록한 리스너도 정리해야 했다.
-
-`UGameInstanceSubsystem` 기반 메시지 서비스를 도입해 `GameplayTag` 채널과 구조체 payload로 모듈을 연결했다. 구조체 타입을 런타임에 검사하고 리스너 핸들과 약한 `UObject` 참조를 사용하는 등록 경로를 제공했다. UI Controller의 초기화·종료에 구독의 등록·해제를 맞췄다.
-
-<img src="/diagrams/cinev-studio/subsystems.svg" width="1119" height="528" alt="GameInstance 메시지 Subsystem의 발행, 구독 등록과 해제, 별도 토스트 서비스의 책임" loading="lazy" decoding="async" />
-
-*메시지를 전달하는 서비스의 수명과 이를 사용하는 구독자의 수명을 구분한다.*
-
-<details>
-<summary>Subsystem 구독의 등록과 해제</summary>
-
-```cpp nocollapse wrap title="UI Controller의 구독 등록과 해제"
-void UEditorController::Initialize(UGameInstance* GameInstance)
-{
-    Shutdown(); // 재초기화하더라도 중복 구독하지 않는다.
-    UEditorMessageSubsystem* Messages =
-        GameInstance->GetSubsystem<UEditorMessageSubsystem>();
-    if (!Messages)
-    {
-        return;
-    }
-
-    ShotChangedHandle = Messages->RegisterListener<FShotChanged>(
-        ShotChangedChannel, this, &UEditorController::OnShotChanged);
-}
-
-void UEditorController::Shutdown()
-{
-    ShotChangedHandle.Unregister();
-}
-```
-
-`UEditorMessageSubsystem`은 `UGameInstanceSubsystem` 기반의 자체 메시지 서비스다. `RegisterListener`는 구독자를 약한 참조로 보관하고 payload의 Struct 타입을 검사하며, 반환 핸들로 구독을 해제한다. Controller의 종료 경로에서 `Shutdown`을 호출해 서비스보다 먼저 사라지는 구독자를 정리한다.
-
-</details>
-
-저장·로드 요청과 샷 이벤트를 메시지로 이관하고 이후 토스트 설정과 요청 처리는 전용 `GameInstance` 서비스로 분리했다. `GameInstance`의 공통 서비스, `LocalPlayer`의 UI, `World`의 디버그 도구처럼 기능이 필요한 수명 범위에 맞춰 Subsystem을 활용했다.
-
-모듈 간 직접 호출 일부를 메시지 계약으로 바꾸면서 연결을 정리하는 시점도 사용하는 객체의 수명에 맞춰 명시했다.
+사용 흐름으로 보면, 생성 결과 목록에서 모션을 고른 뒤 타임라인에 적용하고 필요하면 Undo/Redo로 적용을 취소하거나 다시 적용한다. 선택·편집한 결과는 프로젝트의 `MotionSet` 저장·복원 경로로 이어진다. 원격 응답을 받는 기능을 편집기의 작업 단위와 데이터 모델에 연결한 것이다.
 
 <a id="shot-model"></a>
 
-## 6. Shot 상태 모델과 저장·복원 구조 개편
+## 3. Shot 상태 모델과 저장·복원 구조 개편
 
 샷의 초기 상태가 샷 객체와 타임라인 섹션에 나뉘어 있으면 검색·동기화·저장 복원이 복잡해진다. 타임라인의 표시 방식과 별개로 초기 Transform·Visibility·자세·참조 상태를 관리할 주체가 필요했다.
 
@@ -364,7 +281,9 @@ void UEditorController::Shutdown()
 
 실행 중 객체 참조는 `TWeakObjectPtr`로 유지하고 저장할 때는 `FGuid`로 기록해 로드 시 객체 참조로 복원했다. `UObject`로 관리하는 샷 모델과 `MovieScene`/`Sequencer`의 타임라인 표현 사이에서 책임을 나눈 것이다.
 
-<img src="/diagrams/cinev-studio/shot.svg" width="1098" height="528" alt="Shot 모델의 초기 상태 소유와 약한 참조, GUID 저장과 로드 복원, 프레임 범위 처리" loading="lazy" decoding="async" />
+<img src="/diagrams/cinev-studio/shot.svg" width="440" height="624" alt="Shot 모델의 초기 상태 소유와 약한 참조, GUID 저장과 로드 복원, 프레임 범위 처리" loading="lazy" decoding="async" />
+
+[Shot 모델 도식 원본 확대](/diagrams/cinev-studio/shot.svg)
 
 *샷 모델이 초기 상태를 관리하고 런타임 참조와 저장용 식별자를 연결한다.*
 
@@ -374,9 +293,11 @@ void UEditorController::Shutdown()
 
 `MovieScene`/`Sequencer`를 확장해 애니메이션·`Transform`·`Property`·`Attach` 섹션 사이의 빈 구간을 자동 구성했다. Shot 경계와 P2P 전환에서 캐릭터와 Prop의 상태가 이어지도록 처리했다. 샷 모델이 관리하는 초기 상태와 함께, 타임라인의 구간 사이에서 이어져야 할 상태도 다뤘다.
 
+편집 중에는 섹션이 없는 구간과 샷 경계에서 이어질 캐릭터·Prop 상태를 처리하고, 프로젝트를 다시 열 때는 저장한 `FGuid`를 객체 참조로 복원한다. 구간 사이의 재생 상태와 저장 후 참조 복원을 각각 담당하는 경로를 구분했다.
+
 ### 복합 편집 작업과 재계산 시점 관리
 
-타임라인 편집에는 GUID 기반 객체 추적과 `Command` 패턴을 적용해 Undo/Redo와 복합 작업의 원자성을 구현했다. 여러 변경을 하나의 편집 작업으로 묶었다. 중간 상태에서 불필요한 Link 재계산이 발생하지 않도록 했다. 타임라인 공통 편집 경로에서 객체 추적과 갱신 시점을 함께 관리했다.
+타임라인 편집에는 GUID 기반 객체 추적과 `Command` 패턴을 적용해 여러 변경을 하나의 Undo/Redo 단위로 묶고, 중간 상태에서 불필요한 Link 재계산이 발생하지 않도록 했다. 타임라인 공통 편집 경로에서 객체 추적과 갱신 시점을 함께 관리했다.
 
 <details>
 <summary>복합 편집의 Undo와 갱신 시점 제어</summary>
@@ -412,6 +333,44 @@ bool UndoAndRefresh(FCompoundEdit& Edit, FTimelineModel& Timeline)
 ```
 
 `FCompoundEdit`와 `FTimelineModel`은 명령 묶음과 갱신 제어를 축약한 타입이다. 게임 스레드에서 수행하며, 각 명령이 기록한 영향 범위를 마지막에 재계산하는 것으로 표현했다. Undo를 역순으로 수행하는 것과 중간 갱신을 억제하는 것은 별개의 책임이다. 실패 시 자동 롤백까지 수행하는 트랜잭션을 의미하지는 않는다.
+
+</details>
+
+## 편집기를 지탱하는 UI와 공통 서비스
+
+<a id="ui-state"></a>
+
+### UI 상태별로 화면·선택·입력 처리 분리
+
+일반 상태에서 뷰포트를 클릭하면 캐릭터를 선택하지만, 액션 타깃 지정 중에는 상호작용 대상을 선택해야 한다. 팀이 **CommonUI**의 레이어·스택 접근을 참고해 만든 `UUserWidget` 기반 UI 위에서, 나는 UI Controller와 편집 State로 화면 구성과 상태 전환 책임을 나눴다.
+
+`LayoutSpec`과 `GameplayTag` 기반 위젯 Registry로 화면을 구성하고, 이전 State의 `Exit()` 뒤에 새 State의 `Enter()`를 호출해 레이아웃·선택 모드·입력 전략을 설정했다. 기존 동작을 유지하며 상태별 처리를 옮겼고, 새 편집 기능도 큰 위젯의 분기 대신 상태 단위로 추가하도록 했다.
+
+선택은 `SelectionManager`, UI 공유 상태는 자체 `Blackboard`의 변경 알림으로 관리했다. `Common Button`·`Common Modal`·`Common Context Menu`도 공통 모듈로 개발했다. 화면 구성과 입력 동작의 처리 위치를 나누는 작업과 재사용할 UI 컴포넌트를 만드는 작업을 함께 맡았다.
+
+<details>
+<summary>UI 상태 전환 도식</summary>
+
+<img src="/diagrams/cinev-studio/ui.svg" width="440" height="598" alt="이전 상태를 종료한 뒤 새 상태의 화면과 입력을 구성하고 Blackboard로 공유 상태를 전달한다" loading="lazy" decoding="async" />
+
+[UI 도식 원본 확대](/diagrams/cinev-studio/ui.svg)
+
+</details>
+
+<a id="subsystems"></a>
+
+### Subsystem과 구독자의 수명 구분
+
+저장·로드 요청과 샷 변경 이벤트를 전달하기 위해 `UGameInstanceSubsystem` 기반 메시지 서비스를 도입했다. `GameplayTag` 채널과 구조체 payload로 연결하고 런타임 타입 검사, 약한 `UObject` 참조, 해제용 리스너 핸들을 제공했다.
+
+서비스보다 UI Controller가 먼저 사라질 수 있으므로 초기화·종료에 구독 등록·해제를 맞췄다. 재초기화 전에도 기존 핸들을 해제해 중복 구독을 막았다. 저장·로드 요청과 샷 이벤트를 이관하고 토스트는 별도 `GameInstance` 서비스로 분리했다. `GameInstance`의 공통 서비스, `LocalPlayer`의 UI, `World`의 디버그 도구처럼 기능이 필요한 수명 범위에 맞춰 Subsystem을 활용했다.
+
+<details>
+<summary>메시지 전달과 구독 수명 도식</summary>
+
+<img src="/diagrams/cinev-studio/subsystems.svg" width="440" height="650" alt="메시지 전달 경로와 UI Controller의 구독 등록·해제, 별도 토스트 서비스를 구분한다" loading="lazy" decoding="async" />
+
+[Subsystem 도식 원본 확대](/diagrams/cinev-studio/subsystems.svg)
 
 </details>
 

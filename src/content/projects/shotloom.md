@@ -13,7 +13,7 @@ tags:
   - ai-agent
 lang: ko
 draft: false
-status: developing
+status: published
 order: 1
 ---
 

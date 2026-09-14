@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="624" viewBox="0 0 440 624" role="img" aria-labelledby="title desc">
+<title id="title">Shot 모델의 책임과 참조</title>
+<desc id="desc">초기 상태 소유: ShotManager → 독립 Shot 모델, 초기 Transform · Visibility · 자세. 실행 중 참조: TWeakObjectPtr로 런타임 객체 참조. 저장과 로드: 저장: 객체 참조 → FGuid, 로드: FGuid → 객체 참조 복원. 타임라인 표현과 연결: FFrameNumber · 범위별 Link 재계산, MovieScene / Sequencer · 샷 경계 처리</desc>
+<style>text{font-family:"Apple SD Gothic Neo","Malgun Gothic",sans-serif;fill:#0f172a}.heading{font-size:23px;font-weight:700}.label{font-size:21px;font-weight:650}.body{font-size:18px;fill:#334155}</style>
+<rect width="440" height="624" rx="12" fill="#fff"/>
+<text x="28" y="42" class="heading">Shot 모델의 책임과 참조</text>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#64748b"/></marker></defs>
+<g><rect x="24" y="72" width="392" height="116" rx="9" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<text x="42" y="105" class="label">초기 상태 소유</text>
+<text x="42" y="135" class="body">ShotManager → 독립 Shot 모델</text>
+<text x="42" y="161" class="body">초기 Transform · Visibility · 자세</text>
+</g>
+<g><rect x="24" y="218" width="392" height="90" rx="9" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+<text x="42" y="251" class="label">실행 중 참조</text>
+<text x="42" y="281" class="body">TWeakObjectPtr로 런타임 객체 참조</text>
+</g>
+<g><rect x="24" y="338" width="392" height="116" rx="9" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+<text x="42" y="371" class="label">저장과 로드</text>
+<text x="42" y="401" class="body">저장: 객체 참조 → FGuid</text>
+<text x="42" y="427" class="body">로드: FGuid → 객체 참조 복원</text>
+</g>
+<g><rect x="24" y="484" width="392" height="116" rx="9" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<text x="42" y="517" class="label">타임라인 표현과 연결</text>
+<text x="42" y="547" class="body">FFrameNumber · 범위별 Link 재계산</text>
+<text x="42" y="573" class="body">MovieScene / Sequencer · 샷 경계 처리</text>
+</g>
+</svg>

@@ -102,6 +102,14 @@ function registerSwupHooks(): void {
 		},
 	);
 	window.swup.hooks.on("content:replace", () => {
+		// Swup clones nodes from an inert DOMParser document. Recreate video
+		// frames in the active document so native lazy loading starts after navigation.
+		document
+			.querySelectorAll<HTMLIFrameElement>(".custom-md iframe.video-embed")
+			.forEach((frame) => {
+				frame.replaceWith(document.importNode(frame, true));
+			});
+
 		initializeFloatingPanels();
 
 		// 侧边栏组件可见性由 page:view 统一更新（含 refreshSidebarStickyState 的

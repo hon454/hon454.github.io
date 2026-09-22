@@ -12,11 +12,9 @@ lang: ko
 | 항목 | 내용 |
 | --- | --- |
 | 기간 | 2020.07 - 2020.08 |
-| 소속 | — |
+| 소속 | 누라임 게임즈 |
 | 역할 | 클라이언트 프로그래머 |
 | 기술 | Unity, C#, GameSparks, JavaScript |
-
-[Brutal League 영상](https://www.youtube.com/watch?v=hLfpxLAI0Vw)
 
 - **Brutal League** 개발
 - 유니티 엔진을 활용한 안드로이드 플랫폼 게임

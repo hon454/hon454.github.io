@@ -200,12 +200,14 @@ history with `upstream`. Treat Firefly updates as vendored source updates.
   `Upstream-Repository`, `Upstream-Base`, and `Upstream-Target` trailers.
 - Every upstream update includes writing a corresponding blog post in
   `src/content/posts/`, unless the user explicitly asks to skip it. A request
-  to proceed with an upstream update authorizes this writing step without a
+  to proceed with an upstream update authorizes writing and publishing the post without a
   separate request. Read and follow the Blog Writing Guidance above, including
   the upstream-update genre rules in `.agents/docs/blog-writing/writing.md`
   and the final contextual review in `evaluation.md`. Base the post on the
-  changes actually applied and validation actually performed, and keep it
-  `draft: true` unless the user authorizes publication. Include the post in
+  changes actually applied and validation actually performed. Publish it with
+  `draft: false` as part of the update unless the user explicitly requests a
+  draft. This workflow provides publication authorization under the general
+  Blog Writing Guidance. Include the post in
   the update PR and its validation; if committed separately, use a focused
   `docs` commit while retaining exactly one vendor-update commit.
 - Run `pnpm check`, `pnpm type-check`, and `pnpm build`, then update `main`

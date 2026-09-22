@@ -4,7 +4,7 @@ published: 2026-09-22
 description: Firefly 6.16.8과 이후 6d82554bf까지의 구독 기능, 프로젝트 표시, 사이드바와 페이지 스타일 변경 사항.
 tags: [firefly, astro]
 category: 블로그
-draft: true
+draft: false
 ---
 
 Firefly 6.16.8과 이후 `6d82554bf`까지의 업스트림 변경을 반영했다. [지난 반영](/posts/firefly-upstream-sync-6-16-7/) 기준인 `083603e4c` 이후 17개 커밋이며, Astro는 7.3.2로 올렸다.

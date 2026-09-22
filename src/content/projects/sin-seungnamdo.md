@@ -1,10 +1,11 @@
 ---
 title: "新승람도"
-published: 2014-05-01
+published: 2014-05-16
 description: "조선시대 승람도 놀이를 모바일 게임으로 재구성한 기획 프로젝트."
 image: ./images/sin-seungnamdo/cover.webp
 tags: [powerpoint, word]
 draft: false
+status: archived
 lang: ko
 ---
 

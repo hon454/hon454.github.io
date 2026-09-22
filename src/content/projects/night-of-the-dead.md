@@ -1,10 +1,11 @@
 ---
 title: "Night of the Dead"
-published: 2021-01-01
+published: 2021-01-18
 description: "Unreal 기반 오픈월드 생존 게임. 전투·장비·좀비 시스템, 네트워크 최적화와 개발 인프라 구축을 담당했다."
 image: ./images/night-of-the-dead/cover.webp
 tags: [unreal-engine, cpp, devops, dedicated-server]
 draft: false
+status: published
 lang: ko
 ---
 

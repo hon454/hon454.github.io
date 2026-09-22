@@ -1,10 +1,11 @@
 ---
 title: "#BeFearless - Fear of Heights"
-published: 2016-06-01
+published: 2016-06-08
 description: "삼성 #BeFearless 캠페인을 위한 VR 애플리케이션. Gear S2 심박수 연동과 다국어 지원 시스템을 개발했다."
 image: ./images/be-fearless/cover.webp
 tags: [unity, csharp, oculus]
 draft: false
+status: archived
 lang: ko
 ---
 
@@ -22,8 +23,6 @@ lang: ko
 ![#BeFearless - Fear of Heights 자료 이미지 1](./images/be-fearless/image-01.webp)
 
 ![#BeFearless - Fear of Heights 자료 이미지 2](./images/be-fearless/image-02.webp)
-
-> 2022.10.29 기준 오큘러스 스토어 링크가 만료되었습니다.
 
 - 삼성의 외주로 #BeFearless 켐페인을 위해 제작한 고소공포증 치료 VR 어플리케이션
 - Landscapses / Citiscapes 두 가지의 빌드로 제작

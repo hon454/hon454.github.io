@@ -1,10 +1,11 @@
 ---
 title: "길고양이 이야기 2"
-published: 2021-10-01
+published: 2021-10-15
 description: "Unity·C# 기반 2D 퍼즐 어드벤처. 주요 게임 시스템과 컨트롤러 입력, Steam·Stove 연동을 구현했다."
 image: ./images/a-street-cats-tale-2/cover.webp
 tags: [unity, csharp, devops]
 draft: false
+status: published
 lang: ko
 ---
 

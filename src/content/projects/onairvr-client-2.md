@@ -1,10 +1,11 @@
 ---
 title: "onAirVR Client 2.0"
-published: 2017-01-01
+published: 2017-01-17
 description: "onAirVR Client의 UI 개선, 최신 OVR API 지원 및 Daydream용 GoogleVR API 연동."
 image: ./images/onairvr-client-2/cover.webp
 tags: [unity, csharp, oculus, tcp-ip]
 draft: false
+status: published
 lang: ko
 ---
 

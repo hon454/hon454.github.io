@@ -1,10 +1,11 @@
 ---
 title: "학도병의 편지"
-published: 2017-05-01
+published: 2017-05-22
 description: "충남보훈관에 전시된 HTC Vive 기반 인터렉티브 무비 VR 콘텐츠."
 image: ./images/student-soldiers-letter/cover.webp
 tags: [unity, csharp, htc-vive]
 draft: false
+status: published
 lang: ko
 ---
 

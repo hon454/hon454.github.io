@@ -1,10 +1,11 @@
 ---
 title: "해녀와 바다"
-published: 2015-12-01
+published: 2015-12-14
 description: "교육용 게임 제안과 Unity 프로토타입 개발. 스낵컬쳐 게임 레퍼런스 조사·분석을 진행했다."
 image: ./images/haenyeo-and-the-sea/cover.webp
 tags: [unity, csharp, powerpoint]
 draft: false
+status: archived
 lang: ko
 ---
 

@@ -1,10 +1,11 @@
 ---
 title: "CircleVR"
-published: 2017-06-01
+published: 2017-06-19
 description: "클라우드 기반 다중 접속 무선 VR 플랫폼. 홍익대학교 VR 뮤지엄 전시관에 설치됐다."
 image: ./images/circle-vr/cover.webp
 tags: [unity, csharp, htc-vive, tcp-ip]
 draft: false
+status: published
 lang: ko
 ---
 

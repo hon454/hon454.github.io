@@ -1,10 +1,11 @@
 ---
 title: "Vapor World"
-published: 2019-06-01
+published: 2019-06-13
 description: "Unity·C# 기반 2D 사이드 스크롤 액션 어드벤처. 스토리·세계관 기획과 인풋·이동·전투 시스템을 개발했다."
 image: ./images/vapor-world/cover.webp
 tags: [unity, csharp, spine]
 draft: false
+status: published
 lang: ko
 ---
 

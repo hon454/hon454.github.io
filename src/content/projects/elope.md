@@ -1,10 +1,11 @@
 ---
 title: "ELOPE"
-published: 2012-10-01
+published: 2012-10-18
 description: "두 블록이 서로 반대 방향으로 움직이는 규칙을 활용한 DirectX·C++ 퍼즐게임."
 image: ./images/elope/cover.webp
 tags: [directx, cpp]
 draft: false
+status: archived
 lang: ko
 ---
 

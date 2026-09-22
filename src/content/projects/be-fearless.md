@@ -1,6 +1,6 @@
 ---
 title: "#BeFearless - Fear of Heights"
-published: 2026-09-22
+published: 2016-06-01
 description: "삼성 #BeFearless 캠페인을 위한 VR 애플리케이션. Gear S2 심박수 연동과 다국어 지원 시스템을 개발했다."
 image: ./images/be-fearless/cover.webp
 tags: [unity, csharp, oculus]

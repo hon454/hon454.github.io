@@ -1,6 +1,6 @@
 ---
 title: "Space Walker"
-published: 2026-09-22
+published: 2017-05-01
 description: "모션 트래킹을 활용해 무용수의 공연을 VR 공간에서 볼 수 있도록 제작한 콘텐츠."
 image: ./images/space-walker/cover.webp
 tags: [unity, csharp, oculus, perception-neuron]

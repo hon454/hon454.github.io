@@ -1,6 +1,6 @@
 ---
 title: "RythM_Eister"
-published: 2026-09-22
+published: 2011-10-01
 description: "DirectX와 C++로 제작한 BMS 기반 리듬게임. 노트 제작 에디터를 구현했다."
 image: ./images/rythm-eister/cover.webp
 tags: [directx, cpp]

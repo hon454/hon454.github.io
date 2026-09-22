@@ -1,6 +1,6 @@
 ---
 title: "Brutal League"
-published: 2026-09-22
+published: 2020-07-01
 description: "Unity 기반 안드로이드 방치형 게임. 캠페인 모드와 GameSparks 보상 시스템을 구현했다."
 image: ./images/brutal-league/cover.webp
 tags: [unity, csharp, gamesparks, javascript]

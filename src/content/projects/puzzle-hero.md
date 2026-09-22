@@ -1,6 +1,6 @@
 ---
 title: "PUZZLE HERO"
-published: 2026-09-22
+published: 2014-07-01
 description: "사라지지 않는 캐릭터를 상하좌우로 조작하는 Cocos2d-x 기반 3매칭 퍼즐게임."
 image: ./images/puzzle-hero/cover.webp
 tags: [cocos2d-x, cpp]

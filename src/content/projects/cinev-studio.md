@@ -7,6 +7,10 @@ tags: [unreal-engine, cpp]
 draft: false
 status: published
 lang: ko
+link:
+  - label: "CINEV"
+    icon: "material-symbols:language"
+    value: "https://cinev.com/ko"
 ---
 
 ## 프로젝트와 담당 역할

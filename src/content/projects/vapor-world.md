@@ -7,6 +7,10 @@ tags: [unity, csharp, spine]
 draft: false
 status: published
 lang: ko
+link:
+  - label: "Steam"
+    icon: "fa7-brands:steam"
+    value: "https://store.steampowered.com/app/1996090/Vapor_World_Over_The_Mind/"
 ---
 
 | 항목 | 내용 |

@@ -7,6 +7,10 @@ tags: [unreal-engine, cpp, devops, dedicated-server]
 draft: false
 status: published
 lang: ko
+link:
+  - label: "Steam"
+    icon: "fa7-brands:steam"
+    value: "https://store.steampowered.com/app/1377380/Night_of_the_Dead/"
 ---
 
 | 항목 | 내용 |

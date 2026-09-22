@@ -12,6 +12,10 @@ tags:
   - portfolio
   - ai-agent
 lang: ko
+link:
+  - label: "CINEV"
+    icon: "material-symbols:language"
+    value: "https://cinev.com/ko"
 draft: false
 status: published
 order: 1

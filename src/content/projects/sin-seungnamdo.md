@@ -16,9 +16,9 @@ lang: ko
 | 역할 | 기획 |
 | 기술 | PowerPoint, Word |
 
-![新승람도 자료 이미지 1](./images/sin-seungnamdo/image-01.webp)
+![](./images/sin-seungnamdo/image-01.webp)
 
-![新승람도 자료 이미지 2](./images/sin-seungnamdo/image-02.webp)
+![](./images/sin-seungnamdo/image-02.webp)
 
 - 조선시대 때의 부루마블과 유사한 풍속놀이인 승람도 놀이를 모바일 게임으로 재구성하여 기획
 - 아주대학교 2014 문화콘텐츠창작 콘테스트 금상 수상

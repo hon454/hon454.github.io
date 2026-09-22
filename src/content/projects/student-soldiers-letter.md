@@ -16,9 +16,9 @@ lang: ko
 | 역할 | 클라이언트 프로그래머 |
 | 기술 | Unity, C#, HTC VIVE |
 
-![학도병의 편지 자료 이미지 1](./images/student-soldiers-letter/image-01.webp)
+![](./images/student-soldiers-letter/image-01.webp)
 
-![학도병의 편지 자료 이미지 2](./images/student-soldiers-letter/image-02.webp)
+![](./images/student-soldiers-letter/image-02.webp)
 
 - [충남보훈관 VR(가상현실) 코너](http://cnbohun.chungnam.go.kr/home/content.do?menu_cd=000015)에 전시 된 "학도병의 편지" VR 콘텐츠 제작
 - HTC Vive를 활용한 인터렉티브 무비

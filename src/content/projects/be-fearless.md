@@ -20,9 +20,9 @@ lang: ko
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/mGcAiwGojbs" title="#BeFearless - Fear of Heights 영상 2" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-![#BeFearless - Fear of Heights 자료 이미지 1](./images/be-fearless/image-01.webp)
+![](./images/be-fearless/image-01.webp)
 
-![#BeFearless - Fear of Heights 자료 이미지 2](./images/be-fearless/image-02.webp)
+![](./images/be-fearless/image-02.webp)
 
 - 삼성의 외주로 #BeFearless 켐페인을 위해 제작한 고소공포증 치료 VR 어플리케이션
 - Landscapses / Citiscapes 두 가지의 빌드로 제작

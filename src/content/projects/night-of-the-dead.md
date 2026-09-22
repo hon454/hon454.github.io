@@ -18,13 +18,13 @@ lang: ko
 
 [Steam 상점](https://store.steampowered.com/app/1377380/Night_of_the_Dead/)
 
-![Night of the Dead 자료 이미지 1](./images/night-of-the-dead/image-01.webp)
+![](./images/night-of-the-dead/image-01.webp)
 
 Unreal 엔진을 활용하여 오픈월드 생존 게임 `Night of the Dead` 개발 및 정식 출시
 
 ## 업데이트 별 주요 담당 업무
 
-![Night of the Dead 자료 이미지 2](./images/night-of-the-dead/image-02.webp)
+![](./images/night-of-the-dead/image-02.webp)
 
 [개발 업데이트 #19](https://steamcommunity.com/games/1377380/announcements/detail/4174351800564228844?snr=1_2108_9__2107)
 
@@ -34,21 +34,21 @@ Unreal 엔진을 활용하여 오픈월드 생존 게임 `Night of the Dead` 개
 - 네트워크 최적화
 - 자연물 리스폰 시스템 개선
 
-![Night of the Dead 자료 이미지 3](./images/night-of-the-dead/image-03.webp)
+![](./images/night-of-the-dead/image-03.webp)
 
 [개발 업데이트 #18](https://steamcommunity.com/games/1377380/announcements/detail/7675897515552221213?snr=1_5_9_)
 
 - 5지역 보스 좀비 구현
 - 추종자 일부 기능 구현
 
-![Night of the Dead 자료 이미지 4](./images/night-of-the-dead/image-04.webp)
+![](./images/night-of-the-dead/image-04.webp)
 
 [개발 업데이트 #17](https://steamcommunity.com/games/1377380/announcements/detail/4101163232898580763?snr=1_5_9_)
 
 - 좀비 AI 로직 개선
 - 부활 시스템 개편
 
-![Night of the Dead 자료 이미지 5](./images/night-of-the-dead/image-05.webp)
+![](./images/night-of-the-dead/image-05.webp)
 
 [개발 업데이트 #16](https://steamcommunity.com/games/1377380/announcements/detail/4177721893479578937?snr=1_5_9_)
 
@@ -57,14 +57,14 @@ Unreal 엔진을 활용하여 오픈월드 생존 게임 `Night of the Dead` 개
 - 고유 장비 재조립 구현
 - 통합 게임 메뉴 구현
 
-![Night of the Dead 자료 이미지 6](./images/night-of-the-dead/image-06.webp)
+![](./images/night-of-the-dead/image-06.webp)
 
 [개발 업데이트 #15](https://store.steampowered.com/news/app/1377380/view/3888357282609115394?l=koreana)
 
 - 프로젝트 언리얼 엔진 5 마이그레이션 진행
 - 리플리케이션 그래프 개편
 
-![Night of the Dead 자료 이미지 7](./images/night-of-the-dead/image-07.webp)
+![](./images/night-of-the-dead/image-07.webp)
 
 [개발 업데이트 #14](https://steamcommunity.com/games/1377380/announcements/detail/5560312482573003457?snr=1_5_9_)
 
@@ -72,7 +72,7 @@ Unreal 엔진을 활용하여 오픈월드 생존 게임 `Night of the Dead` 개
 - AOE 공격 시스템 개편
 - 엠비언트 사운드 시스템 개편
 
-![Night of the Dead 자료 이미지 8](./images/night-of-the-dead/image-08.webp)
+![](./images/night-of-the-dead/image-08.webp)
 
 [개발 업데이트 #13](https://steamcommunity.com/games/1377380/announcements/detail/3684558705424158476?snr=1_5_9_)
 
@@ -80,7 +80,7 @@ Unreal 엔진을 활용하여 오픈월드 생존 게임 `Night of the Dead` 개
 - 유니크 장비 구현
 - 폴리지 리스폰 시스템 개편
 
-![Night of the Dead 자료 이미지 9](./images/night-of-the-dead/image-09.webp)
+![](./images/night-of-the-dead/image-09.webp)
 
 [개발 업데이트 #12](https://steamcommunity.com/games/1377380/announcements/detail/3684555534412335389?snr=1_5_9_)
 
@@ -90,7 +90,7 @@ Unreal 엔진을 활용하여 오픈월드 생존 게임 `Night of the Dead` 개
 - 좀비 무브먼트 개선
 - 코스튬 (스킨) 구현
 
-![Night of the Dead 자료 이미지 10](./images/night-of-the-dead/image-10.webp)
+![](./images/night-of-the-dead/image-10.webp)
 
 [개발 업데이트 #11](https://steamcommunity.com/games/1377380/announcements/detail/3716078195361732057?snr=2_groupannouncements_detail_)
 
@@ -101,7 +101,7 @@ Unreal 엔진을 활용하여 오픈월드 생존 게임 `Night of the Dead` 개
 - 좀비 리더 시스템 개선
 - 좀비 길찾기 개선
 
-![Night of the Dead 자료 이미지 11](./images/night-of-the-dead/image-11.webp)
+![](./images/night-of-the-dead/image-11.webp)
 
 [개발 업데이트 #10](https://steamcommunity.com/games/1377380/announcements/detail/3711572693139781185?snr=1_5_9_)
 
@@ -114,7 +114,7 @@ Unreal 엔진을 활용하여 오픈월드 생존 게임 `Night of the Dead` 개
 - 에셋 사전 로딩 시스템 구현
 - 위젯 풀링 시스템 구현
 
-![Night of the Dead 자료 이미지 12](./images/night-of-the-dead/image-12.webp)
+![](./images/night-of-the-dead/image-12.webp)
 
 [개발 업데이트 #09](https://steamcommunity.com/games/1377380/announcements/detail/3632746453304905737?snr=1_5_9_)
 
@@ -125,14 +125,14 @@ Unreal 엔진을 활용하여 오픈월드 생존 게임 `Night of the Dead` 개
 - 장비 파츠 개조 시스템 구현
 - 총기 시스템 구현
 
-![Night of the Dead 자료 이미지 13](./images/night-of-the-dead/image-13.webp)
+![](./images/night-of-the-dead/image-13.webp)
 
 [개발 업데이트 #08](https://steamcommunity.com/games/1377380/announcements/detail/3210511728813822228?snr=1_5_9_)
 
 - 휴식 시스템 구현
 - 디스트럭터블 오브젝트 최적화
 
-![Night of the Dead 자료 이미지 14](./images/night-of-the-dead/image-14.webp)
+![](./images/night-of-the-dead/image-14.webp)
 
 [개발 업데이트 #07](https://steamcommunity.com/games/1377380/announcements/detail/3130565222384389708?snr=1_5_9_)
 
@@ -142,7 +142,7 @@ Unreal 엔진을 활용하여 오픈월드 생존 게임 `Night of the Dead` 개
 - 장비 재조립 시스템 구현
 - 코일 개조 시스템 구현
 
-![Night of the Dead 자료 이미지 15](./images/night-of-the-dead/image-15.webp)
+![](./images/night-of-the-dead/image-15.webp)
 
 [개발 업데이트 #06](https://steamcommunity.com/games/1377380/announcements/detail/3019092467760502290?snr=1_5_9_)
 
@@ -151,21 +151,21 @@ Unreal 엔진을 활용하여 오픈월드 생존 게임 `Night of the Dead` 개
 - 아이템 최적화
 - 트랩 최적화
 
-![Night of the Dead 자료 이미지 16](./images/night-of-the-dead/image-16.webp)
+![](./images/night-of-the-dead/image-16.webp)
 
 [개발 업데이트 #05](https://steamcommunity.com/games/1377380/announcements/detail/2988683441438443136?snr=1_5_9_)
 
 - 신규 좀비 구현
 - 함정 개조 장비 구현
 
-![Night of the Dead 자료 이미지 17](./images/night-of-the-dead/image-17.webp)
+![](./images/night-of-the-dead/image-17.webp)
 
 [개발 업데이트 #04](https://steamcommunity.com/games/1377380/announcements/detail/3044968289462619227?snr=1_5_9_)
 
 - 신규 건물 구현
 - 업적 시스템 구현
 
-![Night of the Dead 자료 이미지 18](./images/night-of-the-dead/image-18.webp)
+![](./images/night-of-the-dead/image-18.webp)
 
 [개발 업데이트 #03](https://store.steampowered.com/news/app/1377380/view/3050593984714457440)
 

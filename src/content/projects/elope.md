@@ -16,15 +16,15 @@ lang: ko
 | 역할 | 기획, 클라이언트 프로그래머 |
 | 기술 | DirectX, C++ |
 
-![ELOPE 자료 이미지 1](./images/elope/image-01.webp)
+![](./images/elope/image-01.webp)
 
-![ELOPE 자료 이미지 2](./images/elope/image-02.webp)
+![](./images/elope/image-02.webp)
 
-![ELOPE 자료 이미지 3](./images/elope/image-03.webp)
+![](./images/elope/image-03.webp)
 
-![ELOPE 자료 이미지 4](./images/elope/image-04.webp)
+![](./images/elope/image-04.webp)
 
-![ELOPE 자료 이미지 5](./images/elope/image-05.webp)
+![](./images/elope/image-05.webp)
 
 - 2012년도 선린인터넷고등학교 디지털 콘텐츠 경진대회 응용소프트웨어 부문 은상 수상
 - 조작 입력 시 남자 블럭과 여자 블럭이 각각 반대 방향으로 움직이며 이를 통해 퍼즐을 해결해나가는 게임

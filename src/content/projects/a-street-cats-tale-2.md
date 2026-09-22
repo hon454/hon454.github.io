@@ -18,7 +18,7 @@ lang: ko
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/CkWISiLW1p0" title="길고양이 이야기 2 영상 1" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-![길고양이 이야기 2 자료 이미지 1](./images/a-street-cats-tale-2/image-01.webp)
+![](./images/a-street-cats-tale-2/image-01.webp)
 
 ### 텀블벅 펀딩 목표 금액 초과 달성 (**7,846,024 원, 156%)**
 
@@ -30,7 +30,7 @@ lang: ko
 
 ### 학대 동물 보호 캠페인 참가 (2023.02.20)
 
-![길고양이 이야기 2 자료 이미지 2](./images/a-street-cats-tale-2/image-02.webp)
+![](./images/a-street-cats-tale-2/image-02.webp)
 
 [학대 동물 보호 캠페인](https://www.smilegatefoundation.org/hope/giveDetail?seq=680)
 
@@ -40,13 +40,13 @@ lang: ko
 
 ### 도쿄 게임쇼 참가 (2023.09.21 - 2023.09.24)
 
-![길고양이 이야기 2 자료 이미지 3](./images/a-street-cats-tale-2/image-03.webp)
+![](./images/a-street-cats-tale-2/image-03.webp)
 
 ### G-Star 2023 인디 쇼케이스 전시 및 인디 어워즈 수상 (2023.11.16 - 2023.11.19)
 
-![길고양이 이야기 2 자료 이미지 4](./images/a-street-cats-tale-2/image-04.webp)
+![](./images/a-street-cats-tale-2/image-04.webp)
 
-![길고양이 이야기 2 자료 이미지 5](./images/a-street-cats-tale-2/image-05.webp)
+![](./images/a-street-cats-tale-2/image-05.webp)
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/loIGaQyzFPc" title="길고양이 이야기 2 영상 2" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 

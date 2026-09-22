@@ -12,6 +12,10 @@ tags:
   - portfolio
   - ai-agent
 lang: ko
+link:
+  - label: "공식 사이트"
+    icon: "material-symbols:language"
+    value: "https://cinev.com/ko"
 draft: false
 status: published
 order: 1

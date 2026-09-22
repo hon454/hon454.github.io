@@ -7,6 +7,10 @@ tags: [unity, csharp, devops]
 draft: false
 status: published
 lang: ko
+link:
+  - label: "Steam"
+    icon: "fa7-brands:steam"
+    value: "https://store.steampowered.com/app/2356450/__2/?l=koreana"
 ---
 
 | 항목 | 내용 |

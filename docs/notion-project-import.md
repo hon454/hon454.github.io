@@ -22,7 +22,7 @@
 | --- | --- | --- |
 | [RythM_Eister](https://hon454.notion.site/1393ba935abb4b0aa740407080de7b20) | 2011.10 - 2011.12 | `rythm-eister.md` |
 | [ELOPE](https://hon454.notion.site/a323c54678234b6492054aca40f04232) | 2012.10 - 2012.12 | `elope.md` |
-| [CSIA 2014 웹사이트 개발 외주](https://hon454.notion.site/15ec6e30b8db411fb1ab54d72b8d3550) | 2014.02 - 2014.03 | `csia-2014.md` |
+| [CSIA 2014 웹사이트 개발 외주](https://hon454.notion.site/15ec6e30b8db411fb1ab54d72b8d3550) | 2014.02 - 2014.03 | 사용자 요청으로 게시물 제거 |
 | [新승람도](https://hon454.notion.site/ff0db8c1cb784344b32226726a52f58f) | 2014.05 - 2014.06 | `sin-seungnamdo.md` |
 | [PUZZLE HERO](https://hon454.notion.site/3090e6c2aa2141f5a6d388b72c3dfea4) | 2014.07 - 2014.08 | `puzzle-hero.md` |
 | [해녀와 바다](https://hon454.notion.site/1ffe5082c42e493b9594b36dcb1d533e) | 2015.12 - 2016.01 | `haenyeo-and-the-sea.md` |
@@ -57,3 +57,5 @@ Notion 데스크톱의 실제 페이지에서 링크 목적지를 확인해 원�
 - 날짜 조정 전후 15개 프로젝트의 시작 월과 정렬 순서 일치를 확인했다. production preview에서 출시됨 10개(기존 4개 포함)·보관됨 9개 필터를 확인했다.
 
 - 본문 이미지 38장의 자동 생성된 자료 이미지 번호 문구는 제거했다. 캡션을 생성하지 않도록 Markdown 이미지 설명을 비워 두고 이미지 파일·순서는 유지했다.
+
+- 후속 사용자 요청에 따라 CSIA 2014 프로젝트와 전용 표지·LQIP를 제거했다. Vapor World·Night of the Dead·길고양이 이야기 2에는 Steam 버튼을, CINEVStudio·Shotloom에는 CINEV 공식 사이트 버튼을 추가했다.

@@ -357,6 +357,11 @@ export const siteConfig: SiteConfig = {
 		],
 	},
 
+	// RSS / Atom 구독 본문: full은 전문, summary는 요약만 제공합니다.
+	feed: {
+		contentMode: "full",
+	},
+
 	// 사이트 언어. 이 설정 파일 상단의 SITE_LANG에서 정의합니다.
 	lang: SITE_LANG,
 

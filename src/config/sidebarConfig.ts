@@ -21,12 +21,8 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 	// 글 상세 페이지에서 사이드바를 숨길지 여부. true이면 홈페이지 같은 글 외 페이지에만 표시합니다.
 	hideSidebarOnPostPage: false,
 
-	// 글 상세 페이지에서 양쪽 사이드바 유지
-	// 단일 사이드바(position이 left 또는 right)를 사용할 때 글 상세 페이지에 양쪽 사이드바를 표시할지 여부입니다(hideSidebarOnPostPage는 false여야 함).
-	// position이 left이면 글 상세 페이지에 오른쪽 사이드바를 추가합니다.
-	// position이 right이면 글 상세 페이지에 왼쪽 사이드바를 추가합니다.
-	// 평소에는 단일 사이드바를 쓰되 글 상세 페이지에서 반대편 목차 같은 컴포넌트가 필요할 때 유용합니다.
-	showBothSidebarsOnPostPage: true,
+	// 사이드바가 없는 페이지의 콘텐츠 너비 비율(0–1). 1 이상이면 전체 너비를 사용합니다.
+	noSidebarContentWidth: 0.6,
 
 	// 왼쪽 사이드바 컴포넌트 설정 목록
 	// 컴포넌트는 설정 배열의 순서대로 렌더링하되 top 컴포넌트를 sticky 컴포넌트보다 먼저 렌더링합니다.

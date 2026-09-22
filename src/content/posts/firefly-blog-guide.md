@@ -350,9 +350,11 @@ passwordHint: "나만 알아볼 수 있는 힌트"
 export const sidebarLayoutConfig = {
   enable: true,
   position: "left",
-  showBothSidebarsOnPostPage: true,
+  noSidebarContentWidth: 0.6,
 };
 ```
+
+표시할 위젯이 없는 사이드바 열은 접힌다. `noSidebarContentWidth`는 사이드바가 없는 페이지의 본문 너비 비율이며, 생략하거나 1 이상으로 설정하면 전체 너비를 사용한다.
 
 글 목록은 목록형과 그리드형을 선택할 수 있다.
 

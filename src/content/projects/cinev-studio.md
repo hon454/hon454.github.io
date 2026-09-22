@@ -8,7 +8,7 @@ draft: false
 status: published
 lang: ko
 link:
-  - label: "CINEV"
+  - label: "공식 사이트"
     icon: "material-symbols:language"
     value: "https://cinev.com/ko"
 ---

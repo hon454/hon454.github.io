@@ -1,6 +1,7 @@
 ---
 title: "Firefly 업스트림 반영: 6.16.8"
 published: 2026-09-22
+image: ./images/firefly1.avif
 description: Firefly 6.16.8과 이후 6d82554bf까지의 구독 기능, 프로젝트 표시, 사이드바와 페이지 스타일 변경 사항.
 tags: [firefly, astro]
 category: 블로그

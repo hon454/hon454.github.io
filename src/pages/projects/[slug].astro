@@ -193,7 +193,7 @@ const visibleTags = tags || [];
       </div>
 
       <!-- README 正文 -->
-      <div data-pagefind-body>
+      <div data-pagefind-body data-project={removeFileExtension(entry.id)}>
         <Markdown class="mb-6 markdown-content">
           <Content />
         </Markdown>
@@ -201,3 +201,22 @@ const visibleTags = tags || [];
     </div>
   </div>
 </MainGridLayout>
+
+<style>
+  [data-project="shotloom"] :global(table) {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  [data-project="shotloom"] :global(th),
+  [data-project="shotloom"] :global(td) {
+    min-width: 0;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+  }
+
+  [data-project="shotloom"] :global(th:first-child),
+  [data-project="shotloom"] :global(td:first-child) {
+    width: 28%;
+  }
+</style>

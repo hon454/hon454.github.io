@@ -239,7 +239,3 @@ Do not commit secrets, tokens, or service keys in configuration files. Keep
 deployment-specific values in the target platform environment. Review generated
 or build-related files such as `dist`, `src/constants/lqips.json`, and
 `src/constants/icons-data.json` before committing them.
-
-## Blog Diagrams
-
-For blog diagrams made with Archify, follow `docs/diagrams/README.md`.

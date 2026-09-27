@@ -136,31 +136,7 @@ void AChest::OnOpenRequested()
 
 여기서는 각 이벤트 사이에 실제 복제 업데이트가 있었고 세 변경이 각각 업데이트 #1, #2, #3으로 전송됐다고 가정한다. 또한 #2의 손실이 보완되기 전에 #3이 전송·수신되는 상황을 가정한다.
 
-```text
-시간 ↓
-
-서버                                      클라이언트
-
-OnKeyObtained()
-  bHasKey = true
-업데이트 #1 전송 ───────────────────────→ #1 수신
-                                          bHasKey = true
-
-OnUnlockCompleted()
-  bIsUnlocked = true
-업데이트 #2 전송 ───────× 패킷 손실
-                                          bIsUnlocked는 여전히 false
-
-OnOpenRequested()
-  bIsOpen = true
-업데이트 #3 전송 ───────────────────────→ #3 수신
-                                          bIsOpen = true
-                                          OnRep_IsOpen() 실행
-
-#2의 손실을 인지한 뒤,
-누락된 상태를 후속 업데이트로 전송 ──────→ 보완 업데이트 수신
-                                          bIsUnlocked = true
-```
+![업데이트 #2가 손실되고 #3이 먼저 도착해 OnRep_IsOpen이 종료된다. 이후 bIsUnlocked가 보완돼도 애니메이션은 다시 실행되지 않는다.](../../assets/images/posts/replication-rpc-lost-update.svg)
 
 도식에는 설명에 필요한 변경만 표시했다. 실제 업데이트에 항상 프로퍼티 하나만 들어간다는 의미는 아니다.
 
@@ -587,31 +563,7 @@ void AMyCharacter::TryRefreshInventoryUI()
 
 이 코드는 두 순서 모두 처리한다.
 
-```text
-참조가 먼저 도착한 경우
-
-OnRep_Inventory()
-    → 알림 구독
-    → 현재 상태 확인: NumSlots == INDEX_NONE
-    → 대기
-        ↓
-OnRep_NumSlots()
-    → 알림 발생
-    → TryRefreshInventoryUI()
-    → UI 표시
-```
-
-```text
-슬롯 수가 먼저 도착한 경우
-
-OnRep_NumSlots()
-    → 알림 발생: 아직 구독자가 없음
-        ↓
-OnRep_Inventory()
-    → 알림 구독
-    → 현재 상태 확인: NumSlots >= 0
-    → 즉시 UI 표시
-```
+![참조가 먼저 도착하면 변경 알림을 기다려 UI를 갱신하고, 슬롯 수가 먼저 도착하면 구독 직후 현재 상태를 확인해 즉시 표시한다.](../../assets/images/posts/replication-rpc-inventory-ready.svg)
 
 이렇게 나중의 변경을 구독하면서 이미 준비된 상태도 즉시 확인한다. 알림만 기다리면 두 번째 경우에서 놓친 알림을 계속 기다리게 된다.
 

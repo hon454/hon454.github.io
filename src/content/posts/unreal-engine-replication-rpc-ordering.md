@@ -136,7 +136,7 @@ void AChest::OnOpenRequested()
 
 여기서는 각 이벤트 사이에 실제 복제 업데이트가 있었고 세 변경이 각각 업데이트 #1, #2, #3으로 전송됐다고 가정한다. 또한 #2의 손실이 보완되기 전에 #3이 전송·수신되는 상황을 가정한다.
 
-![업데이트 #2가 손실되고 #3이 먼저 도착해 OnRep_IsOpen이 종료된다. 이후 bIsUnlocked가 보완돼도 애니메이션은 다시 실행되지 않는다.](../../assets/images/posts/replication-rpc-lost-update.svg)
+![업데이트 #2가 손실되고 #3이 먼저 도착해 OnRep_IsOpen이 종료된다. 이후 bIsUnlocked가 보완돼도 애니메이션은 다시 실행되지 않는다.](../../assets/images/posts/replication-rpc-lost-update.webp)
 
 도식에는 설명에 필요한 변경만 표시했다. 실제 업데이트에 항상 프로퍼티 하나만 들어간다는 의미는 아니다.
 
@@ -563,7 +563,7 @@ void AMyCharacter::TryRefreshInventoryUI()
 
 이 코드는 두 순서 모두 처리한다.
 
-![참조가 먼저 도착하면 변경 알림을 기다려 UI를 갱신하고, 슬롯 수가 먼저 도착하면 구독 직후 현재 상태를 확인해 즉시 표시한다.](../../assets/images/posts/replication-rpc-inventory-ready.svg)
+![참조가 먼저 도착하면 변경 알림을 기다려 UI를 갱신하고, 슬롯 수가 먼저 도착하면 구독 직후 현재 상태를 확인해 즉시 표시한다.](../../assets/images/posts/replication-rpc-inventory-ready.webp)
 
 이렇게 나중의 변경을 구독하면서 이미 준비된 상태도 즉시 확인한다. 알림만 기다리면 두 번째 경우에서 놓친 알림을 계속 기다리게 된다.
 

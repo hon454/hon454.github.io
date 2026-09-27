@@ -43,6 +43,13 @@ for (const name of ["lost-update", "inventory-ready"]) {
  });
  const typography = `<style id="blog-diagram-type">${fontCss}\nsvg text { font-family: 'Pretendard Diagram', sans-serif; }\nsvg .t-dim, svg .t-muted { fill: var(--text); opacity: 0.75; }</style><metadata id="blog-diagram-font-license">${escapeXml(license)}</metadata>`;
  svg = svg.replace(/<\/svg>\s*$/, `${typography}</svg>`);
+ // Static SVGs have no viewer buttons; provide a standalone accessible title.
+ const source = JSON.parse(fs.readFileSync(path.join(here, `${name}.json`), "utf8"));
+ svg = svg.replace(/<title id="blog-diagram-title">[\s\S]*?<\/title>/g, "");
+ svg = svg.replace(/aria-labelledby="archify-diagram-title archify-diagram-description"/, 'aria-labelledby="blog-diagram-title"');
+ svg = svg.replace(/(<svg\b[^>]*>)/, `$1<title id="blog-diagram-title">${escapeXml(source.meta.title)}</title>`);
+ svg = svg.replace(/\s(?:role="button"|tabindex="0"|aria-pressed="false"|aria-label="Focus [^"]*")/g, "");
+ svg = svg.replace(/(<style\b[^>]*>)([\s\S]*?)(<\/style>)/g, (_, open, css, close) => open + css.replaceAll("&gt;", ">") + close);
  svg = svg.replace(/[ \t]+$/gm, "");
  fs.writeFileSync(file, svg);
  console.log(`${name}: ${faces.length} font subsets, ${codepoints.length} codepoints, ${Buffer.byteLength(svg)} bytes`);

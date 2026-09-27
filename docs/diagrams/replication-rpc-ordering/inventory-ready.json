@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "도착 순서가 달라도 현재 상태를 확인한다",
+    "quality_profile": "showcase",
+    "column_fit": "spread",
+    "viewBox": [
+      1000,
+      610
+    ],
+    "legend": {
+      "mode": "hidden"
+    }
+  },
+  "participants": [
+    {
+      "id": "inventory",
+      "type": "backend",
+      "label": "인벤토리",
+      "sublabel": "NumSlots · 변경 알림"
+    },
+    {
+      "id": "character",
+      "type": "backend",
+      "label": "캐릭터",
+      "sublabel": "OnRep_Inventory()"
+    },
+    {
+      "id": "ui",
+      "type": "frontend",
+      "label": "인벤토리 UI",
+      "sublabel": "현재 슬롯 수 표시"
+    }
+  ],
+  "messages": [
+    {
+      "from": "character",
+      "to": "inventory",
+      "y": 180,
+      "label": "변경 알림 구독",
+      "note": "OnRep_Inventory()",
+      "variant": "default"
+    },
+    {
+      "from": "character",
+      "to": "ui",
+      "y": 230,
+      "label": "현재 상태 확인 · 미준비",
+      "note": "NumSlots == INDEX_NONE → UI 숨김 · 대기",
+      "variant": "default"
+    },
+    {
+      "from": "inventory",
+      "to": "character",
+      "y": 280,
+      "label": "슬롯 수 변경 알림",
+      "note": "OnRep_NumSlots() → TryRefreshInventoryUI()",
+      "variant": "emphasis"
+    },
+    {
+      "from": "character",
+      "to": "ui",
+      "y": 330,
+      "label": "UI 표시",
+      "note": "현재 슬롯 수로 갱신",
+      "variant": "default"
+    },
+    {
+      "from": "character",
+      "to": "inventory",
+      "y": 425,
+      "label": "변경 알림 구독",
+      "note": "앞서 OnRep_NumSlots() 알림은 구독자 없이 발생",
+      "variant": "default"
+    },
+    {
+      "from": "character",
+      "to": "ui",
+      "y": 505,
+      "label": "현재 상태 확인 · UI 표시",
+      "note": "NumSlots >= 0 → TryRefreshInventoryUI()",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "구독과 현재 상태 확인",
+      "items": [
+        "OnRep_Inventory()에서 알림을 구독한 뒤 즉시 재확인한다.",
+        "알림 전에 구독했든 알림을 놓쳤든 준비된 슬롯 수를 반영한다."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "이 예시의 준비 조건",
+      "items": [
+        "INDEX_NONE은 미준비, 0 이상은 준비된 슬롯 수다.",
+        "슬롯 수 하나가 전체 인벤토리의 준비 완료를 뜻하지는 않는다."
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "from": 150,
+      "to": 360,
+      "label": "참조가 먼저 도착"
+    },
+    {
+      "from": 390,
+      "to": 545,
+      "label": "슬롯 수가 먼저 도착"
+    }
+  ]
+}

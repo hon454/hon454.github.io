@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "값이 보완돼도 연출은 누락될 수 있다",
+    "quality_profile": "showcase",
+    "column_fit": "spread",
+    "viewBox": [
+      1000,
+      610
+    ],
+    "legend": {
+      "mode": "hidden"
+    }
+  },
+  "participants": [
+    {
+      "id": "server",
+      "type": "backend",
+      "label": "서버",
+      "sublabel": "상자 상태 변경"
+    },
+    {
+      "id": "transport",
+      "type": "messagebus",
+      "label": "네트워크",
+      "sublabel": "업데이트 전달"
+    },
+    {
+      "id": "client",
+      "type": "frontend",
+      "label": "클라이언트",
+      "sublabel": "상태 적용 · OnRep"
+    }
+  ],
+  "messages": [
+    {
+      "from": "server",
+      "to": "transport",
+      "y": 180,
+      "label": "#1 전송",
+      "note": "bHasKey = true",
+      "variant": "default"
+    },
+    {
+      "from": "transport",
+      "to": "client",
+      "y": 225,
+      "label": "#1 수신",
+      "note": "bHasKey = true",
+      "variant": "default"
+    },
+    {
+      "from": "server",
+      "to": "transport",
+      "y": 285,
+      "label": "#2 패킷 손실",
+      "note": "bIsUnlocked = true 변경이 도착하지 않음",
+      "variant": "default"
+    },
+    {
+      "from": "server",
+      "to": "transport",
+      "y": 350,
+      "label": "#3 전송",
+      "note": "bIsOpen = true",
+      "variant": "default"
+    },
+    {
+      "from": "transport",
+      "to": "client",
+      "y": 395,
+      "label": "#3 수신 · OnRep 조기 종료",
+      "note": "OnRep_IsOpen(): bIsUnlocked가 false라 종료",
+      "variant": "emphasis"
+    },
+    {
+      "from": "server",
+      "to": "transport",
+      "y": 470,
+      "label": "누락 상태 보완",
+      "note": "#2 손실을 인지한 뒤 후속 업데이트 전송",
+      "variant": "default"
+    },
+    {
+      "from": "transport",
+      "to": "client",
+      "y": 515,
+      "label": "값 보완 · 연출 재실행 없음",
+      "note": "bIsUnlocked = true · OnRep_IsOpen() 재호출 없음",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "amber",
+      "title": "예시의 가정",
+      "items": [
+        "각 변경은 서로 다른 복제 업데이트로 전송된다.",
+        "#2의 손실이 보완되기 전에 #3이 도착한다."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "클라이언트의 결과",
+      "items": [
+        "#3 직후: bIsOpen = true, bIsUnlocked = false",
+        "최종 값이 맞아져도 건너뛴 애니메이션은 재실행되지 않는다."
+      ]
+    }
+  ]
+}

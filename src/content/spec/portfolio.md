@@ -245,7 +245,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 | 소개 | GitHub PR 목록에 리뷰 요청 대상과 리뷰 상태를 표시하는 Chrome 확장 프로그램 |
 | 주요 기술 | TypeScript, React, WXT, GitHub REST API |
 
-![GitHub Pulls Show Reviewers 대표 이미지](../projects/images/github-pulls-show-reviewers.webp)
+![](../projects/images/github-pulls-show-reviewers.webp)
 
 - **리뷰 상태 표시:** 요청된 사용자와 팀, 리뷰어별 승인 및 변경 요청 상태를 PR 목록에 표시했습니다.
 - **화면 갱신과 API 처리:** GitHub의 목록 갱신에 맞춰 표시를 복원하고, API 캐시와 동시 요청 수 제한을 구현했습니다.
@@ -258,7 +258,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 | 소개 | 선택한 코드의 파일 경로와 줄 번호를 함께 복사하고 여러 파일의 문맥을 모으는 JetBrains 플러그인 |
 | 주요 기술 | Kotlin, IntelliJ Platform |
 
-![Copy Selection Context 대표 이미지](../projects/images/copy-selection-context.webp)
+![](../projects/images/copy-selection-context.webp)
 
 - **코드와 위치 복사:** 선택 영역의 경로와 줄 범위를 계산하고, 여러 커서의 선택 영역과 사용자 지정 출력 형식을 지원했습니다.
 - **문맥 수집과 검토:** 수집 당시의 코드와 위치를 스냅샷으로 보관하고, 도구 창에서 순서를 조정한 뒤 함께 복사하도록 구현했습니다.

@@ -1,3 +1,7 @@
+주요 경력과 핵심 역량, 대표 성과를 빠르게 살펴볼 수 있도록 정리한 이력서입니다. 학력과 자격, 교육 및 외부활동을 함께 요약했습니다.
+
+회사와 프로젝트별 담당 범위, 기술적 판단과 문제 해결 과정은 [경력기술서](/cv/)에서 자세히 설명합니다. 대표 작업의 화면과 영상, 공개 코드와 기여 내용은 [포트폴리오](/portfolio/)에서 확인할 수 있습니다.
+
 [hon454@naver.com](mailto:hon454@naver.com) / [LinkedIn](https://www.linkedin.com/in/jihoon-jeon-b7ab83116) / [GitHub](https://github.com/hon454) / [동료 추천사](https://www.linkedin.com/in/jihoon-jeon-b7ab83116/details/recommendations/?detailScreenTabIndex=0)
 
 ## 프로필
@@ -9,8 +13,6 @@
 - **게임 개발:** Unreal Engine과 Unity의 게임플레이 구현, 네트워크 동기화, 다수 개체의 실행 비용 최적화
 - **3D 제작 도구:** 타임라인과 카메라 편집, 저장과 복원, 생성형 AI 서비스와 런타임 연결
 - **개발 환경:** 빌드와 검증 자동화, 코드 리뷰, AI 에이전트 활용 도구 개발 및 운용
-
-구체적인 해결 과정은 [경력기술서](/cv/), 대표 결과물은 [포트폴리오](/portfolio/)에 정리했습니다.
 
 ## 경력
 

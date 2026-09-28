@@ -79,6 +79,20 @@ general humanizer as a required stage.
 `@i18n/*`, and `@layouts/*` to their corresponding `src` directories, and
 `@/*` to `src/*`.
 
+## Career Document Guidance
+
+Before creating, rewriting, polishing, or reviewing the following content, read
+[Career Document Guidelines](docs/career-document-guidelines.md):
+
+- Resume: `src/content/spec/resume.md`
+- Career description: `src/content/spec/career.md`
+- Portfolio: `src/content/spec/portfolio.md`
+- Project articles: `src/content/projects/`
+
+Use that document as the single source of truth for their purpose, scope, and
+cross-document consistency. Keep the writing rules there rather than duplicating
+them here. Blog posts remain subject to Blog Writing Guidance above.
+
 ## Build, Test, and Development Commands
 
 Use `pnpm`; the `preinstall` script enforces it. The exact runtime and package

@@ -1,0 +1,189 @@
+---
+import type { MarkdownHeading } from "astro";
+import Markdown from "@/components/common/Markdown.astro";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import { url } from "@/utils/url-utils";
+
+interface Props {
+	title: string;
+	description: string;
+	heading: string;
+	headings: MarkdownHeading[];
+	active: "resume" | "cv" | "portfolio";
+}
+
+const { title, description, heading, headings, active } = Astro.props;
+const documents = [
+	{ id: "resume", label: "이력서", href: "/resume/" },
+	{ id: "cv", label: "경력기술서", href: "/cv/" },
+	{ id: "portfolio", label: "포트폴리오", href: "/portfolio/" },
+];
+---
+
+<MainGridLayout title={title} description={description} heading={heading} robots="noindex, nofollow" headings={headings}>
+	<article class="card-base career-document" data-document={active}>
+		<header class="document-header">
+			<p class="document-title" aria-hidden="true">{heading}</p>
+			<nav aria-label="경력 문서">
+				{documents.map((document) => (
+					<a href={url(document.href)} aria-current={active === document.id ? "page" : undefined}>
+						{document.label}
+					</a>
+				))}
+			</nav>
+		</header>
+		<Markdown class="mt-6">
+			<slot />
+		</Markdown>
+	</article>
+</MainGridLayout>
+
+<style>
+	.career-document {
+		min-width: 0;
+		width: 100%;
+		padding: clamp(1.25rem, 4vw, 2.25rem);
+	}
+
+	.document-title {
+		margin: 0 0 1.25rem;
+		font-size: clamp(1.75rem, 4vw, 2.25rem);
+		font-weight: 700;
+		color: var(--deep-text);
+	}
+
+	.career-document[data-document="portfolio"] :global(table) {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	.career-document[data-document="portfolio"] :global(th),
+	.career-document[data-document="portfolio"] :global(td) {
+		min-width: 0;
+		overflow-wrap: anywhere;
+	}
+
+	.career-document[data-document="portfolio"] :global(th:first-child),
+	.career-document[data-document="portfolio"] :global(td:first-child) {
+		width: 8rem;
+	}
+
+	nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	nav a {
+		padding: 0.5rem 0.875rem;
+		border-radius: 0.5rem;
+		color: var(--deep-text);
+		background: var(--btn-regular-bg);
+		font-size: 0.875rem;
+	}
+
+	nav a:hover,
+	nav a[aria-current="page"] {
+		color: var(--primary);
+		background: var(--btn-regular-bg-hover);
+	}
+
+	nav a[aria-current="page"] {
+		font-weight: 700;
+	}
+
+	nav a:focus-visible {
+		outline: 2px solid var(--primary);
+		outline-offset: 3px;
+	}
+
+	.career-document :global(blockquote.career-recommendation) {
+		margin: 1.25rem 0;
+		padding: 1.25rem clamp(1rem, 3vw, 1.5rem);
+		border: 0;
+		border-left: 3px solid var(--primary);
+		border-radius: 0 0.75rem 0.75rem 0;
+		background: color-mix(in srgb, var(--btn-regular-bg) 45%, transparent);
+	}
+
+	.career-document :global(.service-awards) {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1rem;
+		margin: 1.5rem 0;
+	}
+
+	.career-document :global(.service-awards > *) {
+		min-width: 0;
+		margin: 0;
+	}
+
+	.career-document :global(.service-awards > p:empty) {
+		display: none;
+	}
+
+	.career-document :global(.service-awards figure) {
+		margin: 0;
+	}
+
+	.career-document :global(.service-awards img) {
+		width: 100%;
+		height: auto;
+		margin: 0;
+		object-fit: contain;
+		border-radius: 0.375rem;
+	}
+
+	.career-document :global(.service-awards figcaption) {
+		margin-top: 0.5rem;
+		font-size: 0.75rem;
+		line-height: 1.6;
+	}
+
+	@media (max-width: 640px) {
+		.career-document[data-document="portfolio"] :global(th:first-child),
+		.career-document[data-document="portfolio"] :global(td:first-child) {
+			width: 6.5rem;
+		}
+
+		.career-document :global(.service-awards) {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+
+	.career-document :global(.career-recommendation::before) {
+		display: none;
+	}
+
+	.career-document :global(.recommendation-text) {
+		margin: 0;
+		font-size: 1.0625rem;
+		font-weight: 600;
+		line-height: 1.75;
+		color: var(--deep-text);
+	}
+
+	.career-document :global(.recommendation-source) {
+		display: grid;
+		gap: 0.375rem;
+		margin-top: 1rem;
+		font-size: 0.8125rem;
+		line-height: 1.6;
+	}
+
+	.career-document :global(.recommendation-author),
+	.career-document :global(.recommendation-details) {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.375rem 0.75rem;
+	}
+
+	.career-document :global(.recommendation-label) {
+		padding: 0.0625rem 0.5rem;
+		border-radius: 0.25rem;
+		background: var(--btn-regular-bg);
+		font-size: 0.75rem;
+		color: var(--deep-text);
+	}
+</style>

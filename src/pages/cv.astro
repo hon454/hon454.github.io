@@ -1,0 +1,18 @@
+---
+import { getEntry, render } from "astro:content";
+import CareerDocumentLayout from "@/layouts/CareerDocumentLayout.astro";
+
+const entry = await getEntry("spec", "cv");
+if (!entry) throw new Error("CV page content not found");
+const { Content, headings } = await render(entry);
+---
+
+<CareerDocumentLayout
+	title="경력기술서"
+	description="Unreal Engine 게임과 제작 도구, 실시간 VR, Rust 기반 3D 편집기에서 담당한 역할과 기술적 문제 해결 경험을 정리했습니다."
+	heading="경력기술서"
+	active="cv"
+	headings={headings}
+>
+	<Content />
+</CareerDocumentLayout>

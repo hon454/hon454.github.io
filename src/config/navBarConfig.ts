@@ -85,6 +85,8 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 
 			// 이력서
 			LinkPresets.Resume,
+			LinkPresets.CV,
+			LinkPresets.Portfolio,
 		],
 	});
 
@@ -242,6 +244,16 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		name: "이력서",
 		url: "/resume/",
 		icon: "material-symbols:badge",
+	},
+	CV: {
+		name: "경력기술서",
+		url: "/cv/",
+		icon: "material-symbols:article",
+	},
+	Portfolio: {
+		name: "포트폴리오",
+		url: "/portfolio/",
+		icon: "material-symbols:folder-open-rounded",
 	},
 };
 

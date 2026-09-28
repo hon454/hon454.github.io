@@ -106,9 +106,14 @@ const CONTENT_DETAIL_PATH_PATTERNS = [
 ];
 
 /**
- * 判断路径是否为「内容详情页」（文章 / 项目）。
+ * 判断路径是否为「内容详情页」（文章 / 项目 / 职业文档）。
  * 供侧边栏组件显隐、悬浮目录、沉浸阅读等复用，统一了各处硬编码的 /posts/ 判断。
  */
 export function isArticleDetailPage(pathname: string): boolean {
-	return CONTENT_DETAIL_PATH_PATTERNS.some((re) => re.test(pathname));
+	return (
+		CONTENT_DETAIL_PATH_PATTERNS.some((re) => re.test(pathname)) ||
+		["/resume/", "/cv/", "/portfolio/"].some((path) =>
+			pathsEqual(pathname, url(path)),
+		)
+	);
 }

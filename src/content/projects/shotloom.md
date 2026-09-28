@@ -56,6 +56,8 @@ order: 1
 3. **재생과 수정:** 타임라인을 재생하며 동작과 카메라를 확인한다. 편집 내용은 번들로 보관해 다시 열 수 있다.
 4. **생성과 다음 샷:** `SceneGen`에서 영상을 생성하고, 선택한 결과의 마지막 프레임 이미지를 `CineV` 스토리보드에 추가한다. 이 이미지를 다음 3D 장면의 입력으로 사용해 편집을 이어간다.
 
+<a id="editing-workflow"></a>
+
 ### 포즈·동작·카메라를 편집하는 과정
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/7tAEuFip6nA" title="Shotloom의 포즈·동작·카메라 편집부터 SceneGen 영상 생성까지의 제작 과정" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -88,6 +90,8 @@ order: 1
 3D 자산을 다루는 과정에서는 렌더링 외형과 보조 데이터도 함께 확인했다. 예를 들어 방향을 보정하기 위해 `VRM`을 Y축으로 180도 회전할 때, 머리카락과 의상 움직임에 쓰이는 `SpringBone`의 충돌체와 중력 방향에도 같은 좌표 변환이 필요했다. 누락된 데이터를 해당 변환 범위에 맞춰 수정해 모델 방향과 물리 입력을 정렬했다.
 
 이렇게 가져온 캐릭터가 이후의 선택·변형·타임라인 편집에 같은 대상으로 참여하도록 만든 것이 편집기 기반 작업의 범위였다.
+
+<a id="edit-persistence"></a>
 
 ## 2. 작업을 저장하고 다시 이어가는 편집 구조
 
@@ -160,6 +164,8 @@ order: 1
 > 출력 기능 구현 당시 실제 `Chromium`에서 1·5프레임 출력과 실패·취소 경계를 검증했다. 별도로 본문 화면을 확보한 로컬 실행에서는 내보내기가 초기 준비 단계의 `INITIAL_READINESS_FAILED`로 실패했고, 시작 시 `wgpu createBuffer RangeError`도 관찰했다. 해당 로컬 실행에서 출력 완료를 확인한 것은 아니다.
 
 ![WebM 영상과 첫·마지막 PNG를 준비한 뒤 출력 패키지를 확정하는 순서.](./images/shotloom/05-output-package.png)
+
+<a id="service-integration"></a>
 
 ## 5. CineV에서 시작해 편집 결과를 돌려보내는 서비스 통합
 

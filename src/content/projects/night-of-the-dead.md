@@ -101,7 +101,7 @@ Unreal 엔진을 활용하여 오픈월드 생존 게임 `Night of the Dead` 개
 - Tick 최적화
 - 네트워크 최적화
 - 서버 클라이언트 간 대용량 데이터 전송을 위해 RPC를 활용한 데이터 스트리밍 시스템 개발
-- 애니메이션 최적화 (리플리케이션 그래프, 커스텀 NetSerialize, Fast TArray Replication 등 적용)
+- 애니메이션 업데이트 비용 최적화
 - 좀비 리더 시스템 개선
 - 좀비 길찾기 개선
 
@@ -117,6 +117,8 @@ Unreal 엔진을 활용하여 오픈월드 생존 게임 `Night of the Dead` 개
 - 네비게이션 인보커 최적화
 - 에셋 사전 로딩 시스템 구현
 - 위젯 풀링 시스템 구현
+
+<a id="equipment-update"></a>
 
 ![](./images/night-of-the-dead/image-12.webp)
 
@@ -195,7 +197,8 @@ Unreal 엔진을 활용하여 오픈월드 생존 게임 `Night of the Dead` 개
 ### 애니메이션 시스템 (Animation System)
 
 - 좀비 AI의 자연스러운 움직임을 위한 Animation 시스템 활용 및 최적화
-- 네트워크 환경에서의 애니메이션 리플리케이션 최적화 (커스텀 NetSerialize, Fast TArray Replication)
+- Animation Budget Allocator, Significance Manager와 AnimURO를 활용한 애니메이션 업데이트 비용 최적화
+- ACL을 활용한 애니메이션 데이터 압축
 - IK(역운동학) 시스템에 대한 기본 이해를 바탕으로 캐릭터/좀비 모션 품질 개선
 
 ### 게임플레이 어빌리티 시스템

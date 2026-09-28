@@ -28,12 +28,6 @@ export const profileConfig: ProfileConfig = {
 			showName: false,
 		},
 		{
-			name: "Instagram",
-			icon: "fa7-brands:instagram",
-			url: "https://www.instagram.com/jihoon.dev/",
-			showName: false,
-		},
-		{
 			name: "LinkedIn",
 			icon: "fa7-brands:linkedin",
 			url: "https://www.linkedin.com/in/jihoon-jeon-b7ab83116/",

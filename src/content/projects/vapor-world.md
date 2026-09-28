@@ -1,7 +1,7 @@
 ---
 title: "Vapor World"
 published: 2019-06-13
-description: "Unity·C# 기반 2D 사이드 스크롤 액션 어드벤처. 스토리·세계관 기획과 인풋·이동·전투 시스템을 개발했다."
+description: "Unity와 C# 기반 2D 사이드 스크롤 액션 어드벤처. 스토리와 세계관 기획, 입력과 이동, 전투 시스템을 개발했다."
 image: ./images/vapor-world/cover.webp
 tags: [unity, csharp, spine]
 draft: false
@@ -17,6 +17,7 @@ link:
 | --- | --- |
 | 기간 | 2019.06 - 2020.04 |
 | 소속 | 이메진 템페스트 게임스튜디오 |
+| 참여 형태 | 비고용 팀 활동 |
 | 역할 | 기획, 클라이언트 프로그래머 |
 | 기술 | Unity, C#, Spine |
 

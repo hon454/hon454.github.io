@@ -1,0 +1,18 @@
+---
+import { getEntry, render } from "astro:content";
+import CareerDocumentLayout from "@/layouts/CareerDocumentLayout.astro";
+
+const entry = await getEntry("spec", "portfolio");
+if (!entry) throw new Error("Portfolio page content not found");
+const { Content, headings } = await render(entry);
+---
+
+<CareerDocumentLayout
+	title="포트폴리오"
+	description="게임, 3D 제작 도구, VR과 오픈소스 프로젝트의 대표 기여를 화면, 영상, 기술 문서와 공개 코드로 소개합니다."
+	heading="포트폴리오"
+	active="portfolio"
+	headings={headings}
+>
+	<Content />
+</CareerDocumentLayout>

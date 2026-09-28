@@ -21,6 +21,7 @@ import { getBannerVisibilityState } from "@/utils/banner-visibility-utils";
 import { getBackgroundImages, isHomePage } from "@/utils/layout-utils";
 import { resolveNavMenuLinks } from "@/utils/nav-menu-utils";
 import { getEffectiveSidebarState } from "@/utils/sidebar-effective-utils";
+import { isArticleDetailPage } from "@/utils/url-utils";
 import Layout from "./Layout.astro";
 
 import "@/styles/expressive-code.css";
@@ -81,7 +82,9 @@ const banner = getBannerVisibilityState({
 	title,
 	bannerPostMeta,
 });
-const sidebar = getEffectiveSidebarState({ isPostPage });
+const sidebar = getEffectiveSidebarState({
+	isPostPage: isArticleDetailPage(Astro.url.pathname),
+});
 
 const { hasWallpaper } = banner;
 const {

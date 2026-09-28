@@ -1,7 +1,7 @@
 ---
 title: "길고양이 이야기 2"
 published: 2021-10-15
-description: "Unity·C# 기반 2D 퍼즐 어드벤처. 주요 게임 시스템과 컨트롤러 입력, Steam·Stove 연동을 구현했다."
+description: "Unity와 C# 기반 2D 퍼즐 어드벤처. 주요 게임 시스템과 컨트롤러 입력, Steam과 STOVE 연동을 구현했다."
 image: ./images/a-street-cats-tale-2/cover.webp
 tags: [unity, csharp, devops]
 draft: false
@@ -17,6 +17,7 @@ link:
 | --- | --- |
 | 기간 | 2021.10 - 2023.12 |
 | 소속 | 삐요 스튜디오 |
+| 참여 형태 | 비고용 팀 활동, 정규직과 병행 |
 | 역할 | 클라이언트 프로그래머 |
 | 기술 | Unity, C#, DevOps |
 

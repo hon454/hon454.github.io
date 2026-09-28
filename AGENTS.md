@@ -85,7 +85,7 @@ Before creating, rewriting, polishing, or reviewing the following content, read
 [Career Document Guidelines](docs/career-document-guidelines.md):
 
 - Resume: `src/content/spec/resume.md`
-- Career description: `src/content/spec/career.md`
+- CV (career description): `src/content/spec/cv.md`
 - Portfolio: `src/content/spec/portfolio.md`
 - Project articles: `src/content/projects/`
 

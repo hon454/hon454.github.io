@@ -34,7 +34,7 @@ link:
 - 세이브와 로드, 퀘스트, 대화, 이동, 컷신, 환경설정과 UI 등 주요 게임 시스템 구현
 - PlayStation, Nintendo Switch, Xbox 컨트롤러 입력 대응
 - Steamworks SDK 업적 시스템과 STOVE SDK 구매 인증 구현
-- 다국어 빌드 준비와 출시 빌드 검수, STOVE와 Steam Windows, macOS 출시 대응
+- STOVE와 Steam 스토어 등록부터 다국어 빌드 준비, 출시 빌드 검수와 업로드까지 Windows, macOS 출시 작업 전담
 - Synology NAS에 GitLab 저장소 서버 구축
 
 ## 출시와 전시 기록

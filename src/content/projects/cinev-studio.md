@@ -147,7 +147,7 @@ public:
 
 데이터 타입과 실행 경로 전환, 변환기 구현을 담당하고 전환 절차를 문서화했다. 동료와 도구 작업을 분담했으며 후속 콘텐츠팀 제작 가이드에도 에셋 작성과 생성 데이터 구축 절차가 반영됐다. 필요한 조건만 조합하고 타입별 필드로 값을 입력하는 흐름을 만들었고 소품별 값과 컴포넌트 선택에 필요한 문서 참조는 유지했다.
 
-`Unit Action Data Validator`를 개발해 액션 데이터 검증을 수행하고 더 이상 사용하지 않는 로직과 데이터 구조를 조사해 제거했다. FBX 로우 데이터에서 `Root Motion Start Transform`을 자동 추출하는 프로세스도 구현해 수동으로 입력하던 정보를 가져오도록 했다.
+`Unit Action Data Validator`를 개발해 액션 데이터의 정합성을 검사하고 오류 내역을 보고서로 출력하도록 했다. 더 이상 사용하지 않는 로직과 데이터 구조를 조사해 제거했다. FBX 로우 데이터에서 `Root Motion Start Transform`을 자동 추출하는 프로세스도 구현해 수동으로 입력하던 정보를 가져오도록 했다.
 
 <a id="action-interpreter"></a>
 
@@ -218,7 +218,7 @@ Trace.Record(TEXT("PathLength"), Scores, Rejected);
 
 #### 생성 요청과 런타임 애니메이션 변환
 
-HTTP/JSON API를 연동하고 생성 요청을 성별과 설정 가능한 배치 크기로 나눠 처리했다. 일부 요청이 실패해도 성공한 결과는 보존했다. 반환된 ONNX 본 구조를 프로젝트의 스켈레톤 표현으로 변환하고 `Root Motion`을 보정해 런타임 애니메이션에 적용했다. S2M 입력의 비동기 씬 구성까지 이어지는 처리도 구현했다.
+HTTP/JSON API를 연동하고 생성 요청을 성별과 설정 가능한 배치 크기로 나눠 병렬 처리했다. 일부 요청이 실패해도 성공한 결과는 보존했다. 반환된 ONNX 본 구조를 프로젝트의 스켈레톤 표현으로 변환하고 `Root Motion`을 보정해 런타임 애니메이션에 적용했다. S2M 입력의 비동기 씬 구성까지 이어지는 처리도 구현했다.
 
 생성 상태와 결과 목록을 관리하는 계층을 구성하고 약한 `UObject` 참조 기반 콜백과 `Delegate`로 결과를 편집기에 전달했다. 결과 조회 API와 선택 UI를 연결해 사용자가 생성된 모션을 고르고 타임라인에 적용하게 했다.
 
@@ -340,6 +340,12 @@ bool UndoAndRefresh(FCompoundEdit& Edit, FTimelineModel& Timeline)
 
 </details>
 
+### Root Motion과 카메라 이동의 재현
+
+타임라인에서 재생 속도나 반복 설정을 바꾸면 캐릭터의 이동 경로도 함께 달라져야 했다. `Root Motion`을 actor-space 기준으로 베이크하고, 재생 속도, loop, frame offset이 바뀌면 키를 다시 계산하도록 했다.
+
+카메라 orbit은 대상 주위를 도는 동안 반경이 줄어들거나 수직 회전이 극점에서 뒤집히는 문제가 있었다. Quaternion 기반 구면 이동에 충돌 처리와 pole 제한을 적용해 반경 손실과 수직 회전 뒤집힘을 해결했다.
+
 ## 편집기를 지탱하는 UI와 공통 서비스
 
 <a id="ui-state"></a>
@@ -385,6 +391,8 @@ bool UndoAndRefresh(FCompoundEdit& Edit, FTimelineModel& Timeline)
 **GitLab Runner** 기반 Unreal Engine 빌드와 패키징 환경을 구축하고 운영했다. Artifact와 DDC 관리, **Symbol Store**와 **Sentry** 연동, Slack 알림을 구성하고 `UnrealBuildTool` 실행을 최적화했다. 개발 빌드 아티팩트와 다운로드 안내를 제공해 기획과 QA가 빌드를 직접 받아 검증할 수 있도록 했다.
 
 Unreal Engine 5.3 → 5.7 마이그레이션에서는 API 변경과 서드파티 플러그인 호환성 문제를 해결했다. Shared DDC와 크래시 로그 수집과 분석 환경을 구성하고 엔진 전환에 필요한 대응도 진행했다.
+
+Shipping 빌드에서 외부 `Game.ini` override가 제한되고 설정이 삭제되는 원인을 추적했다. `Dev.ini`를 바탕으로 임시 `UserDir` 실행 환경을 만드는 런처를 구현해 원본 설정을 보존했다. Headless Commandlet과 Remote Control API로 편집과 렌더링을 자동화했다.
 
 ### 개발 도구 활용과 협업
 

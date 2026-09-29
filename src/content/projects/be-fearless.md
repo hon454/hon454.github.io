@@ -1,6 +1,6 @@
 ---
 title: "#BeFearless - Fear of Heights"
-published: 2016-06-08
+published: 2016-07-01
 description: "삼성 #BeFearless 캠페인을 위한 고소공포증 훈련 VR 앱. Gear S2 심박수 연동과 다국어 지원 시스템을 개발했다."
 image: ./images/be-fearless/cover.webp
 tags: [unity, csharp, oculus]
@@ -11,7 +11,7 @@ lang: ko
 
 | 항목 | 내용 |
 | --- | --- |
-| 기간 | 2016.06 - 2016.12 |
+| 기간 | 2016.07 - 2016.12 |
 | 소속 | 클릭트 |
 | 역할 | 클라이언트 프로그래머 |
 | 기술 | Unity, C#, Gear VR, Oculus Go, Gear S2 |

@@ -52,6 +52,11 @@ const documents = [
 		color: var(--deep-text);
 	}
 
+	/* --deep-text stays dark in dark mode; match prose-invert headings instead. */
+	:global(.dark) .document-title {
+		color: #fff;
+	}
+
 	.career-document[data-document="portfolio"] :global(table) {
 		width: 100%;
 		table-layout: fixed;
@@ -80,6 +85,11 @@ const documents = [
 		color: var(--deep-text);
 		background: var(--btn-regular-bg);
 		font-size: 0.875rem;
+	}
+
+	/* Keep before the hover/current rules so they still win in dark mode. */
+	:global(.dark) nav a {
+		color: var(--btn-content);
 	}
 
 	nav a:hover,
@@ -185,5 +195,15 @@ const documents = [
 		background: var(--btn-regular-bg);
 		font-size: 0.75rem;
 		color: var(--deep-text);
+	}
+
+	:global(.dark) .career-document :global(.recommendation-text) {
+		color: var(--tw-prose-headings);
+	}
+
+	/* Lift the label above the quote background so both layers stay distinct. */
+	:global(.dark) .career-document :global(.recommendation-label) {
+		background: var(--btn-regular-bg-hover);
+		color: var(--btn-content);
 	}
 </style>

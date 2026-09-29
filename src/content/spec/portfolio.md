@@ -3,6 +3,7 @@
 - **3D 제작 도구:** [Shotloom](#shotloom)의 편집과 저장 구조, [CINEVStudio](#cinevstudio)의 액션 데이터와 편집 UI 설계
 - **게임 개발과 최적화:** [Night of the Dead](#night-of-the-dead)의 멀티플레이 동기화, 다수 좀비 처리와 게임플레이 구현
 - **VR 장치 연동:** [CircleVR](#circlevr)의 좌표계 보정과 다중 사용자 전시, [Space Walker](#space-walker)의 실시간 모션 연동
+- **개발 도구와 오픈소스:** [Grimoire](#grimoire)의 AI 에이전트 작업 흐름, IDE 플러그인과 브라우저 확장 배포, [Firefly](#firefly)와 [bevy_vrm1](#bevy_vrm1) 기여
 
 [이력서](/resume/) / [경력기술서](/cv/) / [전체 프로젝트](/projects/)
 
@@ -22,9 +23,10 @@
 | 참여 기간 | 2026.04 - 2026.08 |
 | 주요 기술 | Rust, Bevy, WebGPU, React |
 
-- **편집과 저장의 일관성:** React UI, Rust 문서 모델과 Bevy 런타임을 연결하고 Undo/Redo와 저장, 복원을 구현했습니다. 드래그 시작부터 확정까지를 하나의 편집 트랜잭션으로 기록했습니다.
-- **캐릭터와 카메라 저작:** 캐릭터 배치와 포즈 후보 적용, 카메라 키프레임을 편집 UI부터 타임라인 평가와 저장 형식까지 연결했습니다.
+- **편집과 저장의 일관성:** React UI, Rust 문서 모델과 Bevy 런타임을 버전을 가진 명령과 이벤트 계약으로 연결하고 Undo/Redo와 저장, 복원을 구현했습니다. 드래그 시작부터 확정까지를 하나의 편집 트랜잭션으로 기록하고, 명령 거절이나 외부 서비스 실패에도 UI와 런타임, 저장 상태가 어긋나지 않도록 롤백을 적용했습니다.
+- **캐릭터와 카메라 저작:** 캐릭터 배치와 포즈 후보 적용, 카메라 키프레임을 편집 UI부터 타임라인 평가와 저장 형식까지 연결했습니다. 브라우저와 CLI가 같은 Rust 코어와 번들 형식을 사용하도록 구성했습니다.
 - **생성 서비스 통합:** CineV의 샷을 편집 가능한 3D 장면으로 열고, SceneGen 생성 영상의 마지막 프레임 이미지를 스토리보드로 반환하도록 구현했습니다. 생성과 결과 저장을 분리해 저장 실패 시 같은 결과를 다시 전송할 수 있게 했습니다.
+- **개발 체계와 CI:** Grimoire를 포함한 AI 에이전트 개발 환경을 저장소 초기부터 운용해 요구사항, 명세, 테스트와 PR을 연결했습니다. Rust 엔진 CI의 1.84GB target 아카이브를 684MB sccache로 교체해 캐시 크기를 약 63% 줄이고 warm CI에서 전체 캐시 적중을 확인했습니다.
 
 ![Shotloom에서 캐릭터와 공간을 배치하고 카메라 구도를 편집한 장면](../projects/images/shotloom/workflow-edited-scene.webp)
 
@@ -35,7 +37,7 @@
 
 ![저장한 캐릭터, 포즈 후보, 클립과 카메라 키를 복원한 Shotloom 화면](../projects/images/shotloom/local-12-restored.png)
 
-*로컬 실행에서 파일을 저장한 뒤 다시 연 화면입니다. 캐릭터와 포즈 후보, 클립, 0·60프레임의 카메라 키가 복원된 상태를 확인했습니다.*
+*로컬 실행에서 파일을 저장한 뒤 다시 연 화면입니다. 캐릭터와 포즈 후보, 클립, 0프레임과 60프레임의 카메라 키가 복원된 상태를 확인했습니다.*
 
 </details>
 
@@ -49,10 +51,11 @@
 | 참여 기간 | 2024.06 - 2026.04 |
 | 주요 기술 | Unreal Engine 5, C++, Sequencer, UMG |
 
-- **액션 데이터 작성 구조:** 문서와 대조하며 맞추던 액션 조건을 타입별 에셋 입력 구조로 바꿨습니다. 데이터 타입과 실행 경로, 변환기를 개발하고 정합성 검사와 전환 절차를 마련했습니다.
+- **액션 데이터 작성 구조:** 문서와 대조하며 맞추던 액션 조건을 타입별 에셋 입력 구조로 바꿨습니다. 데이터 타입과 실행 경로, 변환기를 개발하고 정합성 검사기와 전환 절차를 마련했습니다.
 - **AI 결과의 실행과 편집:** AI의 행동 지시를 현재 장면에서 실행할 수 있는 액션으로 해석하고, 생성 모션을 선택해 타임라인에 적용하는 흐름을 구현했습니다. Undo/Redo와 저장, 복원까지 연결했습니다.
 - **편집 UI와 공통 서비스:** UI Controller와 편집 State로 화면, 선택과 입력 처리를 나누고 Blackboard로 공유 상태를 전달했습니다. 공통 UI 컴포넌트를 개발하고 메시지 구독과 해제를 객체 수명에 맞췄습니다.
 - **샷 상태와 재생:** 독립 Shot 모델이 초기 상태를 관리하도록 저장과 복원을 정리했습니다. Root Motion을 타임라인 조건에 맞춰 다시 계산하고 카메라 회전의 반경 손실과 뒤집힘을 해결했습니다.
+- **빌드 환경과 엔진 이전:** GitLab Runner 기반 빌드와 패키징, Shared DDC, Sentry 크래시 수집을 구성하고 Unreal Engine 5.3에서 5.7로의 마이그레이션에서 API와 플러그인 호환성 문제를 해결했습니다.
 
 ![CINEVStudio의 캐릭터 뷰포트와 액션 타임라인](../projects/images/cinev-studio/studio-editor.webp)
 
@@ -88,6 +91,7 @@
 - **멀티플레이 동기화:** Replication Graph로 거리와 소유 관계에 따라 복제 대상을 나누고, Fast TArray Replication과 커스텀 NetSerialize로 배열 변경분과 전송 데이터를 처리했습니다.
 - **다수 좀비의 실행 비용:** Animation Budget Allocator, Significance Manager와 AnimURO로 애니메이션 업데이트 비용을 줄이고 ACL로 애니메이션 데이터를 압축했습니다.
 - **게임플레이와 출시:** 전투, 장비의 티어와 내구도, 파츠 개조, 보스 및 일반 좀비 AI를 구현했습니다. 얼리 액세스 업데이트부터 2024년 5월 1.0 정식 출시까지 참여했습니다.
+- **개발 인프라:** JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드, 패키징 자동화를 운영하고 UE4에서 UE5로의 이전을 진행했습니다.
 
 ![Night of the Dead 오픈월드 생존 게임](../projects/images/night-of-the-dead/cover.webp)
 
@@ -138,7 +142,7 @@
 
 - **기획과 클라이언트 개발:** 스토리와 세계관을 기획하고 입력, 이동과 전투 시스템을 개발했습니다.
 
-참여 기간 중 출품한 프로젝트가 제11회 새로운 경기 게임오디션 공동 2위에 선정됐습니다.
+참여 기간 중 출품한 프로젝트가 제11회 새로운 경기 게임오디션 공동 2위에 선정됐고, MWU Korea Awards 2019 PC & Console 분야 Top 3에 올랐습니다.
 
 [출품 영상과 개발 기록](/projects/vapor-world/)
 
@@ -165,7 +169,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 
 ![CircleVR 다중 사용자 VR 전시 시스템](../projects/images/circle-vr/cover.webp)
 
-*팀이 제작한 전시 시스템입니다. 내부의 VR 체험과 외부에 표시되는 체험자 시점은 상세 글의 시연 영상에서 확인할 수 있습니다.*
+*팀이 제작해 홍익대학교 VR 뮤지엄 전시관에 설치한 시스템입니다. 내부의 VR 체험과 외부에 표시되는 체험자 시점은 상세 글의 시연 영상에서 확인할 수 있습니다.*
 
 [CircleVR 전시 영상](/projects/circle-vr/)
 
@@ -197,6 +201,23 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 - **클라이언트 개선과 기기 대응:** UI를 개선하고 OVR API 변경에 대응했습니다. Daydream 지원을 위해 GoogleVR API를 연동했습니다.
 
 [onAirVR Client 2.0 시연](/projects/onairvr-client-2/)
+
+### #BeFearless - Fear of Heights
+
+| 항목 | 내용 |
+| --- | --- |
+| 소개 | 삼성 #BeFearless 캠페인을 위해 제작한 고소공포증 훈련 VR 앱 |
+| 참여 기간 | 2016.06 - 2016.12 |
+| 주요 기술 | Unity, C#, Gear VR, Oculus Go, Gear S2 |
+
+- **장치 연동과 다국어:** Gear S2 스마트워치의 심박수 데이터를 앱에 연동하고 다국어 지원 시스템을 개발했습니다.
+- **두 빌드의 스토어 출시:** Landscapes와 Cityscapes 빌드를 Gear VR과 Oculus Go에 대응해 Oculus Store에 등록했습니다.
+
+<iframe class="video-embed" src="https://www.youtube.com/embed/NxXbrohI-l4" title="#BeFearless - Fear of Heights 캠페인 영상" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+*삼성의 캠페인 영상입니다. 콘텐츠와 영상은 팀과 클라이언트의 결과물이며, 저는 심박수 연동과 다국어 시스템, 기기 대응을 담당했습니다.*
+
+[캠페인 영상과 개발 기록](/projects/be-fearless/)
 
 ## 육군 SW개발병
 
@@ -232,23 +253,24 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 
 | 항목 | 내용 |
 | --- | --- |
-| 소개 | AI 에이전트의 코드 리뷰, 작업 인계와 Git 운영을 위한 재사용 가능한 Skill과 Plugin |
-| 주요 기술 | Codex Skills, Plugin Hooks, Python, Git |
+| 소개 | AI 에이전트의 코드 리뷰, 리뷰 대응, 작업 인계와 Git 운영을 위한 재사용 가능한 Skill과 Plugin |
+| 주요 기술 | Python, Codex Skills, Codex Plugins, GitHub CLI, Git |
 
-- **개발 흐름 구성:** 요구사항과 설계 결정, 검증 및 PR을 연결하는 작업 절차를 구성하고 유지보수합니다.
-- **Skill과 Plugin 개발:** 코드 리뷰, 작업 인계와 Git 운영 절차를 Skill로 작성하고 설치 가능한 Plugin으로 제공합니다.
+- **개발 흐름 구성:** PR 맥락 수집부터 피드백 분류, 사용자 의사결정, 구현과 검증, 리뷰어 후속 대응까지 하나의 흐름으로 연결했습니다. 대화와 작업이 바뀌어도 결정 상태를 이어가고, 원격 변경은 사용자 확인과 검증을 통과한 뒤에만 수행합니다.
+- **보호 장치와 검증:** 작업 인계와 Git 정리, 충돌 해결처럼 실수 비용이 큰 작업에는 대상 재검증과 실패 시 중단하는 보호 장치를 적용하고 Python 표준 라이브러리 기반 테스트로 주요 동작을 검증합니다.
+- **Skill과 Plugin 배포:** 코드 리뷰, 작업 인계와 Git 운영 절차를 Skill로 작성하고 설치 가능한 Plugin으로 제공합니다. Shotloom 개발 기간에 이 도구를 포함한 에이전트 환경을 운용했습니다.
 
 #### [GitHub Pulls Show Reviewers](https://github.com/hon454/github-pulls-show-reviewers)
 
 | 항목 | 내용 |
 | --- | --- |
 | 소개 | GitHub PR 목록에 리뷰 요청 대상과 리뷰 상태를 표시하는 Chrome 확장 프로그램 |
-| 주요 기술 | TypeScript, React, WXT, GitHub REST API |
+| 주요 기술 | TypeScript, React, WXT, GitHub REST API, Vitest, Playwright |
 
 ![](../projects/images/github-pulls-show-reviewers.webp)
 
-- **리뷰 상태 표시:** 요청된 사용자와 팀, 리뷰어별 승인 및 변경 요청 상태를 PR 목록에 표시했습니다.
-- **화면 갱신과 API 처리:** GitHub의 목록 갱신에 맞춰 표시를 복원하고, API 캐시와 동시 요청 수 제한을 구현했습니다.
+- **리뷰 상태 표시:** 요청된 사용자와 팀, 리뷰어별 승인 및 변경 요청 상태를 PR 목록에 표시했습니다. 한국어를 포함한 5개 언어를 지원합니다.
+- **화면 갱신과 API 처리:** GitHub의 목록 갱신에 맞춰 표시를 복원하고, 페이지 단위 API 배치와 행 단위 캐시, 동시 요청 수 제한을 구현했습니다.
 - **계정 연동과 배포:** GitHub App으로 계정별 비공개 저장소 접근을 처리하고 [Chrome Web Store](https://chromewebstore.google.com/detail/github-pulls-show-reviewe/hoocgjopdboeghdkfjlkngkkpbiljggk)에 배포했습니다.
 
 #### [Copy Selection Context](https://github.com/hon454/copy-selection-context)
@@ -256,13 +278,13 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 | 항목 | 내용 |
 | --- | --- |
 | 소개 | 선택한 코드의 파일 경로와 줄 번호를 함께 복사하고 여러 파일의 문맥을 모으는 JetBrains 플러그인 |
-| 주요 기술 | Kotlin, IntelliJ Platform |
+| 주요 기술 | Kotlin, IntelliJ Platform SDK, Gradle, JUnit 5, GitHub Actions |
 
 ![](../projects/images/copy-selection-context.webp)
 
-- **코드와 위치 복사:** 선택 영역의 경로와 줄 범위를 계산하고, 여러 커서의 선택 영역과 사용자 지정 출력 형식을 지원했습니다.
+- **코드와 위치 복사:** 선택 영역의 경로와 줄 범위를 계산하고, 여러 커서의 선택 영역과 사용자 지정 출력 형식, GitHub와 GitLab permalink를 지원했습니다.
 - **문맥 수집과 검토:** 수집 당시의 코드와 위치를 스냅샷으로 보관하고, 도구 창에서 순서를 조정한 뒤 함께 복사하도록 구현했습니다.
-- **검증과 배포:** 단위 테스트와 IntelliJ 플랫폼 테스트, 플러그인 호환성 검증을 구성하고 [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/30262-copy-selection-context)에 배포했습니다.
+- **검증과 배포:** 단위 테스트와 IntelliJ 플랫폼 테스트, 플러그인 호환성 검증을 구성하고 GitHub Actions에서 릴리스와 서명된 배포를 자동화해 [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/30262-copy-selection-context)에 배포했습니다.
 
 ### 기여자 (Contributor)
 
@@ -273,18 +295,20 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 | 소개 | Astro와 Svelte 기반의 정적 블로그 테마 |
 | 주요 기술 | Astro, Svelte, TypeScript, Mermaid |
 
-- **[빌드와 렌더링 개선](https://github.com/CuteLeaf/Firefly/pull/588):** GitHub 카드의 빌드 캐시와 Mermaid 렌더링을 개선했습니다.
-- **[화면과 입력 처리](https://github.com/CuteLeaf/Firefly/pull/613):** 레이아웃과 스크롤, 입력 처리를 개선했습니다.
-- **[한국어 문서 작성](https://github.com/CuteLeaf/Firefly/pull/583):** 프로젝트의 한국어 문서를 작성했습니다.
+- **[GitHub 카드 빌드 캐시](https://github.com/CuteLeaf/Firefly/pull/588):** GitHub 저장소 카드를 빌드 시점 캐시로 전환해 API 장애와 사용량 제한에 대응했습니다.
+- **[Mermaid 렌더러 이전](https://github.com/CuteLeaf/Firefly/pull/584):** Mermaid 렌더링을 Node.js 기반 최신 버전으로 마이그레이션하며 기존 테마의 출력 형태를 유지했습니다.
+- **[카테고리 바 휠 스크롤](https://github.com/CuteLeaf/Firefly/pull/613):** 누적 이동 손실과 입력 지연을 제거하고, 가로 트랙패드 제스처를 보존하면서 목록 경계에서는 페이지 스크롤이 이어지도록 개선했습니다.
+- **[레이아웃 슬롯 수정](https://github.com/CuteLeaf/Firefly/pull/587):** 페이지별 `<head>` 콘텐츠가 최상위 레이아웃으로 전달되지 않던 Astro 슬롯 구조를 수정했습니다.
+- **[한국어 문서 작성](https://github.com/CuteLeaf/Firefly/pull/583):** 설치와 구성, 배포와 Markdown 확장 기능을 다룬 한국어 문서를 작성했습니다.
 
 #### [bevy_vrm1](https://github.com/not-elm/bevy_vrm1)
 
 | 항목 | 내용 |
 | --- | --- |
 | 소개 | Bevy에서 VRM 1.0 아바타를 불러오고 렌더링하는 라이브러리 |
-| 주요 기술 | Rust, Bevy, WebGPU |
+| 주요 기술 | Rust, Bevy, WGSL, WebGPU |
 
-- **[렌더링 오류 수정](https://github.com/not-elm/bevy_vrm1/pull/57):** Chrome WebGPU에서 VRM 표시 후 화면이 검게 변하는 문제를 재현하고, MToon 플래그 해석과 텍스처 샘플링 경로를 수정했습니다.
+- **[WebGPU 렌더링 오류 수정](https://github.com/not-elm/bevy_vrm1/pull/57):** Chrome WebGPU에서 MToon VRM 표시 직후 화면이 검게 변하는 문제를 재현하고, MToon의 `EMISSIVE_TEXTURE` 비트가 Standard Material 플래그와 충돌해 바인딩되지 않은 텍스처를 샘플링하는 원인을 격리했습니다. WGSL이 MToon uniform의 플래그를 읽도록 수정했습니다. Shotloom 브라우저 편집기에서 발견한 문제를 라이브러리에 기여한 사례입니다.
 
 ## 함께 일한 동료들의 추천
 
@@ -307,10 +331,34 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 </blockquote>
 
 <blockquote class="career-recommendation">
+  <p class="recommendation-text">주변의 문제를 발견하고, 필요한 일을 스스로 찾아 실제 변화로 만들어내는 동료입니다.</p>
+  <footer class="recommendation-source">
+    <div class="recommendation-author"><strong>심XX</strong><span>시나몬 클라이언트 개발자</span></div>
+    <div class="recommendation-details"><span>같은 팀 동료</span><span class="recommendation-label">원문 발췌</span></div>
+  </footer>
+</blockquote>
+
+<blockquote class="career-recommendation">
+  <p class="recommendation-text">새로운 영역의 문제를 깊게 파고들어 구조화하고, 팀이 함께 이해할 수 있는 형태로 만들어 갔습니다.</p>
+  <footer class="recommendation-source">
+    <div class="recommendation-author"><strong>임XX</strong><span>시나몬 테크니컬 아티스트</span></div>
+    <div class="recommendation-details"><span>같은 팀 동료</span><span class="recommendation-label">원문 발췌</span></div>
+  </footer>
+</blockquote>
+
+<blockquote class="career-recommendation">
   <p class="recommendation-text">미래지향적이면서도 신뢰할 수 있는 엔지니어.</p>
   <footer class="recommendation-source">
     <div class="recommendation-author"><strong>고XX</strong><span>시나몬 AI PO</span></div>
     <div class="recommendation-details"><span>협업 동료(타 부서)</span><span class="recommendation-label">번역 발췌</span></div>
+  </footer>
+</blockquote>
+
+<blockquote class="career-recommendation">
+  <p class="recommendation-text">기획과 개발의 경계를 두기보다 함께 좋은 결과물을 만들어가기 위해 고민해주는 클라이언트 개발자였습니다.</p>
+  <footer class="recommendation-source">
+    <div class="recommendation-author"><strong>최XX</strong><span>시나몬 서비스 기획자</span></div>
+    <div class="recommendation-details"><span>협업 동료(타 부서)</span><span class="recommendation-label">원문 발췌</span></div>
   </footer>
 </blockquote>
 

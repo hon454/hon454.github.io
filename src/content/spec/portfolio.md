@@ -21,7 +21,7 @@
 | --- | --- |
 | 소개 | 캐릭터 동작과 카메라를 편집하고 영상 생성 서비스와 연결하는 브라우저 3D 편집기 |
 | 참여 기간 | 2026.04 - 2026.08 |
-| 주요 기술 | Rust, Bevy, WebGPU, React |
+| 주요 기술 | Rust, Bevy, WebGPU, React, Tauri |
 
 - **편집과 저장의 일관성:** React UI, Rust 문서 모델과 Bevy 런타임을 버전을 가진 명령과 이벤트 계약으로 연결하고 Undo/Redo와 저장, 복원을 구현했습니다. 드래그 시작부터 확정까지를 하나의 편집 트랜잭션으로 기록하고, 명령 거절이나 외부 서비스 실패에도 UI와 런타임, 저장 상태가 어긋나지 않도록 롤백을 적용했습니다.
 - **캐릭터와 카메라 저작:** 캐릭터 배치와 포즈 후보 적용, 카메라 키프레임을 편집 UI부터 타임라인 평가와 저장 형식까지 연결했습니다. 브라우저와 CLI가 같은 Rust 코어와 번들 형식을 사용하도록 구성했습니다.
@@ -72,7 +72,7 @@
 
 [액션 입력과 실행 구조](/projects/cinev-studio/#data-authoring) / [UI 상태 관리와 도식](/projects/cinev-studio/#ui-state) / [제품 튜토리얼과 제작 영상](/projects/cinev-studio/#제품-화면과-실제-제작-사례)
 
-## 작두스튜디오
+## 작두 스튜디오
 
 | 항목 | 내용 |
 | --- | --- |
@@ -91,13 +91,13 @@
 - **멀티플레이 동기화:** Replication Graph로 거리와 소유 관계에 따라 복제 대상을 나누고, Fast TArray Replication과 커스텀 NetSerialize로 배열 변경분과 전송 데이터를 처리했습니다.
 - **다수 좀비의 실행 비용:** Animation Budget Allocator, Significance Manager와 AnimURO로 애니메이션 업데이트 비용을 줄이고 ACL로 애니메이션 데이터를 압축했습니다.
 - **게임플레이와 출시:** 전투, 장비의 티어와 내구도, 파츠 개조, 보스 및 일반 좀비 AI를 구현했습니다. 얼리 액세스 업데이트부터 2024년 5월 1.0 정식 출시까지 참여했습니다.
-- **개발 인프라:** JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드, 패키징 자동화를 운영하고 UE4에서 UE5로의 이전을 진행했습니다.
+- **개발 인프라:** JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드, 패키징 자동화를 운영하고 UE4에서 UE5로의 이전을 주도했습니다.
 
 ![Night of the Dead 오픈월드 생존 게임](../projects/images/night-of-the-dead/cover.webp)
 
-*팀이 개발한 게임의 공개 이미지입니다. 제가 구현한 장비와 전투 기능은 업데이트별 담당 기록에, 동기화와 최적화의 적용 방식은 경력기술서에 정리했습니다.*
+*팀이 개발한 게임의 공개 이미지입니다. 제가 구현한 장비와 전투 기능은 업데이트별 담당 기록에, 동기화의 적용 방식은 프로젝트 글에 정리했습니다.*
 
-[장비와 전투 업데이트](/projects/night-of-the-dead/#equipment-update) / [동기화와 최적화](/cv/#night-of-the-dead) / [Steam 출시 페이지](https://store.steampowered.com/app/1377380/Night_of_the_Dead/)
+[장비와 전투 업데이트](/projects/night-of-the-dead/#equipment-update) / [멀티플레이 동기화](/projects/night-of-the-dead/#network-sync) / [Steam 출시 페이지](https://store.steampowered.com/app/1377380/Night_of_the_Dead/)
 
 ## 삐요 스튜디오
 
@@ -116,7 +116,7 @@
 | 주요 기술 | Unity, C# |
 
 - **주요 게임 시스템:** 세이브와 로드, 퀘스트, 대화, 이동, 컷신과 UI를 개발했습니다.
-- **PC 플랫폼 출시:** 컨트롤러 입력, Steam 업적과 STOVE 구매 인증을 연동하고 다국어 빌드 준비와 검수에 참여했습니다. 2023년 STOVE Windows 얼리 액세스와 Steam Windows, macOS 정식 출시까지 담당했습니다.
+- **PC 플랫폼 출시:** 컨트롤러 입력, Steam 업적과 STOVE 구매 인증을 연동했습니다. 스토어 등록부터 다국어 빌드 준비, 출시 빌드 검수와 업로드까지 출시 작업을 전담해 2023년 STOVE Windows 얼리 액세스와 Steam Windows, macOS 정식 출시를 진행했습니다.
 
 ![길고양이 이야기 2 게임 대표 이미지](../projects/images/a-street-cats-tale-2/cover.webp)
 
@@ -124,13 +124,13 @@
 
 [게임 영상과 출시, 수상 자료](/projects/a-street-cats-tale-2/) / [담당 범위](/cv/#a-street-cats-tale-2)
 
-## 이메진 템페스트 스튜디오
+## 이메진템페스트 스튜디오
 
 | 항목 | 내용 |
 | --- | --- |
 | 소속 기간 | 2019.06 - 2020.04 |
 | 참여 형태 | 비고용 팀 활동 |
-| 담당 직무 | 기획 및 클라이언트 개발 |
+| 담당 직무 | 기획 및 클라이언트 프로그래머 |
 
 ### Vapor World
 
@@ -207,7 +207,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 | 항목 | 내용 |
 | --- | --- |
 | 소개 | 삼성 #BeFearless 캠페인을 위해 제작한 고소공포증 훈련 VR 앱 |
-| 참여 기간 | 2016.06 - 2016.12 |
+| 참여 기간 | 2016.07 - 2016.12 |
 | 주요 기술 | Unity, C#, Gear VR, Oculus Go, Gear S2 |
 
 - **장치 연동과 다국어:** Gear S2 스마트워치의 심박수 데이터를 앱에 연동하고 다국어 지원 시스템을 개발했습니다.
@@ -253,7 +253,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 
 | 항목 | 내용 |
 | --- | --- |
-| 소개 | AI 에이전트의 코드 리뷰, 리뷰 대응, 작업 인계와 Git 운영을 위한 재사용 가능한 Skill과 Plugin |
+| 소개 | AI 에이전트의 코드 리뷰, 리뷰 대응, 이슈 준비도 판단, 작업 인계와 Git 운영을 위한 재사용 가능한 Skill과 Plugin |
 | 주요 기술 | Python, Codex Skills, Codex Plugins, GitHub CLI, Git |
 
 - **개발 흐름 구성:** PR 맥락 수집부터 피드백 분류, 사용자 의사결정, 구현과 검증, 리뷰어 후속 대응까지 하나의 흐름으로 연결했습니다. 대화와 작업이 바뀌어도 결정 상태를 이어가고, 원격 변경은 사용자 확인과 검증을 통과한 뒤에만 수행합니다.
@@ -308,7 +308,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 | 소개 | Bevy에서 VRM 1.0 아바타를 불러오고 렌더링하는 라이브러리 |
 | 주요 기술 | Rust, Bevy, WGSL, WebGPU |
 
-- **[WebGPU 렌더링 오류 수정](https://github.com/not-elm/bevy_vrm1/pull/57):** Chrome WebGPU에서 MToon VRM 표시 직후 화면이 검게 변하는 문제를 재현하고, MToon의 `EMISSIVE_TEXTURE` 비트가 Standard Material 플래그와 충돌해 바인딩되지 않은 텍스처를 샘플링하는 원인을 격리했습니다. WGSL이 MToon uniform의 플래그를 읽도록 수정했습니다. Shotloom 브라우저 편집기에서 발견한 문제를 라이브러리에 기여한 사례입니다.
+- **[WebGPU 렌더링 오류 수정](https://github.com/not-elm/bevy_vrm1/pull/57):** Chrome WebGPU에서 MToon VRM 표시 직후 화면이 검게 변하지만 Metal 네이티브에서는 나타나지 않는 문제를 재현하고, 조명 단계별 비교로 원인을 emissive 처리에 격리했습니다. MToon의 `EMISSIVE_TEXTURE` 비트가 Standard Material 플래그와 충돌해 미정의 값을 읽고 바인딩되지 않은 텍스처를 샘플링하면서 NaN이 톤매핑과 Bloom으로 전파되는 것을 확인했고, WGSL이 MToon uniform의 플래그를 읽도록 수정했습니다. Shotloom 브라우저 편집기에서 발견한 문제를 라이브러리에 기여하고 동료와 함께 편집기에 반영한 사례입니다.
 
 ## 함께 일한 동료들의 추천
 

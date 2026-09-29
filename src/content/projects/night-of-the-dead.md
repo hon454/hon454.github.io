@@ -24,7 +24,7 @@ link:
 
 Night of the Dead는 밤마다 몰려오는 좀비에 대비해 방어 시설을 짓고 섬에서 살아남는 오픈월드 생존 게임이다. Unreal Engine과 C++로 개발했으며, Windows Server 기반 Dedicated Server에서 멀티플레이를 지원한다. 얼리 액세스 기간의 업데이트부터 2024년 5월 1.0 정식 출시까지 클라이언트 프로그래머로 참여했다.
 
-전투와 장비, 보스 및 일반 좀비 AI, 월드 상호작용 같은 게임플레이와 함께 멀티플레이 동기화, 다수 좀비의 실행 비용 최적화, 엔진 이전과 개발 인프라를 담당했다. 동기화와 최적화의 적용 방식은 [경력기술서](/cv/#night-of-the-dead)에 정리했다.
+전투와 장비, 보스 및 일반 좀비 AI, 월드 상호작용 같은 게임플레이와 함께 멀티플레이 동기화, 다수 좀비의 실행 비용 최적화, 엔진 이전과 개발 인프라를 담당했다. 동기화의 적용 방식은 [멀티플레이 동기화](#network-sync)에 정리했다.
 
 [Steam 상점](https://store.steampowered.com/app/1377380/Night_of_the_Dead/)
 
@@ -71,7 +71,7 @@ Night of the Dead는 밤마다 몰려오는 좀비에 대비해 방어 시설을
 
 [개발 업데이트 #15](https://store.steampowered.com/news/app/1377380/view/3888357282609115394?l=koreana)
 
-- 프로젝트 Unreal Engine 5 마이그레이션 진행
+- 프로젝트 Unreal Engine 5 마이그레이션 주도
 - Replication Graph 개편
 
 ![](./images/night-of-the-dead/image-07.webp)
@@ -194,6 +194,18 @@ Night of the Dead는 밤마다 몰려오는 좀비에 대비해 방어 시설을
 
 ## 기술별 담당 내용
 
+<a id="network-sync"></a>
+
+### 멀티플레이 동기화
+
+Windows Server 기반 Dedicated Server를 Unreal Insights로 분석하며 복제 대상 선정, 배열 변경분 전송과 직렬화를 최적화했다. 공간상 가까운 액터 외에도 소유 관계에 따라 전달해야 하는 상태가 있어 복제 조건을 나눴다.
+
+Replication Graph에서 공간과 거리로 연결별 후보를 수집하고, 오너와 팀, 그룹에 종속된 액터는 해당 연결에 거리와 무관하게 포함했다. 장착 장비, 탑승 대상과 무기 부속품은 부모 액터가 복제될 때 함께 검토하도록 구성했다. 전역 매니저는 Always Relevant 노드에, 휴면 액터는 별도 노드에 두어 상태에 맞게 처리했다.
+
+플레이어 인벤토리, 버프와 디버프, 퀘스트 진행도는 배열이 크고 지속적으로 갱신되는 데이터였다. Fast TArray Replication으로 항목의 추가, 변경과 삭제를 델타 동기화하고, 커스텀 NetSerialize로 조건에 맞는 데이터 표현을 사용했다. 대상 선정과 변경분 전송을 구분해 반복 검사와 전송 비용을 줄였다.
+
+서버와 클라이언트 간 대용량 데이터 전송을 위해 RPC 기반 데이터 스트리밍을 구현하고, Epic Online Services 세션을 멀티플레이 개설 및 접속 과정에 연결했다.
+
 ### 물리와 파괴 오브젝트
 
 UE4의 PhysX 기반 Destructible 오브젝트 시스템을 구현하고 최적화했다. UE5 마이그레이션에서 Chaos Physics로 전환하면서 Chaos Destructible의 성능 제약을 분석하고, 다수 오브젝트의 파괴 연출을 처리하기 위한 커스텀 Destructible 시스템을 구현했다. 환경 오브젝트 상호작용의 물리 기반 반응도 함께 다뤘다.
@@ -204,7 +216,7 @@ UE4의 PhysX 기반 Destructible 오브젝트 시스템을 구현하고 최적�
 
 ### 능력치와 전투 판정
 
-캐릭터 능력치, 장비 효과, 전투 판정을 관리하는 어빌리티 구조를 설계하고 캐릭터 스킬과 버프, 디버프 시스템을 구현했다. Gameplay Ability System의 구성 방식을 참고했다.
+캐릭터 능력치, 장비 효과, 전투 판정을 관리하는 어빌리티 구조를 설계하고 캐릭터 스킬과 버프, 디버프 시스템을 구현했다. Gameplay Ability System의 구성 방식을 참고했다. 근거리, 원거리, 투척 무기의 장착 구조와 능력치를 구현하고 던전과 전투 UI를 개발했다.
 
 ### 장비 커스터마이징
 

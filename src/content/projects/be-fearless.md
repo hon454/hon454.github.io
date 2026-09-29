@@ -1,7 +1,7 @@
 ---
 title: "#BeFearless - Fear of Heights"
 published: 2016-06-08
-description: "삼성 #BeFearless 캠페인을 위한 VR 애플리케이션. Gear S2 심박수 연동과 다국어 지원 시스템을 개발했다."
+description: "삼성 #BeFearless 캠페인을 위한 고소공포증 훈련 VR 앱. Gear S2 심박수 연동과 다국어 지원 시스템을 개발했다."
 image: ./images/be-fearless/cover.webp
 tags: [unity, csharp, oculus]
 draft: false
@@ -14,7 +14,7 @@ lang: ko
 | 기간 | 2016.06 - 2016.12 |
 | 소속 | 클릭트 |
 | 역할 | 클라이언트 프로그래머 |
-| 기술 | Unity, C#, Oculus |
+| 기술 | Unity, C#, Gear VR, Oculus Go, Gear S2 |
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/NxXbrohI-l4" title="#BeFearless - Fear of Heights 영상 1" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -24,9 +24,12 @@ lang: ko
 
 ![](./images/be-fearless/image-02.webp)
 
-- 삼성의 외주로 #BeFearless 켐페인을 위해 제작한 고소공포증 치료 VR 어플리케이션
-- Landscapses / Citiscapes 두 가지의 빌드로 제작
-- 삼성의 스마트워치 기어 S2를 연동하여 심박수 데이터를 전송
-- 다국어 지원을 위한 시스템 개발
-- GearVR과 Oculus Go 지원
-- Oculus Store에 어플리케이션 등록 (Landscapes, Cityscapes)
+## 프로젝트와 담당 역할
+
+삼성의 #BeFearless 캠페인을 위해 클릭트가 외주로 제작한 고소공포증 훈련 VR 앱이다. 자연 풍경을 다룬 Landscapes와 도시 풍경을 다룬 Cityscapes 두 빌드로 구성했고, Gear VR과 Oculus Go를 지원해 Oculus Store에 두 앱을 등록했다.
+
+## 담당 업무
+
+- 삼성 스마트워치 Gear S2와 연동해 심박수 데이터를 앱으로 전송
+- 다국어 지원 시스템 개발
+- Gear VR과 Oculus Go 대응 및 Oculus Store 등록 지원

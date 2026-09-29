@@ -20,13 +20,13 @@ link:
 
 GitHub PR 목록에서는 제목과 작성자, 진행 상태를 훑어볼 수 있지만 리뷰 요청 대상과 리뷰어별 상태를 함께 확인하려면 각 PR을 열어보게 된다.
 
-GitHub Pulls Show Reviewers는 이 정보를 목록에 표시하는 Chrome 확장 프로그램이다. 요청된 사용자와 팀, 승인·변경 요청 등의 리뷰 상태를 각 PR 행에 추가해 리뷰 현황을 목록에서 확인하도록 구현했다.
+GitHub Pulls Show Reviewers는 이 정보를 목록에 표시하는 Chrome 확장 프로그램이다. 요청된 사용자와 팀, 승인과 변경 요청 등의 리뷰 상태를 각 PR 행에 추가해 리뷰 현황을 목록에서 확인하도록 구현했다.
 
 ## 구현 범위
 
 WXT, TypeScript와 React를 사용했다. 콘텐츠 스크립트가 GitHub의 PR 행을 찾고, 백그라운드 서비스 워커가 GitHub REST API에서 리뷰어 정보를 조회한다. 설정 화면에서는 표시 방식과 연결 계정, 저장소 접근 상태를 관리한다.
 
-리뷰어는 아바타 또는 사용자 이름으로 표시하고, 관련 PR 검색으로 연결한다. 공개 저장소의 익명 조회와 GitHub App을 통한 비공개 저장소 조회를 지원하며, 개인·업무 계정을 함께 연결할 수 있다. 설정과 리뷰어 표시에는 한국어를 포함한 5개 언어를 제공한다.
+리뷰어는 아바타 또는 사용자 이름으로 표시하고, 관련 PR 검색으로 연결한다. 공개 저장소의 익명 조회와 GitHub App을 통한 비공개 저장소 조회를 지원하며, 개인과 업무 계정을 함께 연결할 수 있다. 설정과 리뷰어 표시에는 한국어를 포함한 5개 언어를 제공한다.
 
 ## GitHub 화면 갱신과 리뷰 상태 처리
 
@@ -46,8 +46,8 @@ GitHub App의 요청 권한은 `Pull requests: Read`로 제한했다. OAuth 처�
 
 ## 검증과 배포
 
-Vitest와 Playwright를 사용해 로직과 브라우저 동작을 검증하는 테스트를 구성했다. 목록 갱신, 리뷰 상태 조합, 인증·접근 오류와 언어 변경 중 불필요한 요청이 발생하지 않는 경우를 회귀 테스트로 다룬다.
+Vitest와 Playwright를 사용해 로직과 브라우저 동작을 검증하는 테스트를 구성했다. 목록 갱신, 리뷰 상태 조합, 인증과 접근 오류, 언어 변경 중 불필요한 요청이 발생하지 않는 경우를 회귀 테스트로 다룬다.
 
-배포 패키지는 릴리스 검증과 ZIP 생성 과정을 거쳐 Chrome Web Store에 제공한다. 현재 지원·검증 대상 브라우저는 Chrome이다.
+배포 패키지는 릴리스 검증과 ZIP 생성 과정을 거쳐 Chrome Web Store에 제공한다. 현재 지원 및 검증 대상 브라우저는 Chrome이다.
 
-[소스 코드와 사용법](https://github.com/hon454/github-pulls-show-reviewers) · [구현 문서](https://github.com/hon454/github-pulls-show-reviewers/blob/main/docs/implementation-notes.md) · [Chrome Web Store](https://chromewebstore.google.com/detail/github-pulls-show-reviewe/hoocgjopdboeghdkfjlkngkkpbiljggk)
+[소스 코드와 사용법](https://github.com/hon454/github-pulls-show-reviewers) / [구현 문서](https://github.com/hon454/github-pulls-show-reviewers/blob/main/docs/implementation-notes.md) / [Chrome Web Store](https://chromewebstore.google.com/detail/github-pulls-show-reviewe/hoocgjopdboeghdkfjlkngkkpbiljggk)

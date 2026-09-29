@@ -2,17 +2,17 @@
 
 회사와 프로젝트별 담당 범위, 기술적 판단과 문제 해결 과정은 [경력기술서](/cv/)에서 자세히 설명합니다. 대표 작업의 화면과 영상, 공개 코드와 기여 내용은 [포트폴리오](/portfolio/)에서 확인할 수 있습니다.
 
-[hon454@naver.com](mailto:hon454@naver.com) / [LinkedIn](https://www.linkedin.com/in/jihoon-jeon-b7ab83116) / [GitHub](https://github.com/hon454) / [동료 추천사](https://www.linkedin.com/in/jihoon-jeon-b7ab83116/details/recommendations/?detailScreenTabIndex=0)
+[hon454@gmail.com](mailto:hon454@gmail.com) / [LinkedIn](https://www.linkedin.com/in/jihoon-jeon-b7ab83116) / [GitHub](https://github.com/hon454) / [동료 추천사](https://www.linkedin.com/in/jihoon-jeon-b7ab83116/details/recommendations/?detailScreenTabIndex=0)
 
 ## 프로필
 
-게임 클라이언트와 실시간 3D 제작 도구를 개발하는 전지훈입니다. Unreal Engine과 C++로 오픈월드 멀티플레이, AI와 애니메이션, 제작 도구를 개발했습니다. Unity 기반 PC 게임 출시와 VR 개발을 경험했고, 최근에는 Rust와 Bevy 기반 브라우저 3D 편집기를 만들었습니다.
+게임 클라이언트와 실시간 3D 제작 도구를 개발하는 전지훈입니다. Unreal Engine과 C++로 오픈월드 멀티플레이 게임의 전투와 AI, 네트워크 동기화를 개발하고 AI 애니메이션 제작 도구의 데이터 구조와 편집 기능을 설계했습니다. Unity 기반 PC 게임 출시와 VR 장치 연동을 경험했고, 최근에는 Rust와 Bevy로 브라우저 3D 편집기를 만들며 AI 에이전트를 개발 과정 전반에 활용했습니다.
 
 ## 핵심 역량
 
-- **게임 개발:** Unreal Engine과 Unity의 게임플레이 구현, 네트워크 동기화, 다수 개체의 실행 비용 최적화
-- **3D 제작 도구:** 타임라인과 카메라 편집, 저장과 복원, 생성형 AI 서비스와 런타임 연결
-- **개발 환경:** 빌드와 검증 자동화, 코드 리뷰, AI 에이전트 활용 도구 개발 및 운용
+- **게임 개발:** Unreal Engine과 Unity에서 전투, 장비, AI 등 게임플레이를 구현하고 Replication Graph와 델타 직렬화로 Dedicated Server 동기화를, 애니메이션 예산 관리와 압축으로 다수 개체의 실행 비용을 최적화했습니다.
+- **3D 제작 도구:** Unreal Engine과 Rust, Bevy 환경에서 액션 데이터 구조, 타임라인과 카메라 편집, Undo/Redo와 저장 및 복원을 설계하고 생성형 AI 서비스의 결과를 편집 가능한 장면으로 연결했습니다.
+- **개발 환경과 협업:** TeamCity와 GitLab CI 기반 빌드 자동화, Sentry 오류 추적, 코드 리뷰와 AI 에이전트 개발 체계를 구성해 운용하고, 반복 작업을 오픈소스 도구로 만들어 배포했습니다.
 
 ## 경력
 
@@ -20,16 +20,17 @@
 
 2024.06 - 2026.08 / 정규직
 
-**Shotloom (2026.04 - 2026.08)** / Rust, Bevy, WebGPU, React, TypeScript, Tauri
+**Shotloom (2026.04 - 2026.08)** / Rust, Bevy, WebAssembly, WebGPU, React, TypeScript, Tauri
 
-- CINEVStudio 후속 개발에서 AI Native 방식으로 전환한 브라우저 3D 편집기의 초기 개발에 참여했습니다. 팀이 선정한 기술 스택 위에서 캐릭터와 카메라 편집, 타임라인을 구현했습니다.
-- 편집 명령과 Undo/Redo, 저장 및 복원을 연결하고, 생성 서비스의 결과를 편집 가능한 장면으로 변환했습니다.
-- CineV에서 장면을 열어 편집하고 생성 결과의 마지막 프레임 이미지를 돌려주는 흐름을 개발했습니다. Grimoire를 포함한 AI 에이전트 개발 환경을 운용하며 요구사항과 검증 결과를 관리했습니다.
+- Unreal Engine과 Pixel Streaming에 의존하던 제작 도구를 브라우저 우선의 3D 편집기로 전환하는 초기 개발에 참여했습니다. 팀이 선정한 기술 스택 위에서 캐릭터와 카메라 편집, 타임라인, 문서 모델을 구현했습니다.
+- 편집 명령과 Undo/Redo, 저장 및 복원을 하나의 트랜잭션 경로로 연결하고, 브라우저와 CLI가 같은 Rust 코어와 번들 형식을 공유하도록 구성했습니다.
+- CineV에서 장면을 열어 편집하고 생성 결과의 마지막 프레임 이미지를 스토리보드로 돌려주는 흐름을 개발했습니다. Grimoire를 포함한 AI 에이전트 개발 환경을 운용하며 요구사항과 검증을 연결했고, 개인 변경 기준 주간 병합 빈도가 CINEVStudio 기간 평균 8.2건에서 16.1건으로 늘었습니다.
 
 **CINEVStudio (2024.06 - 2026.04)** / Unreal Engine 5, C++, UMG, Sequencer, ONNX
 
-- 액션 데이터 작성 구조와 AI 행동 해석, 생성 모션 연동을 담당했습니다. 제작자가 입력한 데이터를 캐릭터의 실행과 타임라인 편집으로 연결했습니다.
-- Shot 상태의 저장과 복원, Root Motion과 카메라 편집을 구현하고, Headless 자동화와 개발 빌드 배포 환경을 구성했습니다.
+- 액션 데이터 작성 구조와 AI 행동 해석, 생성 모션 연동을 담당했습니다. 제작자가 입력한 데이터를 캐릭터의 실행과 타임라인 편집으로 연결하고, 데이터 검증기로 정합성 검사를 자동화했습니다.
+- UI Controller와 편집 State, Blackboard로 편집 UI의 상태 관리를 재구성하고 공통 UI 컴포넌트를 개발했습니다. Shot 상태의 저장과 복원, Root Motion과 카메라 편집을 구현했습니다.
+- GitLab CI 기반 빌드와 패키징, Shared DDC, Sentry 크래시 수집 환경을 구성하고 Unreal Engine 5.3에서 5.7로의 마이그레이션을 진행했습니다. 연말 타운홀에서 GitLab 개발왕으로 선정됐습니다.
 
 ### 팀스파르타 / 언리얼 게임 개발 코스 튜터
 
@@ -42,11 +43,11 @@
 
 2021.01 - 2024.06 / 정규직
 
-**Night of the Dead** / Unreal Engine 4/5, C++, Unreal Insights, EOS, TeamCity
+**Night of the Dead** / Unreal Engine 4/5, C++, Unreal Insights, EOS, Steamworks, TeamCity
 
 - 전투와 장비, 보스 및 일반 좀비 AI, 월드 상호작용을 개발하고 2024년 5월 1.0 정식 출시까지 참여했습니다.
 - Windows Server 기반 Dedicated Server에서 Replication Graph, Fast TArray Replication과 커스텀 NetSerialize를 적용해 복제 대상과 전송 데이터를 최적화했습니다.
-- 다수 좀비의 애니메이션 업데이트와 압축을 개선하고, UE4에서 UE5로의 이전 및 빌드 자동화를 담당했습니다.
+- 다수 좀비의 애니메이션 업데이트와 압축을 개선하고, UE4에서 UE5로의 이전을 진행했습니다. JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드 자동화를 운영했습니다.
 
 ### 삐요 스튜디오 / 인디 게임 개발자
 
@@ -67,23 +68,23 @@ Unity, C#과 GameSparks를 사용해 Brutal League의 캠페인 모드와 보상
 
 2019.06 - 2020.04 / 비고용 팀 활동
 
-Vapor World의 스토리와 세계관, Unity 기반 입력과 이동, 전투 시스템을 개발했습니다. 참여 기간 중 프로젝트가 제11회 새로운 경기 게임오디션 공동 2위에 선정됐습니다.
+Vapor World의 스토리와 세계관, Unity 기반 입력과 이동, 전투 시스템을 개발했습니다. 참여 기간 중 프로젝트가 제11회 새로운 경기 게임오디션 공동 2위에 선정됐고, MWU Korea Awards 2019 PC & Console 분야 Top 3에 올랐습니다.
 
 ### 육군 / SW개발병
 
 2018.03 - 2019.10 / 군 복무
 
-C#과 WPF로 기존 프로그램을 이식 개발하고 VBA로 엑셀 데이터 정리 프로그램을 만들었습니다. 육군 지휘통제시스템의 장애 대응과 운영을 담당했습니다.
+C#과 WPF로 기존 프로그램을 이식 개발하고 VBA로 엑셀 데이터 정리 프로그램을 만들었습니다. 육군 지휘통제시스템의 장애 대응과 운영을 담당했으며, 응용체계관리반 분대장으로 복무했습니다.
 
 ### 클릭트(Clicked, Inc.) / VR 소프트웨어 엔지니어
 
 2016.07 - 2018.02 / 정규직
 
-**onAirVR, CircleVR, Space Walker** / Unity, C#, 소켓 통신, HTC Vive Tracker
+**onAirVR, CircleVR, Space Walker, #BeFearless** / Unity, C#, 소켓 통신, HTC Vive Tracker, Gear VR
 
 - onAirVR 스튜디오 클라이언트와 세션별 카메라 리그를 구현하고, HTC Vive 트래커 정보를 소켓 통신으로 수신하는 기능을 개발했습니다.
-- CircleVR의 장치 간 좌표계와 장착 오프셋을 보정했습니다.
-- Space Walker의 3D 배경 인터랙션과 전신 모션 연동을 구현하고, 다수의 파티클 처리에 GPU 파티클 시스템을 적용해 실시간 공연의 성능 부담을 줄였습니다.
+- CircleVR의 장치 간 좌표계와 장착 오프셋을 보정하고, Space Walker의 3D 배경 인터랙션과 전신 모션 연동에 GPU 파티클 시스템을 적용했습니다.
+- 삼성 #BeFearless 캠페인용 고소공포증 훈련 VR 앱에서 Gear S2 심박수 연동과 다국어 시스템을 개발하고 Oculus Store 출시에 참여했습니다.
 
 ### 웹젠 / 게임 디자이너 인턴
 
@@ -105,15 +106,16 @@ C#과 WPF로 기존 프로그램을 이식 개발하고 VBA로 엑셀 데이터 
 
 ## 오픈소스
 
-- **[Grimoire](https://github.com/hon454/grimoire):** AI 에이전트의 리뷰, 작업 인계와 Git 운영을 위한 Skill과 Plugin을 개발하고 유지보수합니다.
+- **[Grimoire](https://github.com/hon454/grimoire):** AI 에이전트의 코드 리뷰, 리뷰 대응, 작업 인계와 Git 운영을 위한 Skill과 Plugin을 개발하고 유지보수합니다.
 - **[Copy Selection Context](/projects/copy-selection-context/):** 코드와 위치 정보를 함께 전달하는 JetBrains 플러그인을 개발해 Marketplace에 배포했습니다.
 - **[GitHub Pulls Show Reviewers](/projects/github-pulls-show-reviewers/):** PR 목록에 리뷰어와 상태를 표시하는 Chrome 확장 프로그램을 개발해 Chrome Web Store에 배포했습니다.
-- **외부 기여:** [Firefly](https://github.com/CuteLeaf/Firefly/pull/588)의 빌드와 렌더링, 입력 처리 및 한국어 문서를 개선하고, [bevy_vrm1](https://github.com/not-elm/bevy_vrm1/pull/57)의 WebGPU 렌더링 오류를 수정했습니다.
+- **외부 기여:** [Firefly](https://github.com/CuteLeaf/Firefly)의 GitHub 카드 빌드 캐시, Mermaid 렌더러 이전, 레이아웃 슬롯과 휠 스크롤을 개선하고 한국어 문서를 작성했습니다. [bevy_vrm1](https://github.com/not-elm/bevy_vrm1/pull/57)의 WebGPU 렌더링 오류를 수정했습니다.
 
 ## 수상 및 선정
 
 - **G-STAR 2023 Indie Awards - Games for Impact** / 길고양이 이야기 2 / 2023.11
 - **제11회 새로운 경기 게임오디션 2위** / Vapor World / 2019.09
+- **MWU Korea Awards 2019 PC & Console 분야 Top 3** / Vapor World / 2019
 - **아주대학교 문화콘텐츠 창작 공모전 금상** / 2014.06
 - **KBS 꿈의 기업 입사 프로젝트 스카우트 위메이드 게임기획자 최종 4인** / 2013.06
 - **네오위즈인터넷 음악 게임, 서비스 공모전 최종 6팀** / 2012.10

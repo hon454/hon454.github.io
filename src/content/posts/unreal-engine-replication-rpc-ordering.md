@@ -1,5 +1,5 @@
 ---
-title: "언리얼 엔진의 리플리케이션 및 RPC 순서 보장에 관하여"
+title: "언리얼 엔진의 리플리케이션 및 RPC 순서 보장"
 published: 2026-09-24
 description: "프로퍼티 복제와 OnRep, RPC의 순서 보장 범위를 살펴보고, 일시적인 상태 불일치와 액터 간 준비 순서를 처리하는 방법을 예시로 정리한다."
 image: "../../assets/images/posts/replication-rpc-ordering-cover.webp"

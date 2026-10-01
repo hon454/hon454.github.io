@@ -1,5 +1,5 @@
 ---
-title: Codex 대신 다시 Claude Code 데스크톱 앱을 쓰며 느낀 장단점
+title: Codex와 Claude Code의 데스크톱 앱을 비교하며 느낀 장단점
 published: 2026-10-02
 image: ../../assets/images/posts/codex-to-claude-code-desktop-moving-home-cover-v3.png
 author: Jihoon Jeon
@@ -14,17 +14,23 @@ draft: false
 lang: ko
 ---
 
-원래는 Codex를 더 선호했다. 8월 31일에 회사를 퇴사하고 9월 중순쯤 개인 계정으로 Codex를 쓰려고 가입하려 했는데 200달러 플랜을 고를 수 없었다. OpenAI가 9월 10일(미국 시간)부터 [GPT-6 Astra 수요로 용량이 부족하다며 200달러 Pro 플랜의 신규 가입과 업그레이드를 멈춘](https://www.cio.com/article/4221092/openai-pauses-200-pro-tier-as-astra-demand-strains-capacity.html) 상태였다. 새로 가입하는 사람이 고를 수 있는 가장 높은 플랜은 100달러 플랜이었다.
+9월 29일부터 Claude Code 데스크톱 앱을 다시 쓰고 있다. 원래는 Codex를 더 선호했지만, 개인 계정으로 쓰기 시작한 뒤 사용량이 부족해서 Claude Max로 옮겼다.
+
+Claude Code CLI와 데스크톱 앱은 예전에도 써봤다. 다만 한동안 Codex에 익숙해져 있었기 때문에 다시 쓰니 편한 점과 아쉬운 점이 눈에 들어왔다. 이번 글에서는 Codex 데스크톱 앱과 비교하며 느낀 장단점을 적어 둔다.
+
+8월 31일에 회사를 퇴사하고 9월 중순쯤 개인 계정으로 Codex를 쓰려고 가입하려 했는데 200달러 플랜을 고를 수 없었다. OpenAI가 9월 10일(미국 시간)부터 [GPT-6 Astra 수요로 용량이 부족하다며 200달러 Pro 플랜의 신규 가입과 업그레이드를 멈춘](https://www.cio.com/article/4221092/openai-pauses-200-pro-tier-as-astra-demand-strains-capacity.html) 상태였다. 새로 가입하는 사람이 고를 수 있는 가장 높은 플랜은 100달러 플랜이었다.
 
 울며 겨자 먹기로 100달러 플랜을 썼지만 역시나 사용량이 부족했다. 게다가 Astra는 토큰을 너무 빨리 썼다. 나만 그런 건 아닌지 Codex 저장소에도 [Astra의 토큰 사용량이 비정상적으로 많다는 이슈](https://github.com/openai/codex/issues/48765)가 올라와 있었다. 사용량 압박이 너무 심해서 9월 29일에 Claude Max 20x(200달러)를 결제했다.
 
 그런데 다음 날 새벽, OpenAI DevDay에 맞춰 200달러 플랜 가입이 다시 열렸다. 호구가 되어버렸다..
 
+![](./images/codex-to-claude-code-desktop/pro-plan-reopening-meme.png)
+
 다만 다시 열린 200달러 플랜은 예전 그대로가 아니었다. [새로 가입하면 API 사용 금액 기준으로 기존 200달러 플랜의 절반 정도를 쓸 수 있고](https://www.unite.ai/openai-reopens-chatgpt-pro-200-sign-ups-with-new-usage-calculation/), 대신 5시간 사용 제한은 다시 도입하지 않는다고 한다.
 
 ![](./images/codex-to-claude-code-desktop/plan-timeline.webp)
 
-어쨌든 한 달은 Claude Code를 써야 한다. Codex 데스크톱 앱을 쓰기 전에 Claude Code CLI와 데스크톱 앱을 써본 적이 있어서 처음 쓰는 도구는 아니다. 그래도 한동안 Codex에 익숙해져 있었기 때문에 다시 적응하는 중이다. 그사이 Codex 데스크톱 앱과 비교하며 느낀 장단점을 적어 둔다. Codex 데스크톱 앱은 지금은 ChatGPT 데스크톱 앱의 Codex 모드로 통합되어 있지만 이 글에서는 편의상 Codex 데스크톱 앱이라고 부른다.
+어쨌든 한 달은 Claude Code를 써야 한다. 한동안 Codex에 익숙해져 있었기 때문에 다시 적응하는 중이다. Codex 데스크톱 앱은 지금은 ChatGPT 데스크톱 앱의 Codex 모드로 통합되어 있지만 이 글에서는 편의상 Codex 데스크톱 앱이라고 부른다.
 
 ## 좋았던 점
 

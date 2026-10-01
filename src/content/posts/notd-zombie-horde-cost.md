@@ -12,7 +12,7 @@ tags:
 category: Unreal Engine
 series: Night of the Dead 멀티플레이 최적화
 seriesOrder: 5
-draft: true
+draft: false
 lang: ko
 ---
 
@@ -28,7 +28,7 @@ lang: ko
 
 중요도의 기준은 두 가지다.
 
-- 거리 LOD: 가장 가까운 플레이어와의 거리로 LOD0부터 LOD3, 그리고 Invisible까지 다섯 단계를 정한다. 경계는 6m, 12m, 30m, 100m다.
+- 거리 LOD: 가장 가까운 플레이어와의 거리로 LOD0부터 LOD3, 그리고 Invisible까지 다섯 단계를 정한다. 소스의 기본 경계는 6m, 12m, 30m, 100m다.
 - 거리 순위: 전체 좀비를 가까운 순으로 정렬했을 때의 순번이다.
 
 거리만 쓰면 웨이브가 기지 앞에 몰렸을 때 대부분의 좀비가 LOD0이 된다. 그 상황이 가장 비용이 큰 순간인데 기준이 아무것도 걸러 내지 못한다. 순위는 "가장 가까운 30마리"처럼 고품질 대상의 수를 고정해 준다.
@@ -37,7 +37,7 @@ lang: ko
 
 같은 계산이 서버와 클라이언트 양쪽에서 돌지만 "가깝다"의 기준이 다르다.
 
-- 클라이언트는 로컬 플레이어와의 거리를 쓴다. 카메라 절두체 밖에 있고 LOD1 거리보다 멀면 Invisible로 본다.
+- 클라이언트는 로컬 플레이어와의 거리를 쓴다. 카메라 방향과 FOV로 화면 밖이라고 판정하고 LOD1 거리보다 멀면 Invisible로 본다.
 - Dedicated Server에는 카메라가 없다. 모든 플레이어 폰과의 거리 중 최솟값을 쓴다. 한 명에게라도 가까우면 그 좀비는 높은 단계를 유지한다.
 
 ### 한 프레임에 계산하는 수를 고정
@@ -69,23 +69,25 @@ void UZombieOptimizeManager::UpdateDistanceRanks()
 }
 ```
 
-거리 계산은 프레임당 64마리, 이동 관련 값 갱신은 프레임당 50마리로 잡았다. 300마리가 있으면 순위는 다섯 프레임에 한 번 갱신된다. 순위가 몇 프레임 늦는 것은 문제가 되지 않는다.
+소스의 거리 계산 한도는 프레임당 64마리, 이동 관련 값 갱신 한도는 프레임당 50마리다. 대상 300마리가 유지되면 거리 계산 한 바퀴에 다섯 프레임이 걸린다. 매 프레임 최신 순위를 얻는 대신 거리 계산을 여러 프레임에 나누는 선택이다.
+
+전체 대상을 정렬하고 순위를 기록하는 작업은 한 바퀴가 끝난 프레임에 남는다. 서버가 한 바퀴 동안 계산하는 거리의 총량도 좀비 수와 플레이어 수의 곱에 비례한다. 따라서 64라는 한도는 거리 계산을 분산하는 기준이며, 매니저 전체의 프레임 비용이 일정하다는 뜻은 아니다.
 
 ## LOD가 바꾸는 것
 
 LOD가 바뀔 때 한 곳에서 다음을 조절한다.
 
-| 단계 | 이동 시뮬레이션 반복 수 | 메시 | 그림자 | 캡슐 Hit 이벤트 |
+| 단계 | 이동 시뮬레이션 최대 반복 수 | 메시 | 그림자 | 캡슐 Hit 이벤트 |
 | --- | --- | --- | --- | --- |
 | LOD0 | 4 | 표시 | 켬 | 켬 |
 | LOD1 | 2 | 표시 | 끔 | 켬 |
 | LOD2 | 2 | 표시 | 끔 | 끔 |
 | LOD3 | 1 | 표시 | 끔 | 끔 |
-| Invisible | 2 (틱 간격 1초) | 숨김, 본 갱신 생략 | 끔 | 끔 |
+| Invisible | 2 (틱 간격 1초) | 숨김, 본의 물리 갱신 생략 | 끔 | 끔 |
 
-이동 시뮬레이션 반복 수는 `UCharacterMovementComponent::MaxSimulationIterations`다. 한 틱 안에서 이동을 몇 번까지 나눠 계산할지 정하는 값이고, 멀리 있는 좀비는 한 번으로 줄여도 눈에 띄지 않는다. Invisible 단계는 이동 컴포넌트의 틱 간격 자체를 1초로 늘린다.
+표는 소스에 지정한 단계별 설정이다. 이동 시뮬레이션 최대 반복 수는 `UCharacterMovementComponent::MaxSimulationIterations`로, 서버에서 한 틱의 이동을 몇 번까지 나눠 계산할지 정한다. Invisible 단계는 이동 컴포넌트의 틱 간격 자체를 1초로 늘린다. 반복 한도를 줄이면 긴 틱을 처리할 때 이동과 충돌 계산이 거칠어질 수 있으므로, 가까운 좀비에는 더 큰 한도를 둔다.
 
-부드러운 회전과 물리 기반 애니메이션은 순위와 프레임률을 함께 본다. 순위가 30 안이고 프레임률이 30을 넘을 때만 켠다.
+부드러운 회전은 순위와 프레임률을 함께 본다. 순위가 30 미만이고 프레임률이 30을 넘을 때만 보간한다.
 
 ### 이동 동기화 전송률
 
@@ -101,7 +103,7 @@ int32 UZombieLODComponent::CalcSendRateGrade() const
 
 	int32 Grade = static_cast<int32>(LOD);
 
-	// 가장 가까운 30마리는 두 단계 올려 준다.
+	// 거리 순위가 30 이하인 좀비는 두 단계 올려 준다.
 	if (DistanceRank <= 30)
 	{
 		Grade = FMath::Max(Grade - 2, 0);
@@ -117,7 +119,7 @@ int32 UZombieLODComponent::CalcSendRateGrade() const
 }
 ```
 
-등급별 전송률은 초당 12, 8, 6, 4, 3회이고 Invisible은 1회다. 공격 중인 좀비는 멀리 있어도 일정 전송률을 보장한다.
+소스의 등급별 기본 전송률은 초당 12, 8, 6, 4, 3회이고 Invisible은 1회다. LOD0~3은 등급 0~3에 대응하므로 이 경로에서 사용하는 기본 전송률은 12, 8, 6, 4회다. 배열의 3회 설정은 이 LOD 매핑으로 선택되지 않는다. 공격 중에는 등급을 2 이하로 제한하지만 Invisible은 그대로 1회다.
 
 ## 보내지 않는 상태
 
@@ -125,7 +127,7 @@ int32 UZombieLODComponent::CalcSendRateGrade() const
 
 ### 좀비의 체력과 상태
 
-캐릭터의 체력, 스태미나 같은 상태 값은 기본 클래스에서 `COND_OwnerOnly`로 등록했다. 플레이어 캐릭터는 다른 플레이어에게도 보여야 하는 값만 서브클래스에서 조건을 다시 지정했다.
+기본 상태 컴포넌트의 `CharacterHealth`, `CharacterStatus`, `EquipmentStatusArray_Net`은 `COND_OwnerOnly`로 등록했다. 플레이어의 상태 컴포넌트는 서브클래스에서 이 프로퍼티들의 복제 조건을 다시 지정했다.
 
 ```cpp
 void UPlayerStatusComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -137,15 +139,17 @@ void UPlayerStatusComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 }
 ```
 
-좀비에는 소유 연결이 없다. `COND_OwnerOnly`인 프로퍼티는 어느 클라이언트에도 가지 않는다. 좀비의 체력은 서버에만 있고, 클라이언트는 피격 이벤트로 전달되는 정보로 피격 반응과 사망을 처리한다.
+좀비에는 소유 연결이 없으므로 이 프로퍼티들은 클라이언트에 복제되지 않는다. 클라이언트의 피격 반응은 피격 이벤트로 전달되는 정보로 처리한다. 사망은 별도로 복제하는 `DeathInfo`와 `OnRep_DeathInfo`로 처리한다. 체력 프로퍼티를 보내지 않는 것과 사망 상태까지 보내지 않는 것은 다르다.
 
 ### 애니메이션 몽타주
 
 엔진은 루트 모션 몽타주의 재생 상태를 `RepRootMotion`으로 복제한다. 이것을 기본 캐릭터에서 끄고 플레이어에서만 다시 켰다.
 
-좀비의 공격과 피격 몽타주는 이벤트로 보낸다. 내용은 에셋 참조가 아니라 Gameplay Tag와 인덱스다. 좀비가 가진 몽타주 묶음에서 "이 태그의 몇 번째"를 고르는 식이다. 여러 변형 중 하나를 무작위로 재생하는 경우에는 인덱스 대신 시드를 보내 양쪽이 같은 것을 고르게 한다.
+좀비의 공격과 피격 몽타주는 별도의 재생 이벤트로 보낸다. 공격 컴포넌트의 경로는 `UAnimMontage*` 에셋 참조와 재생 속도를 보낸다. 피격 컴포넌트는 `FHitAnimPlaybackData`를 보내고, 그 안의 난수 시드로 양쪽에서 같은 변형을 고른다.
 
-이 이벤트의 신뢰성도 거리로 나눈다. 플레이어가 바로 앞에 있을 때만 Reliable이고 나머지는 Unreliable이다. 피격 전파에서 연결별로 신뢰성을 고른 것과 같은 판단이며, 그 내용은 [Reliable 버퍼를 넘기지 않고 대용량 데이터 보내기](/posts/notd-reliable-rpc-data-streaming/)에 적었다.
+`LFMontageManagerComponent`에는 Gameplay Tag와 인덱스로 몽타주 묶음의 항목을 골라 보내는 Unreliable Multicast도 있다. 이 경로와 위의 공격·피격 컴포넌트 경로는 구분해야 한다.
+
+공격·피격 몽타주의 Multicast는 플레이어 한 명이라도 가까우면 Reliable을 선택한다. 공격의 기본 기준 거리는 2m다. 수신 연결마다 고르는 방식이 아니라 해당 Multicast 전체의 신뢰성을 고른다. 연결별로 거리와 채널 상태를 확인하는 피격 정보 전파는 별도 경로이며, 그 내용은 [Reliable 버퍼 상태를 보고 대용량 데이터 나눠 보내기](/posts/notd-reliable-rpc-data-streaming/)에 적었다.
 
 이벤트 방식의 한계는 재생 도중에 복제 범위에 들어온 클라이언트가 그 몽타주를 보지 못한다는 것이다. 이 경우를 위한 별도 처리는 두지 않았다.
 
@@ -188,23 +192,42 @@ float AZombie::CalcSignificance(const FTransform& ViewTransform) const
 	float Value = BaseSignificanceByLOD[LOD];
 	const float MinValue = MinSignificanceByLOD[LOD];
 
-	// 카메라 정면에서 벗어날수록 감점한다.
-	const FVector ToZombie = (GetActorLocation() - ViewTransform.GetLocation()).GetSafeNormal();
-	const float Facing = FVector::DotProduct(ViewTransform.GetUnitAxis(EAxis::X), ToZombie);
-	Value -= FMath::GetMappedRangeValueClamped(FVector2D(1.f, -1.f), FVector2D(0.f, 3.f), Facing);
+	// 클라이언트 이외의 모드에서는 거리 순위도 반영한다.
+	if (GetNetMode() != NM_Client)
+	{
+		Value *= 1.f - GetNormalizedDistanceRank();
+	}
+	Value = FMath::Max(Value, MinValue);
+
+	// 최소값 보정 다음에 카메라 방향에 따른 보정을 적용한다.
+	if (const APlayerCameraManager* Camera = GetLocalCameraManager())
+	{
+		const float Diff = Camera->GetDotProductTo(this) - (1.f - Camera->GetFOVAngle() * 0.01f);
+		const float Penalty = Diff >= 1.f ? 0.f
+			: Diff > 0.7f ? 1.f
+			: Diff > 0.5f ? 2.f
+			: Diff > 0.f ? 3.f : 0.f;
+		Value = FMath::Max(Value - Penalty, 0.f);
+	}
 
 	if (IsAttacking())
 	{
 		Value += 2.f;
 	}
 
-	return FMath::Max(Value, MinValue);
+	if (IsGiant())
+	{
+		Value += 1.f;
+	}
+	return Value;
 }
 ```
 
-Significance 등록은 Dedicated Server에서 건너뛴다. 서버의 기준은 앞의 LOD이고, Significance는 화면에 그리는 쪽의 기준이다.
+최소값 보정은 카메라 보정보다 먼저 적용하므로 최종 값이 LOD별 최소값보다 낮아질 수 있다. 공격 중인 좀비와 거대 좀비에는 추가 점수를 준다. Significance 등록은 Dedicated Server에서 건너뛴다. 서버의 기준은 앞의 LOD이고, Significance는 화면에 그리는 쪽의 기준이다.
 
-Update Rate Optimization은 별도 컴포넌트로 감쌌다. 1초 간격 타이머로 조건을 다시 평가하며, 평균 프레임률이 기준보다 높으면 URO를 끈다. 프레임에 여유가 있을 때는 품질을 낮출 이유가 없기 때문이다. 탑승이나 특수 연출처럼 애니메이션을 덮어쓰는 동안에도 끈다.
+Update Rate Optimization은 별도 컴포넌트로 감쌌다. 약 1초 간격의 타이머로 조건을 다시 평가하며, 평균 프레임률이 기준보다 높으면 URO를 끈다. 프레임에 여유가 있을 때는 품질을 낮출 이유가 없기 때문이다. 탑승이나 특수 연출처럼 애니메이션을 덮어쓰는 동안에도 끈다.
+
+Animation Budget Allocator에 등록한 메시는 엔진이 URO를 비활성화한다. 두 기법은 적용 대상에 따라 구분해야 한다. 프로젝트의 URO 컴포넌트는 소유 액터의 스킨드 메시 전체를 대상으로 설정하며, 예산 할당기에 등록된 메시를 제외하는 검사는 없다. 실제 Blueprint의 부착 대상은 이번에 확인한 C++ 코드에 없으므로, URO의 적용 범위는 별도로 확인해야 한다.
 
 ## 길찾기 비용
 
@@ -233,11 +256,13 @@ Update Rate Optimization은 별도 컴포넌트로 감쌌다. 1초 간격 타이
 
 좀비가 질의를 실행하기 전에 주변 좀비의 최근 결과를 먼저 찾는다. 다음 조건을 만족하는 결과가 있으면 질의를 건너뛰고 그 결과를 쓴다.
 
-- 체급 구분과 공격 방식(근접, 원거리)이 같다.
-- 같은 대상을 노리고 있다.
-- 결과를 가진 좀비가 일정 거리 안에 있고, 대상 방향으로 나보다 앞서 있다.
+- 같은 EQS 질의의 결과이며, 결과를 가진 좀비가 설정한 거리 안에 있다.
+- 거대 좀비 여부와 공격 방식(근접, 원거리)이 같다.
+- 질의의 옵션에 따라 같은 주 대상·대체 대상을 요구하거나, 같은 대상을 향하는 방향과 앞뒤 위치를 확인한다.
 
-결과에는 30초의 수명을 두고, 대상이 무효해지면 바로 지운다. 이 경로는 좀비 수가 100마리 이상일 때만 켠다. 수가 적을 때는 질의 비용이 문제가 되지 않고, 각자 질의한 결과가 더 정확하다.
+캐시를 남긴 좀비가 없으면 결과를 지운다. 액터 결과는 대상이 없거나 공격 가능한 대상이 아니게 되면 지우고, 위치 같은 비액터 결과에는 기본 30초의 수명을 둔다. 모든 결과를 30초 뒤에 지우는 것은 아니다.
+
+캐시 사용 여부와 좀비 수 제한은 각각 설정으로 제어한다. 수 제한을 켠 경우 기본 기준은 100마리다. 적은 수에서도 무조건 공유하기보다 질의가 많이 겹치는 상황에 재사용 범위를 제한하는 선택이다.
 
 적용 효과를 확인할 수 있도록 질의 종류별로 캐시 적중과 실패 횟수, 평균 시간을 기록하고 치트 명령으로 출력하게 했다.
 
@@ -245,17 +270,17 @@ Update Rate Optimization은 별도 컴포넌트로 감쌌다. 1초 간격 타이
 
 | 대상 | 기준 | 줄인 것 |
 | --- | --- | --- |
-| 이동 시뮬레이션 | LOD | 반복 수, 틱 간격 |
+| 이동 시뮬레이션 | LOD | 최대 반복 수, 틱 간격 |
 | 이동 동기화 | LOD, 순위, 공격 여부 | 전송률 |
-| 체력과 상태 | 소유 연결 없음 | 복제 자체 |
-| 몽타주 | 거리 | 복제 대신 이벤트, 신뢰성 |
+| 체력과 상태 | 소유 연결 없음 | 지정한 상태 프로퍼티의 복제 |
+| 몽타주 | 거리 | 루트 모션 복제 제외, 재생 이벤트의 신뢰성 |
 | 서버 포즈 | 전투 여부 | 본 갱신 |
 | 클라이언트 애니메이션 | Significance | 평가 빈도 |
 | 내비메시 | 웨이브, 플레이어 거리 | 인보커 수 |
 | 인지 | 웨이브 좀비 여부 | Perception |
 | EQS | 좀비 수, 주변 결과 | 질의 횟수 |
 
-항목마다 기준을 따로 만들지 않고 LOD와 순위를 여러 곳에서 재사용했다.
+LOD와 순위는 이동 시뮬레이션, 이동 동기화와 애니메이션에서 재사용했다. 전투 판정에 필요한 서버 포즈와 사망 상태는 별도 경로로 유지했다.
 
 ## 참고 자료
 

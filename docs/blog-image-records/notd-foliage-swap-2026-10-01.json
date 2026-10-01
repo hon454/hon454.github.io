@@ -1,0 +1,26 @@
+{
+  "created": "2026-10-01",
+  "tool": "built-in image_gen",
+  "review": "타격 클라이언트의 교체 요청과 로컬 반응이 같은 타격 판정에서 분기하는지, 서버의 위치 확인 및 재탐색, 같은 트랜스폼의 액터 생성, 액터 복제 뒤 데칼 인계 및 더미 제거, 더미의 비복제·최대 2.5초 수명을 본문과 대조했다. 교체 성공 경로만 표시하며 채집형 예외와 파괴 이력 미러링은 포함하지 않았다.",
+  "assets": [
+    {
+      "id": "foliage-instance-actor-swap",
+      "title": "타격한 폴리지만 액터로 교체",
+      "post": "src/content/posts/notd-world-objects-as-data.md",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/foliage-instance-actor-swap.webp",
+      "placement": "「클라이언트의 더미」 마지막 문단 뒤",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "format": "lossless WebP; decoded pixels verified equal to PNG",
+      "references": [
+        "src/assets/images/posts/replication-rpc-lost-update.webp"
+      ],
+      "prompt": "Use case: infographic-diagram\nAsset type: Korean Unreal Engine technical blog body diagram. New raster diagram, wide landscape, about 16:9, readable at a 900px article width.\nInput image 1 is ONLY a style reference: pale nearly white blue grid, dark navy Korean typography, green server boxes, cyan client boxes, orange network arrows. Do not copy the subject or labels of the reference.\nTitle verbatim: \"타격한 폴리지만 액터로 교체\"\nCreate TWO HORIZONTAL SWIMLANES. Top lane label \"타격 클라이언트\", bottom lane label \"서버\". Clean flat boxes, short bold Korean labels, generous spacing, crisp arrows with clear arrowheads. No mascots or decorative screenshots.\nTop lane has three boxes from left to right:\nC1: \"타격 판정\"\nC2: \"인스턴스 제거\" / \"로컬 더미 생성\" with smaller subline \"타격 이펙트·데칼\"\nC3: \"서버 액터 도착\" / \"데칼 인계·더미 제거\"\nBottom lane has three boxes:\nS1: \"교체 요청 수신\"\nS2: \"인덱스·위치 확인\" with smaller subline \"불일치 시 근처 재탐색\"\nS3: \"인스턴스 제거\" / \"같은 트랜스폼에 액터 생성\"\nExact directed connections:\nC1 → C2: horizontal arrow labeled \"즉시 반응\".\nC1 → S1: vertical downward orange arrow labeled \"교체 요청\". This arrow must originate at C1, NOT C2: request and local feedback are initiated in parallel.\nS1 → S2 → S3: horizontal arrows.\nS3 → C3: vertical upward orange arrow labeled \"액터 복제\".\nC2 → C3: thin horizontal gray arrow, representing the local dummy being replaced on arrival, labeled \"도착 전까지 반응 유지\".\nNo other arrows. In particular no arrow from local dummy to server request, and no arrow implying that the server waits for local effects.\nBottom short note verbatim: \"로컬 더미는 복제하지 않는다\"\nAll Korean text above must be exact, no invented text. Do not add respawn, structure records, destroyed foliage mirroring, zombie or container systems, RPC reliability claims or numbered packet delivery. Only the hit-driven instance-to-actor swap and client dummy handover. Valid swap path is illustrated; do not imply every request necessarily succeeds. Avoid tiny text, arrow crossings, excessive details, watermarks.",
+      "corrections": [
+        "Edit ONLY the gray arrow label between the middle and right boxes in the upper client swimlane. Replace \"도착 전까지 반응 유지\" with TWO lines, verbatim: \"임시 타격 반응\" on first line, \"최대 2.5초\" on second line. This corrects the dummy lifetime: it may self-destruct before the server actor arrives. Preserve every other pixel, all other Korean text, title, six boxes, swimlanes, colors, arrow directions, all connections, and bottom note. Do not add content or change layout."
+      ]
+    }
+  ]
+}

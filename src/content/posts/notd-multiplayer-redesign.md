@@ -135,7 +135,7 @@ void UZombieSyncGradeProcessor::Execute(FMassEntityManager& EntityManager, FMass
 
 목록과 커서가 없어진다. 어떤 엔티티를 순회할지는 쿼리의 요구 조건이 정하고, 좀비가 생기고 사라질 때 따로 등록하거나 해제하지 않는다.
 
-거리 순위는 이 예시에 없다. 프로젝트에서 순위를 쓴 이유는 웨이브가 기지 앞에 몰리면 거리만으로는 대부분이 최고 단계가 되기 때문이었다. `TMassLODCalculator`는 LOD마다 최대 수(`LODMaxCount`)를 받는다. 이 값으로 "가장 가까운 30마리"와 같은 제한을 표현할 수 있을 것 같지만, 순위 기반 전송률과 같은 결과가 나오는지는 확인하지 않았다.
+거리 순위는 이 예시에 없다. 프로젝트에서 순위를 쓴 이유는 웨이브가 기지 앞에 몰리면 거리만으로는 대부분이 최고 단계가 되기 때문이었다. `TMassLODCalculator`는 LOD마다 최대 수(`LODMaxCount`)를 받는다.
 
 ### 액터로 남아야 하는 좀비
 
@@ -147,7 +147,7 @@ void UZombieSyncGradeProcessor::Execute(FMassEntityManager& EntityManager, FMass
 
 그래서 경계는 "플레이어나 기지와 전투할 수 있는 거리"가 된다. 그 안의 좀비는 지금처럼 액터이고 밖의 좀비는 엔티티로 웨이브 경로를 따라 움직인다. 프로젝트에서도 웨이브 좀비는 웨이포인트를 따라 이동했으므로 먼 좀비는 내비메시 없이 경로 데이터만으로 옮길 수 있을 것으로 보인다. 엔티티가 액터로 바뀔 때 위치와 체력 같은 상태를 넘겨야 하는데, 스포너에서 구조체를 액터로 되돌릴 때는 클래스와 트랜스폼만 보존했다. 전투 중인 좀비가 경계를 넘나드는 경우에는 넘길 상태가 더 많다.
 
-복제도 따로 설계해야 한다. Mass 엔티티는 액터가 아니므로 액터 복제 경로를 타지 않는다. 엔진에 MassReplication 모듈이 있지만, 프로젝트에서 쓰던 위치 동기화 컴포넌트와 연결별 피격 전파를 그 위로 어떻게 옮길지는 정하지 못했다.
+복제도 따로 설계해야 한다. Mass 엔티티는 액터가 아니므로 액터 복제 경로를 타지 않는다. 엔진에 MassReplication 모듈이 있지만, 프로젝트에서 쓰던 위치 동기화 컴포넌트와 연결별 피격 전파는 그 위에 새로 만들어야 한다.
 
 ## 복제 시스템: Iris
 
@@ -451,7 +451,7 @@ void UStreamRouterComponent::SendPendingChunks(const UActorChannel* Channel)
 
 ### Iris에서는 기준으로 삼던 값이 달라진다
 
-Iris에서는 RPC가 액터 채널의 이 경로로 나가지 않는다. UE 5.8 소스를 보면 `UReplicationSystem::SendRPC()`가 RPC를 오브젝트별 attachment 큐에 넣는다. Reliable 쪽은 수신 확인 전의 블롭을 1024개까지 담는 전송 창이 있고 창이 차면 그 앞의 대기 큐에 쌓는다. 대기 큐의 기본 한도는 `net.ReliableRPCQueueSize`의 4096개이고, 넘으면 `ensure`가 발생하며 그 RPC는 큐에 들어가지 않는다. 그 뒤에 연결을 어떻게 처리하는지까지는 따라가 보지 않았다. 따라서 Iris로 가면 `NumOutRec`은 스트리밍의 밀린 정도를 알려 주지 않을 것으로 보인다.
+Iris에서는 RPC가 액터 채널의 이 경로로 나가지 않는다. UE 5.8 소스를 보면 `UReplicationSystem::SendRPC()`가 RPC를 오브젝트별 attachment 큐에 넣는다. Reliable 쪽은 수신 확인 전의 블롭을 1024개까지 담는 전송 창이 있고 창이 차면 그 앞의 대기 큐에 쌓는다. 대기 큐의 기본 한도는 `net.ReliableRPCQueueSize`의 4096개이고, 넘으면 `ensure`가 발생하며 그 RPC는 큐에 들어가지 않는다. 따라서 Iris로 가면 `NumOutRec`은 스트리밍의 밀린 정도를 알려 주지 않을 것으로 보인다.
 
 복제 방식을 바꾸면 흐름 제어의 기준도 함께 바꿔야 한다. 엔진 내부의 큐 상태에 기대는 대신 라우터가 직접 수신 확인을 받는 편이 복제 시스템과 무관하게 유지된다.
 
@@ -510,7 +510,7 @@ void UStreamRouterComponent::ServerAckChunk_Implementation(uint32 ChunkId)
 
 수신 확인 RPC가 조각마다 하나씩 추가된다. 접속 시의 일괄 전송에서는 조각 수만큼 클라이언트에서 서버로 가는 Reliable RPC가 늘어난다.
 
-피격 전파의 신뢰성 선택도 `NumOutRec`에 기대고 있었다. 이쪽은 대체할 기준을 정하지 못했다.
+피격 전파의 신뢰성 선택도 `NumOutRec`에 기대고 있었다. 이쪽은 대체할 기준이 따로 필요하다.
 
 ## 그대로 가져갈 것
 

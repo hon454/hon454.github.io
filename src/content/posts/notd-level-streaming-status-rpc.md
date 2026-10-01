@@ -17,9 +17,9 @@ lang: ko
 
 클라이언트가 서버에 접속하면 엔진은 현재 스트리밍 레벨들의 상태를 한 번에 알려 준다. `AGameModeBase::ReplicateStreamingStatus()`가 월드의 모든 스트리밍 레벨을 순회하며 상태 배열을 만들고, `ClientUpdateMultipleLevelsStreamingStatus()`라는 Reliable Client RPC로 보낸다.
 
-배열의 원소는 `FUpdateLevelStreamingLevelStatus`다. 로드 여부와 표시 여부 같은 플래그 몇 개, LOD 인덱스, 그리고 레벨의 패키지 이름(`FName`)이 들어 있다. 패키지 이름은 `/Game/Maps/...`로 시작하는 긴 경로이고 네트워크에서는 문자열로 전송된다.
+배열의 원소는 `FUpdateLevelStreamingLevelStatus`다. LOD 인덱스 하나, 로드 여부와 표시 여부 같은 bool 네 개, 그리고 레벨의 패키지 이름(`FName`)이 들어 있다. 숫자와 플래그는 몇 바이트에 불과하지만 패키지 이름은 `/Game/Maps/...`로 시작하는 경로 전체다. 엔진은 하드코딩된 이름이 아닌 `FName`을 문자열로 직렬화하므로, 원소 크기의 대부분은 이 경로 문자열이 차지한다.
 
-[Night of the Dead](/projects/night-of-the-dead/)는 오픈월드라 스트리밍 레벨 수가 많았다. 접속할 때마다 레벨 수만큼의 경로 문자열이 Reliable RPC 하나에 실렸다. 이 RPC가 여러 번치로 쪼개져 접속 직후의 Reliable 버퍼를 차지하면서 실제로 버퍼가 넘쳤다. 내용 대부분은 서버와 클라이언트가 이미 똑같이 알고 있는 문자열이어서, 반복해서 보내는 경로를 코드로 대체했다.
+[Night of the Dead](/projects/night-of-the-dead/)는 오픈월드라 스트리밍 레벨 수가 많았다. 접속할 때마다 `레벨 수 × 경로 길이`만큼의 문자열이 Reliable RPC 하나에 실렸다. 이 RPC가 여러 번치로 쪼개져 접속 직후의 Reliable 버퍼를 차지하면서 실제로 버퍼가 넘쳤다. 원소 크기를 키우는 것은 길이가 긴 패키지 이름이었고, 내용 대부분은 서버와 클라이언트가 이미 똑같이 알고 있는 문자열이어서 반복해서 보내는 경로를 코드로 대체했다.
 
 이 글의 코드는 구조를 설명하기 위해 새로 작성한 예시이며 프로젝트의 실제 코드와는 이름과 세부가 다르다.
 

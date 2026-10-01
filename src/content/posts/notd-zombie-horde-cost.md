@@ -16,13 +16,11 @@ draft: false
 lang: ko
 ---
 
-[Night of the Dead](/projects/night-of-the-dead/)의 웨이브에서는 좀비가 최대 300마리까지 동시에 기지로 몰려온다. 좀비 한 마리에는 이동 시뮬레이션, 애니메이션, AI 질의, 길찾기, 이동 동기화가 붙고, 서버는 이것을 플레이어 수와 무관하게 전부 계산한다.
+[Night of the Dead](/projects/night-of-the-dead/)의 웨이브에서는 좀비가 최대 300마리까지 동시에 기지로 몰려온다. 좀비 한 마리에는 이동 시뮬레이션, 애니메이션, AI 질의, 길찾기, 이동 동기화가 붙고 서버는 이것을 플레이어 수와 무관하게 전부 계산한다.
 
 ![](./images/notd-multiplayer-optimization/zombies-on-wall.avif)
 
-모든 좀비를 같은 품질로 처리할 수는 없었다. 방향은 하나였다. 플레이어에게 중요한 좀비를 골라 그쪽에 비용을 쓰고, 나머지는 단계적으로 낮춘다. 이 글은 그 기준을 어떻게 만들었고 어디에 적용했는지를 정리한다.
-
-이 글의 코드는 구조를 설명하기 위해 새로 작성한 예시이며 프로젝트의 실제 코드와는 이름과 세부가 다르다.
+모든 좀비를 같은 품질로 처리할 수는 없었다. 방향은 하나였다. 플레이어에게 중요한 좀비를 골라 그쪽에 비용을 쓰고 나머지는 단계적으로 낮춘다. 이 글은 그 기준을 어떻게 만들었고 어디에 적용했는지를 정리한다.
 
 ## 기준: 거리 LOD와 거리 순위
 
@@ -42,7 +40,7 @@ lang: ko
 
 ### 한 프레임에 계산하는 수를 고정
 
-좀비마다 틱에서 모든 플레이어와의 거리를 계산하면 좀비 수와 플레이어 수의 곱만큼 비용이 든다. 계산을 GameState에 붙인 매니저 한 곳으로 모으고, 한 프레임에 처리하는 수를 고정했다. 좀비는 틱에서 매니저에 갱신 요청만 등록한다.
+좀비마다 틱에서 모든 플레이어와의 거리를 계산하면 좀비 수와 플레이어 수의 곱만큼 비용이 든다. 계산을 GameState에 붙인 매니저 한 곳으로 모으고 한 프레임에 처리하는 수를 고정했다. 좀비는 틱에서 매니저에 갱신 요청만 등록한다.
 
 ```cpp
 void UZombieOptimizeManager::UpdateDistanceRanks()
@@ -147,7 +145,7 @@ void UPlayerStatusComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 엔진은 루트 모션 몽타주의 재생 상태를 `RepRootMotion`으로 복제한다. 이것을 기본 캐릭터에서 끄고 플레이어에서만 다시 켰다.
 
-좀비의 공격과 피격 몽타주는 별도의 재생 이벤트로 보낸다. 공격 컴포넌트의 경로는 `UAnimMontage*` 에셋 참조와 재생 속도를 보낸다. 피격 컴포넌트는 `FHitAnimPlaybackData`를 보내고, 그 안의 난수 시드로 양쪽에서 같은 변형을 고른다.
+좀비의 공격과 피격 몽타주는 별도의 재생 이벤트로 보낸다. 공격 컴포넌트의 경로는 `UAnimMontage*` 에셋 참조와 재생 속도를 보낸다. 피격 컴포넌트는 `FHitAnimPlaybackData`를 보내고 그 안의 난수 시드로 양쪽에서 같은 변형을 고른다.
 
 `LFMontageManagerComponent`에는 Gameplay Tag와 인덱스로 몽타주 묶음의 항목을 골라 보내는 Unreliable Multicast도 있다. 이 경로와 위의 공격·피격 컴포넌트 경로는 구분해야 한다.
 
@@ -184,7 +182,7 @@ void AZombie::UpdateAnimTickOption(float DeltaSeconds)
 
 ### 클라이언트: Significance와 애니메이션 예산
 
-클라이언트에서는 엔진의 Significance Manager에 좀비를 등록하고, 계산한 값을 Animation Budget Allocator용 메시 컴포넌트(`USkeletalMeshComponentBudgeted`)에 넘겼다. 예산 할당기는 이 값이 높은 메시부터 애니메이션 평가를 배정하고, 예산이 부족하면 낮은 쪽의 갱신 빈도를 줄인다.
+클라이언트에서는 엔진의 Significance Manager에 좀비를 등록하고, 계산한 값을 Animation Budget Allocator용 메시 컴포넌트(`USkeletalMeshComponentBudgeted`)에 넘겼다. 예산 할당기는 이 값이 높은 메시부터 애니메이션 평가를 배정하고 예산이 부족하면 낮은 쪽의 갱신 빈도를 줄인다.
 
 좀비의 Significance는 거리 구간을 따로 두지 않고 위의 LOD를 재사용해 계산한다.
 
@@ -225,11 +223,11 @@ float AZombie::CalcSignificance(const FTransform& ViewTransform) const
 }
 ```
 
-최소값 보정은 카메라 보정보다 먼저 적용하므로 최종 값이 LOD별 최소값보다 낮아질 수 있다. 공격 중인 좀비와 거대 좀비에는 추가 점수를 준다. Significance 등록은 Dedicated Server에서 건너뛴다. 서버의 기준은 앞의 LOD이고, Significance는 화면에 그리는 쪽의 기준이다.
+최소값 보정은 카메라 보정보다 먼저 적용하므로 최종 값이 LOD별 최소값보다 낮아질 수 있다. 공격 중인 좀비와 거대 좀비에는 추가 점수를 준다. Significance 등록은 Dedicated Server에서 건너뛴다. 서버의 기준은 앞의 LOD이고 Significance는 화면에 그리는 쪽의 기준이다.
 
-Update Rate Optimization은 별도 컴포넌트로 감쌌다. 약 1초 간격의 타이머로 조건을 다시 평가하며, 평균 프레임률이 기준보다 높으면 URO를 끈다. 프레임에 여유가 있을 때는 품질을 낮출 이유가 없기 때문이다. 탑승이나 특수 연출처럼 애니메이션을 덮어쓰는 동안에도 끈다.
+Update Rate Optimization은 별도 컴포넌트로 감쌌다. 약 1초 간격의 타이머로 조건을 다시 평가하며 평균 프레임률이 기준보다 높으면 URO를 끈다. 프레임에 여유가 있을 때는 품질을 낮출 이유가 없기 때문이다. 탑승이나 특수 연출처럼 애니메이션을 덮어쓰는 동안에도 끈다.
 
-Animation Budget Allocator에 등록한 메시는 엔진이 URO를 비활성화한다. 두 기법은 적용 대상에 따라 구분해야 한다. 프로젝트의 URO 컴포넌트는 소유 액터의 스킨드 메시 전체를 대상으로 설정하며, 예산 할당기에 등록된 메시를 제외하는 검사는 없다. 실제 Blueprint의 부착 대상은 이번에 확인한 C++ 코드에 없으므로, URO의 적용 범위는 별도로 확인해야 한다.
+Animation Budget Allocator에 등록한 메시는 엔진이 URO를 비활성화한다. 두 기법은 적용 대상에 따라 구분해야 한다. 프로젝트의 URO 컴포넌트는 소유 액터의 스킨드 메시 전체를 대상으로 설정하며 예산 할당기에 등록된 메시를 제외하는 검사는 없다. 실제 Blueprint의 부착 대상은 이번에 확인한 C++ 코드에 없으므로, URO의 적용 범위는 별도로 확인해야 한다.
 
 ## 길찾기 비용
 
@@ -262,7 +260,7 @@ Animation Budget Allocator에 등록한 메시는 엔진이 URO를 비활성화�
 - 거대 좀비 여부와 공격 방식(근접, 원거리)이 같다.
 - 질의의 옵션에 따라 같은 주 대상·대체 대상을 요구하거나, 같은 대상을 향하는 방향과 앞뒤 위치를 확인한다.
 
-캐시를 남긴 좀비가 없으면 결과를 지운다. 액터 결과는 대상이 없거나 공격 가능한 대상이 아니게 되면 지우고, 위치 같은 비액터 결과에는 기본 30초의 수명을 둔다. 모든 결과를 30초 뒤에 지우는 것은 아니다.
+캐시를 남긴 좀비가 없으면 결과를 지운다. 액터 결과는 대상이 없거나 공격 가능한 대상이 아니게 되면 지우고 위치 같은 비액터 결과에는 기본 30초의 수명을 둔다. 모든 결과를 30초 뒤에 지우는 것은 아니다.
 
 ![](./images/notd-multiplayer-optimization/eqs-reuse-conditions.webp)
 

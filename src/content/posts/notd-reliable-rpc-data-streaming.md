@@ -153,7 +153,7 @@ ACK가 늦게 오는 연결에서는 `NumOutRec`이 천천히 줄고, 그만큼 
 
 다만 확인하는 것은 이미 큐에 쌓인 번치 수다. 다음 RPC가 몇 바이트이고 몇 개 번치로 나뉠지는 계산하지 않는다. 큰 조각 하나가 임계값을 넘어 버퍼를 채울 수도 있으므로 이 방식만으로 오버플로를 완전히 막을 수는 없다. 작은 레코드를 묶어 보내는 조건에서 순간적인 전송 집중을 완화하는 흐름 제어다.
 
-![라우터는 같은 액터 채널의 미확인 Reliable 번치 수를 보고 다음 조각의 전송 여부를 정한다. ACK는 소켓의 데이터 반영 여부를 나타내지 않으며, 큰 조각 하나가 임계값을 넘길 수 있다.](./images/notd-multiplayer-optimization/rpc-buffer-flow.webp)
+![](./images/notd-multiplayer-optimization/rpc-buffer-flow.webp)
 
 ### 전송 자체는 엔진에 맡긴다
 
@@ -201,7 +201,7 @@ Reliable RPC의 재전송은 도착한 조각을 애플리케이션이 반영하
 
 소켓이 등록되기 전에 일부 조각을 잃었더라도 완료 알림이 등록 후에 도착하면 이 검증에 진입할 수 있다. 완료 알림까지 등록 전에 버려지면 콜백이 실행되지 않으므로 이 경로만으로 복구되지 않는다.
 
-![등록 전에 도착한 조각은 소켓으로 전달되지 않는다. 완료 알림이 등록 후에 도착해야 소켓별 개수 검증에 진입하며, 완료 알림까지 버려지면 이 검증 경로는 실행되지 않는다.](./images/notd-multiplayer-optimization/rpc-registration-recovery.webp)
+![](./images/notd-multiplayer-optimization/rpc-registration-recovery.webp)
 
 ## 같은 기준으로 피격 전파 고르기
 

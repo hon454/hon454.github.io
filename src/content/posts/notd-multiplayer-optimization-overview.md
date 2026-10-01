@@ -121,6 +121,8 @@ RPC와 프로퍼티 복제의 순서 문제는 [언리얼 엔진의 리플리케
 - 서버와 클라이언트가 같은 데이터를 이미 가지고 있으면 그것을 가리키는 값만 보낸다. 데이터 테이블의 ID와 레벨 코드, 몽타주 매니저의 태그와 인덱스 전송 경로가 여기에 해당한다.
 - 엔진이 이미 알고 있는 값을 기준으로 삼는다. 전송 속도 조절과 신뢰성 선택은 따로 측정값을 만들지 않고 채널의 미확인 번치 수로 판단했다.
 
+같은 게임을 새 프로젝트에서 처음부터 설계한다면 바꿀 부분은 [Night of the Dead 멀티플레이를 지금 다시 설계한다면](/posts/notd-multiplayer-redesign/)에 따로 정리했다.
+
 ## 참고 자료
 
 - [Replication Graph in Unreal Engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/replication-graph-in-unreal-engine)

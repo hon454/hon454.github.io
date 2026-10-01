@@ -1,0 +1,94 @@
+{
+  "created": "2026-10-02",
+  "tool": "built-in image_gen",
+  "post": "src/content/posts/notd-multiplayer-redesign.md",
+  "asset": "src/content/posts/images/notd-multiplayer-optimization/notd-multiplayer-redesign-cover.webp",
+  "generated": "C:/Users/hon45/.codex/generated_images/01a0f8ac-fa2b-74b3-9579-7c8aafe9dedc/exec-ebe16823-0899-49fd-9fa8-1452487c354c.png",
+  "references": [
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp",
+    "src/content/posts/images/notd-multiplayer-optimization/notd-multiplayer-optimization-overview-cover.webp"
+  ],
+  "prompt": "Use case: stylized-concept\nAsset type: 16:9 blog cover for \"Night of the Dead multiplayer, if redesigned today\", sixth cover in an existing optimization series.\nInput images: Image 1 is the Steady Spiral mascot identity reference. Image 2 is soft clay material and warm lighting reference only. Image 3 is the series master for character proportions, palette, scale and miniature survival-game atmosphere. All inputs are references; generate a NEW scene.\nPrimary request: Show the friendly snail thoughtfully designing the game's underlying structure from the beginning, using a miniature modular foundation as a visual metaphor. ONE mascot assembles a small survival-base diorama on an orderly beige modular planning board, instead of adding more pieces on top of a completed fort.\nSubject invariants: exactly one chunky dark forest-green Steady Spiral snail with a lime yellow-green spiral shell, TWO rounded thick antennae, flat ivory oval eyes and a small ivory smile. Match reference identity faithfully; a small round clay hand can handle the model.\nScene: a compact beige square foundation tray directly below the snail's face, containing a small arrangement of clean removable square tiles with shallow sockets. The snail is gently fitting ONE square module bearing a small wooden watchtower into the central open socket. A few matching modules are already seated beside it: a tiny beige barricade/base hut and one small tray of orderly grey-green zombie figurines. This is a tangible miniature architectural planning model, not a literal depiction of engine internals. At most two small sage pine trees at the periphery connect it to the same survival-game world.\nComposition: wide landscape 16:9, slightly elevated three-quarter view. The face is near horizontal center above the planning tray; the hand, lifted watchtower module and its open socket lie in a compact vertical group centered around x=50%, not far to either side. Face and ALL essential assembly interaction within central 20% of canvas width and central 75% of height, so a tall narrow center crop keeps the theme. Shell may extend right outside that narrow crop, but remains visible in full canvas. Main character and board within middle 55% width; generous empty ivory background at both edges. No split panels or before/after layout.\nStyle: premium soft matte handcrafted clay 3D, rounded sculpted miniatures, warm ivory seamless studio backdrop, diffuse upper-left warm lighting, gentle contact shadows, restrained sage and beige miniature palette. Same friendly scale and finish as the series master.\nText: no title, words, letters, code, numbers, labels, arrows or watermark.\nTechnical constraints: evoke a proposed redesign and deliberate modular structure; no measured speedup, guaranteed performance, checkmarks, shields, magical automatic networking or complete proven migration. Do not portray this as a literal technical diagram. No envelopes, question marks, tangled cables, gears, robots or extra mascots. No gore or realistic horror.",
+  "corrections": [],
+  "concept": "새 프로젝트의 구조를 처음부터 설계하는 것을 모듈형 미니어처 토대 조립으로 표현한다.",
+  "technicalReview": "제안한 재설계의 비유이며 엔진 데이터 구조를 정확히 그린 도식이 아니다. 측정된 성능 향상이나 검증된 마이그레이션을 주장하지 않는다.",
+  "validation": {
+    "commands": {
+      "pnpm check": "PASS: 264 files, 0 errors, 0 warnings, 0 hints",
+      "pnpm type-check": "PASS: exit 0",
+      "pnpm build": "PASS: 110 pages, full production pipeline, exit 0",
+      "pnpm dev": "PASS: actual home PostCard and detail cover loaded"
+    },
+    "visualReview": {
+      "method": "Actual home PostCard with real title/description and unchanged CoverImage; toggled existing list/grid classes in the local QA browser.",
+      "results": [
+        {
+          "viewportWidth": 1280,
+          "mode": "list",
+          "bounds": {
+            "x": 734.71875,
+            "y": 290.59375,
+            "width": 166.078125,
+            "height": 262
+          },
+          "source": "/_image/?href=%2F%40fs%2FG%3A%2Fhon454.github.io%2Fsrc%2Fcontent%2Fposts%2Fimages%2Fnotd-multiplayer-optimization%2Fnotd-multiplayer-redesign-cover.webp%3ForigWidth%3D1672%26origHeight%3D941%26origFormat%3Dwebp&w=828&h=466&q=85&f=webp&fit=cover&position=center"
+        },
+        {
+          "viewportWidth": 1280,
+          "mode": "grid",
+          "bounds": {
+            "x": 379.203125,
+            "y": 363.390625,
+            "width": 521.59375,
+            "height": 260.796875
+          },
+          "source": "/_image/?href=%2F%40fs%2FG%3A%2Fhon454.github.io%2Fsrc%2Fcontent%2Fposts%2Fimages%2Fnotd-multiplayer-optimization%2Fnotd-multiplayer-redesign-cover.webp%3ForigWidth%3D1672%26origHeight%3D941%26origFormat%3Dwebp&w=828&h=466&q=85&f=webp&fit=cover&position=center"
+        },
+        {
+          "viewportWidth": 390,
+          "mode": "list",
+          "bounds": {
+            "x": 250,
+            "y": 638.84375,
+            "width": 126,
+            "height": 197.75
+          },
+          "source": "/_image/?href=%2F%40fs%2FG%3A%2Fhon454.github.io%2Fsrc%2Fcontent%2Fposts%2Fimages%2Fnotd-multiplayer-optimization%2Fnotd-multiplayer-redesign-cover.webp%3ForigWidth%3D1672%26origHeight%3D941%26origFormat%3Dwebp&w=828&h=466&q=85&f=webp&fit=cover&position=center"
+        },
+        {
+          "viewportWidth": 390,
+          "mode": "grid",
+          "bounds": {
+            "x": 21,
+            "y": 477.09375,
+            "width": 348,
+            "height": 174
+          },
+          "source": "/_image/?href=%2F%40fs%2FG%3A%2Fhon454.github.io%2Fsrc%2Fcontent%2Fposts%2Fimages%2Fnotd-multiplayer-optimization%2Fnotd-multiplayer-redesign-cover.webp%3ForigWidth%3D1672%26origHeight%3D941%26origFormat%3Dwebp&w=828&h=466&q=85&f=webp&fit=cover&position=center"
+        }
+      ],
+      "findings": "Desktop and 390px mobile list retain face, lifted watchtower module and open foundation socket. List crops peripheral shell, hut and zombie tray; grid shows the whole planning scene. Two-to-one grid crop retains the face and assembly relation. No revision needed.",
+      "screenshots": "Local QA only; ignored directory, no screenshot attachments or committed screenshots."
+    },
+    "pixelEquality": "PASS",
+    "contentVerification": "Only the image frontmatter field was added; authored prose equals pre-task snapshot.",
+    "productionVerification": {
+      "home": "PASS",
+      "detail": "PASS",
+      "optimizedAssets": [
+        "notd-multiplayer-redesign-cover.Dge5SA5j.webp",
+        "notd-multiplayer-redesign-cover.Dge5SA5j_1DnnP3.webp"
+      ]
+    },
+    "lqipReview": "Kept the new cover entry; removed one unrelated entry generated for a pre-existing meme asset.",
+    "notes": "Initial sandbox Astro check failed while loading picomatch (require is not defined); rerun with normal local process permissions passed. Existing npm project-config warning remains."
+  },
+  "dimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "bytes": 1005928,
+  "sha256": "554cc9824f9b5b01d265e3e94f5ce6ec886ac5ec35262330f70d1202eb73f5fd",
+  "format": "lossless WebP; decoded pixels equal to generated PNG; original canvas preserved"
+}

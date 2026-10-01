@@ -150,6 +150,13 @@ on mobile.
 
 ## Post Cover Images
 
+Generate or edit blog covers, illustrations, and technical diagrams only when
+the user explicitly requests that image work. Writing, polishing, reviewing,
+publishing a post, or syncing upstream does not authorize image generation.
+When the user requests blog image work, first read
+[Blog Image Guidelines](docs/blog-image-guidelines.md). Do not load that guide
+as a routine stage of blog writing or infer a generation request from it.
+
 Post-card covers use centered cropping. Keep text, logos, and other essential
 content near the center with sufficient padding, and verify new covers in both
 list and grid layouts.

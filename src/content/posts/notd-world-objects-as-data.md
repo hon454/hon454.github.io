@@ -36,9 +36,105 @@ lang: ko
 
 나무와 바위는 인스턴스드 폴리지로 배치했다. 인스턴스는 액터가 아니므로 서버에 복제 비용이 없고, 클라이언트는 레벨을 로드하면서 같은 인스턴스를 이미 가지고 있다.
 
-서버에서 인스턴스가 타격을 받으면 그 인스턴스를 제거하고 같은 트랜스폼에 파괴 가능한 액터를 스폰한다. 어떤 스태틱 메시가 어떤 액터 클래스로 바뀌는지는 데이터 테이블에서 읽어 초기화 때 맵으로 만들어 둔다.
+서버에서 인스턴스가 타격을 받으면 그 인스턴스를 제거하고 같은 트랜스폼에 파괴 가능한 액터를 스폰한다. 교체는 타격이 확정된 뒤에 한다. 조준한 대상이 상호작용 가능한지 판정할 때는 액터가 필요 없다. 맞은 컴포넌트의 스태틱 메시가 교체 대상인지만 보고 포커스 UI를 띄운다. 근접 공격, 투사체, 기계 장비, 파트너의 자동 채집은 모두 같은 교체 함수로 모인다.
 
-교체된 액터는 복제되지만 틱이 없고 `DORM_DormantAll`로 시작한다. 클라이언트는 서버의 액터가 도착하기 전까지 같은 자리에 로컬 더미 액터를 세워 타격 직후의 빈틈을 메운다.
+채집형 폴리지는 예외다. 상호작용 대상을 고르는 트레이스는 상호작용 인터페이스를 구현한 액터만 후보로 삼기 때문에 인스턴스 상태로는 주울 수 없다. 그래서 이 트레이스에 채집형 인스턴스가 걸리고 플레이어와의 거리가 일정 범위 안이면, 타격 없이 서버에 교체를 요청한다. 코드의 기본 거리는 2.5m다.
+
+### 서버의 교체
+
+어떤 스태틱 메시가 어떤 액터 클래스로 바뀌는지는 데이터 테이블에서 읽는다. 행마다 스태틱 메시, 파괴 가능 액터 클래스, 클라이언트용 더미 클래스와 폴리지 ID가 있다. 서브시스템은 초기화 때 이를 메시에서 액터 클래스로, 액터 클래스에서 더미 클래스로, 폴리지 ID에서 메시로 찾는 맵으로 만들어 둔다. 폴리지 ID는 행 이름의 해시로 정해지며, 뒤에 나오는 미러링 목록에서 폴리지 종류를 가리키는 값으로도 쓴다.
+
+클라이언트가 교체를 요청할 때는 맞은 컴포넌트와 인스턴스 인덱스, 그리고 자기 화면에서 본 인스턴스의 위치를 보낸다. 인덱스만으로는 서버와 같은 인스턴스라는 보장이 없다. 인스턴스를 제거하면 다른 인스턴스의 인덱스가 바뀔 수 있는데, 서버와 클라이언트는 제거 순서가 다를 수 있다. 클라이언트는 타격 즉시 자기 인스턴스를 지우고, 파괴된 자연물의 인스턴스는 여러 프레임에 나눠 지운다. 그래서 서버는 인덱스가 가리키는 인스턴스가 클라이언트가 본 위치에 있는지 먼저 확인하고, 다르면 그 위치 근처에서 인스턴스를 다시 찾는다.
+
+```cpp
+ADestructibleFoliage* UFoliageSwapSubsystem::SwapToActor(
+	UFoliageInstancedStaticMeshComponent* Component,
+	int32 InstanceIndex,
+	const FVector& ClientInstanceLocation)
+{
+	const TSubclassOf<ADestructibleFoliage>* ActorClass = ActorClassByMesh.Find(Component->GetStaticMesh());
+	if (ActorClass == nullptr)
+	{
+		return nullptr;
+	}
+
+	FTransform InstanceTransform;
+	const bool bSameInstance = Component->GetInstanceTransform(InstanceIndex, InstanceTransform, true)
+		&& InstanceTransform.GetLocation().Equals(ClientInstanceLocation, MatchTolerance);
+
+	if (bSameInstance == false)
+	{
+		InstanceIndex = FindNearestInstance(Component, ClientInstanceLocation);
+		if (InstanceIndex == INDEX_NONE)
+		{
+			return nullptr;
+		}
+
+		Component->GetInstanceTransform(InstanceIndex, InstanceTransform, true);
+	}
+
+	Component->RemoveInstance(InstanceIndex);
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	return GetWorld()->SpawnActor<ADestructibleFoliage>(*ActorClass, InstanceTransform, SpawnParams);
+}
+```
+
+`FindNearestInstance()`는 `GetInstancesOverlappingSphere()`로 후보를 받아 허용 거리 안에서 가장 가까운 인스턴스를 고른다. 폴리지 컴포넌트는 메시 종류마다 따로 있으므로 같은 컴포넌트 안에서만 찾으면 메시도 자연히 같다. 이미 다른 요청으로 교체된 인스턴스라면 후보가 없으므로 아무것도 하지 않는다.
+
+교체된 액터는 복제되지만 틱이 없고 `DORM_DormantAll`로 시작한다. 체력과 부분 파괴 상태는 이때부터 이 액터가 가진다.
+
+### 클라이언트의 더미
+
+클라이언트에서 타격 판정이 나면 서버에 교체를 요청하는 동시에 자기 인스턴스를 지우고, 같은 트랜스폼에 로컬 더미 액터를 세운다. 더미는 복제되지 않으며 같은 스태틱 메시와 타격 이펙트, 데칼만 가지고 2.5초 뒤에 스스로 사라진다. 서버의 액터가 도착하기 전까지 타격 반응이 비지 않게 하는 용도다. 한 번의 공격 판정에서 요청이 중복되지 않도록, 이미 처리한 폴리지 컴포넌트는 기억해 두고 건너뛴다.
+
+서버의 액터가 복제되어 오면 `BeginPlay()`에서 남은 인스턴스를 정리한다. 직접 타격하지 않은 다른 클라이언트에는 그 자리에 인스턴스가 아직 있으므로, 액터와 같은 위치에 있는 같은 메시의 인스턴스를 찾아 지운다.
+
+```cpp
+void ADestructibleFoliage::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (RemoveOverlappedInstance(TraceFromPivot()) == false)
+	{
+		RemoveOverlappedInstance(TraceBounds());
+	}
+
+	if (GetNetMode() == NM_Client)
+	{
+		TakeOverLocalDummy();
+	}
+}
+
+bool ADestructibleFoliage::RemoveOverlappedInstance(const TArray<FHitResult>& Hits)
+{
+	for (const FHitResult& Hit : Hits)
+	{
+		auto* Component = Cast<UFoliageInstancedStaticMeshComponent>(Hit.GetComponent());
+		if (Component == nullptr || Component->GetStaticMesh() != MeshComponent->GetStaticMesh())
+		{
+			continue;
+		}
+
+		FTransform InstanceTransform;
+		Component->GetInstanceTransform(Hit.Item, InstanceTransform, true);
+		if (InstanceTransform.GetLocation().Equals(GetActorLocation(), MatchTolerance))
+		{
+			Component->RemoveInstance(Hit.Item);
+			return true;
+		}
+	}
+
+	return false;
+}
+```
+
+먼저 피벗에서 위로 짧은 라인 트레이스를 쏘고, 찾지 못했을 때만 바운딩 박스 전체로 박스 트레이스를 한다. `TakeOverLocalDummy()`는 같은 자리의 더미에 붙어 있던 데칼을 액터로 옮긴 뒤 더미를 파괴한다. 폴리지 레벨이 스트리밍으로 나중에 로드되면, 그 레벨 범위에 있는 액터가 같은 정리를 다시 한다.
+
+### 다시 인스턴스로
+
+반대 방향도 있다. 서버에서 폴리지 레벨이 스트리밍 아웃되어 GC되면, 다음에 그 레벨을 로드할 때 인스턴스가 다시 만들어진다. 그래서 서버는 GC 시점에 로드된 폴리지 레벨 어디에도 속하지 않는 파괴 가능 액터를 파괴한다. 남은 체력과 부분 파괴 상태는 이때 버려지고, 자연물은 온전한 인스턴스로 돌아온다. 세이브 로드에서도 액터의 상태를 되살리지 않는다. 체력이 0인 액터만 리스폰 레코드로 넘기고 나머지는 파괴한다.
 
 ### 파괴된 것은 구조체 하나로
 
@@ -96,7 +192,7 @@ void ARespawnManager::Tick(float DeltaSeconds)
 
 ### 클라이언트의 인스턴스 정리
 
-서버가 인스턴스를 제거해도 클라이언트의 인스턴스는 그대로 남아 있다. 인스턴스드 폴리지는 복제되지 않기 때문이다. 따로 알려 주지 않으면 나중에 접속했거나 그 레벨을 아직 로드하지 않았던 클라이언트는 이미 파괴된 나무를 그대로 보게 된다.
+액터가 살아 있는 동안에는 복제된 액터가 클라이언트의 인스턴스를 지운다. 완전히 파괴되어 액터가 사라지면 이 정리를 맡을 대상이 없다. 인스턴스드 폴리지 자체는 복제되지 않으므로, 따로 알려 주지 않으면 나중에 접속했거나 그 레벨을 아직 로드하지 않았던 클라이언트는 이미 파괴된 나무를 그대로 보게 된다.
 
 그래서 서버의 리스폰 레코드 집합을 클라이언트에 미러링했다. 클라이언트는 `(리스폰 ID, 폴리지 종류 ID, 트랜스폼)` 목록을 받아 해당 위치의 로컬 인스턴스를 제거한다. 전송은 [스트리밍 라우터](/posts/notd-reliable-rpc-data-streaming/)를 통한다. 접속 시에는 누적된 전체가, 플레이 중에는 변경분이 간다.
 

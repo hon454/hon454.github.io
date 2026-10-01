@@ -59,7 +59,7 @@ ADestructibleFoliage* UFoliageSwapSubsystem::SwapToActor(
 	}
 
 	FTransform InstanceTransform;
-	const bool bSameInstance = Component->GetInstanceTransform(InstanceIndex, InstanceTransform, true)
+	const bool bSameInstance = Component->GetInstanceTransform(InstanceIndex, InstanceTransform, /*bWorldSpace=*/true)
 		&& InstanceTransform.GetLocation().Equals(ClientInstanceLocation, MatchTolerance);
 
 	if (bSameInstance == false)
@@ -75,6 +75,7 @@ ADestructibleFoliage* UFoliageSwapSubsystem::SwapToActor(
 
 	Component->RemoveInstance(InstanceIndex);
 
+	// 인스턴스가 있던 트랜스폼에 그대로 세운다. 충돌 때문에 위치를 옮기거나 스폰을 포기하지 않는다.
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	return GetWorld()->SpawnActor<ADestructibleFoliage>(*ActorClass, InstanceTransform, SpawnParams);
@@ -117,6 +118,7 @@ bool ADestructibleFoliage::RemoveOverlappedInstance(const TArray<FHitResult>& Hi
 			continue;
 		}
 
+		// 인스턴스드 메시 컴포넌트에서 Hit.Item은 인스턴스 인덱스다.
 		FTransform InstanceTransform;
 		Component->GetInstanceTransform(Hit.Item, InstanceTransform, true);
 		if (InstanceTransform.GetLocation().Equals(GetActorLocation(), MatchTolerance))
@@ -175,6 +177,7 @@ void ARespawnManager::Tick(float DeltaSeconds)
 
 	for (int32 Step = 0; Step < NumToProcess; ++Step)
 	{
+		// Cursor는 틱 사이에 유지되므로 다음 틱은 이어서 검사한다.
 		Cursor = (Cursor + 1) % NumRecords;
 
 		const FRespawnRecord& Record = Records[RecordIds[Cursor]];
@@ -184,6 +187,7 @@ void ARespawnManager::Tick(float DeltaSeconds)
 		}
 	}
 
+	// 순회 중에는 레코드를 지우지 않고 모아 두었다가 한 번에 리스폰한다.
 	FlushPendingRespawns();
 }
 ```
@@ -203,6 +207,7 @@ void ARespawnManager::Tick(float DeltaSeconds)
 ```cpp
 void UFoliageMirrorComponent::OnRecordRegistered(const FRespawnRecord& Record)
 {
+	// 아직 보내지 않은 삭제가 있으면 둘 다 버리고, 없으면 추가로 쌓는다.
 	if (PendingRemovals.Remove(Record.RespawnId) == 0)
 	{
 		PendingAdditions.Add(Record.RespawnId, MakeMirrorEntry(Record));
@@ -211,6 +216,7 @@ void UFoliageMirrorComponent::OnRecordRegistered(const FRespawnRecord& Record)
 
 void UFoliageMirrorComponent::OnRecordUnregistered(const FGuid& RespawnId)
 {
+	// 아직 보내지 않은 추가가 있으면 둘 다 버리고, 없으면 삭제로 쌓는다.
 	if (PendingAdditions.Remove(RespawnId) == 0)
 	{
 		PendingRemovals.Add(RespawnId);
@@ -245,6 +251,7 @@ void UFoliageMirrorComponent::OnRecordUnregistered(const FGuid& RespawnId)
 ```cpp
 void AZombieSpawner::DemoteEligibleCharacters()
 {
+	// RemoveAtSwap()으로 지우므로 뒤에서부터 순회한다.
 	for (int32 Index = SpawnedCharacters.Num() - 1; Index >= 0; --Index)
 	{
 		ACharacter* Character = SpawnedCharacters[Index];
@@ -254,6 +261,7 @@ void AZombieSpawner::DemoteEligibleCharacters()
 			continue;
 		}
 
+		// 원본에서는 따로 처리하는 경우다. 이 예시에서는 생략했다.
 		if (Spawnable->IsAlive() == false || Spawnable->IsTransient()
 			|| IsOutsideSpawnerActivationRange(Character))
 		{
@@ -293,6 +301,7 @@ void AZombieSpawner::DemoteEligibleCharacters()
 ```cpp
 void FItemContainer::RefreshReplicatedItems(const AActor* Owner)
 {
+	// 거리 제한 인터페이스를 구현하지 않은 소유자는 항상 복제한다.
 	const IDistanceGatedReplication* Gate = Cast<IDistanceGatedReplication>(Owner);
 	if (Gate && IsAnyPlayerWithin(Owner->GetActorLocation(), Gate->GetReplicationDistance()) == false)
 	{
@@ -300,6 +309,7 @@ void FItemContainer::RefreshReplicatedItems(const AActor* Owner)
 		return;
 	}
 
+	// 행 전체 대신 ID와 수량만 옮긴다.
 	ReplicatedItems.SetNum(Items.Num());
 	for (int32 Index = 0; Index < Items.Num(); ++Index)
 	{
@@ -325,13 +335,13 @@ struct FReplicatedItem
 	GENERATED_BODY()
 
 	UPROPERTY()
-	int32 EntityId = 0;
+	int32 EntityId = 0; // 데이터 테이블을 조회할 ID다.
 
 	UPROPERTY()
 	int32 Amount = 0;
 
 	UPROPERTY()
-	FGuid ItemId;
+	FGuid ItemId; // 아이템 개체를 구분하는 ID다.
 };
 ```
 

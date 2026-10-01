@@ -121,7 +121,7 @@ int32 UZombieLODComponent::CalcSendRateGrade() const
 
 소스의 등급별 기본 전송률은 초당 12, 8, 6, 4, 3회이고 Invisible은 1회다. LOD0~3은 등급 0~3에 대응하므로 이 경로에서 사용하는 기본 전송률은 12, 8, 6, 4회다. 배열의 3회 설정은 이 LOD 매핑으로 선택되지 않는다. 공격 중에는 등급을 2 이하로 제한하지만 Invisible은 그대로 1회다.
 
-![서버는 모든 플레이어까지의 최소 거리를, 클라이언트는 로컬 플레이어 거리와 카메라 조건을 사용한다. 각 기준은 이동 시뮬레이션, 전송률, 애니메이션 평가에 서로 다른 방식으로 적용된다.](./images/notd-multiplayer-optimization/zombie-cost-routing.webp)
+![](./images/notd-multiplayer-optimization/zombie-cost-routing.webp)
 
 ## 보내지 않는 상태
 
@@ -264,7 +264,7 @@ Animation Budget Allocator에 등록한 메시는 엔진이 URO를 비활성화�
 
 캐시를 남긴 좀비가 없으면 결과를 지운다. 액터 결과는 대상이 없거나 공격 가능한 대상이 아니게 되면 지우고, 위치 같은 비액터 결과에는 기본 30초의 수명을 둔다. 모든 결과를 30초 뒤에 지우는 것은 아니다.
 
-![같은 질의와 주변 거리, 좀비 유형 및 옵션별 조건을 만족하는 결과만 공유한다. 액터 결과는 대상 유효성을 확인하고, 비액터 결과에는 기본 30초 수명을 적용한다.](./images/notd-multiplayer-optimization/eqs-reuse-conditions.webp)
+![](./images/notd-multiplayer-optimization/eqs-reuse-conditions.webp)
 
 캐시 사용 여부와 좀비 수 제한은 각각 설정으로 제어한다. 수 제한을 켠 경우 기본 기준은 100마리다. 적은 수에서도 무조건 공유하기보다 질의가 많이 겹치는 상황에 재사용 범위를 제한하는 선택이다.
 

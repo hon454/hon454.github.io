@@ -26,8 +26,6 @@ lang: ko
 | 스포너의 좀비 | 정수 카운터, 구조체 | 플레이어 근처에서만 풀링 액터 |
 | 보관함 내용물 | 서버에만 있는 배열 | 플레이어 근처에서만 복제용 배열 |
 
-![](./images/notd-multiplayer-optimization/world-data-illustration.webp)
-
 ## 자연물: 인스턴스, 액터, 구조체
 
 ![](./images/notd-multiplayer-optimization/forest-airdrop.avif)
@@ -131,6 +129,8 @@ bool ADestructibleFoliage::RemoveOverlappedInstance(const TArray<FHitResult>& Hi
 ```
 
 먼저 피벗에서 위로 짧은 라인 트레이스를 쏘고, 찾지 못했을 때만 바운딩 박스 전체로 박스 트레이스를 한다. `TakeOverLocalDummy()`는 같은 자리의 더미에 붙어 있던 데칼을 액터로 옮긴 뒤 더미를 파괴한다. 폴리지 레벨이 스트리밍으로 나중에 로드되면, 그 레벨 범위에 있는 액터가 같은 정리를 다시 한다.
+
+![타격 시 로컬 더미로 즉시 반응하고 서버에서 교체한 액터가 복제되면 데칼을 인계한다. 교체 성공 경로를 표시했다.](./images/notd-multiplayer-optimization/foliage-instance-actor-swap.webp)
 
 ### 다시 인스턴스로
 

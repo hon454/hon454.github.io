@@ -24,7 +24,7 @@ Claude Code CLI와 데스크톱 앱은 예전에도 써봤다. 다만 한동안 
 
 그런데 다음 날 새벽, OpenAI DevDay에 맞춰 200달러 플랜 가입이 다시 열렸다. 호구가 되어버렸다..
 
-![](./images/codex-to-claude-code-desktop/pro-plan-reopening-meme.png)
+![](./images/codex-to-claude-code-desktop/pro-plan-reopening-meme.webp)
 
 다만 다시 열린 200달러 플랜은 예전 그대로가 아니었다. [새로 가입하면 API 사용 금액 기준으로 기존 200달러 플랜의 절반 정도를 쓸 수 있고](https://www.unite.ai/openai-reopens-chatgpt-pro-200-sign-ups-with-new-usage-calculation/), 대신 5시간 사용 제한은 다시 도입하지 않는다고 한다.
 

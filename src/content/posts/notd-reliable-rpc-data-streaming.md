@@ -2,7 +2,7 @@
 title: "Reliable 버퍼 상태를 보고 대용량 데이터 나눠 보내기"
 published: 2026-10-01
 description: "Night of the Dead에서 퀘스트 진행도, 지도 마커처럼 플레이어마다 쌓이는 데이터를 Reliable RPC로 나눠 보낸 스트리밍 라우터의 구조와, 같은 버퍼 기준으로 피격 전파의 신뢰성을 연결별로 고른 방법을 정리한다."
-image: ./images/notd-multiplayer-optimization/cover.avif
+image: ./images/notd-multiplayer-optimization/notd-reliable-rpc-data-streaming-cover.webp
 tags:
   - unreal-engine
   - networking

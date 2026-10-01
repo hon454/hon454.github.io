@@ -2,7 +2,7 @@
 title: "다수 좀비의 서버 비용과 전송량 줄이기"
 published: 2026-10-01
 description: "Night of the Dead에서 웨이브의 좀비 수백 마리를 Dedicated Server와 클라이언트가 감당하도록, 거리 순위 기반 LOD로 이동 시뮬레이션과 전송률을 조절하고 애니메이션, 길찾기, 상태 복제 비용을 줄인 방법을 정리한다."
-image: ./images/notd-multiplayer-optimization/cover.avif
+image: ./images/notd-multiplayer-optimization/notd-zombie-horde-cost-cover.webp
 tags:
   - unreal-engine
   - networking

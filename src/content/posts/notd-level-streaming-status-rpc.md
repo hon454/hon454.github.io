@@ -2,7 +2,7 @@
 title: "접속 시 레벨 스트리밍 상태 RPC 줄이기"
 published: 2026-10-01
 description: "Night of the Dead에서 접속한 클라이언트에 스트리밍 레벨 상태를 보내는 RPC를 줄이기 위해 패키지 이름을 테이블 기반 코드로 바꾸고 플래그를 비트로 묶은 방법과, 그 앞뒤에 놓인 클라이언트 준비 게이트와 에셋 사전 로딩을 정리한다."
-image: ./images/notd-multiplayer-optimization/cover.avif
+image: ./images/notd-multiplayer-optimization/notd-level-streaming-status-rpc-cover.webp
 tags:
   - unreal-engine
   - networking

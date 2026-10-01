@@ -110,11 +110,13 @@ void UStreamRouterComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	}
 
 	const int32 ChunkSize = 100;
+	// 같은 채널의 다른 Reliable RPC가 들어올 여유를 남긴다.
 	const int32 OutRecLimit = RELIABLE_BUFFER / 4;
 
 	for (FStreamRequest& Request : Requests)
 	{
 		const int32 NumChunks = Request.GetNumChunks(ChunkSize);
+		// NumOutRec은 보냈지만 아직 ACK를 받지 못한 Reliable 번치 수다.
 		while (Request.ChunksSent < NumChunks && Channel->NumOutRec < OutRecLimit)
 		{
 			const int32 Start = Request.ChunksSent * ChunkSize;
@@ -125,6 +127,7 @@ void UStreamRouterComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		}
 	}
 
+	// 완료 알림도 Reliable RPC이므로 같은 기준으로 막는다.
 	for (int32 Index = Requests.Num() - 1; Index >= 0; --Index)
 	{
 		if (Channel->NumOutRec >= OutRecLimit)
@@ -223,8 +226,8 @@ Reliable RPC의 재전송은 도착한 조각을 애플리케이션이 반영하
 void AMyCharacter::BroadcastHit(const FHitInfoNet& HitInfo)
 {
 	const int32 OutRecLimit = RELIABLE_BUFFER / 4;
-	const double ReliableDistSq = FMath::Square(15000.0);
-	const double SkipDistSq = FMath::Square(30000.0);
+	const double ReliableDistSq = FMath::Square(15000.0); // 150m. 언리얼 단위는 cm다.
+	const double SkipDistSq = FMath::Square(30000.0); // 300m
 
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
@@ -242,6 +245,7 @@ void AMyCharacter::BroadcastHit(const FHitInfoNet& HitInfo)
 			continue;
 		}
 
+		// RPC가 실제로 쌓이는 수신자 캐릭터의 채널을 확인한다.
 		const UActorChannel* Channel = Connection->FindActorChannelRef(Receiver);
 		const bool bHasRoom = Channel && Channel->NumOutRec <= OutRecLimit;
 

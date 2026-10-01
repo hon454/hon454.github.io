@@ -99,15 +99,16 @@ int32 UZombieLODComponent::CalcSendRateGrade() const
 		return InvisibleGrade;
 	}
 
+	// 등급 숫자가 작을수록 자주 보낸다. LOD0~3이 등급 0~3에 대응한다.
 	int32 Grade = static_cast<int32>(LOD);
 
-	// 거리 순위가 30 이하인 좀비는 두 단계 올려 준다.
+	// 거리 순위가 30 이하인 좀비는 두 등급 올린다.
 	if (DistanceRank <= 30)
 	{
 		Grade = FMath::Max(Grade - 2, 0);
 	}
 
-	// 공격 중인 좀비는 일정 단계 아래로 내려가지 않는다.
+	// 공격 중인 좀비는 등급 숫자를 2 이하로 제한한다.
 	if (Zombie->IsAttacking())
 	{
 		Grade = FMath::Min(Grade, 2);
@@ -135,7 +136,9 @@ void UPlayerStatusComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	// 기본 클래스의 COND_OwnerOnly를 풀어 다른 플레이어에게도 보낸다.
-	RESET_REPLIFETIME_CONDITION(UCharacterStatusComponent, HP, COND_None);
+	RESET_REPLIFETIME_CONDITION(UCharacterStatusComponent, CharacterHealth, COND_None);
+	RESET_REPLIFETIME_CONDITION(UCharacterStatusComponent, CharacterStatus, COND_None);
+	RESET_REPLIFETIME_CONDITION(UCharacterStatusComponent, EquipmentStatusArray_Net, COND_None);
 }
 ```
 
@@ -169,6 +172,7 @@ void AZombie::UpdateAnimTickOption(float DeltaSeconds)
 	if (IsInCombat() || bInGracePeriod)
 	{
 		AnimTickGraceElapsed += DeltaSeconds;
+		// 근접 공격 판정에 본 위치가 필요하므로 서버에서도 포즈와 본을 갱신한다.
 		GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 	}
 	else
@@ -192,7 +196,7 @@ float AZombie::CalcSignificance(const FTransform& ViewTransform) const
 	float Value = BaseSignificanceByLOD[LOD];
 	const float MinValue = MinSignificanceByLOD[LOD];
 
-	// 클라이언트 이외의 모드에서는 거리 순위도 반영한다.
+	// 리슨 서버와 스탠드얼론에서는 거리 순위도 반영한다.
 	if (GetNetMode() != NM_Client)
 	{
 		Value *= 1.f - GetNormalizedDistanceRank();
@@ -202,12 +206,7 @@ float AZombie::CalcSignificance(const FTransform& ViewTransform) const
 	// 최소값 보정 다음에 카메라 방향에 따른 보정을 적용한다.
 	if (const APlayerCameraManager* Camera = GetLocalCameraManager())
 	{
-		const float Diff = Camera->GetDotProductTo(this) - (1.f - Camera->GetFOVAngle() * 0.01f);
-		const float Penalty = Diff >= 1.f ? 0.f
-			: Diff > 0.7f ? 1.f
-			: Diff > 0.5f ? 2.f
-			: Diff > 0.f ? 3.f : 0.f;
-		Value = FMath::Max(Value - Penalty, 0.f);
+		Value = FMath::Max(Value - CalcViewPenalty(Camera), 0.f);
 	}
 
 	if (IsAttacking())

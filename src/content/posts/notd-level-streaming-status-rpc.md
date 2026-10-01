@@ -66,10 +66,10 @@ struct FCodedLevelStatus
 	FName PackageName;
 
 	UPROPERTY()
-	int16 Code = 0;
+	int16 Code = 0; // 0은 표에 없는 레벨이다.
 
 	UPROPERTY()
-	int8 LODIndex = 0;
+	int8 LODIndex = 0; // 엔진은 int32다. Encode()에서 MAX_int8로 제한한다.
 
 	UPROPERTY()
 	bool bShouldBeLoaded = false;
@@ -85,8 +85,10 @@ struct FCodedLevelStatus
 
 	bool NetSerialize(FArchive& Ar, UPackageMap* Map, bool& bOutSuccess)
 	{
+		// 받을 때는 이 값 대신 아래에서 읽은 다섯 번째 비트를 쓴다.
 		const bool bHasCode = Ar.IsSaving() && Code != 0;
 
+		// 보낼 때는 필드 값으로 비트를 채워 쓰고, 받을 때는 SerializeBits()가 읽은 값으로 덮어쓴다.
 		uint8 Flags = 0;
 		Flags |= bShouldBeLoaded << 0;
 		Flags |= bShouldBeVisible << 1;
@@ -95,6 +97,7 @@ struct FCodedLevelStatus
 		Flags |= bHasCode << 4;
 		Ar.SerializeBits(&Flags, 5);
 
+		// 받는 쪽은 읽은 비트로 필드를 복원한다.
 		bShouldBeLoaded = (Flags & (1 << 0)) != 0;
 		bShouldBeVisible = (Flags & (1 << 1)) != 0;
 		bShouldBlockOnLoad = (Flags & (1 << 2)) != 0;
@@ -102,12 +105,13 @@ struct FCodedLevelStatus
 
 		Ar << LODIndex;
 
+		// 표에 있는 레벨은 16비트 코드를, 없는 레벨은 경로 문자열을 보낸다.
 		if ((Flags & (1 << 4)) != 0)
 		{
 			Ar << Code;
 			if (Ar.IsLoading())
 			{
-				PackageName = NAME_None;
+				PackageName = NAME_None; // 이름은 Decode()에서 코드로 복원한다.
 			}
 		}
 		else
@@ -124,6 +128,7 @@ struct FCodedLevelStatus
 	}
 };
 
+// 기본 프로퍼티 직렬화 대신 위의 NetSerialize()를 쓰게 한다.
 template<>
 struct TStructOpsTypeTraits<FCodedLevelStatus> : public TStructOpsTypeTraitsBase2<FCodedLevelStatus>
 {

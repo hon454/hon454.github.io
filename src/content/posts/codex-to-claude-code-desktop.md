@@ -22,7 +22,7 @@ lang: ko
 
 다만 다시 열린 200달러 플랜은 예전 그대로가 아니었다. [새로 가입하면 API 사용 금액 기준으로 기존 200달러 플랜의 절반 정도를 쓸 수 있고](https://www.unite.ai/openai-reopens-chatgpt-pro-200-sign-ups-with-new-usage-calculation/), 대신 5시간 사용 제한은 다시 도입하지 않는다고 한다.
 
-![9월 3일 GPT-6 Astra 출시 뒤 9월 10일 200달러 Pro 가입이 중단되어 Codex 100달러 플랜으로 시작했고, 9월 29일 Claude Max 20x를 결제한 다음 날 새벽 200달러 Pro 가입이 신규 사용량 절반 조건으로 재개된 흐름](./images/codex-to-claude-code-desktop/plan-timeline.webp)
+![](./images/codex-to-claude-code-desktop/plan-timeline.webp)
 
 어쨌든 한 달은 Claude Code를 써야 한다. Codex 데스크톱 앱을 쓰기 전에 Claude Code CLI와 데스크톱 앱을 써본 적이 있어서 처음 쓰는 도구는 아니다. 그래도 한동안 Codex에 익숙해져 있었기 때문에 다시 적응하는 중이다. 그사이 Codex 데스크톱 앱과 비교하며 느낀 장단점을 적어 둔다. Codex 데스크톱 앱은 지금은 ChatGPT 데스크톱 앱의 Codex 모드로 통합되어 있지만 이 글에서는 편의상 Codex 데스크톱 앱이라고 부른다.
 
@@ -56,7 +56,7 @@ Codex에서는 단축키로 추론 수준을 한 단계씩 바로 올리고 내�
 
 CLI에서는 단축키로 됐던 것으로 기억하는데, 현재 문서 기준으로는 CLI도 `Alt+P`로 모델 선택 창을 연 뒤 좌우 화살표로 조절하는 방식이다. 어느 쪽이든 창을 한 번 거쳐야 해서 Codex처럼 바로 바꾸는 것보다 번거롭다.
 
-![Codex는 단축키 한 번으로 추론 수준이 바뀌지만, Claude Code 데스크톱은 Ctrl+Shift+E로 메뉴를 열고 선택해야 하고 CLI는 Alt+P로 모델 선택 창을 연 뒤 좌우 화살표로 조절하는 비교](./images/codex-to-claude-code-desktop/effort-switching.webp)
+![](./images/codex-to-claude-code-desktop/effort-switching.webp)
 
 ### 이미지 생성 모델이 없다
 
@@ -70,7 +70,7 @@ Codex에서는 [`gpt-image-2`를 이용한 이미지 생성](https://learn.chatg
 
 Claude Code 데스크톱 앱에도 `Ctrl+;`나 `/btw`로 여는 사이드 채팅이 있다. 하지만 하나만 열 수 있고 사이드 채팅 안에서 모델이나 추론 수준을 바꿀 수 없다. 포크처럼 쓰던 Codex 쪽이 더 편했다.
 
-![Codex는 작업 스레드의 맥락을 이어받는 사이드 채팅을 여러 개 열고 각각 모델과 추론 수준을 고를 수 있지만, Claude Code 데스크톱은 사이드 채팅을 하나만 열 수 있고 모델과 추론 수준을 바꿀 수 없는 구조 비교](./images/codex-to-claude-code-desktop/side-chat.webp)
+![](./images/codex-to-claude-code-desktop/side-chat.webp)
 
 ### 여러 폴더를 묶는 과정이 어색하다
 

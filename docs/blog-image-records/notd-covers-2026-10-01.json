@@ -1,0 +1,219 @@
+{
+  "created": "2026-10-01",
+  "basis": "d08b48c5ed2e6179999512a559dc7e31be37a9a0",
+  "branch": "codex/notd-series-cover-candidates",
+  "tool": "built-in image_gen",
+  "status": "User approved all five covers and authorized application, PR creation and merge; covers applied to their posts",
+  "previousPR": {
+    "number": 162,
+    "state": "MERGED",
+    "mergedAt": "2026-10-01T09:06:51Z",
+    "url": "https://github.com/hon454/hon454.github.io/pull/162"
+  },
+  "direction": "Same Steady Spiral mascot, soft matte clay 3D, warm ivory background/light; one mascot and one relation per cover; no titles or long code; miniature forest/base/zombies; nominal 16:9 generated canvas preserved without resizing",
+  "workflow": "Overview generated and inspected first, then used as third reference for each remaining cover. All original character/style references were visually inspected. Generation prompts are exact tool inputs. Three selected covers received one targeted composition correction each after mobile PostCard QA. PNG provenance paths are archival only; regenerate initial scene from its recorded prompt and stable repository references before applying its recorded correction.",
+  "technicalReview": {
+    "overview": "Surveying world and cost domains; no measured performance claims",
+    "reliable": "Waiting records sent as small batches. No capacity reservation, overflow-proof protection or ACK-as-application-confirmation. Batching does not imply less total data.",
+    "level": "Both boards show pine/base/zombie in the same order. Token is a symbolic local lookup ID, not a literal code field; no claim that absent entries or mismatched tables are handled universally.",
+    "world": "One selected tree unfolds; the others remain simple instances. Pop-up base is a metaphor for interaction after a hit, not a claim about actual data types, distance-only tree actor conversion or memory release.",
+    "zombie": "Nearby subset has taller token stacks; farther figures retain baseline discs and active poses. Tokens describe relative processing attention, not actual quotas/counts or a halt in distant zombie processing."
+  },
+  "visualReview": {
+    "method": "Temporary local Astro page used the unchanged real PostCard and CoverImage components and actual post titles/descriptions. Both list-mode and grid-mode were rendered. Temporary route removed after QA; screenshot files were not committed, uploaded or attached.",
+    "desktop": {
+      "viewportWidth": 1280,
+      "listCovers": [
+        {
+          "width": 218.39,
+          "height": 232
+        },
+        {
+          "width": 218.39,
+          "height": 200
+        }
+      ],
+      "gridCover": {
+        "width": 324,
+        "height": 162
+      }
+    },
+    "mobile": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "listCovers": [
+        {
+          "width": 144,
+          "height": 332
+        },
+        {
+          "width": 144,
+          "height": 304
+        }
+      ],
+      "gridCover": {
+        "width": 319,
+        "height": 159.5
+      }
+    },
+    "findings": "Faces and main relationships remain visible. Mobile narrow list crops peripheral shell/scenery and scroll ends; full miniature context and token distribution are clearer in 2:1 grid covers. Reliable queue/dish, lifted tree and baseline zombie tokens were moved toward center during revisions. Final version filenames bypassed stale dev/browser image caching. Lazy grid images verified by scrolling to page end."
+  },
+  "validation": {
+    "pixelEquality": "PASS for all five selected PNG/WebP pairs",
+    "commands": {
+      "pnpm check": "PASS: 264 files; 0 errors, 0 warnings, 0 hints",
+      "pnpm type-check": "PASS: exit 0",
+      "pnpm build": "PASS: complete production pipeline and Pagefind; exit 0",
+      "pnpm preview": "PASS: production home rendered; all five distinct cover images loaded"
+    },
+    "assetAndContentVerification": "All five approved asset hashes match. Each post differs only in its image field. Home and detail HTML reference the corresponding cover and optimized image outputs exist.",
+    "buildNotes": "Five LQIP entries regenerated and reviewed for final cover filenames. Existing npm config and Pagefind missing-html/ko-stemming notices remained; build succeeded. Existing body text, diagrams, illustrations, game screenshots and shared cover were preserved."
+  },
+  "assets": [
+    {
+      "id": "overview",
+      "post": "src/content/posts/notd-multiplayer-optimization-overview.md",
+      "title": "총괄편",
+      "generated": "C:/Users/hon45/.codex/generated_images/01a0f6bb-6ce8-7362-9051-af739b5eb9a4/exec-fd8e726d-02a1-4365-8a93-70d29454c393.png",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/notd-multiplayer-optimization-overview-cover.webp",
+      "prompt": "Use case: stylized-concept\nAsset type: 16:9 blog cover, first image of a coherent five-cover series for Night of the Dead multiplayer optimization.\nInput images: Image 1 is the Steady Spiral mascot identity reference, preserve its body, face, shell and colors; Image 2 is material and lighting reference only, do not copy its envelopes, numbers, path or multiple mascots.\nPrimary request: ONE Steady Spiral snail thoughtfully surveying a small tabletop game-world diorama with a compact forest, a small fortified base and a small approaching zombie horde. The central relationship is the mascot looking over the whole game world. The diorama should look like rounded handcrafted miniature game pieces, no combat or gore.\nSubject: chunky dark forest-green body, lime yellow-green spiral shell, two thick rounded antennae, flat ivory oval eyes and tiny ivory smile, proportions clearly matching Image 1. A subtle small rounded arm can gesture toward the world.\nStyle: soft matte clay 3D, warm ivory seamless background, diffuse warm upper-left studio light, gentle contact shadows, restrained sage forest and clay beige fort; tiny grey-green zombie figures.\nComposition: landscape 16:9, one compact central group, mascot roughly 40 percent of canvas height positioned just behind the miniature world, face and the base/trees/zombies all within the middle 50 percent of image width and middle 75 percent height, plentiful ivory negative space at both sides. Moderate elevated three-quarter view makes forest, base and zombie cluster identifiable even as thumbnails; no wide scattered scene, no second mascot.\nText: none. No title, words, numbers, arrows, charts, watermark or extra symbols. Do not add tech labels or performance claims.",
+      "corrections": [],
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "bytes": 1054636,
+      "sha256": "db4288934bef1b339d374b72bc5d06737204339263a0eb453f4501c9ac9db3e6",
+      "format": "lossless WebP; decoded pixels equal to selected generated PNG",
+      "references": [
+        "public/assets/images/logo/steady-spiral-color.png",
+        "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+      ],
+      "editReferences": []
+    },
+    {
+      "id": "reliable",
+      "post": "src/content/posts/notd-reliable-rpc-data-streaming.md",
+      "title": "Reliable 데이터 스트리밍",
+      "generated": "C:/Users/hon45/.codex/generated_images/01a0f6bb-6ce8-7362-9051-af739b5eb9a4/exec-140d03e8-7e80-4f14-8bc6-1a946a67881f.png",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/notd-reliable-rpc-data-streaming-cover.webp",
+      "prompt": "Use case: stylized-concept\nAsset type: 16:9 cover in a five-image Night of the Dead optimization blog series.\nInput images: Image 1 = Steady Spiral identity; Image 2 = clay material/lighting style only; Image 3 = APPROVED SERIES MASTER for exact character scale, proportions, material, palette, warm ivory background and camera style. Images are references, not edit targets. Generate one new cover.\nSubject invariants: exactly ONE Steady Spiral snail, dark forest-green chunky body, lime yellow-green spiral shell, two thick rounded antennae, flat ivory oval eyes, small ivory smile; subtle round arms permitted for the action. Match Image 3's friendly clay mascot.\nStyle invariants: soft matte handcrafted clay 3D, warm ivory seamless studio backdrop, diffuse upper-left warm light and gentle contact shadows. Sage-green miniature trees, clay beige props, small grey-green zombie figures. Miniatures are simple and rounded, no gore.\nComposition invariants: landscape 16:9, moderately elevated three-quarter view; mascot and main interaction form ONE compact group in the middle 50 percent of image width, face and main prop within middle 75 percent height; mascot similar scale to Image 3, plenty of empty ivory at both sides. Ensure center square crop and 2:1 shallow crop keep the face and main relation. Peripheral miniature scenery may be cut. No border or panels.\nText: no words, title, code strings, numbers, labels, arrows, watermark or explanatory UI. No second snail, no reference envelopes/numbers/question marks.\nPrimary request: The snail is metering a queue of waiting data bundles into smaller successive batches. In front of it is a compact beige tray holding a visibly waiting stack of rounded record tiles grouped into bundles. Its small round hand moves just a small group of tiles onto a short narrow transfer lane ending at a receiving dish beside it; one small batch is in transit, another has arrived, and several bundles remain waiting visibly in the tray. The clear relationship is a large waiting pile versus small pieces sent successively, not file compression or magic deletion.\nGame connection: one miniature pine and a tiny wooden barricade just behind the receiving dish, subordinate to data queue.\nTechnical constraints: do not depict an overflow-proof funnel, protective shield, checkmark, locked fixed capacity slots, perfect completion, guaranteed delivery, ACK-as-game-state confirmation, or reserved buffer capacity. The main lane is plain and short, no magical glowing particles. The amount of data is redistributed into batches, not destroyed.",
+      "corrections": [
+        "Use case: precise-object-edit\nImage 1 is the edit target. Images 2 and 3 are mascot identity and style references.\nMake ONE targeted composition correction for a very narrow centered mobile crop. Keep the single Steady Spiral mascot's face, antennae, body, shell, matte clay texture, warm ivory studio lighting, colors, scale and 16:9 canvas unchanged.\nMove and resize ONLY the queue tray, transfer lane and receiving dish into a compact centered arrangement directly underneath the mascot face. The queue tray should be a small but obviously full deep tray at x=46% y=72%, with several waiting stacks; the short transfer lane with the snail moving one small batch is above it at x=50% y=60%; a small receiving dish with a few arrived tiles at x=55% y=69%. The entire queue→small batch→receiving relation must fit inside central x=38%-62%. Arrange props with depth and height rather than a wide left-to-right spread. Retain the waiting stacks and visibly smaller moving batch. The tray can be partly behind the little lane, but do not obscure the visible waiting tiles. The nearby pine/barricade/zombie miniatures may remain peripheral.\nNo text, arrows, guarantee symbols, shields, capacity slots or checkmarks. No deletion of waiting data. Do not change mascot identity or add another mascot."
+      ],
+      "initialGenerated": "C:/Users/hon45/.codex/generated_images/01a0f6bb-6ce8-7362-9051-af739b5eb9a4/exec-129bef5a-11ed-448c-8966-2517a71d5560.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "bytes": 952468,
+      "sha256": "24d9240af40613fdee81bd1a90c6f64f13f7df32f36ed490310163ba16620256",
+      "format": "lossless WebP; decoded pixels equal to selected generated PNG",
+      "references": [
+        "public/assets/images/logo/steady-spiral-color.png",
+        "src/assets/images/posts/replication-rpc-ordering-cover.webp",
+        "src/content/posts/images/notd-multiplayer-optimization/notd-multiplayer-optimization-overview-cover.webp"
+      ],
+      "editReferences": [
+        "Initial generated scene from the recorded generation prompt",
+        "public/assets/images/logo/steady-spiral-color.png",
+        "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+      ]
+    },
+    {
+      "id": "level",
+      "post": "src/content/posts/notd-level-streaming-status-rpc.md",
+      "title": "레벨 스트리밍 상태 RPC",
+      "generated": "C:/Users/hon45/.codex/generated_images/01a0f6bb-6ce8-7362-9051-af739b5eb9a4/exec-d620442b-61bf-4c81-b5ee-a3194a938a9a.png",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/notd-level-streaming-status-rpc-cover.webp",
+      "prompt": "Use case: stylized-concept\nAsset type: 16:9 cover in a five-image Night of the Dead optimization blog series.\nInput images: Image 1 = Steady Spiral identity; Image 2 = clay material/lighting style only; Image 3 = APPROVED SERIES MASTER for exact character scale, proportions, material, palette, warm ivory background and camera style. Images are references, not edit targets. Generate one new cover.\nSubject invariants: exactly ONE Steady Spiral snail, dark forest-green chunky body, lime yellow-green spiral shell, two thick rounded antennae, flat ivory oval eyes, small ivory smile; subtle round arms permitted for the action. Match Image 3's friendly clay mascot.\nStyle invariants: soft matte handcrafted clay 3D, warm ivory seamless studio backdrop, diffuse upper-left warm light and gentle contact shadows. Sage-green miniature trees, clay beige props, small grey-green zombie figures. Miniatures are simple and rounded, no gore.\nComposition invariants: landscape 16:9, moderately elevated three-quarter view; mascot and main interaction form ONE compact group in the middle 50 percent of image width, face and main prop within middle 75 percent height; mascot similar scale to Image 3, plenty of empty ivory at both sides. Ensure center square crop and 2:1 shallow crop keep the face and main relation. Peripheral miniature scenery may be cut. No border or panels.\nText: no words, title, code strings, numbers, labels, arrows, watermark or explanatory UI. No second snail, no reference envelopes/numbers/question marks.\nPrimary request: The snail replaces one long rolled-out package-path scroll with one tiny lookup-code token using the SAME local lookup list on both ends. Put two small beige upright boards close together side by side directly in front of the mascot, both carrying exactly the same THREE horizontal rows in the same order, with simple matching relief icons: pine, small base hut, grey-green zombie. No letters or numbers. Between the boards the snail is handing a single small sage square code-token embossed with a pine icon toward the corresponding pine row on the other board. A long narrow rolled scroll lies below them in the central foreground, with a winding embossed path motif, evoking a long package path without readable text. The boards, token and scroll are ONE compact interaction that survives a center square crop. Boards are much smaller than the mascot and do not cover the face. The token points to a locally known entry; it does not contain the whole world.\nGame connection: the matching icons themselves are miniature world landmarks; at most one tiny model pine beside the scroll.\nTechnical constraints: no generic compressor, no shrinking the world, no deleted levels, no universal compatibility, no guarantee checkmarks. The two identical boards express the necessary shared table and shared ordering. Do not imply that unlisted paths can always be converted. No arrows or networking text.",
+      "corrections": [],
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "bytes": 964192,
+      "sha256": "810a70f98bbb6cc74fdbd6867a0c7cbe8dea18ae9511149d99494ffa28e5c8a6",
+      "format": "lossless WebP; decoded pixels equal to selected generated PNG",
+      "references": [
+        "public/assets/images/logo/steady-spiral-color.png",
+        "src/assets/images/posts/replication-rpc-ordering-cover.webp",
+        "src/content/posts/images/notd-multiplayer-optimization/notd-multiplayer-optimization-overview-cover.webp"
+      ],
+      "editReferences": []
+    },
+    {
+      "id": "world",
+      "post": "src/content/posts/notd-world-objects-as-data.md",
+      "title": "오브젝트를 데이터로 두기",
+      "generated": "C:/Users/hon45/.codex/generated_images/01a0f6bb-6ce8-7362-9051-af739b5eb9a4/exec-f31b10d7-c1ba-4cd5-a05a-89f9ede77dab.png",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/notd-world-objects-as-data-cover.webp",
+      "prompt": "Use case: stylized-concept\nAsset type: 16:9 cover in a five-image Night of the Dead optimization blog series.\nInput images: Image 1 = Steady Spiral identity; Image 2 = clay material/lighting style only; Image 3 = APPROVED SERIES MASTER for exact character scale, proportions, material, palette, warm ivory background and camera style. Images are references, not edit targets. Generate one new cover.\nSubject invariants: exactly ONE Steady Spiral snail, dark forest-green chunky body, lime yellow-green spiral shell, two thick rounded antennae, flat ivory oval eyes, small ivory smile; subtle round arms permitted for the action. Match Image 3's friendly clay mascot.\nStyle invariants: soft matte handcrafted clay 3D, warm ivory seamless studio backdrop, diffuse upper-left warm light and gentle contact shadows. Sage-green miniature trees, clay beige props, small grey-green zombie figures. Miniatures are simple and rounded, no gore.\nComposition invariants: landscape 16:9, moderately elevated three-quarter view; mascot and main interaction form ONE compact group in the middle 50 percent of image width, face and main prop within middle 75 percent height; mascot similar scale to Image 3, plenty of empty ivory at both sides. Ensure center square crop and 2:1 shallow crop keep the face and main relation. Peripheral miniature scenery may be cut. No border or panels.\nText: no words, title, code strings, numbers, labels, arrows, watermark or explanatory UI. No second snail, no reference envelopes/numbers/question marks.\nPrimary request: The snail selects ONE tree from a miniature forest tile and unfolds that selected tree into a standalone interactable clay model. Compact forest tile immediately in front of the snail contains five simple small pine instances fixed into shallow circular sockets. The selected tree is lifted out of ONE open socket and held close to the snail's face, in the center of the image. That selected tree sits on a small hinged beige model base opening like a pop-up toy, with its trunk and crown clearly upright and a tiny rounded harvest-tool handle attached to the base to suggest interaction. All other trees remain simple instances on the forest tile. The central relationship is many simple trees versus ONE selected tree becoming an interactable model, not the whole forest turning into actors.\nGame connection: one tiny base wall segment and at most two tiny grey-green zombie miniatures at the far edge of the forest tile, subordinate.\nTechnical constraints: this is an illustrative pop-up miniature, not a claim that actual foliage instances are literal paper records. Actor conversion for a tree is triggered by being hit/interacted with, not mere distance. Do not show every tree unfolding, magical growth, shattered records, memory being freed, a saved complete combat snapshot, or icons that claim zero cost. One mascot and one lifted tree only.",
+      "corrections": [
+        "Use case: precise-object-edit\nImage 1 is edit target; Images 2 and 3 are identity/material references.\nChange ONLY the position of the selected lifted tree and its hinged interactable base, plus the reaching hand as needed. Move this selected tree leftward and slightly downward so its center is x=54% of canvas width, its entire crown, trunk, base hinge and harvest handle fit within x=47%-60%, beside and below the mascot face rather than beyond its right side. The mascot should clearly hold the same unfolded model just in front of its chest; do not cover eyes or mouth.\nKeep the mascot identity, pose direction, dark-green body, lime spiral shell, two antennae, warm ivory eyes, scale, all remaining simple trees and the central empty socket, one wall and two zombie miniatures, matte clay material, warm lighting, ivory background and 16:9 canvas unchanged. Keep exactly one lifted tree, no extra trees unfolding. No text, arrows or new symbols. This is a mobile center-crop correction only."
+      ],
+      "initialGenerated": "C:/Users/hon45/.codex/generated_images/01a0f6bb-6ce8-7362-9051-af739b5eb9a4/exec-8996b83d-41cd-4e65-91e9-d8771ce0fef1.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "bytes": 993766,
+      "sha256": "b4452a2c17d33ccc7451a9bc67ee2e77b9d5ab1410259599543527a8156f6d4e",
+      "format": "lossless WebP; decoded pixels equal to selected generated PNG",
+      "references": [
+        "public/assets/images/logo/steady-spiral-color.png",
+        "src/assets/images/posts/replication-rpc-ordering-cover.webp",
+        "src/content/posts/images/notd-multiplayer-optimization/notd-multiplayer-optimization-overview-cover.webp"
+      ],
+      "editReferences": [
+        "Initial generated scene from the recorded generation prompt",
+        "public/assets/images/logo/steady-spiral-color.png",
+        "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+      ]
+    },
+    {
+      "id": "zombie",
+      "post": "src/content/posts/notd-zombie-horde-cost.md",
+      "title": "다수 좀비 비용 줄이기",
+      "generated": "C:/Users/hon45/.codex/generated_images/01a0f6bb-6ce8-7362-9051-af739b5eb9a4/exec-3a3b606a-6e2d-4a71-8937-a5901908f8ef.png",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/notd-zombie-horde-cost-cover.webp",
+      "prompt": "Use case: stylized-concept\nAsset type: 16:9 cover in a five-image Night of the Dead optimization blog series.\nInput images: Image 1 = Steady Spiral identity; Image 2 = clay material/lighting style only; Image 3 = APPROVED SERIES MASTER for exact character scale, proportions, material, palette, warm ivory background and camera style. Images are references, not edit targets. Generate one new cover.\nSubject invariants: exactly ONE Steady Spiral snail, dark forest-green chunky body, lime yellow-green spiral shell, two thick rounded antennae, flat ivory oval eyes, small ivory smile; subtle round arms permitted for the action. Match Image 3's friendly clay mascot.\nStyle invariants: soft matte handcrafted clay 3D, warm ivory seamless studio backdrop, diffuse upper-left warm light and gentle contact shadows. Sage-green miniature trees, clay beige props, small grey-green zombie figures. Miniatures are simple and rounded, no gore.\nComposition invariants: landscape 16:9, moderately elevated three-quarter view; mascot and main interaction form ONE compact group in the middle 50 percent of image width, face and main prop within middle 75 percent height; mascot similar scale to Image 3, plenty of empty ivory at both sides. Ensure center square crop and 2:1 shallow crop keep the face and main relation. Peripheral miniature scenery may be cut. No border or panels.\nText: no words, title, code strings, numbers, labels, arrows, watermark or explanatory UI. No second snail, no reference envelopes/numbers/question marks.\nPrimary request: The snail surveys a miniature zombie horde approaching a small base and allocates MORE processing resources to a small nearby subset while the rest still receive SOME resources. In the central foreground, a tiny beige base/watchpost sits close to the snail; immediately beyond it three near zombie figures each stand beside a small stack of THREE warm beige processing tokens. Behind them six to eight slightly farther zombies each have ONE matching beige processing token at their feet. The snail places one additional token next to a nearby zombie, using its small rounded hand. Tokens are plain thick round clay discs, no text or engraved digits, identical color everywhere; stack height and depth distinguish allocation, not on/off status. Main relation is a few nearby zombies getting more tokens than the larger farther group, with baseline tokens still clearly visible for distant figures.\nComposition: keep BOTH near zombies with stacks and the farther group with single discs close to image center, arrange depth instead of spreading them sideways; miniature horde smaller than snail, the face visible above them. Game atmosphere with only two tiny pines and one small barricade at side margins.\nTechnical constraints: all zombies remain standing in purposeful approaching poses and retain equal normal colors, no sleeping, frozen, faded, translucent, deleted or crossed-out distant zombies, no disabled switches or empty resource platforms, no claim that only distance controls every subsystem. No checkmarks, shields, total processing halt, infinite savings or measured numbers.",
+      "corrections": [
+        "Use case: precise-object-edit\nImage 1 is edit target. Images 2 and 3 are Steady Spiral mascot and clay lighting references.\nMake only a mobile center-crop composition correction. Keep ONE mascot, its identity, face/antennae, lime spiral shell, approximate scale, matte clay materials, warm ivory background, upper-left studio light and 16:9 canvas.\nRearrange the zombie miniatures and their processing discs in DEPTH inside a narrow central group directly in front of the mascot rather than spreading far right. Two or three nearest zombies at x=43%-58%, y=70%-81% each have visibly tall beige token stacks; behind them a compact row/cluster of farther zombies at x=44%-59%, y=57%-67% each has one visible beige token at its feet. The snail is adding a token to the nearest stack at center x=53%, y=68%. Keep at least two farther zombies with their single baseline discs inside x=42%-60%, so both allocation levels survive a narrow central crop. All zombie figures have normal solid sage/grey-green colors and approaching poses. Move/shrink the tiny base model to x=39%-45% below the snail to make space, retaining a small fort silhouette; trees and incidental figures may stay peripheral.\nThe essential relation: MORE processing tokens for some near zombies, SOME tokens still for the farther horde. No sleeping, faded, transparent, frozen, crossed-out or disabled far zombies. No total processing halt, no exact numerical performance claims, no text, numbers, arrows, checkmarks or shields."
+      ],
+      "initialGenerated": "C:/Users/hon45/.codex/generated_images/01a0f6bb-6ce8-7362-9051-af739b5eb9a4/exec-239cdea0-dbe1-4b1c-84f7-f41f2b607d8a.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "bytes": 1088806,
+      "sha256": "a3f8fc95ef09ad8a9569bedae69f36c4c6dac17cebc0a883115f86b7cf23ac9f",
+      "format": "lossless WebP; decoded pixels equal to selected generated PNG",
+      "references": [
+        "public/assets/images/logo/steady-spiral-color.png",
+        "src/assets/images/posts/replication-rpc-ordering-cover.webp",
+        "src/content/posts/images/notd-multiplayer-optimization/notd-multiplayer-optimization-overview-cover.webp"
+      ],
+      "editReferences": [
+        "Initial generated scene from the recorded generation prompt",
+        "public/assets/images/logo/steady-spiral-color.png",
+        "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+      ]
+    }
+  ],
+  "application": {
+    "approved": "2026-10-01",
+    "scope": "Five cover image fields and selected assets; existing authored prose, body illustrations, game screenshots and shared cover preserved"
+  },
+  "candidateValidation": {
+    "pixelEquality": "PASS for all five selected PNG/WebP pairs",
+    "commands": {
+      "pnpm check": "PASS: 264 files; 0 errors, 0 warnings, 0 hints",
+      "pnpm type-check": "PASS: exit 0",
+      "pnpm build": "PASS: full pipeline, 108 pages and Pagefind completed; exit 0"
+    },
+    "buildNotes": "Existing npm config and Pagefind missing-html/ko-stemming notices remained. Candidate-only LQIP entries were reviewed then restored because posts are not yet using these covers. Existing tracked files, shared cover, screenshots and body illustrations are unchanged."
+  }
+}

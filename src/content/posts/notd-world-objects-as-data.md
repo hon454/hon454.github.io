@@ -2,7 +2,7 @@
 title: "오픈월드의 오브젝트를 액터 대신 데이터로 두기"
 published: 2026-10-01
 description: "Night of the Dead의 Dedicated Server에서 자연물, 스포너의 좀비, 보관함 내용물을 필요한 순간에만 액터나 복제 데이터로 만들고 평소에는 인스턴스와 구조체로 유지한 방법을 정리한다."
-image: ./images/notd-multiplayer-optimization/cover.avif
+image: ./images/notd-multiplayer-optimization/notd-world-objects-as-data-cover.webp
 tags:
   - unreal-engine
   - networking

@@ -182,5 +182,10 @@
   "src:content/posts/images/notd-multiplayer-optimization/foliage-mirror-queue.webp": "e4eff0e6eff4e8f2f6",
   "src:content/posts/images/notd-multiplayer-optimization/eqs-reuse-conditions.webp": "ebeeeef0eff1e5eff5",
   "src:content/posts/images/notd-multiplayer-optimization/container-replication-scope.webp": "e1edece4eff3eff2f2",
-  "src:content/posts/images/notd-multiplayer-optimization/client-ready-gates.webp": "dbe9eaebf1f3edf4f6"
+  "src:content/posts/images/notd-multiplayer-optimization/client-ready-gates.webp": "dbe9eaebf1f3edf4f6",
+  "src:content/posts/images/notd-multiplayer-optimization/notd-zombie-horde-cost-cover.webp": "c7d4b5d8e1d0c8bf99",
+  "src:content/posts/images/notd-multiplayer-optimization/notd-world-objects-as-data-cover.webp": "d9e1cce6e9dbcbc6a9",
+  "src:content/posts/images/notd-multiplayer-optimization/notd-reliable-rpc-data-streaming-cover.webp": "dce6d0e1e8dbd0cab6",
+  "src:content/posts/images/notd-multiplayer-optimization/notd-multiplayer-optimization-overview-cover.webp": "d4dbc8d8dfc3c7c0a3",
+  "src:content/posts/images/notd-multiplayer-optimization/notd-level-streaming-status-rpc-cover.webp": "dde4d3dde4c9e0d8c3"
 }

@@ -1,7 +1,7 @@
 ---
 title: Codex 대신 다시 Claude Code 데스크톱 앱을 쓰며 느낀 장단점
 published: 2026-10-02
-image: ../../assets/images/posts/codex-to-claude-code-desktop-moving-home-cover-v2.webp
+image: ../../assets/images/posts/codex-to-claude-code-desktop-moving-home-cover-v3.png
 author: Jihoon Jeon
 description: ChatGPT Pro 200달러 가입 중단과 GPT-6 Astra의 사용량 압박으로 Claude Max로 옮긴 다음 날 200달러 플랜이 다시 열렸다. Codex 데스크톱 앱과 비교해 Claude Code 데스크톱 앱에서 느낀 장단점을 정리한다.
 category: 개발 이야기

@@ -1,0 +1,25 @@
+{
+  "created": "2026-10-02",
+  "tool": "built-in image_gen",
+  "post": "src/content/posts/codex-to-claude-code-desktop.md",
+  "userDirection": "Preserve the existing cover composition and regenerate with clearer detail because the existing cover looks low resolution.",
+  "references": [
+    "src/assets/images/posts/codex-to-claude-code-desktop-moving-home-cover-v2.webp",
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+  ],
+  "asset": "src/assets/images/posts/codex-to-claude-code-desktop-moving-home-cover-v3.png",
+  "generated": "C:/Users/hon45/.codex/generated_images/01a0f88f-b3b3-7500-b731-ff1d6b8dd4b1/exec-5424c300-2de6-4d21-afc2-5b68a1427d75.png",
+  "width": 1672,
+  "height": 941,
+  "prompt": "Use case: precise-object-edit.\nAsset type: high-resolution 16:9 blog cover.\nInput roles: Image 1 is the EXISTING COVER and strict composition/edit target. Image 2 is the original mascot identity reference ONLY. Image 3 is clay materials and studio lighting reference ONLY; do not borrow its objects or composition.\nPrimary request: recreate Image 1 with substantially higher native detail and crisp clean rendering while preserving its exact existing composition. Render at 3840 x 2160 pixels if supported, otherwise the highest native landscape resolution available. Rebuild the details clearly, do not merely enlarge blurred pixels.\nSTRICT INVARIANTS: same 16:9 framing, camera, central compact triangular grouping, object count, positions, relative scales and silhouettes as Image 1. Exactly two small ivory cottages behind one snail carrying a terracotta suitcase in foreground. Left cottage has periwinkle blue spiral roof, deeper violet closed door, small ivory chimney/knob, and standalone blue-purple Codex flower/cloud with white >_ terminal mark. Right cottage has terracotta spiral roof, partly open burnt-orange door, ivory chimney/knob, standalone orange Claude starburst. Maintain visible ivory gap between roofs, both logos at same height, no logo backing tile. Keep the snail in its CURRENT orientation from Image 1, lime spiral shell on viewer's left, deep forest-green body on viewer's right, two rounded thick antennae, ivory oval eyes, tiny ivory smile, small hand holding suitcase. Do not mirror it to match Image 2. Same suitcase handle, cream hardware, feet/contact shadows, warm ivory seamless floor/background, generous side margins. Do not shift, enlarge, shrink or spread any objects.\nImprove only image fidelity: distinct smooth contours, clean finely resolved spiral relief and door edges, accurate sharply defined standalone brand marks and white terminal glyph, crisp eyes/smile, fine continuous matte clay material with gentle natural shading, clear suitcase seams and hardware, smooth clean ivory background. Entire scene in focus, no depth-of-field blur, no fuzzy texture, no smeared details, no oversharpening halos, no jagged edges, no noisy grain. Preserve soft warm lighting and grounded shadows.\nNo new objects, decorations, paths, arrows, text, title, watermark or border. Preserve colors and character proportions. Do not redesign the scene.",
+  "review": "Maintains two cottages behind the snail and suitcase, left blue-violet Codex house and right terracotta Claude house, visible gap, standalone marks, original mascot colors and orientation. Cleaner silhouette, brand marks, spiral relief and suitcase edges. Minor generative geometry differences remain. Tool returned 1672x941 despite requesting highest native resolution; no artificial upscaling. Save original generated PNG to avoid additional lossy compression; Original v2 asset removed at the user's request.",
+  "validation": {
+    "check": "Passed: 264 files, 0 errors, 0 warnings, 0 hints",
+    "typeCheck": "Passed",
+    "build": "Passed: 109 pages built; standard chunk-size and Pagefind warnings",
+    "visual": "Source image inspected; development page loaded the replacement. Additional card/viewport verification stopped at user request.",
+    "displayLimit": "CoverImage.astro uses a fixed 828px output width; unchanged in this image-only update."
+  },
+  "replacedAsset": "src/assets/images/posts/codex-to-claude-code-desktop-moving-home-cover-v2.webp"
+}

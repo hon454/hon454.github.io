@@ -61,6 +61,7 @@ Mass는 다수의 개체를 다루기 위한 엔진의 데이터 지향 프레�
 void UZombieOptimizeManager::UpdateDistanceRanks()
 {
 	const int32 NumZombies = Zombies.Num();
+	// 프레임당 정해진 수만큼만 거리를 계산한다
 	const int32 NumToProcess = FMath::Min(MaxDistanceUpdatesPerFrame, NumZombies - Cursor);
 
 	for (int32 Step = 0; Step < NumToProcess; ++Step)
@@ -69,6 +70,7 @@ void UZombieOptimizeManager::UpdateDistanceRanks()
 		Entry.DistSq = GetMinDistSqToViewers(Entry.Location);
 	}
 
+	// 한 바퀴가 끝났을 때만 정렬하고 순위를 기록한다
 	if (Cursor >= NumZombies)
 	{
 		Zombies.Sort([](const FZombieEntry& A, const FZombieEntry& B) { return A.DistSq < B.DistSq; });
@@ -83,6 +85,7 @@ void UZombieOptimizeManager::UpdateDistanceRanks()
 int32 UZombieLODComponent::CalcSendRateGrade() const
 {
 	int32 Grade = static_cast<int32>(LOD);
+	// 가까운 30마리는 등급 값을 2 낮춘다
 	if (DistanceRank <= 30)
 	{
 		Grade = FMath::Max(Grade - 2, 0);
@@ -109,17 +112,20 @@ struct FZombieSyncFragment : public FMassFragment
 UZombieSyncGradeProcessor::UZombieSyncGradeProcessor()
 	: EntityQuery(*this)
 {
+	// 서버에서만 실행한다
 	ExecutionFlags = static_cast<int32>(EProcessorExecutionFlags::Server);
 }
 
 void UZombieSyncGradeProcessor::ConfigureQueries(const TSharedRef<FMassEntityManager>& EntityManager)
 {
+	// LOD 수집 프로세서가 채운 값을 읽기만 한다
 	EntityQuery.AddRequirement<FMassViewerInfoFragment>(EMassFragmentAccess::ReadOnly);
 	EntityQuery.AddRequirement<FZombieSyncFragment>(EMassFragmentAccess::ReadWrite);
 }
 
 void UZombieSyncGradeProcessor::Execute(FMassEntityManager& EntityManager, FMassExecutionContext& Context)
 {
+	// 요구 조건에 맞는 엔티티를 청크 단위로 받는다
 	EntityQuery.ForEachEntityChunk(Context, [this](FMassExecutionContext& Context)
 	{
 		const TConstArrayView<FMassViewerInfoFragment> ViewerInfos = Context.GetFragmentView<FMassViewerInfoFragment>();
@@ -172,6 +178,7 @@ void APlayerBuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	// 액터를 검토할 때마다 이 프로퍼티를 이전에 보낸 값과 비교한다
 	DOREPLIFETIME(APlayerBuilding, CollisionProfile);
 }
 
@@ -179,6 +186,7 @@ void APlayerBuilding::ServerSetCollisionProfile_Implementation(const FName& NewP
 {
 	CollisionProfile = NewProfileName;
 	ApplyCollisionProfile();
+	// 무엇이 바뀌었는지는 알리지 않고 액터를 바로 검토하게만 한다
 	ForceNetUpdate();
 }
 ```
@@ -199,6 +207,7 @@ void APlayerBuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	FDoRepLifetimeParams Params;
+	// 변경을 표시한 프로퍼티만 비교한다
 	Params.bIsPushBased = true;
 	DOREPLIFETIME_WITH_PARAMS_FAST(APlayerBuilding, CollisionProfile, Params);
 }
@@ -207,9 +216,11 @@ void APlayerBuilding::SetCollisionProfile(const FName& NewProfileName)
 {
 	if (CollisionProfile != NewProfileName)
 	{
+		// 값을 수정하기 전에 휴면을 해제한다
 		FlushNetDormancy();
 
 		CollisionProfile = NewProfileName;
+		// 이 프로퍼티가 바뀌었다고 엔진에 알린다
 		MARK_PROPERTY_DIRTY_FROM_NAME(APlayerBuilding, CollisionProfile, this);
 		ApplyCollisionProfile();
 	}
@@ -233,6 +244,7 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 	if (GetOwner()->HasAuthority())
 	{
+		// 바뀐 것이 없어도 매 틱 서버에서 배열 전체를 복사한다
 		ReplicatedItems.SetNum(Items.Num());
 		for (int32 Index = 0; Index < Items.Num(); ++Index)
 		{
@@ -243,6 +255,7 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 void UInventoryComponent::OnRep_ReplicatedItems()
 {
+	// 어느 칸이 바뀌었는지 전달되지 않아 원본과 수량 집계를 전부 다시 만든다
 	Items.Reset(ReplicatedItems.Num());
 	for (const FReplicatedItem& Replicated : ReplicatedItems)
 	{
@@ -270,6 +283,7 @@ struct FInventoryEntry : public FFastArraySerializerItem
 	GENERATED_BODY()
 
 	UPROPERTY()
+	// 클라이언트에서 항목 순서가 보장되지 않으므로 칸 번호를 항목에 둔다
 	int32 SlotIndex = INDEX_NONE;
 
 	UPROPERTY()
@@ -281,6 +295,7 @@ struct FInventoryEntry : public FFastArraySerializerItem
 	UPROPERTY()
 	FGuid ItemId;
 
+	// 추가, 변경, 삭제된 항목마다 불리는 콜백
 	void PostReplicatedAdd(const FInventoryList& List);
 	void PostReplicatedChange(const FInventoryList& List);
 	void PreReplicatedRemove(const FInventoryList& List);
@@ -294,11 +309,13 @@ struct FInventoryList : public FFastArraySerializer
 	UPROPERTY()
 	TArray<FInventoryEntry> Entries;
 
+	// 콜백에서 쓰는 참조이며 복제하지 않는다
 	UPROPERTY(NotReplicated)
 	TObjectPtr<UInventoryComponent> Owner = nullptr;
 
 	bool NetDeltaSerialize(FNetDeltaSerializeInfo& DeltaParams)
 	{
+		// 항목 단위 델타 직렬화에 맡긴다
 		return FFastArraySerializer::FastArrayDeltaSerialize<FInventoryEntry, FInventoryList>(Entries, DeltaParams, *this);
 	}
 };
@@ -308,6 +325,7 @@ struct TStructOpsTypeTraits<FInventoryList> : public TStructOpsTypeTraitsBase2<F
 {
 	enum
 	{
+		// 이 구조체가 NetDeltaSerialize를 쓴다고 엔진에 알린다
 		WithNetDeltaSerializer = true,
 	};
 };
@@ -322,6 +340,7 @@ void UInventoryComponent::SetAmount(int32 EntryIndex, int32 NewAmount)
 	if (Entry.Amount != NewAmount)
 	{
 		Entry.Amount = NewAmount;
+		// 바뀐 항목만 복제 대상으로 표시한다
 		Inventory.MarkItemDirty(Entry);
 	}
 }
@@ -350,6 +369,7 @@ void FItemContainer::RefreshReplicatedItems(const AActor* Owner)
 	const IDistanceGatedReplication* Gate = Cast<IDistanceGatedReplication>(Owner);
 	if (Gate && IsAnyPlayerWithin(Owner->GetActorLocation(), Gate->GetReplicationDistance()) == false)
 	{
+		// 근처에 아무도 없으면 비운다. 이 배열은 액터를 복제받는 모든 연결이 공유한다
 		ReplicatedItems.Empty();
 		return;
 	}
@@ -378,6 +398,7 @@ void AStorageBuilding::BeginPlay()
 	if (HasAuthority())
 	{
 		Contents = NewObject<UStorageContents>(this);
+		// 그룹에 속한 PlayerController의 연결에만 복제한다
 		AddReplicatedSubObject(Contents, COND_NetGroup);
 
 		UNetworkSubsystem* NetSubsystem = GetWorld()->GetSubsystem<UNetworkSubsystem>();
@@ -395,6 +416,7 @@ void AStorageBuilding::RefreshViewers()
 			continue;
 		}
 
+		// 가까워지면 그룹에 넣고 멀어지면 뺀다. 내용물 데이터는 건드리지 않는다
 		const bool bIsNear = IsWithinContentsDistance(PlayerController->GetPawn());
 		const bool bIsMember = PlayerController->IsMemberOfNetConditionGroup(ContentsGroupName);
 
@@ -426,6 +448,7 @@ void AStorageBuilding::RefreshViewers()
 void UStreamRouterComponent::SendPendingChunks(const UActorChannel* Channel)
 {
 	const int32 ChunkSize = 100;
+	// 수신 확인을 받지 못한 번치가 이 수보다 적을 때만 다음 조각을 보낸다
 	const int32 OutRecLimit = RELIABLE_BUFFER / 4;
 
 	for (FStreamRequest& Request : Requests)
@@ -462,6 +485,7 @@ Iris에서는 RPC가 액터 채널의 이 경로로 나가지 않는다. UE 5.8 
 ```cpp
 void UStreamRouterComponent::SendPendingChunks()
 {
+	// 확인받지 못한 조각이 한도에 닿으면 멈춘다
 	while (Requests.IsEmpty() == false && NextChunkId - LastAckedChunkId < MaxUnackedChunks)
 	{
 		FStreamRequest& Request = Requests[0];
@@ -471,6 +495,7 @@ void UStreamRouterComponent::SendPendingChunks()
 		while (Request.NextRecord < Request.Records.Num())
 		{
 			const FStreamRecord& Record = Request.Records[Request.NextRecord];
+			// 바이트 한도를 넘기기 직전까지 담는다. 첫 레코드는 한도를 넘어도 담는다
 			if (Chunk.Num() > 0 && ChunkBytes + Record.Bytes.Num() > MaxChunkBytes)
 			{
 				break;
@@ -493,6 +518,7 @@ void UStreamRouterComponent::SendPendingChunks()
 
 void UStreamRouterComponent::ServerAckChunk_Implementation(uint32 ChunkId)
 {
+	// 클라이언트가 조각을 처리한 뒤 호출한다
 	LastAckedChunkId = FMath::Max(LastAckedChunkId, ChunkId);
 }
 ```

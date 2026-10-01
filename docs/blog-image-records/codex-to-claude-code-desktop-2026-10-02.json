@@ -1,0 +1,119 @@
+{
+  "created": "2026-10-02",
+  "branch": "docs/codex-to-claude-code-desktop",
+  "tool": "built-in image_gen",
+  "post": "src/content/posts/codex-to-claude-code-desktop.md",
+  "userDirection": "Cover concept 1: moving between two homes. Both logos are standalone without app tiles. Codex house roof/door blue-violet, Claude house roof/door terracotta. All cover/body images landscape. Replace all three archify diagrams and remove their files; reference their content only.",
+  "references": [
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+  ],
+  "webReferences": [
+    {
+      "sourcePage": "https://openai.com/index/introducing-the-codex-app/",
+      "download": "https://images.ctfassets.net/kftzwdyauwt9/7E1L5KrvfinYdmBBNDPhf5/710a8a46258bafe8fe2d26f31ff242c0/Codex_Landing_Page_SEO.png?fit=fill&h=900&w=1600"
+    },
+    {
+      "sourcePage": "https://claude.com/",
+      "download": "https://claude.com/icon.png"
+    }
+  ],
+  "assets": [
+    {
+      "id": "cover",
+      "path": "src/assets/images/posts/codex-to-claude-code-desktop-moving-home-cover-v2.webp",
+      "generated": "C:/Users/hon45/.codex/generated_images/01a0f867-6554-7d61-928c-6a5b0c585416/exec-83e0a961-2b5e-4bde-b5ea-a72fa731ed0d.png",
+      "width": 1672,
+      "height": 941,
+      "prompt": "Use case: stylized-concept. Asset: landscape 16:9 Korean blog cover.\nReference roles: Image 1 is exact Steady Spiral mascot identity. Image 2 is clay materials, lighting and warm ivory backdrop ONLY; ignore its props. Image 3 is official Codex app icon source: use ONLY the blue-purple cloud/flower shape with the white >_ terminal mark INSIDE it, WITHOUT the white rounded-square app tile and WITHOUT the blue background. Image 4 is the official orange Claude starburst mark WITHOUT a box. Both brand symbols MUST be standalone marks, no squares, badges, plaques, label backgrounds or wordmarks.\nApproved concept: Moving home between TWO SMALL COTTAGES. One cute Steady Spiral snail has packed a small travel suitcase and is moving from a Codex cottage on the left toward a Claude cottage on the right. The cottages are miniature rounded ivory houses with small doors and lime spiral shell-shaped ROOFS, recognizable as houses, not detached animal shells or hollow biological objects. Put the isolated Codex mark directly on the front wall of the left cottage above its door; put the isolated Claude starburst directly on the equivalent part of the right cottage. Both marks same visual scale, clean recognizable outlines, printed directly on the wall with no container. Left doorway muted sage; right doorway muted terracotta, slightly open.\nOne mascot only, same deep forest-green chunky body, bright lime spiral shell ON ITS BACK, two rounded thick antennae, ivory oval eyes and tiny smile from Image 1. Preserve original body, face and shell proportions. Mascot in the foreground between the two houses, facing toward the right cottage while looking slightly toward viewer, carries a SMALL rounded terracotta suitcase by its handle. Tiny arm allowed, no human legs or clothing. Snail is main protagonist. Movement conveyed by position and facing, no arrows or text.\nStyle: premium matte soft clay 3D, tactile smooth modeled surfaces, warm ivory seamless tabletop/backdrop, gentle warm studio lighting and grounding shadows matching Image 2. Simple scene, soft rounded roof/doors, no clutter.\nComposition: 16:9 landscape, gentle front three-quarter camera. VERY COMPACT central triangular grouping: houses flank snail closely and slightly behind; don't spread them across the frame. Both logos, face and suitcase within central 44% width and middle 64% height. Snail face near horizontal center; cottage logo centers around x=39% and x=61%, at same height. Generous quiet ivory margins at far sides and top. All essential features should survive centered square crop, house roof edges may crop. Logo symbols readable at thumbnail size, no objects covering them.\nAvoid: no computers, file folders, envelope props, plants, roads, long trails, speed marks, decorative symbols, words/numbers, watermark or borders. No winner/failure comparison; only migration to another working home. Do NOT show a discarded giant shell, naked snail or separate snail bodies. Exactly two cottages and one original mascot.",
+      "revisions": [
+        {
+          "prompt": "Use case: precise-object-edit. Edit ONLY the composition of this existing 16:9 clay moving-home cover to fix narrow centered card crops.\nKeep exactly the same character identity, suitcase, cottage designs, standalone unboxed Codex/Claude marks, materials, ivory background and light. One original snail and two houses. NO new props or text.\nSpecific correction: the houses are much too far apart. Reduce EACH house to about 55% its current width and 65% its current height. Move them CLOSE TOGETHER behind the snail as a small paired backdrop at the TOP CENTER, their inside edges nearly touching. Put the left Codex mark CENTER at x=43% of the whole canvas and the right Claude mark CENTER at x=57%, both at y=35%. Each mark width about 6% canvas width. The standalone marks must remain fully unobstructed above the snail's head/antenna area. The houses together must fit within x=35% through x=65%. Their bottom door portions may be hidden naturally by the foreground snail; brand marks must be visible.\nCenter the foreground snail and suitcase around x=50%, y=65%. Retain its current apparent size and proportions as much as possible, but lower it enough that both cottage marks appear ABOVE its rounded antennae, not behind the snail's face. Facing toward the right cottage conveys moving with the suitcase. Keep the entire main scene central, with plain ivory occupying both outer sides.\nCritical requirement: a centered crop containing ONLY x=38% through x=62% of the image MUST contain BOTH entire brand symbols, the full snail face and suitcase. Edges of roofs, body and shell may crop. No square or circular backing behind either logo. Preserve logo identities. Keep landscape 16:9 canvas. Do not redesign the scene.",
+          "generated": "C:/Users/hon45/.codex/generated_images/01a0f867-6554-7d61-928c-6a5b0c585416/exec-aa50cd9d-4c23-487e-a376-91382d7d162d.png"
+        },
+        {
+          "prompt": "Use case: precise-object-edit.\nEdit ONLY the colors of the two cottage roofs and doors in this existing cover. Keep the composition, camera, geometry, positions, scale, all objects, character, suitcase, walls, chimney, ivory background and lighting EXACTLY unchanged.\nLEFT cottage has standalone blue-purple Codex cloud/terminal mark. Recolor ONLY its spiral roof and door to harmonious blue-violet/lavender tones drawn from that Codex mark. The roof should be soft medium periwinkle-blue, door slightly deeper blue-violet. Keep matte clay shading and the roof's existing spiral relief.\nRIGHT cottage has orange Claude starburst. Recolor ONLY its spiral roof and door to harmonious muted terracotta/coral tones drawn from that Claude mark. Roof warm soft terracotta, door slightly deeper burnt orange. Preserve the open-door position and existing spiral relief.\nThe two symbols themselves must remain unchanged, both standalone without boxes. Ivory walls and little ivory door knobs remain unchanged. The snail MUST retain original deep forest-green body, bright lime spiral shell, ivory eyes, two rounded antennae, small smile. Preserve terracotta suitcase. Do not recolor the mascot shell.\nNo other alterations, no text, arrows, props, logos, mark containers, watermarks, borders or geometry changes. Maintain exact current 16:9 canvas and compact center composition for card crops.",
+          "generated": "C:/Users/hon45/.codex/generated_images/01a0f867-6554-7d61-928c-6a5b0c585416/exec-61ea13ed-6e92-4cc1-b9ce-f6bf41d59597.png"
+        },
+        {
+          "prompt": "Use case: precise-object-edit. Change ONLY the spacing between the two houses in this existing cover.\nThe two cottage roofs currently touch. Separate the cottages with a clear strip of ivory background between them. Translate the ENTIRE LEFT cottage horizontally LEFT by exactly about 3% of the full canvas width, and the ENTIRE RIGHT cottage horizontally RIGHT by about 3% full canvas width. This should leave a gap around 5-6% canvas width (roughly one third of a cottage width) between the innermost roof edges. Do NOT change house size, shape, roof relief, proportions, doorway openness, vertical placement, or perspective.\nKeep both houses visibly distinct, one on each side behind the snail. Preserve the same foreground mascot, suitcase, positions and size; do NOT move snail. Keep standalone unboxed Codex/Claude logos exactly the same, translate with their respective houses. Logo centers will be around x=39% and x=61%, both y=35%, still near enough for centered mobile list crops.\nInvariants: left cottage periwinkle-blue spiral roof and deeper blue-violet door; right cottage terracotta spiral roof and burnt-orange partly open door; both ivory walls/chimneys/knobs. Same deep green snail with bright lime shell, two rounded antennae, ivory eyes, little smile, terracotta suitcase. Same warm ivory backdrop, soft matte clay, contact shadows, warm light, camera, 16:9 canvas.\nNo new props, paths, arrows, text, logo boxes, character edits or color changes. Only two cottage horizontal positions and their natural grounding shadows change.",
+          "generated": "C:/Users/hon45/.codex/generated_images/01a0f867-6554-7d61-928c-6a5b0c585416/exec-827b0c91-5b0e-424a-a85b-6c0456f01a27.png",
+          "review": "Initial spacing overshot and cropped Codex mark in narrow mobile list; corrected before applying."
+        },
+        {
+          "prompt": "Precise composition correction of the existing image. ONLY reposition the two cottages horizontally.\nThe previous edit overshot: the gap between houses is now too large for mobile center cropping. Bring houses partway inward, while KEEPING A VISIBLE GAP so their roofs do not touch.\nDesired geometry: two separate cottage roofs with an ivory gap about 5% of the entire canvas width, roughly 80 pixels on this 1672px canvas. Current gap looks about 200px; reduce to roughly 80px, not zero. Shift the LEFT cottage about 60px to the RIGHT and RIGHT cottage about 60px to the LEFT. No scaling or vertical movement.\nBrand symbols on their facades must end up FULLY inside the central strip x=35% through x=65% of the entire image, so a narrow centered article card keeps both symbols intact. Do not move either symbol within its cottage, translate the whole cottage uniformly. No roof may touch the other roof. A clear visible ivory gap is essential.\nKeep EVERYTHING ELSE EXACTLY unchanged: same 16:9 canvas, periwinkle/blue-violet Codex roof/door, terra-cotta Claude roof/door, same standalone unboxed logos, ivory walls/chimneys/knobs, right door open. Foreground snail, lime shell, suitcase, silhouette, proportions and all their positions unchanged. Same ivory background, clay materials and soft warm light. No text or new props.",
+          "generated": "C:/Users/hon45/.codex/generated_images/01a0f867-6554-7d61-928c-6a5b0c585416/exec-83e0a961-2b5e-4bde-b5ea-a72fa731ed0d.png",
+          "review": "Visible ivory gap between roofs, both standalone marks retained in center crop."
+        }
+      ],
+      "review": "Same mascot identity, no logos boxed, one mascot carrying a suitcase between two miniature homes. No performance or superiority claim. Centered composition preserves both logos, face and suitcase in real list/grid cards."
+    },
+    {
+      "id": "timeline",
+      "path": "src/content/posts/images/codex-to-claude-code-desktop/plan-timeline.webp",
+      "generated": "C:/Users/hon45/.codex/generated_images/01a0f867-6554-7d61-928c-6a5b0c585416/exec-37f92005-daa6-4512-9fc2-cd7aef46c902.png",
+      "width": 1672,
+      "height": 941,
+      "prompt": "Use case: infographic-diagram. Asset: landscape 16:9 blog body infographic, at least 1600x900. Korean text.\nMake a new, polished horizontal timeline. This is a personal subscription history, chronological order ONLY, not a causal diagram. No old chart design is supplied or to be referenced.\nVisual style: warm ivory paper background, very clean editorial layout, deep green typography, rounded understated panels, small soft clay calendar objects atop each event, subtle grounding shadows. Five evenly sized event columns run left to right in one row, with a thin horizontal arrow connecting them in this exact order. Generous whitespace, very large Korean sans-serif text, short line lengths. No mascots, no screenshots, no legends, no decorative gears. Do not make a portrait or tall infographic.\nTitle verbatim \"구독을 옮긴 순서\"\nColumn 1 date \"9월 3일\"; text on two lines \"GPT-6 Astra\" / \"출시\".\nColumn 2 date \"9월 10일\"; qualifier beneath date \"미국 시간\"; text on three lines \"200달러 Pro\" / \"가입 중단\".\nColumn 3 date \"9월 중순\"; text on three lines \"Codex\" / \"100달러 가입\".\nColumn 4 date \"9월 29일\"; text on three lines \"Claude Max 20x\" / \"200달러 결제\".\nColumn 5 date \"다음 날 새벽\"; text on two lines \"200달러 Pro\" / \"가입 재개\".\nUse soft blue accents for columns 1,2,5, sage for column3, terracotta for column4. Dates are prominent; do not put tiny text inside icons.\nBelow ONLY columns 4 and 5, a simple short bracket annotated \"하루 차이\".\nAt the bottom, one readable full-width note, exact text \"재개된 Pro: 신규 가입자는 이전 200달러 플랜 사용량의 절반\".\nExact text, especially \"Astra\", \"Codex\", \"Claude Max 20x\", dates and Korean lettering. Do not add alternative dates, tiers, dollar signs, labels, numbered steps or other statements. Keep main labels large enough to read in a mobile article at reduced size. No watermark.",
+      "review": "Five events preserve original dates/order. Arrows indicate chronology, not causal guarantees. Provider reopening is explicitly separate from personal move; new-user usage half condition retained."
+    },
+    {
+      "id": "effort",
+      "path": "src/content/posts/images/codex-to-claude-code-desktop/effort-switching.webp",
+      "generated": "C:/Users/hon45/.codex/generated_images/01a0f867-6554-7d61-928c-6a5b0c585416/exec-d275bd76-d205-48cd-b584-f9747ccf8945.png",
+      "width": 1672,
+      "height": 941,
+      "prompt": "Use case: infographic-diagram. Asset: 16:9 LANDSCAPE technical workflow comparison for Korean blog, 1600x900 or greater equivalent. Do not create a tall portrait image.\nA NEW clean editorial diagram from these facts only, no old chart styling. Warm ivory background, deep forest-green text and arrows, restrained sage/blue/terracotta accents, simple rounded panels, subtle flat shadows, tiny matte clay keyboard key motifs. Typography clear LARGE Korean sans-serif. NO mascot. Text and process are the focus. Three horizontal rows; each row has its tool name at left and the workflow running left-to-right. Equal column widths for corresponding steps. No count badges, no numbered steps, no timer/speed measurements.\nTitle exactly \"추론 수준을 바꾸는 과정\"\nROW 1 label exactly \"Codex 데스크톱\". Sage accent. Two boxes connected left-to-right: first box \"단축키\" with small second line \"한 단계씩 올림·내림\"; next box \"추론 수준 변경\". This row shows direct change without a selection menu. It is okay to use a blank keycap behind the text \"단축키\"; do NOT invent the actual key combination.\nROW 2 label exactly \"Claude Code 데스크톱\". Terracotta accent. Three boxes connected left-to-right: first box \"Ctrl+Shift+E\" with second line \"메뉴 열기\"; second box \"메뉴에서 선택\"; third box \"추론 수준 변경\".\nROW 3 label exactly \"Claude Code CLI\". Muted blue accent. Three boxes connected left-to-right: first box \"Alt+P\" with second line \"모델 선택 창\"; second box \"← / →\" with second line \"수준 조절\"; third box \"추론 수준 변경\".\nRelationships must be EXACT: first row 1 input -> change; second/third rows opening a menu -> choosing/adjusting -> change. Do not connect rows to each other. No extra labels or claims such as measured faster, same shortcuts, universal settings or numerical effort levels. Products and shortcuts verbatim, especially uppercase Ctrl/Shift/E and Alt/P. Keep whitespace and main row text large enough at mobile article size. No long footnotes, logos, watermark or screenshot-like interfaces.",
+      "review": "Codex direct shortcut->change. Claude desktop Ctrl+Shift+E->menu choice->change. CLI Alt+P->left/right adjustment->change. No invented Codex shortcut or measured time/performance."
+    },
+    {
+      "id": "side-chat",
+      "path": "src/content/posts/images/codex-to-claude-code-desktop/side-chat.webp",
+      "generated": "C:/Users/hon45/.codex/generated_images/01a0f867-6554-7d61-928c-6a5b0c585416/exec-6498e124-d400-42fa-878d-2506a43302dc.png",
+      "width": 1672,
+      "height": 941,
+      "prompt": "Use case: infographic-diagram. Asset: NEW 16:9 LANDSCAPE Korean blog technical comparison, at least 1600x900. NO old diagram design is supplied or may be emulated.\nShow exactly the two different side-chat structures. Warm ivory background, deep green typography and connectors, clean editorial diagram, very large clear Korean sans-serif text, rounded ivory node surfaces, muted sage for Codex and muted terracotta for Claude, tiny soft matte clay chat-bubble motifs if useful. NO mascots, no screenshots, no legends or tiny footnotes. Side-by-side equal-width panels, no portrait or tall composition.\nTitle verbatim \"사이드 채팅 구조 비교\".\nLEFT panel heading \"Codex\". One parent node at upper center of left panel labeled \"작업 스레드\". From this ONE parent, draw a branching connector to exactly TWO separate child nodes below side-by-side, never child-to-child. Connector annotation \"맥락 이어받기\". Left child label \"사이드 채팅 A\"; right child \"사이드 채팅 B\". EACH child has the SAME note on two lines \"모델·추론 수준\" / \"따로 선택\". Two is an illustrative example of multiple side chats, not a hard maximum, so add a large short bottom caption \"여러 개 열 수 있음\".\nRIGHT panel heading \"Claude Code 데스크톱\". One parent node at upper center of right panel labeled \"작업 세션\". Draw a single connector downward from this parent to ONE child, annotation \"맥락 읽기\". Child label \"사이드 채팅\". Inside child add note \"하나만 열 수 있음\". Below it add clear large caption \"모델·추론 수준 변경 불가\".\nBoth panels must have parent at same vertical position, children at same vertical position. Both left children clearly fit inside left panel; neither connector crosses into right panel. Labels \"작업 스레드\" and \"작업 세션\" are distinct. Do NOT imply independent filesystem isolation, new worktrees, a Codex maximum of two, child-to-child inheritance, ability to change Claude side-chat models or a measured performance advantage. Exact Korean letters, no invented text, shortcuts or logos. Readable composition with sufficient whitespace and text emphasis for a mobile-width article. No watermark.",
+      "review": "Codex one parent branches to two illustrative side chats, explicitly multiple allowed, each model/effort adjustable. Claude single side chat, model/effort not changeable. No inferred worktree or file isolation."
+    }
+  ],
+  "workflow": "Original archify SVGs were read only as textual facts; their designs were not viewed or given to imagegen. Existing alt/caption text retained. PNG outputs converted to lossless WebP without cropping/resizing. User explicitly requested imagegen raster diagrams; prompts preserve exact diagram labels/relations as re-authoring inputs.",
+  "removed": [
+    "src/content/posts/images/codex-to-claude-code-desktop/plan-timeline.svg",
+    "src/content/posts/images/codex-to-claude-code-desktop/effort-switching.svg",
+    "src/content/posts/images/codex-to-claude-code-desktop/side-chat.svg"
+  ],
+  "visualValidation": {
+    "method": "Real home list cards at 1280x900 and 390x844, temporary page using unchanged PostCard for grid at both viewports, actual post with all three diagrams plus Fancybox enlargement. Temporary route removed afterward. No screenshots committed or attached. Final cover spacing checked at the actual narrow mobile card size (126x222) using a centered crop; both marks retained, clear ivory gap between roofs.",
+    "desktopList": {
+      "width": 166.07,
+      "height": 264
+    },
+    "mobileList": {
+      "width": 126,
+      "height": 222.25
+    },
+    "mobileGrid": {
+      "width": 314,
+      "height": 157
+    },
+    "mobileBody": {
+      "width": 334,
+      "height": 187.97
+    },
+    "findings": "Both standalone marks, face and suitcase survive list crops. Full homes/mascot visible in 2:1 grid crop. All three landscape diagrams load in body; technical text checked at generated resolution and inline on mobile. Existing text alternatives/captions and image enlargement preserve details."
+  },
+  "validation": {
+    "status": "PASS",
+    "commands": {
+      "pnpm check": "PASS: 264 files; 0 errors, 0 warnings, 0 hints",
+      "pnpm type-check": "PASS: exit 0",
+      "pnpm build": "PASS: complete production pipeline and Pagefind, exit 0",
+      "pnpm dev": "PASS: actual cards and post images rendered; enlargement works"
+    },
+    "assets": "PASS: all four PNG/WebP pairs have identical RGBA pixels; every post image reference resolves. Optimized images exist in built detail page.",
+    "content": "PASS: post differs from pre-application content only in cover/body image references. All prose, publication settings and original alt/caption text preserved.",
+    "generated": "Reviewed four new LQIP entries only; obsolete cover entry removed.",
+    "notes": "Existing npm project-config, Vite chunk-size and Pagefind missing-html/ko-stemming notices; build succeeded."
+  },
+  "referenceCleanup": "Downloaded official logo reference files were removed at the user request before publication. Source URLs are retained for provenance."
+}

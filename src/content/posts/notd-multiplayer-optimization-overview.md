@@ -1,6 +1,6 @@
 ---
 title: "Night of the Dead 멀티플레이 최적화 돌아보기"
-published: 2026-10-01
+published: 2026-09-25
 description: "Night of the Dead의 Dedicated Server 멀티플레이에서 담당한 네트워크와 실행 비용 최적화를 복제 대상, 전송 데이터, 전송 경로, 다수 개체 처리로 나눠 정리하고 각 주제의 상세 글로 연결한다."
 image: ./images/notd-multiplayer-optimization/notd-multiplayer-optimization-overview-cover.webp
 tags:

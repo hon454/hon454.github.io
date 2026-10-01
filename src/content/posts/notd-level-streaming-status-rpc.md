@@ -147,6 +147,8 @@ struct TStructOpsTypeTraits<FCodedLevelStatus> : public TStructOpsTypeTraitsBase
 
 코드가 있는 원소의 페이로드는 29비트다. 배열 길이와 RPC, 번치, 패킷의 헤더는 제외한 값이며, 전체 전송량이나 측정된 절감률을 뜻하지 않는다. 바뀐 부분은 각 원소에서 긴 경로 문자열을 16비트 코드로 대체한 것이다.
 
+![서버와 클라이언트가 같은 코드 표를 사용할 때 패키지 이름을 16비트 코드로 대신한다. 코드가 없는 레벨은 이름을 보내며, 29비트는 코드가 있는 원소의 페이로드만 계산한 값이다.](./images/notd-multiplayer-optimization/level-code-payload.webp)
+
 엔진의 LOD 인덱스는 `int32`지만 전송용 구조체에서는 `int8`로 줄였다. 실제 `Encode()`는 상한을 넘는 값을 `MAX_int8`로 제한한다. 원래 값을 그대로 보존하려면 사용하는 LOD 값이 `int8` 범위 안에 있어야 한다.
 
 ### 표에 없는 레벨은 그대로 보낸다
@@ -221,9 +223,13 @@ void AMyPlayerController::ClientUpdateCodedLevelStatuses_Implementation(const TA
 
 로딩 화면은 PlayerController가 만들어지는 시점부터 띄우고 5번에서 내린다. 뷰 위치를 무효한 값으로 돌려주는 기간은 이보다 짧다. 게임용 PlayerController에서 `LoginAuthComponent->IsProcessBegun()`이 참이 될 때까지 무효한 위치를 반환하고, 인증·초기 동기화가 시작되면 정상 뷰 위치를 사용한다. 임시 스폰 위치를 기준으로 주변 레벨이 스트리밍되거나 주변 액터가 복제 대상으로 잡히는 일을 막기 위한 처리다.
 
+![클라이언트는 앞 단계의 완료 조건을 확인한 뒤 다음 게이트로 넘어간다. 정상 뷰 위치는 인증 과정 시작 시 돌아오고, 로딩 화면은 OnClientInitialized()에서 해제된다.](./images/notd-multiplayer-optimization/client-ready-gates.webp)
+
 ### 에셋 사전 로딩
 
 1번 게이트는 플레이 중 첫 사용 시점에 생기던 로딩을 접속 시점으로 옮기는 단계다. 소프트 참조로 둔 애니메이션과 이펙트를 좀비가 처음 등장하거나 처음 피격되는 순간에 로드하면 끊김이 생긴다.
+
+![첫 사용 시점의 로딩을 접속 시점으로 옮기는 개념 삽화다. 사전 로딩은 총 작업량을 줄이지 않으며, 접속 대기 시간과 로드된 에셋을 유지하는 메모리 비용을 부담한다.](./images/notd-multiplayer-optimization/preload-cost-illustration.webp)
 
 레벨에 배치한 프리로더 액터가 네 단계를 비동기로 이어서 처리한다.
 

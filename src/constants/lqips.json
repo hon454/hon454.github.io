@@ -171,5 +171,16 @@
   "src:content/posts/images/notd-multiplayer-optimization/map-markers.avif": "a19f9c9f9e9ca2a09c",
   "src:content/posts/images/notd-multiplayer-optimization/forest-airdrop.avif": "788c909eb3bba3b4b5",
   "src:content/posts/images/notd-multiplayer-optimization/electric-facilities.avif": "95b1b080959faaa8a9",
-  "src:content/posts/images/notd-multiplayer-optimization/cover.avif": "878e9d68788f363d48"
+  "src:content/posts/images/notd-multiplayer-optimization/cover.avif": "878e9d68788f363d48",
+  "src:content/posts/images/notd-multiplayer-optimization/zombie-cost-routing.webp": "dbece9dbedf2e3f3f6",
+  "src:content/posts/images/notd-multiplayer-optimization/world-data-illustration.webp": "dbe4cbd7ddbcdfdac2",
+  "src:content/posts/images/notd-multiplayer-optimization/spawner-state-transitions.webp": "eaf2f4e8edefe8eef4",
+  "src:content/posts/images/notd-multiplayer-optimization/rpc-registration-recovery.webp": "e0eaecebeeefeaf0f7",
+  "src:content/posts/images/notd-multiplayer-optimization/rpc-buffer-flow.webp": "e8f2f0f2f6faecf0f5",
+  "src:content/posts/images/notd-multiplayer-optimization/preload-cost-illustration.webp": "cdccb2e8e6d2e2dbbd",
+  "src:content/posts/images/notd-multiplayer-optimization/level-code-payload.webp": "e8f0f0e8f0f3e7eef1",
+  "src:content/posts/images/notd-multiplayer-optimization/foliage-mirror-queue.webp": "e4eff0e6eff4e8f2f6",
+  "src:content/posts/images/notd-multiplayer-optimization/eqs-reuse-conditions.webp": "ebeeeef0eff1e5eff5",
+  "src:content/posts/images/notd-multiplayer-optimization/container-replication-scope.webp": "e1edece4eff3eff2f2",
+  "src:content/posts/images/notd-multiplayer-optimization/client-ready-gates.webp": "dbe9eaebf1f3edf4f6"
 }

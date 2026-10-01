@@ -1,0 +1,222 @@
+{
+  "created": "2026-10-01",
+  "basis": "18ab0932f60fd52b6e3542b03679105e4e638094",
+  "tool": "built-in image_gen",
+  "review": "Labels and relationships checked against published text and reference C++; fictitious identifiers removed; int16, registration recovery, return branches, URO and EQS recording scope corrected.",
+  "assets": [
+    {
+      "id": "rpc-buffer-flow",
+      "title": "Reliable 채널과 조각 전송",
+      "post": "src/content/posts/notd-reliable-rpc-data-streaming.md",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/rpc-buffer-flow.webp",
+      "caption": "라우터는 같은 액터 채널의 미확인 Reliable 번치 수를 보고 다음 조각의 전송 여부를 정한다. ACK는 소켓의 데이터 반영 여부를 나타내지 않으며, 큰 조각 하나가 임계값을 넘길 수 있다.",
+      "placement": "「흐름 제어에 쓰는 값」 마지막 문단 뒤",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "lossless WebP; decoded pixels verified equal to PNG",
+      "references": [
+        "src/assets/images/posts/replication-rpc-lost-update.webp"
+      ],
+      "prompt": "Use case: infographic-diagram. Asset type: Korean technical blog body image about Night of the Dead C++ optimization. Generate ONE polished flat technical diagram, high resolution landscape 3:2 unless otherwise specified. The attached image is ONLY a visual style reference, NOT source content and NOT an edit target: pale near-white background, subtle grid, rounded pastel boxes, emerald for server, cyan for client, orange for network/conditions, dark navy typography, thin precise directional arrows. No snail mascot, no decorative game screenshot, no faux UI, no measurements or graphs. Generous whitespace and large readable Korean sans-serif labels. Render the quoted Korean and code text verbatim. Code identifiers in monospaced typography. Use short labels, no extra facts. Arrows MUST implement the described relations, no ambiguous arrowheads or crossing lines. All numbers supplied are code defaults or field sizes, not measured performance.\nPrimary request: explain sender flow control separately from application decoding.\nLayout: three columns \"서버 라우터\", \"액터 채널\", \"클라이언트 소켓\".\nServer has \"요청 큐\", then \"0.1초마다 검사\", diamond \"NumOutRec < RELIABLE_BUFFER / 4\". Yes path \"다음 조각 전송\" and a loop back to same check; no path \"큐 유지 · 다음 틱에 재검사\". Chunk label \"최대 100개 레코드 / RPC\".\nMiddle box \"미확인 Reliable 번치\", subtitle \"다른 Reliable RPC도 같은 채널 사용\". RPC output arrow travels via channel to client \"DecodeRecords()\". One thin dashed feedback arrow FROM a distinct small network ACK indicator back TO middle box, label \"네트워크 ACK → NumOutRec 감소\". This feedback is independent of DecodeRecords; DO NOT connect DecodeRecords completion to ACK, do not give the socket a manual ACK arrow.\nBelow, two clearly separate notes exactly \"ACK ≠ 데이터 반영 확인\" and \"한 RPC가 여러 번치를 사용할 수 있음\".\nFooter \"임계값은 전송 판단 기준이다. 남은 버퍼를 예약하지 않으며 오버플로 방지를 보장하지 않는다.\"\nDo not draw bytes-based chunk sizing, resend timers, reassembly buffers, priority queues or reserved 3/4 buffer.",
+      "corrections": []
+    },
+    {
+      "id": "rpc-registration-recovery",
+      "title": "소켓 등록 시점과 복구 범위",
+      "post": "src/content/posts/notd-reliable-rpc-data-streaming.md",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/rpc-registration-recovery.webp",
+      "caption": "등록 전에 도착한 조각은 소켓으로 전달되지 않는다. 완료 알림이 등록 후에 도착해야 소켓별 개수 검증에 진입하며, 완료 알림까지 버려지면 이 검증 경로는 실행되지 않는다.",
+      "placement": "「개수로 검증하고 다시 보내기」 마지막 문단 뒤",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "lossless WebP; decoded pixels verified equal to PNG",
+      "references": [
+        "src/assets/images/posts/replication-rpc-lost-update.webp"
+      ],
+      "prompt": "Use case: infographic-diagram. Asset type: Korean technical blog body image about Night of the Dead C++ optimization. Generate ONE polished flat technical diagram, high resolution landscape 3:2 unless otherwise specified. The attached image is ONLY a visual style reference, NOT source content and NOT an edit target: pale near-white background, subtle grid, rounded pastel boxes, emerald for server, cyan for client, orange for network/conditions, dark navy typography, thin precise directional arrows. No snail mascot, no decorative game screenshot, no faux UI, no measurements or graphs. Generous whitespace and large readable Korean sans-serif labels. Render the quoted Korean and code text verbatim. Code identifiers in monospaced typography. Use short labels, no extra facts. Arrows MUST implement the described relations, no ambiguous arrowheads or crossing lines. All numbers supplied are code defaults or field sizes, not measured performance.\nPrimary request: two alternative timelines about RPC arriving before socket registration. Landscape 3:2; two horizontal panels stacked. Title \"소켓 등록 시점과 개수 검증\".\nPanel A heading \"조각은 유실 · 완료 알림은 수신\". Time moves left to right. 1 \"조각 도착: 소켓 없음 → 버림\"; 2 \"BeginPlay(): 소켓 등록\"; 3 \"완료 알림 → 콜백 실행\"; 4 \"소켓별 개수 검증\"; 5 conditional arrow \"불일치 시 전체 재전송\". Present these as numbered boxes, no physical network packet loss symbols. Highlight loss inside application routing.\nPanel B heading \"완료 알림도 등록 전에 도착\". 1 \"조각 도착: 소켓 없음 → 버림\"; 2 \"완료 알림: 소켓 없음 → 버림\"; 3 \"BeginPlay(): 소켓 등록\"; 4 \"완료 콜백 실행 안 됨\". End with \"이 검증 경로로 복구되지 않음\". NO automatic retry arrow.\nBottom notes \"퀘스트: 완료 알림 후 30초 뒤 개수 보고\", \"폴리지: 추가·삭제 완료 알림 후 즉시 보고\", \"검증은 소켓별 처리이며 개수가 같은 내용 차이는 검출하지 못한다\".\nThese are illustrative timing cases, not inevitable ordering. Reliable transport is not packet loss here.",
+      "corrections": [
+        "Edit only the extra invented C++ code labels in this technical diagram; preserve the title, numbered timeline boxes, exact order, two panels, colors, typography and footer. Remove all instances of RegisterSocket(), OnRep_Complete(), VerifyCounts(), RequestResendAll(). Keep BeginPlay() (it is real). In panel A replace the four lower-node captions with plain Korean descriptions: at BeginPlay client use \"소켓 등록\", at completion callback client use \"완료 콜백 실행\", at count-check client use \"항목 수 비교\", at final orange node replace \"네트워크\" with \"서버\" and use \"불일치 시 전체 항목을 다시 큐에 등록\". No invented API identifiers anywhere. Do NOT change the 30초 and immediately-report notes or the two failure-case conditions. These losses are in application routing, not network packet loss.",
+        "Precise correction only, preserve layout and every other word. In panel A fourth lower node (클라이언트), replace \"항목 수 비교\" with \"개수 보고\". Server performs comparison, not client. In panel A fifth lower node (서버) replace its body with \"개수 비교 · 불일치 시\n전체 항목을 다시 큐에 등록\". Leave numbered fifth heading \"불일치 시 전체 재전송\". Do not add code identifiers. Preserve both registration cases and all footer notes."
+      ]
+    },
+    {
+      "id": "level-code-payload",
+      "title": "레벨 경로 코드와 전송 페이로드",
+      "post": "src/content/posts/notd-level-streaming-status-rpc.md",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/level-code-payload.webp",
+      "caption": "서버와 클라이언트가 같은 코드 표를 사용할 때 패키지 이름을 16비트 코드로 대신한다. 코드가 없는 레벨은 이름을 보내며, 29비트는 코드가 있는 원소의 페이로드만 계산한 값이다.",
+      "placement": "전송 필드 표와 29비트 설명 뒤",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "lossless WebP; decoded pixels verified equal to PNG",
+      "references": [
+        "src/assets/images/posts/replication-rpc-lost-update.webp"
+      ],
+      "prompt": "Use case: infographic-diagram. Asset type: Korean technical blog body image about Night of the Dead C++ optimization. Generate ONE polished flat technical diagram, high resolution landscape 3:2 unless otherwise specified. The attached image is ONLY a visual style reference, NOT source content and NOT an edit target: pale near-white background, subtle grid, rounded pastel boxes, emerald for server, cyan for client, orange for network/conditions, dark navy typography, thin precise directional arrows. No snail mascot, no decorative game screenshot, no faux UI, no measurements or graphs. Generous whitespace and large readable Korean sans-serif labels. Render the quoted Korean and code text verbatim. Code identifiers in monospaced typography. Use short labels, no extra facts. Arrows MUST implement the described relations, no ambiguous arrowheads or crossing lines. All numbers supplied are code defaults or field sizes, not measured performance.\nPrimary request: explain table-based level path coding and bit fields. Landscape 3:2. Title \"같은 레벨 표로 경로를 코드로 대체\".\nUpper row: server box \"서버 · 경로 → 코드\", table sample \"예시: /Game/Maps/LevelA ↔ 1\". Client box \"클라이언트 · 코드 → 경로\", identical sample. Between a short orange transport label \"접속 시 일괄 상태 RPC\". Under both tables aligned shared requirement \"같은 표 · 같은 행 순서\".\nLower row has two parallel payload variants, NEVER a merged 45-bit payload.\nVariant \"코드 있음\": adjacent blocks \"플래그 5비트\", \"LOD 8비트\", \"코드 16비트\", brace caption \"원소 페이로드 29비트\".\nVariant \"코드 없음\": adjacent blocks \"플래그 5비트\", \"LOD 8비트\", \"패키지 이름\". Fifth bit of flags is code-use branch. Small explanation \"플래그: 로드 · 표시 · 로드 차단 · 언로드 차단 · 코드 사용\".\nFooter notes \"29비트는 배열 길이와 RPC·번치·패킷 헤더를 제외한 값이다.\", \"이름 폴백은 표 누락을 처리한다. 서로 다른 표의 코드 충돌은 해결하지 않는다.\", \"플레이 중 단일 레벨 상태 RPC는 기존 경로를 사용한다.\"\nNo measured saving rate. Diagram shows actual encode/decode fields; no invented handshake/table transfer.",
+      "corrections": [
+        "Make a precise text correction only. In BOTH tables change \"코드 (uint16)\" to \"코드 (int16)\". Preserve every other field, value, arrow, color and layout. Above or next to the example tables add the short unobtrusive label \"경로·코드 예시\" so fabricated LevelA/B/C are clearly illustrative, not real project level names. Must keep 29비트, the 5+8+16 fields, code-missing name fallback, and same-table same-row-order requirement. No other edits."
+      ]
+    },
+    {
+      "id": "client-ready-gates",
+      "title": "접속 준비 게이트와 화면 상태",
+      "post": "src/content/posts/notd-level-streaming-status-rpc.md",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/client-ready-gates.webp",
+      "caption": "클라이언트는 앞 단계의 완료 조건을 확인한 뒤 다음 게이트로 넘어간다. 정상 뷰 위치는 인증 과정 시작 시 돌아오고, 로딩 화면은 OnClientInitialized()에서 해제된다.",
+      "placement": "「접속 과정에서의 위치」 여섯 단계와 뷰 위치 설명 뒤",
+      "dimensions": {
+        "width": 1448,
+        "height": 1086
+      },
+      "format": "lossless WebP; decoded pixels verified equal to PNG",
+      "references": [
+        "src/assets/images/posts/replication-rpc-lost-update.webp"
+      ],
+      "prompt": "Use case: infographic-diagram. Asset type: Korean technical blog body image about Night of the Dead C++ optimization. Generate ONE polished flat technical diagram, high resolution landscape 3:2 unless otherwise specified. The attached image is ONLY a visual style reference, NOT source content and NOT an edit target: pale near-white background, subtle grid, rounded pastel boxes, emerald for server, cyan for client, orange for network/conditions, dark navy typography, thin precise directional arrows. No snail mascot, no decorative game screenshot, no faux UI, no measurements or graphs. Generous whitespace and large readable Korean sans-serif labels. Render the quoted Korean and code text verbatim. Code identifiers in monospaced typography. Use short labels, no extra facts. Arrows MUST implement the described relations, no ambiguous arrowheads or crossing lines. All numbers supplied are code defaults or field sizes, not measured performance.\nPrimary request: compact vertical six-gate diagram with two separate state tracks. Portrait-friendly 4:3 landscape or square. Title \"클라이언트 준비 게이트\".\nSix top-to-bottom boxes connected by arrows labelled \"앞 단계 완료 후\":\n\"1  에셋 사전 로딩 완료\"\n\"2  상주 서브레벨 로드 완료\"\n\"3  Playing · 서버 초기화 확인\" with small \"필요 시 서버 로그인 완료 대기\"\n\"4  인증·초기 동기화 시작 → 완료 대기\" (inside this box distinct START and COMPLETE markers)\n\"5  OnClientInitialized()\" subtitle \"입력 허용 · 로딩 화면 해제\"\n\"6  HUD 초기화\".\nTo right two thin aligned state tracks: \"로딩 화면\" starts \"PlayerController 생성\" above gate1, continues through gate4 and ENDS at gate5. \"무효 뷰 위치\" also starts above gate1 but ENDS at START of gate4, labeled \"인증 과정 시작 시 정상 뷰 위치\". Do not end invalid view at auth completion or at gate5. These tracks represent event boundaries, NOT durations; no proportional widths, times or percentages.\nFooter \"게이트를 확인하는 순서이며, 각 작업의 시작 시점과 소요 시간을 뜻하지 않는다.\"\nDo NOT insert compressed RPC as a numbered gate or assume exact RPC timing.",
+      "corrections": []
+    },
+    {
+      "id": "spawner-state-transitions",
+      "title": "스포너 데이터와 풀링 액터 전환",
+      "post": "src/content/posts/notd-world-objects-as-data.md",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/spawner-state-transitions.webp",
+      "caption": "스포너는 생성 단계를 숫자, 클래스와 트랜스폼, 풀링 액터로 나눈다. 반환 시에는 생존 여부와 일시적 대상 여부, 활성 범위에 따라 남기는 데이터가 달라진다.",
+      "placement": "스포너 예시 코드와 구조체·풀 메모리 설명 뒤",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "lossless WebP; decoded pixels verified equal to PNG",
+      "references": [
+        "src/assets/images/posts/replication-rpc-lost-update.webp"
+      ],
+      "prompt": "Use case: infographic-diagram. Asset type: Korean technical blog body image about Night of the Dead C++ optimization. Generate ONE polished flat technical diagram, high resolution landscape 3:2 unless otherwise specified. The attached image is ONLY a visual style reference, NOT source content and NOT an edit target: pale near-white background, subtle grid, rounded pastel boxes, emerald for server, cyan for client, orange for network/conditions, dark navy typography, thin precise directional arrows. No snail mascot, no decorative game screenshot, no faux UI, no measurements or graphs. Generous whitespace and large readable Korean sans-serif labels. Render the quoted Korean and code text verbatim. Code identifiers in monospaced typography. Use short labels, no extra facts. Arrows MUST implement the described relations, no ambiguous arrowheads or crossing lines. All numbers supplied are code defaults or field sizes, not measured performance.\nPrimary request: logical state transitions, not concentric distance circles. Landscape 3:2. Title \"스포너의 숫자 · 구조체 · 액터\".\nTop row three boxes with one-way arrows \"스폰할 수\n정수 카운터\" → label \"데이터 생성 조건\" → \"클래스 · 트랜스폼\n구조체\" → label \"액터화 거리 안\" → \"풀링 액터\nAI · 복제\".\nBelow actor box return gate \"반환 판정\", caption \"CanDespawn() 또는 활성 범위 이탈\". Three branching destinations:\nA \"살아 있음 · 비일시적 · 활성 범위 안\" → \"클래스 · 트랜스폼 보존\" connecting back to struct.\nB \"살아 있음 · 일시적 또는 범위 밖\" → \"스폰할 수 복원\" connecting back to counter.\nC \"죽음\" → \"수 복원 없음\".\nSmall notes \"추격 중이면 일반 반환이 막힐 수 있음\", \"범위 이탈 강제 반환 경로는 별도\", \"구조체 저장 실패 시 카운터로 복원\".\nFooter two lines \"구조체는 체력·전투 상태 스냅샷이 아니다.\", \"풀 반환은 메모리 해제를 뜻하지 않는다.\"\nCareful: death note means on returning dead actor no count restoration, not automatically immediate return of every death. No auto demotion solely from moving away from player. No times or distances invented.",
+      "corrections": [
+        "Edit the RETURN CONNECTIONS ONLY to remove misleading arrows. Preserve title, top three states and their left-to-right forward arrows, all condition texts and notes.\nCompletely REMOVE all long connectors returning from lower branch outcomes to top states, including the horizontal line under the three outcomes and the upward arrows. REMOVE the upward arrow into top middle \"클래스 · 트랜스폼\".\nThe return flow must be a standalone TREE: from top-right \"풀링 액터\" down to \"반환 판정\" down to three condition boxes on one row. From EACH condition box one short down arrow to ITS OWN outcome ONLY: alive non-transient inside → class/transform preserve; alive transient or outside → count restore; dead → no count restore. Outcomes have no outgoing arrows. This avoids suggesting restoration happens before condition evaluation. No new text, no extra facts. Must keep CanDespawn(), forced range return and non-memory-release notes.",
+        "Repair ONE missing connector in this existing flowchart only. At approximately image y=490, the horizontal branch line from the \"반환 판정\" box currently reaches the middle and right cases, but stops before the left \"살아 있음 · 비일시적 · 활성 범위 안\" case; its small downward arrow is disconnected. EXTEND that horizontal line continuously LEFT until it joins the existing downward arrow above the left green condition box. The \"반환 판정\" must feed all three condition cases, including the left one. Do not draw upward arrows to the top states, or arrows leaving the three bottom outcomes. Preserve all text, all other lines, colors, spacing, title and notes exactly. The only addition is the missing horizontal stroke between the left downward branch and the middle branch."
+      ]
+    },
+    {
+      "id": "container-replication-scope",
+      "title": "보관함 거리 판정과 수신 범위",
+      "post": "src/content/posts/notd-world-objects-as-data.md",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/container-replication-scope.webp",
+      "caption": "근처 플레이어의 존재 여부로 서버의 공통 복제용 배열을 채운다. 한 명이 접근하면 그 건물이 복제되는 다른 연결에도 내용물이 전달될 수 있다.",
+      "placement": "보관함 「한계」 첫 문단 뒤",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "lossless WebP; decoded pixels verified equal to PNG",
+      "references": [
+        "src/assets/images/posts/replication-rpc-lost-update.webp"
+      ],
+      "prompt": "Use case: infographic-diagram. Asset type: Korean technical blog body image about Night of the Dead C++ optimization. Generate ONE polished flat technical diagram, high resolution landscape 3:2 unless otherwise specified. The attached image is ONLY a visual style reference, NOT source content and NOT an edit target: pale near-white background, subtle grid, rounded pastel boxes, emerald for server, cyan for client, orange for network/conditions, dark navy typography, thin precise directional arrows. No snail mascot, no decorative game screenshot, no faux UI, no measurements or graphs. Generous whitespace and large readable Korean sans-serif labels. Render the quoted Korean and code text verbatim. Code identifiers in monospaced typography. Use short labels, no extra facts. Arrows MUST implement the described relations, no ambiguous arrowheads or crossing lines. All numbers supplied are code defaults or field sizes, not measured performance.\nPrimary request: common server replication array, not per-connection filtering. Landscape 3:2. Title \"근처 한 명이 공통 복제 배열을 채운다\".\nServer side big storage box \"보관함 · 서버\". Inside separate \"원본 배열\" and \"복제용 배열\nID · 수량 · 개체 ID\". Condition between them \"10m 안에 플레이어가 한 명이라도 있음\" sends from original to replica.\nClient side two boxes A \"플레이어 A\n보관함 10m 안\", B \"플레이어 B\n10m 밖 · 건물 복제 범위 안\". From the SAME replicated array two outgoing arrows to A and B, both label \"액터가 복제되는 연결\". Do not draw distance-filtered network arrow only to A.\nA dashed observation arrow from A to condition may label \"거리 판정\", visually different from payload arrows.\nLower note \"아무도 가깝지 않으면 서버 복제용 배열을 비운다.\" Next note \"빈 배열의 전달 시점은 Dormancy와 다른 업데이트에 영향을 받는다.\" No direct guaranteed arrow from emptying to clearing client cache.\nFooter \"내용물 거리 판정은 연결별이 아니다. 건물 액터의 복제 범위와 구분해야 한다.\"\nDo not include Dormancy recommended order as if original, do not draw all worldwide clients receiving it.",
+      "corrections": [
+        "Precise text cleanup, preserve diagram arrows and layout. Remove all invented C++ snippets/type/variable names including TArray<FItemData>, TArray<FRepItemData>, OriginalItems, ReplicatedItems and ReplicatedItems.Empty();. Replace those little code boxes with plain text: original array \"서버 원본\", replication array \"전송용 데이터\", both clients \"받은 내용물\", empty-array note \"서버 배열 비움\". Change subtitle under \"보관함 · 서버\" from \"모든 클라이언트가 공유하는 복제 데이터\" to \"서버의 공통 복제용 배열\". Keep A within10m and B outside10m but within actor replication scope. Keep arrows to both from same replica. Do not suggest all worldwide clients get items. Keep exact ID quantity item-ID fields and Dormancy caveat. No invented types or APIs."
+      ]
+    },
+    {
+      "id": "foliage-mirror-queue",
+      "title": "폴리지 미러 목록과 제거 작업",
+      "post": "src/content/posts/notd-world-objects-as-data.md",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/foliage-mirror-queue.webp",
+      "caption": "클라이언트는 서버의 제거 이력을 미러 목록으로 유지하고 인스턴스 제거를 프레임별로 나눠 처리한다. 폴리지 레벨이 추가되면 그 레벨에 해당하는 항목을 다시 작업 큐에 넣는다.",
+      "placement": "「클라이언트의 인스턴스 정리」 마지막 문단 뒤",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "lossless WebP; decoded pixels verified equal to PNG",
+      "references": [
+        "src/assets/images/posts/replication-rpc-lost-update.webp"
+      ],
+      "prompt": "Use case: infographic-diagram. Asset type: Korean technical blog body image about Night of the Dead C++ optimization. Generate ONE polished flat technical diagram, high resolution landscape 3:2 unless otherwise specified. The attached image is ONLY a visual style reference, NOT source content and NOT an edit target: pale near-white background, subtle grid, rounded pastel boxes, emerald for server, cyan for client, orange for network/conditions, dark navy typography, thin precise directional arrows. No snail mascot, no decorative game screenshot, no faux UI, no measurements or graphs. Generous whitespace and large readable Korean sans-serif labels. Render the quoted Korean and code text verbatim. Code identifiers in monospaced typography. Use short labels, no extra facts. Arrows MUST implement the described relations, no ambiguous arrowheads or crossing lines. All numbers supplied are code defaults or field sizes, not measured performance.\nPrimary request: server respawn data mirrored to client independently of foliage level loading. Landscape 3:2. Title \"파괴 이력은 목록으로 유지하고 인스턴스는 나눠 제거\".\nServer lane top-to-bottom \"리스폰 레코드 맵\" → \"추가·삭제 버퍼\n1초마다 전송 · 같은 ID 상쇄\" → \"스트리밍 라우터\".\nClient lane: incoming arrow from router \"전체 목록 / 변경분\" to \"미러 목록\nID · 종류 ID · 트랜스폼\". From mirror to \"제거 작업 큐\" then \"프레임당 정해진 수 처리\" then \"로드된 레벨의 로컬 인스턴스 제거\".\nA separate event node \"폴리지 레벨 추가\" sends arrow to mirror/list query labeled \"레벨 범위의 항목 다시 큐에 등록\". DO NOT delete mirror record after processing.\nNote beside mirror \"레벨이 없어도 목록은 유지\". Separate small completion path \"추가·삭제 완료 알림\" → \"개수 보고\" → \"보낼 변경분 없음 + 개수 불일치\" → \"전체 새로고침\"; no content hash or registration buffering.\nFooter \"인스턴스드 폴리지는 복제되지 않으므로 서버의 제거 이력을 별도로 전달한다.\"\nNo false natural respawn restoring original instance: this image only client removal synchronization.\nSTRICT: Do not invent any C++ types, functions, API names or code snippets. Use only the exact provided labels. Keep connections simple. No unrequested text.",
+      "corrections": []
+    },
+    {
+      "id": "zombie-cost-routing",
+      "title": "서버와 클라이언트의 비용 조절 기준",
+      "post": "src/content/posts/notd-zombie-horde-cost.md",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/zombie-cost-routing.webp",
+      "caption": "서버는 모든 플레이어까지의 최소 거리를, 클라이언트는 로컬 플레이어 거리와 카메라 조건을 사용한다. 각 기준은 이동 시뮬레이션, 전송률, 애니메이션 평가에 서로 다른 방식으로 적용된다.",
+      "placement": "「이동 동기화 전송률」 설명 뒤",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "lossless WebP; decoded pixels verified equal to PNG",
+      "references": [
+        "src/assets/images/posts/replication-rpc-lost-update.webp"
+      ],
+      "prompt": "Use case: infographic-diagram. Asset type: Korean technical blog body image about Night of the Dead C++ optimization. Generate ONE polished flat technical diagram, high resolution landscape 3:2 unless otherwise specified. The attached image is ONLY a visual style reference, NOT source content and NOT an edit target: pale near-white background, subtle grid, rounded pastel boxes, emerald for server, cyan for client, orange for network/conditions, dark navy typography, thin precise directional arrows. No snail mascot, no decorative game screenshot, no faux UI, no measurements or graphs. Generous whitespace and large readable Korean sans-serif labels. Render the quoted Korean and code text verbatim. Code identifiers in monospaced typography. Use short labels, no extra facts. Arrows MUST implement the described relations, no ambiguous arrowheads or crossing lines. All numbers supplied are code defaults or field sizes, not measured performance.\nPrimary request: separate decision relationships and costs; not quantitative cost chart. Landscape 3:2. Title \"거리 기준은 서버와 클라이언트에서 다르게 쓰인다\".\nTwo generous columns.\nLeft \"Dedicated Server\":\n\"모든 플레이어까지의 최소 거리\" feeds \"거리 LOD\" and \"거리 순위\".\n\"거리 LOD\" → \"이동 시뮬레이션\n반복 한도 · Invisible 틱 간격\".\nBoth LOD and rank → \"이동 전송률\" with extra input \"공격 여부\".\nSmall transmission annotations \"기본 LOD0~3: 12 · 8 · 6 · 4회/초\", \"DistanceRank <= 30: 두 등급 보정\", \"공격 중: 등급 2 이하\", \"Invisible: 1회/초\".\nSeparate branch independent of rank: \"전투 · 유예 조건\" → \"서버 포즈 · 본 갱신\".\nRight \"클라이언트 (NM_Client)\":\n\"로컬 플레이어 거리 · 카메라 조건\" → \"클라이언트 LOD\" → \"Significance\" → \"Animation Budget Allocator\n애니메이션 평가 배정\".\nExtra input to Significance \"카메라 보정 · 공격 · 거대 여부\".\nNo distance rank input to Significance in NM_Client.\nBottom two notes \"거리 계산은 프레임당 최대 64마리씩 분산하며 전체 정렬 비용은 별도로 남는다.\", \"URO는 별도 적용 범위 확인이 필요하며, 예산 할당기와 같은 메시에서 중첩하지 않는다.\"\nDo not include grade 4 rate 3 per sec; unreachable in this LOD mapping. Do not draw server sending its LOD to clients. Do not imply all animations stop when invisible or combat is disabled.\nSTRICT: Do not invent any C++ types, functions, API names or code snippets. Use only the exact provided labels. Keep connections simple. No unrequested text.",
+      "corrections": [
+        "Precise correction ONLY to bottom-right URO note. Replace whole bottom-right note with exactly \"ABA 등록 메시는 URO가 비활성화된다.\n프로젝트 URO의 실제 부착 대상은 별도 확인이 필요하다.\" Preserve all other arrows, rates, NM_Client label and min-distance/rank distinction. The prior wording sounded like the actual project guaranteed excluding ABA meshes from its URO component, which the C++ does not establish. No extra facts."
+      ]
+    },
+    {
+      "id": "eqs-reuse-conditions",
+      "title": "EQS 결과 공유의 조건",
+      "post": "src/content/posts/notd-zombie-horde-cost.md",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/eqs-reuse-conditions.webp",
+      "caption": "같은 질의와 주변 거리, 좀비 유형 및 옵션별 조건을 만족하는 결과만 공유한다. 액터 결과는 대상 유효성을 확인하고, 비액터 결과에는 기본 30초 수명을 적용한다.",
+      "placement": "「EQS 결과 공유」의 조건·무효화 설명 뒤",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "format": "lossless WebP; decoded pixels verified equal to PNG",
+      "references": [
+        "src/assets/images/posts/replication-rpc-lost-update.webp"
+      ],
+      "prompt": "Use case: infographic-diagram. Asset type: Korean technical blog body image about Night of the Dead C++ optimization. Generate ONE polished flat technical diagram, high resolution landscape 3:2 unless otherwise specified. The attached image is ONLY a visual style reference, NOT source content and NOT an edit target: pale near-white background, subtle grid, rounded pastel boxes, emerald for server, cyan for client, orange for network/conditions, dark navy typography, thin precise directional arrows. No snail mascot, no decorative game screenshot, no faux UI, no measurements or graphs. Generous whitespace and large readable Korean sans-serif labels. Render the quoted Korean and code text verbatim. Code identifiers in monospaced typography. Use short labels, no extra facts. Arrows MUST implement the described relations, no ambiguous arrowheads or crossing lines. All numbers supplied are code defaults or field sizes, not measured performance.\nPrimary request: conditional reuse decision flow. Landscape 3:2. Title \"EQS 질의 전에 주변 결과를 확인한다\".\nStart \"EQS 질의 요청\" → condition \"캐시 사용 설정\n수 제한 사용 시 기본 100마리 이상\". NO path → \"EQS 실행\"; YES path → \"주변 후보 확인\".\nNext condition block three lines \"같은 질의 · 설정 거리 안\", \"거대 여부 · 공격 방식 일치\", \"옵션에 따른 대상 · 방향 · 앞뒤 조건\".\nMatching path \"조건에 맞는 유효 결과 있음\" → \"결과 재사용\"; nonmatch path \"없음\" → SAME \"EQS 실행\" → \"결과 기록\". Avoid cycle implies query executes twice.\nSeparate bottom invalidation cards with NO timeline ties to main: \"결과를 남긴 좀비 없음 → 제거\", \"액터 결과: 대상 유효성 확인\", \"비액터 결과: 기본 수명 30초\". State actual actor invalidation \"대상 없음 / 공격 불가\".\nFooter \"조건을 만족하는 결과만 공유한다. 모든 결과에 30초 수명을 적용하지 않는다.\"\nNo hit rate, time bars, exact improvement, universal 100-zombie threshold unless count-limit config enabled.\nSTRICT: Do not invent any C++ types, functions, API names or code snippets. Use only the exact provided labels. Keep connections simple. No unrequested text.",
+      "corrections": [
+        "Precise correction only: replace lower-right \"결과 기록\" with \"캐시 사용 시 결과 기록\". This must show recording is conditional on cache enabled, even when the query execution was reached through the cache-disabled path. Preserve all arrows, conditions, 100마리 conditional setting and non-actor 30초 lifetime notes. No additional flow loops or text."
+      ]
+    },
+    {
+      "id": "world-data-illustration",
+      "title": "필요한 오브젝트만 펼치기",
+      "post": "src/content/posts/notd-world-objects-as-data.md",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/world-data-illustration.webp",
+      "caption": "필요한 오브젝트만 액터나 복제 데이터로 펼친다는 개념을 카드와 모형으로 표현했다. 실제 자연물은 평소 폴리지 인스턴스로 유지되며, 카드는 구현 자료형을 뜻하지 않는다.",
+      "placement": "도입의 표현 비교 표 뒤, 「자연물」 시작 전",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "format": "lossless WebP; decoded pixels verified equal to PNG",
+      "references": [
+        "public/assets/images/logo/steady-spiral-color.png",
+        "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: Korean technical blog concept illustration, wide 16:9. Generate a NEW separate scene using image1 as character identity reference and image2 ONLY as clay material/lighting reference. Do not copy envelopes, digits or winding road.\nScene: warm ivory studio ground, soft diffuse light, rounded handmade clay props, gentle contact shadows. A Steady Spiral snail curator opens a compact index-card drawer: many flat cards each with a tiny tree silhouette remain neatly stored, while ONE selected card is represented beside the drawer as a standing miniature clay tree. A small flat stylized landscape board in the background contains many simple tiny tree instances, clearly passive/static, not an army. The single full miniature is central with the character gesturing to it. This symbolizes maintaining lightweight representations and instantiating only the object needed for interaction. Preserve dark green body, lime spiral shell, two thick rounded antennae, ivory eyes, small mouth and source body proportions. No other characters needed. No arrows, no text, no labels, no graph, no memory size, no performance percentages. Friendly precise editorial illustration, not game screenshot, no combat, no broken tree, no magical sparkles. The data cards are a metaphor, not claim of respawn automatically returning to instances. Central composition, ample padding.",
+      "corrections": []
+    },
+    {
+      "id": "preload-cost-illustration",
+      "title": "첫 사용 로딩을 접속 시점으로 옮기기",
+      "post": "src/content/posts/notd-level-streaming-status-rpc.md",
+      "path": "src/content/posts/images/notd-multiplayer-optimization/preload-cost-illustration.webp",
+      "caption": "첫 사용 시점의 로딩을 접속 시점으로 옮기는 개념 삽화다. 사전 로딩은 총 작업량을 줄이지 않으며, 접속 대기 시간과 로드된 에셋을 유지하는 메모리 비용을 부담한다.",
+      "placement": "「에셋 사전 로딩」에서 첫 사용 로딩 문제를 설명한 문단 뒤",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "format": "lossless WebP; decoded pixels verified equal to PNG",
+      "references": [
+        "public/assets/images/logo/steady-spiral-color.png",
+        "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+      ],
+      "prompt": "Use case: stylized-concept. Asset type: blog body concept illustration about asset preloading, wide 16:9. New scene. Image1 character identity reference; image2 ONLY clay material, warm ivory ground and soft lighting. Do not copy envelopes, digits, roads or question marks.\nA Steady Spiral snail stands beside a rounded preparation shelf before a simple open doorway into a miniature game stage. On the preparation shelf are compact clay props symbolizing an animation (two jointed pose silhouettes on a single card), an effect (small starburst figurine), and a sound (small speaker). The same object set is being arranged on the preparation shelf by the snail; no duplication of piles, no shrinking assets or trash. A small unmarked hourglass sits at the preparation shelf indicating startup waiting. A clearly occupied storage shelf alongside holds already prepared assets, indicating memory retained. Beyond doorway a simple empty game stage is ready, no celebratory speed lines or promise of no stutter. Character exactly same proportions and colors as source: dark green body, lime spiral shell, two rounded antennae, ivory eyes, small mouth. One clear central scene, ivory warm background, soft shadows, matte clay. No text, arrows, measurements, charts, labels, watermark. The lesson is moving first-use loading into preparation while retaining loaded objects, not eliminating work. Leave generous margin for body image use.",
+      "corrections": []
+    }
+  ]
+}

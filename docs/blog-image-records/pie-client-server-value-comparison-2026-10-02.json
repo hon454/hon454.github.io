@@ -22,5 +22,56 @@
   "dimensions": {
     "width": 1672,
     "height": 941
+  },
+  "bytes": 793600,
+  "sha256": "11228e4815a96f9b19ae2793651685dc731b56a9ccdfb0e447f6301a6cb4fe39",
+  "validation": {
+    "commands": {
+      "pnpm check": "PASS: 264 files, 0 errors, 0 warnings, 0 hints",
+      "pnpm type-check": "PASS: exit 0",
+      "pnpm build": "PASS: 111 pages, full production pipeline, exit 0",
+      "pnpm preview": "PASS: production home card and post-detail cover loaded"
+    },
+    "visualReview": {
+      "method": "Production preview, actual emitted PostCard/CoverImage markup and CSS. Temporary copies of home HTML forced existing layout preference reads to list/grid; no source components changed.",
+      "results": [
+        {
+          "viewportWidth": 1280,
+          "mode": "list",
+          "imageWidth": 166.078125,
+          "imageHeight": 232
+        },
+        {
+          "viewportWidth": 1280,
+          "mode": "grid",
+          "imageWidth": 521.59375,
+          "imageHeight": 260.796875
+        },
+        {
+          "viewportWidth": 390,
+          "mode": "list",
+          "imageWidth": 126,
+          "imageHeight": 197.75
+        },
+        {
+          "viewportWidth": 390,
+          "mode": "grid",
+          "imageWidth": 348,
+          "imageHeight": 174
+        },
+        {
+          "viewportWidth": 390,
+          "mode": "detail",
+          "imageWidth": 334,
+          "imageHeight": 187.96875
+        }
+      ],
+      "findings": "Face and both complete comparison viewports remain legible in desktop and mobile list crops. Grid and detail retain the complete scene. Position mismatch is visually apparent. No text or numeric assertions.",
+      "screenshots": "Local tool QA only; no screenshot attachments or committed screenshots."
+    },
+    "pixelEquality": "PASS",
+    "contentVerification": "Only image and draft frontmatter fields changed; authored body and original publication date preserved.",
+    "lqipReview": "Exactly one new cover entry; no unrelated generated changes.",
+    "notes": "Initial sandbox check/build failed before validation due to telemetry directory and tsx IPC permissions. Normal-permission reruns passed. Existing npm project-config and chunk-size warnings remain."
   }
 }

@@ -2,6 +2,7 @@
 title: 'Unreal Engine PIE에서 클라이언트와 서버 값을 한 줄로 비교하기'
 published: 2026-10-02
 author: Jihoon Jeon
+image: "./images/unreal-engine-pie-client-server-value-logging/pie-client-server-value-comparison-cover.webp"
 description: PIE에서 클라이언트 코드가 같은 프로세스의 서버 월드와 서버 측 PlayerController를 찾아 위치·속도를 한 줄로 비교하는 에디터 전용 디버그 코드와, 네트워크 에뮬레이션으로 확인한 측정 결과를 정리합니다.
 category: Unreal Engine
 tags:
@@ -11,7 +12,7 @@ tags:
   - replication
   - debugging
   - play-in-editor
-draft: true
+draft: false
 ---
 
 멀티플레이 디버깅을 하다 보면 클라이언트가 가진 값과 서버가 가진 값을 같은 시점에 비교해야 할 때가 있다. 서버와 클라이언트에서 각각 로그를 남기면 출력이 섞이고 두 줄이 같은 시점의 값이라는 보장도 없다.

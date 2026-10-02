@@ -1,0 +1,77 @@
+{
+  "created": "2026-10-02",
+  "tool": "built-in image_gen",
+  "post": "src/content/posts/unreal-engine-pie-client-server-value-logging.md",
+  "asset": "src/content/posts/images/unreal-engine-pie-client-server-value-logging/pie-client-server-value-comparison-cover.webp",
+  "generated": "/Users/jeonjihun/.codex/generated_images/01a0fb12-229f-7611-9cc7-7cd148c8a8c0/exec-957feeaf-8e16-444d-af8d-db12bae2fd13.png",
+  "references": [
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+  ],
+  "prompt": "Use case: stylized-concept\nAsset type: 16:9 technical blog cover, new scene for a post about comparing Unreal Engine PIE client and server values in one process.\nInput images: Image 1 is the Steady Spiral character identity reference. Image 2 is only the clay material, lighting and rendering style reference; do not copy its envelopes, numbers, paths or question mark.\nPrimary request: A curious Steady Spiral snail examining two side-by-side miniature game-world viewports inside ONE shared rounded desktop monitor, visually comparing two positions of the same player. The monitor and main snail form one compact central scene. Each viewport contains a small version of the exact same snail avatar on an identical simple ground track; one avatar is slightly further along the track than the other. This is a visual metaphor for locally reading client and server copies of the same player, not a network transfer diagram. A simple slim comparison rail below the two viewports has two rounded position pegs at slightly different positions. No numeric measurements.\nStyle/medium: polished soft clay-like 3D illustration, tactile matte surfaces, rounded simple props, warm ivory seamless background, soft studio illumination and gentle grounding shadows, matching Image 2.\nCharacter invariants: dark deep-green plump body, lime spiral shell, two round thick antennae, ivory oval eyes and tiny friendly mouth; retain Image 1 silhouette, face proportions and recognizable identity. Main snail sits at the foreground of the shared monitor, looking thoughtfully at both viewports, without covering the avatars.\nComposition/framing: wide 16:9 landscape, all meaningful subjects, main face, the entire two-viewport monitor and comparison pegs tightly grouped within the middle 50% of image width and middle 65% of height. Generous empty ivory margin on both sides and top/bottom; works in centered square and landscape crops and small mobile cards. Large readable forms, restrained details.\nConstraints: exactly one shared monitor frame, two equal viewports, same avatar identity in both, small position mismatch. No cables connecting separate machines, no packet arrows, no speed joke, no assertion that values always match. No text, no title, no letters, no numbers, no logos, no watermark, no extra decorative scenery.",
+  "corrections": [
+    {
+      "reference": "/Users/jeonjihun/.codex/generated_images/01a0fb12-229f-7611-9cc7-7cd148c8a8c0/exec-b4f4c853-8c48-493f-a85a-307734837b64.png",
+      "prompt": "Use case: precise-object-edit\nAsset type: 16:9 blog cover, composition correction for severe center cropping.\nInput images: Image 1 is edit target, Image 2 is original character identity reference, Image 3 is clay-rendering style reference.\nPrimary request: Revise the scene composition in Image 1 so the comparison is fully legible in a very narrow centered portrait crop. Keep the same clay style, ivory backdrop, Steady Spiral character identity and concept of reading two copies of one game player within ONE shared monitor. Change the monitor to a COMPACT upright monitor with two horizontal world viewports STACKED VERTICALLY, upper and lower, not side by side. Center the complete monitor at x=50%, from approximately y=40% to y=80%, and make its whole width only 22% of the wide canvas. Place the main snail directly BEHIND the monitor so its large friendly face and two antennae rise above the screen at x=50%, approximately y=22% to y=43%; lime shell visible beside the head. Do not obscure either viewport.\nEach viewport shows a miniature same-identity snail on the SAME simple straight beige track, seen side-on. The top avatar is a little further along the track than the lower avatar. No clouds or foliage; give the two avatars clean uncluttered sage backgrounds. This is a metaphor, not a literal Unreal editor screenshot. No comparison rail below is needed.\nComposition: landscape 16:9. Face and BOTH complete viewports must fit inside x=39%..61% of the entire image, y=22%..80%. Most of the canvas on the left and right is empty warm ivory studio space. The scene may look small in the wide full image; this is intentional for thumbnail-safe composition. Face is large relative to compact monitor. Shell and body can extend slightly outside this central stripe but core comparison and face cannot.\nInvariants: original deep-green plump snail, lime spiral shell, two thick rounded antennae, flat ivory eyes and tiny ivory mouth; soft tactile matte clay, warm gentle studio light and contact shadows. One shared monitor frame, two views of the same player at slightly different positions. No text, no title, no labels, no letters, no numbers, no arrows, no watermark, no cables, no envelopes, no extra props.",
+      "reason": "좁은 중앙 크롭에서 얼굴과 두 월드가 함께 남도록 비교 화면을 위아래로 배치했다."
+    }
+  ],
+  "concept": "하나의 모니터 안에 같은 플레이어의 클라이언트·서버 사본을 위아래로 놓고 위치 차이를 비교한다.",
+  "technicalReview": "같은 프로세스의 두 월드 값을 읽는 디버그 방식의 비유다. 실제 에디터 화면이나 정확한 수치 도식이 아니며 값의 일치, 리플리케이션 순서, 지연 크기를 보장하지 않는다.",
+  "format": "lossless WebP; decoded pixels equal to generated PNG; original canvas preserved",
+  "dimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "bytes": 793600,
+  "sha256": "11228e4815a96f9b19ae2793651685dc731b56a9ccdfb0e447f6301a6cb4fe39",
+  "validation": {
+    "commands": {
+      "pnpm check": "PASS: 264 files, 0 errors, 0 warnings, 0 hints",
+      "pnpm type-check": "PASS: exit 0",
+      "pnpm build": "PASS: 111 pages, full production pipeline, exit 0",
+      "pnpm preview": "PASS: production home card and post-detail cover loaded"
+    },
+    "visualReview": {
+      "method": "Production preview, actual emitted PostCard/CoverImage markup and CSS. Temporary copies of home HTML forced existing layout preference reads to list/grid; no source components changed.",
+      "results": [
+        {
+          "viewportWidth": 1280,
+          "mode": "list",
+          "imageWidth": 166.078125,
+          "imageHeight": 232
+        },
+        {
+          "viewportWidth": 1280,
+          "mode": "grid",
+          "imageWidth": 521.59375,
+          "imageHeight": 260.796875
+        },
+        {
+          "viewportWidth": 390,
+          "mode": "list",
+          "imageWidth": 126,
+          "imageHeight": 197.75
+        },
+        {
+          "viewportWidth": 390,
+          "mode": "grid",
+          "imageWidth": 348,
+          "imageHeight": 174
+        },
+        {
+          "viewportWidth": 390,
+          "mode": "detail",
+          "imageWidth": 334,
+          "imageHeight": 187.96875
+        }
+      ],
+      "findings": "Face and both complete comparison viewports remain legible in desktop and mobile list crops. Grid and detail retain the complete scene. Position mismatch is visually apparent. No text or numeric assertions.",
+      "screenshots": "Local tool QA only; no screenshot attachments or committed screenshots."
+    },
+    "pixelEquality": "PASS",
+    "contentVerification": "Only image and draft frontmatter fields changed; authored body and original publication date preserved.",
+    "lqipReview": "Exactly one new cover entry; no unrelated generated changes.",
+    "notes": "Initial sandbox check/build failed before validation due to telemetry directory and tsx IPC permissions. Normal-permission reruns passed. Existing npm project-config and chunk-size warnings remain."
+  }
+}

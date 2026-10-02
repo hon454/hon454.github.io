@@ -1,6 +1,6 @@
 ---
 title: 'Unreal Engine PIE에서 클라이언트와 서버 값을 한 줄로 비교하기'
-published: 2026-10-02
+published: 2026-10-02T14:36:34+09:00
 author: Jihoon Jeon
 image: "./images/unreal-engine-pie-client-server-value-logging/pie-client-server-value-comparison-cover.webp"
 description: PIE에서 클라이언트 코드가 같은 프로세스의 서버 월드와 서버 측 PlayerController를 찾아 위치·속도를 한 줄로 비교하는 에디터 전용 디버그 코드와, 네트워크 에뮬레이션으로 확인한 측정 결과를 정리합니다.

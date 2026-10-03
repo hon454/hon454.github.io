@@ -71,7 +71,7 @@ Night of the Dead는 밤마다 몰려오는 좀비에 대비해 방어 시설을
 
 [개발 업데이트 #15](https://store.steampowered.com/news/app/1377380/view/3888357282609115394?l=koreana)
 
-- 프로젝트 Unreal Engine 5 마이그레이션 주도
+- 프로젝트 Unreal Engine 5 이전 주도
 - Replication Graph 개편
 
 ![](./images/night-of-the-dead/image-07.webp)
@@ -208,7 +208,7 @@ Replication Graph에서 공간과 거리로 연결별 후보를 수집하고, �
 
 ### 물리와 파괴 오브젝트
 
-UE4의 PhysX 기반 Destructible 오브젝트 시스템을 구현하고 최적화했다. UE5 마이그레이션에서 Chaos Physics로 전환하면서 Chaos Destructible의 성능 제약을 분석하고, 다수 오브젝트의 파괴 연출을 처리하기 위한 커스텀 Destructible 시스템을 구현했다. 환경 오브젝트 상호작용의 물리 기반 반응도 함께 다뤘다.
+UE4의 PhysX 기반 Destructible 오브젝트 시스템을 구현하고 최적화했다. UE5 이전에서 Chaos Physics로 전환하면서 Chaos Destructible의 성능 제약을 분석하고, 다수 오브젝트의 파괴 연출을 처리하기 위한 커스텀 Destructible 시스템을 구현했다. 환경 오브젝트 상호작용의 물리 기반 반응도 함께 다뤘다.
 
 ### 애니메이션
 

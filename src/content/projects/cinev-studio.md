@@ -390,10 +390,10 @@ bool UndoAndRefresh(FCompoundEdit& Edit, FTimelineModel& Timeline)
 
 **GitLab Runner** 기반 Unreal Engine 빌드와 패키징 환경을 구축하고 운영했다. Artifact와 DDC 관리, **Symbol Store**와 **Sentry** 연동, Slack 알림을 구성하고 `UnrealBuildTool` 실행을 최적화했다. 개발 빌드 아티팩트와 다운로드 안내를 제공해 기획과 QA가 빌드를 직접 받아 검증할 수 있도록 했다.
 
-Unreal Engine 5.3 → 5.7 마이그레이션에서는 API 변경과 서드파티 플러그인 호환성 문제를 해결했다. Shared DDC와 크래시 로그 수집과 분석 환경을 구성하고 엔진 전환에 필요한 대응도 진행했다.
+Unreal Engine 5.3 → 5.7 이전에서는 API 변경과 서드파티 플러그인 호환성 문제를 해결했다. Shared DDC와 크래시 로그 수집과 분석 환경을 구성하고 엔진 전환에 필요한 대응도 진행했다.
 
 Shipping 빌드에서 외부 `Game.ini` override가 제한되고 설정이 삭제되는 원인을 추적했다. `Dev.ini`를 바탕으로 임시 `UserDir` 실행 환경을 만드는 런처를 구현해 원본 설정을 보존했다. Headless Commandlet과 Remote Control API로 편집과 렌더링을 자동화했다.
 
 ### 개발 도구 활용과 협업
 
-기획, 애니메이션, TA, QA와 데이터 규칙과 전환 절차를 공유했다. **JetBrains Rider** 사용을 지속적으로 권장해 팀 대부분이 Visual Studio에서 Rider로 전환했고 AI 보조 개발 도구의 활용 경험과 작업 방식을 팀에 공유했다. 연말 타운홀에서는 ‘GitLab 개발왕’으로 선정됐다.
+기획, 애니메이션, TA, QA와 데이터 규칙과 전환 절차를 공유했다. **JetBrains Rider** 사용을 지속적으로 권장해 팀 대부분이 Visual Studio에서 Rider로 전환했고 AI 보조 개발 도구의 활용 경험과 작업 방식을 팀에 공유했다. 2025년 연말 타운홀에서는 GitLab의 커밋, MR, 댓글 등 활동에 점수를 매겨 뽑는 ‘GitLab 개발왕’으로 선정됐다.

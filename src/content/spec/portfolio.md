@@ -55,7 +55,7 @@
 - **AI 결과의 실행과 편집:** AI의 행동 지시를 현재 장면에서 실행할 수 있는 액션으로 해석하고, 생성 모션을 선택해 타임라인에 적용하는 흐름을 구현했습니다. Undo/Redo와 저장, 복원까지 연결했습니다.
 - **편집 UI와 공통 서비스:** UI Controller와 편집 State로 화면, 선택과 입력 처리를 나누고 Blackboard로 공유 상태를 전달했습니다. 공통 UI 컴포넌트를 개발하고 메시지 구독과 해제를 객체 수명에 맞췄습니다.
 - **샷 상태와 재생:** 독립 Shot 모델이 초기 상태를 관리하도록 저장과 복원을 정리했습니다. Root Motion을 타임라인 조건에 맞춰 다시 계산하고 카메라 회전의 반경 손실과 뒤집힘을 해결했습니다.
-- **빌드 환경과 엔진 이전:** GitLab Runner 기반 빌드와 패키징, Shared DDC, Sentry 크래시 수집을 구성하고 Unreal Engine 5.3에서 5.7로의 마이그레이션에서 API와 플러그인 호환성 문제를 해결했습니다.
+- **빌드 환경과 엔진 이전:** GitLab Runner 기반 빌드와 패키징, Shared DDC, Sentry 크래시 수집을 구성하고 Unreal Engine 5.3에서 5.7로의 이전에서 API와 플러그인 호환성 문제를 해결했습니다.
 
 ![CINEVStudio의 캐릭터 뷰포트와 액션 타임라인](../projects/images/cinev-studio/studio-editor.webp)
 
@@ -296,7 +296,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 | 주요 기술 | Astro, Svelte, TypeScript, Mermaid |
 
 - **[GitHub 카드 빌드 캐시](https://github.com/CuteLeaf/Firefly/pull/588):** GitHub 저장소 카드를 빌드 시점 캐시로 전환해 API 장애와 사용량 제한에 대응했습니다.
-- **[Mermaid 렌더러 이전](https://github.com/CuteLeaf/Firefly/pull/584):** Mermaid 렌더링을 Node.js 기반 최신 버전으로 마이그레이션하며 기존 테마의 출력 형태를 유지했습니다.
+- **[Mermaid 렌더러 이전](https://github.com/CuteLeaf/Firefly/pull/584):** Mermaid 렌더링을 Node.js 기반 최신 버전으로 이전하며 기존 테마의 출력 형태를 유지했습니다.
 - **[카테고리 바 휠 스크롤](https://github.com/CuteLeaf/Firefly/pull/613):** 누적 이동 손실과 입력 지연을 제거하고, 가로 트랙패드 제스처를 보존하면서 목록 경계에서는 페이지 스크롤이 이어지도록 개선했습니다.
 - **[레이아웃 슬롯 수정](https://github.com/CuteLeaf/Firefly/pull/587):** 페이지별 `<head>` 콘텐츠가 최상위 레이아웃으로 전달되지 않던 Astro 슬롯 구조를 수정했습니다.
 - **[한국어 문서 작성](https://github.com/CuteLeaf/Firefly/pull/583):** 설치와 구성, 배포와 Markdown 확장 기능을 다룬 한국어 문서를 작성했습니다.

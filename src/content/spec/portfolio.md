@@ -32,16 +32,7 @@
 
 *팀의 제작 사례에서 카메라 구도를 편집하는 화면입니다. 저는 팀이 선정한 기술 스택 위에서 캐릭터와 카메라 편집, 저장 및 서비스 연동을 담당했습니다.*
 
-<details>
-<summary>저장 후 다시 연 편집 상태</summary>
-
-![저장한 캐릭터, 포즈 후보, 클립과 카메라 키를 복원한 Shotloom 화면](../projects/images/shotloom/local-12-restored.png)
-
-*로컬 실행에서 파일을 저장한 뒤 다시 연 화면입니다. 캐릭터와 포즈 후보, 클립, 0프레임과 60프레임의 카메라 키가 복원된 상태를 확인했습니다.*
-
-</details>
-
-[포즈와 카메라 편집 영상](/projects/shotloom/#editing-workflow) / [저장과 복원 구조](/projects/shotloom/#edit-persistence) / [서비스 통합과 검증 범위](/projects/shotloom/#service-integration)
+[포즈와 카메라 편집 영상](/projects/shotloom/#editing-workflow) / [저장 구조와 복원 화면](/projects/shotloom/#edit-persistence) / [서비스 통합과 검증 범위](/projects/shotloom/#service-integration)
 
 ### CINEVStudio
 
@@ -61,16 +52,7 @@
 
 *중앙 뷰포트와 하단 타임라인에서 캐릭터와 액션을 편집하는 팀의 제품 화면입니다. 저는 액션 데이터의 실행과 편집, UI 상태 관리 및 샷 복원 경로를 담당했습니다.*
 
-<details>
-<summary>액션 조건을 타입별로 작성하는 입력 화면</summary>
-
-![액션 에셋에서 대상별 요구조건을 추가하고 편집하는 프로토타입](../projects/images/cinev-studio/action-asset.webp)
-
-*콘텐츠 제작자가 대상별로 필요한 조건을 추가하는 프로토타입입니다. 데이터 타입과 변환 경로를 담당하고, 입력 도구 작업은 동료와 분담했습니다.*
-
-</details>
-
-[액션 입력과 실행 구조](/projects/cinev-studio/#data-authoring) / [UI 상태 관리와 도식](/projects/cinev-studio/#ui-state) / [제품 튜토리얼과 제작 영상](/projects/cinev-studio/#제품-화면과-실제-제작-사례)
+[액션 입력 화면과 실행 구조](/projects/cinev-studio/#data-authoring) / [UI 상태 관리와 도식](/projects/cinev-studio/#ui-state) / [제품 튜토리얼과 제작 영상](/projects/cinev-studio/#제품-화면과-실제-제작-사례)
 
 ## 작두 스튜디오
 

@@ -1,5 +1,6 @@
 게임 클라이언트와 실시간 3D 제작 도구를 개발해 왔습니다. 대표 작업에서 맡은 문제와 구현 내용을 화면, 영상과 설계 자료로 소개합니다.
 
+- **기술 검증:** [UE5 Dedicated Server 최적화 실험실](#ue-dedicated-server-optimization-lab)의 리플리케이션 비용 측정과 단계별 최적화 비교
 - **3D 제작 도구:** [Shotloom](#shotloom)의 편집과 저장 구조, [CINEVStudio](#cinevstudio)의 액션 데이터와 편집 UI 설계
 - **게임 개발과 최적화:** [Night of the Dead](#night-of-the-dead)의 멀티플레이 동기화, 다수 좀비 처리와 게임플레이 구현
 - **VR 장치 연동:** [CircleVR](#circlevr)의 좌표계 보정과 다중 사용자 전시, [Space Walker](#space-walker)의 실시간 모션 연동
@@ -7,7 +8,25 @@
 
 [이력서](/resume/) / [경력기술서](/cv/) / [전체 프로젝트](/projects/)
 
-## 시나몬
+## 기술 검증 프로젝트
+
+<a id="ue-dedicated-server-optimization-lab"></a>
+
+### [UE5 Dedicated Server 최적화 실험실](https://github.com/hon454/ue-dedicated-server-optimization-lab)
+
+| 항목 | 내용 |
+| --- | --- |
+| 소개 | 언리얼 엔진 5.8.3 Dedicated Server의 리플리케이션 비용을 측정하고 최적화 기법을 하나씩 적용해 비교하는 실험 프로젝트 |
+| 진행 기간 | 2026.10 - 진행 중 |
+| 주요 기술 | Unreal Engine 5, C++, Unreal Insights, PowerShell |
+
+최적화가 없는 오픈월드 서버에서 시작해 Relevancy, Dormancy, Net Update Frequency 같은 엔진 기능을 한 번에 하나씩 적용합니다. 같은 시나리오를 다시 측정해 서버 프레임 시간과 대역폭의 변화를 수치와 화면으로 기록하고, 단계마다 원리와 측정 근거를 글로 정리합니다.
+
+[결과 요약과 포스팅 목록](https://github.com/hon454/ue-dedicated-server-optimization-lab#readme) / [단계별로 최적화해 보기](https://hon454.github.io/ue-dedicated-server-optimization-lab/)
+
+## 경력
+
+### 시나몬
 
 | 항목 | 내용 |
 | --- | --- |
@@ -15,7 +34,7 @@
 | 참여 형태 | 정규직 |
 | 담당 직무 | 클라이언트 프로그래머 |
 
-### Shotloom
+#### Shotloom
 
 | 항목 | 내용 |
 | --- | --- |
@@ -34,7 +53,7 @@
 
 [포즈와 카메라 편집 영상](/projects/shotloom/#editing-workflow) / [저장 구조와 복원 화면](/projects/shotloom/#edit-persistence) / [서비스 통합과 검증 범위](/projects/shotloom/#service-integration)
 
-### CINEVStudio
+#### CINEVStudio
 
 | 항목 | 내용 |
 | --- | --- |
@@ -54,7 +73,7 @@
 
 [액션 입력 화면과 실행 구조](/projects/cinev-studio/#data-authoring) / [UI 상태 관리와 도식](/projects/cinev-studio/#ui-state) / [제품 튜토리얼과 제작 영상](/projects/cinev-studio/#제품-화면과-실제-제작-사례)
 
-## 작두 스튜디오
+### 작두 스튜디오
 
 | 항목 | 내용 |
 | --- | --- |
@@ -62,7 +81,7 @@
 | 참여 형태 | 정규직 |
 | 담당 직무 | 클라이언트 프로그래머 |
 
-### Night of the Dead
+#### Night of the Dead
 
 | 항목 | 내용 |
 | --- | --- |
@@ -81,7 +100,7 @@
 
 [장비와 전투 업데이트](/projects/night-of-the-dead/#equipment-update) / [멀티플레이 동기화](/projects/night-of-the-dead/#network-sync) / [Steam 출시 페이지](https://store.steampowered.com/app/1377380/Night_of_the_Dead/)
 
-## 삐요 스튜디오
+### 삐요 스튜디오
 
 | 항목 | 내용 |
 | --- | --- |
@@ -89,7 +108,7 @@
 | 참여 형태 | 비고용 팀 활동, 정규직과 병행 |
 | 담당 직무 | 클라이언트 프로그래머 |
 
-### 길고양이 이야기 2
+#### 길고양이 이야기 2
 
 | 항목 | 내용 |
 | --- | --- |
@@ -106,7 +125,7 @@
 
 [게임 영상과 출시, 수상 자료](/projects/a-street-cats-tale-2/) / [담당 범위](/cv/#a-street-cats-tale-2)
 
-## 이메진템페스트 스튜디오
+### 이메진템페스트 스튜디오
 
 | 항목 | 내용 |
 | --- | --- |
@@ -114,7 +133,7 @@
 | 참여 형태 | 비고용 팀 활동 |
 | 담당 직무 | 기획 및 클라이언트 프로그래머 |
 
-### Vapor World
+#### Vapor World
 
 | 항목 | 내용 |
 | --- | --- |
@@ -128,7 +147,7 @@
 
 [출품 영상과 개발 기록](/projects/vapor-world/)
 
-## 클릭트
+### 클릭트
 
 | 항목 | 내용 |
 | --- | --- |
@@ -138,7 +157,7 @@
 
 Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담당했습니다. [회사 내 담당 범위](/cv/#clicked)
 
-### CircleVR
+#### CircleVR
 
 | 항목 | 내용 |
 | --- | --- |
@@ -155,7 +174,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 
 [CircleVR 전시 영상](/projects/circle-vr/)
 
-### Space Walker
+#### Space Walker
 
 | 항목 | 내용 |
 | --- | --- |
@@ -172,7 +191,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 
 [공연 콘텐츠와 담당 업무](/projects/space-walker/)
 
-### onAirVR Client 2.0
+#### onAirVR Client 2.0
 
 | 항목 | 내용 |
 | --- | --- |
@@ -184,7 +203,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 
 [onAirVR Client 2.0 시연](/projects/onairvr-client-2/)
 
-### #BeFearless - Fear of Heights
+#### #BeFearless - Fear of Heights
 
 | 항목 | 내용 |
 | --- | --- |
@@ -201,7 +220,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 
 [캠페인 영상과 개발 기록](/projects/be-fearless/)
 
-## 육군 SW개발병
+### 육군 SW개발병
 
 | 항목 | 내용 |
 | --- | --- |

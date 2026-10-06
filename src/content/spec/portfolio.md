@@ -24,7 +24,7 @@
 
 [결과 요약과 포스팅 목록](https://github.com/hon454/ue-dedicated-server-optimization-lab#readme) / [단계별로 최적화해 보기](https://hon454.github.io/ue-dedicated-server-optimization-lab/)
 
-## 경력
+## 주요 경력
 
 ### 시나몬
 

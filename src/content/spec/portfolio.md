@@ -42,15 +42,15 @@
 | 참여 기간 | 2026.04 - 2026.08 |
 | 주요 기술 | Rust, Bevy, WebAssembly, WebGPU, React, TypeScript, Tauri |
 
+![Shotloom 편집기에서 0프레임과 60프레임 사이의 카메라를 30프레임에서 평가한 화면](../projects/images/shotloom/local-09-camera-keyframe-midpoint.png)
+
+*0프레임과 60프레임에 카메라 키를 두고 30프레임에서 평가한 편집기 화면입니다. 타임라인에서 위치, 회전과 FOV 키를 속성별로 다룹니다. 카메라 키프레임의 편집부터 타임라인 평가와 저장 형식까지를 제가 구현했습니다.*
+
 - **편집 명령과 Undo/Redo:** React UI, Rust 문서 모델과 Bevy 런타임이 버전이 붙은 명령과 이벤트로 통신하도록 연결하고, 이 경로 위에 Undo/Redo와 저장, 복원을 구현했습니다.
 - **편집 트랜잭션과 롤백:** 드래그 시작부터 확정까지를 하나의 트랜잭션으로 기록하고, 명령이 거절되거나 외부 서비스가 실패하면 롤백해 UI와 런타임, 저장 상태를 일치시켰습니다.
-- **캐릭터와 카메라 저작:** 캐릭터 배치와 포즈 후보 적용, 카메라 키프레임을 편집 UI부터 타임라인 평가와 저장 형식까지 연결했습니다. 브라우저와 CLI가 같은 Rust 코어와 번들 형식을 사용하도록 구성했습니다.
+- **캐릭터와 카메라 저작:** 캐릭터 배치와 포즈 후보 적용, 속성별 카메라 키프레임을 편집 UI부터 타임라인 평가와 저장 형식까지 연결했습니다. 브라우저와 CLI가 같은 Rust 코어와 번들 형식을 사용하도록 구성했습니다.
 - **생성 서비스 통합:** 영상 제작 서비스 CineV의 샷을 편집 가능한 3D 장면으로 열고, 생성 영상의 마지막 프레임 이미지를 스토리보드로 돌려주도록 구현했습니다. 생성과 결과 저장을 분리해 저장에 실패하면 같은 결과를 다시 전송할 수 있게 했습니다.
 - **CI 캐시 개선:** Rust CI의 캐시를 target 아카이브에서 sccache로 바꿔 캐시 크기를 1.84GB에서 684MB로 약 63% 줄였습니다. warm CI에서 컴파일 374건이 모두 캐시에 적중했습니다.
-
-![Shotloom의 편집 입력부터 저장과 복원까지의 흐름 도식](../projects/images/shotloom/edit-persistence.webp)
-
-*편집 입력이 Command와 Transaction을 거쳐 변경 이력에 남고, 저장한 번들에서 모델과 ECS 런타임, UI 상태까지 복원되는 흐름입니다. 프로젝트 글을 위해 다시 그린 도식이며, 이 편집과 저장, 복원 경로를 제가 구현했습니다.*
 
 [포즈와 카메라 편집 영상](/projects/shotloom/#editing-workflow) / [저장 구조와 복원 화면](/projects/shotloom/#edit-persistence) / [서비스 통합과 검증 범위](/projects/shotloom/#service-integration)
 
@@ -62,16 +62,22 @@
 | 참여 기간 | 2024.06 - 2026.04 |
 | 주요 기술 | Unreal Engine 5, C++, UMG, Sequencer, ONNX |
 
-- **액션 데이터 작성 구조:** 문서와 대조하며 맞추던 액션 조건을 타입별 에셋 입력 구조로 바꿨습니다. 데이터 타입과 실행 경로, 변환기와 데이터 검증기를 개발했고, 입력 도구 작업은 동료와 나눠 맡았습니다. 제작자가 기억해 맞추던 조건 관계를 입력 구조와 검증기가 대신하게 됐습니다.
-- **AI 결과의 실행과 편집:** AI의 행동 지시를 현재 장면에서 실행할 수 있는 액션으로 해석하고, 생성 모션을 선택해 타임라인에 적용하는 흐름을 구현했습니다. 이 결과도 일반 편집 데이터와 같은 Undo/Redo와 저장, 복원 경로를 거치게 했습니다.
-- **편집 UI 상태 관리:** UI Controller와 편집 State로 화면, 선택과 입력 처리를 나누고 Blackboard로 공유 상태를 전달했습니다. 새 편집 기능을 State 단위로 추가하는 구조를 만들고 공통 UI 컴포넌트를 개발했습니다.
-- **Shot 상태 모델:** 팀이 진행한 Shot 모델 전환에서 상태 저장과 조회, 프레임 문맥과 재계산을 맡고 기존 저장 데이터를 새 모델로 이관했습니다.
-- **Root Motion과 카메라:** Root Motion 키를 타임라인 조건에 맞춰 다시 계산하고, 카메라 orbit의 반경 손실과 수직 회전 뒤집힘을 해결했습니다.
-- **빌드 환경과 엔진 이전:** GitLab CI 기반 빌드와 패키징, Shared DDC, Sentry 크래시 수집을 구성했습니다. Unreal Engine 5.3에서 5.7로 이전하면서 API와 서드파티 플러그인의 호환성 문제를 해결했습니다.
+<iframe class="video-embed" src="https://www.youtube.com/embed/NQJT8oN7NGg" title="CINEVStudio 사용 예시 - 무조건 이혼한다" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ![CINEVStudio에서 액션 조건을 타입별 요구조건으로 입력하는 Unreal Editor 화면](../projects/images/cinev-studio/action-asset.webp)
 
-*액션의 대상과 요구조건(높이, 태그)을 타입별 구조로 입력하는 데이터 에셋 화면입니다. 제가 개발한 액션 데이터 구조이며, 입력 도구 작업은 동료와 나눠 맡았습니다.*
+*액션의 대상과 요구조건(높이, 태그)을 타입별 구조로 입력하는 데이터 에셋 화면입니다.*
+
+![AnimComposite에서 액션의 모션 구간과 Notify, Curve를 함께 편집하는 Unreal Editor 화면](../projects/images/cinev-studio/animation-composite.webp)
+
+*테이블에 프레임 값으로 따로 기입하던 모션 구간과 이벤트 시점을 애니메이션을 보며 편집하는 AnimComposite 화면입니다. 두 화면의 액션 데이터 구조를 제가 개발했습니다.*
+
+- **액션 데이터 작성 구조:** 문서와 대조하며 맞추던 액션 조건을 타입별 에셋 입력 구조로 바꾸고, 모션 구간과 이벤트 시점은 AnimComposite에서 편집하게 했습니다. 데이터 타입과 실행 경로, 변환기와 데이터 검증기를 개발했습니다. 제작자가 기억해 맞추던 조건 관계를 입력 구조와 검증기가 대신하게 됐습니다.
+- **AI 결과의 실행과 편집:** AI의 행동 지시를 현재 장면에서 실행할 수 있는 액션으로 해석하고, 생성 모션을 선택해 타임라인에 적용하는 흐름을 구현했습니다. 이 결과도 일반 편집 데이터와 같은 Undo/Redo와 저장, 복원 경로를 거치게 했습니다.
+- **편집 UI 상태 관리:** UI Controller와 편집 State로 화면, 선택과 입력 처리를 나누고 Blackboard로 공유 상태를 전달했습니다. 새 편집 기능을 State 단위로 추가하는 구조를 만들고 공통 UI 컴포넌트를 개발했습니다.
+- **Shot 상태 모델:** Shot 모델 전환에서 상태 저장과 조회, 프레임 문맥과 재계산을 맡고 기존 저장 데이터를 새 모델로 이관했습니다.
+- **Root Motion과 카메라:** Root Motion 키를 타임라인 조건에 맞춰 다시 계산하고, 카메라 orbit의 반경 손실과 수직 회전 뒤집힘을 해결했습니다.
+- **빌드 환경과 엔진 이전:** GitLab CI 기반 빌드와 패키징, Shared DDC, Sentry 크래시 수집을 구성했습니다. Unreal Engine 5.3에서 5.7로 이전하면서 API와 서드파티 플러그인의 호환성 문제를 해결했습니다.
 
 [액션 입력 화면과 실행 구조](/projects/cinev-studio/#data-authoring) / [UI 상태 관리와 도식](/projects/cinev-studio/#ui-state) / [제품 화면과 실제 제작 사례](/projects/cinev-studio/#product-showcase)
 
@@ -92,15 +98,13 @@
 | 팀 규모 | 약 10명, 프로그래머 3명 |
 | 주요 기술 | Unreal Engine 4/5, C++, Unreal Insights, EOS, Steamworks |
 
+<iframe class="video-embed" src="https://www.youtube.com/embed/VVwmqfkluGw" title="Night of The Dead v1.0 Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 - **Dedicated Server 동기화:** Unreal Insights 분석을 바탕으로 Replication Graph가 거리와 소유 관계에 따라 연결별 복제 대상을 고르게 했습니다. 인벤토리처럼 크고 자주 바뀌는 배열은 Fast TArray Replication과 커스텀 NetSerialize로 변경분만 전송했습니다.
 - **다수 좀비의 실행 비용:** Animation Budget Allocator, Significance Manager와 AnimURO로 중요도와 예산에 따라 애니메이션 갱신 빈도를 조절하고, ACL로 애니메이션 데이터를 압축했습니다.
 - **게임플레이 구현:** 전투, 장비의 티어와 내구도, 파츠 개조, 보스 및 일반 좀비 AI를 구현했습니다. 얼리 액세스 개발 업데이트 #03부터 2024년 5월 1.0 정식 출시까지 담당 기능을 반영했습니다.
-- **엔진 이전과 파괴 연출:** UE4에서 UE5로의 이전을 주도하고 일부 영역은 팀원과 나눠 맡았습니다. 물리 엔진이 PhysX에서 Chaos로 바뀌며 Chaos Destructible로는 다수 오브젝트의 파괴 연출을 감당하기 어려워 커스텀 Destructible 시스템을 구현했습니다.
+- **엔진 이전과 파괴 연출:** UE4에서 UE5로의 이전을 주도했습니다. 물리 엔진이 PhysX에서 Chaos로 바뀌며 Chaos Destructible로는 다수 오브젝트의 파괴 연출을 감당하기 어려워 커스텀 Destructible 시스템을 구현했습니다.
 - **개발 인프라:** JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드, 패키징 자동화를 운영했습니다.
-
-![Night of the Dead의 게임 내 크레딧 화면](../projects/images/night-of-the-dead/credits.webp)
-
-*게임 내 크레딧 화면으로, 프로그래머 항목에 제 이름(Jihun Jeon)이 올라 있습니다. 동기화와 다수 좀비 처리의 구조는 블로그 시리즈에, 업데이트별 담당 기능은 프로젝트 글에 정리했습니다.*
 
 [장비와 전투 업데이트](/projects/night-of-the-dead/#equipment-update) / [멀티플레이 동기화](/projects/night-of-the-dead/#network-sync) / [멀티플레이 최적화 시리즈](/posts/notd-multiplayer-optimization-overview/) / [Steam 출시 페이지](https://store.steampowered.com/app/1377380/Night_of_the_Dead/)
 
@@ -120,13 +124,15 @@
 | 참여 기간 | 2021.10 - 2023.12 |
 | 주요 기술 | Unity, C#, Steamworks, STOVE SDK |
 
-- **주요 게임 시스템:** 세이브와 로드, 퀘스트, 대화, 이동, 컷신과 UI를 개발했습니다.
-- **플랫폼 연동:** 컨트롤러 입력, Steam 업적과 STOVE 구매 인증을 연동했습니다.
-- **PC 출시 전담:** 스토어 등록부터 다국어 빌드 준비, 출시 빌드 검수와 업로드까지 맡았습니다. 2023년 STOVE Windows 얼리 액세스와 Steam Windows, macOS 정식 출시를 진행했습니다.
+<iframe class="video-embed" src="https://www.youtube.com/embed/CkWISiLW1p0" title="길고양이 이야기 2 공식 트레일러" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ![G-STAR 2023 인디 어워즈에서 Games for Impact 수상작으로 발표된 길고양이 이야기 2](../projects/images/a-street-cats-tale-2/image-05.webp)
 
-*G-STAR 2023 인디 어워즈에서 Games for Impact 수상이 발표된 중계 화면입니다. 팀이 받은 상이며, 제 참여 범위는 2023년까지의 PC 개발과 출시입니다.*
+*G-STAR 2023 인디 어워즈에서 Games for Impact 수상이 발표된 중계 화면입니다.*
+
+- **주요 게임 시스템:** 세이브와 로드, 퀘스트, 대화, 이동, 컷신과 UI를 개발했습니다.
+- **플랫폼 연동:** 컨트롤러 입력, Steam 업적과 STOVE 구매 인증을 연동했습니다.
+- **PC 출시 전담:** 스토어 등록부터 다국어 빌드 준비, 출시 빌드 검수와 업로드까지 맡았습니다. 2023년 STOVE Windows 얼리 액세스와 Steam Windows, macOS 정식 출시를 진행했습니다.
 
 [게임 영상과 출시, 수상 자료](/projects/a-street-cats-tale-2/) / [담당 범위](/cv/#a-street-cats-tale-2)
 
@@ -146,6 +152,8 @@
 | 참여 기간 | 2019.06 - 2020.04 |
 | 주요 기술 | Unity, C#, Spine, URP |
 
+<iframe class="video-embed" src="https://www.youtube.com/embed/1asejGtAMGY" title="Vapor World : Over the Mind - MWU Korea Awards Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 - **기획과 클라이언트 개발:** 스토리와 세계관을 기획하고 입력, 이동과 전투 시스템을 개발했습니다.
 
 참여 기간 중 출품한 프로젝트가 제11회 새로운 경기 게임오디션 공동 2위에 선정됐고, MWU Korea Awards 2019 PC & Console 분야 Top 3에 올랐습니다.
@@ -161,9 +169,6 @@
 | 담당 직무 | SW개발병 |
 | 주요 기술 | C#, WPF, VBA |
 
-- **프로그램 개발:** C#과 WPF로 기존 프로그램을 이식하고, VBA로 엑셀 데이터 정리 프로그램을 개발했습니다.
-- **시스템 운영:** 육군 지휘통제시스템의 장애 대응과 운영을 맡고 응용체계관리반 분대장으로 복무했습니다.
-
 <div class="service-awards">
 
 ![응용체계관리반 분대장 임명장](./images/army-service/squad-leader-appointment-2019-01-14.webp)
@@ -175,6 +180,9 @@
 </div>
 
 *복무 중 받은 임명장과 표창입니다. 전장망 SW 지원과 회의 지원으로 우수상을, 을지태극훈련 지원으로 표창을 받았습니다.*
+
+- **프로그램 개발:** C#과 WPF로 기존 프로그램을 이식하고, VBA로 엑셀 데이터 정리 프로그램을 개발했습니다.
+- **시스템 운영:** 육군 지휘통제시스템의 장애 대응과 운영을 맡고 응용체계관리반 분대장으로 복무했습니다.
 
 ### 클릭트
 
@@ -194,10 +202,12 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 | 참여 기간 | 2017.06 - 2018.02 |
 | 주요 기술 | Unity, C#, Gear VR, HTC Vive Tracker |
 
+<iframe class="video-embed" src="https://www.youtube.com/embed/9N7_6xO2kNQ" title="CircleVR in Hongik University" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 - **장치 간 좌표 보정:** HMD와 외부 트래커의 좌표계를 맞추고 장착 오프셋을 보정했습니다.
 - **체험과 외부 시점 연결:** 여러 사용자의 시점을 외부 디스플레이로 연결해 체험자의 화면을 관람객과 공유하도록 했습니다.
 
-[CircleVR 전시 영상](/projects/circle-vr/)
+[전시 영상과 담당 업무](/projects/circle-vr/)
 
 #### Space Walker
 
@@ -207,12 +217,10 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 | 참여 기간 | 2017.05 - 2017.06 |
 | 주요 기술 | Unity, C#, Perception Neuron, GPU 파티클, onAirVR |
 
-- **전신 모션 연동:** Perception Neuron의 모션을 Unity Humanoid 아바타에 연결하고 좌표축 차이를 보정했습니다.
-- **실시간 배경 연출:** 3D 배경 인터랙션을 구현하고, 다수의 파티클을 처리할 때의 성능 부담을 줄이기 위해 GPU 파티클 시스템을 적용했습니다.
-
 <iframe class="video-embed" src="https://www.youtube.com/embed/S7bRLNLz0TA?start=5" title="Space Walker - Unite ’17 Seoul 키노트 오프닝 공연" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-*팀이 제작한 콘텐츠를 Unite ’17 Seoul 키노트 오프닝에서 시연한 영상입니다. 무용수의 움직임에 연결된 아바타와 배경 연출을 볼 수 있습니다.*
+- **전신 모션 연동:** Perception Neuron의 모션을 Unity Humanoid 아바타에 연결하고 좌표축 차이를 보정했습니다.
+- **실시간 배경 연출:** 3D 배경 인터랙션을 구현하고, 다수의 파티클을 처리할 때의 성능 부담을 줄이기 위해 GPU 파티클 시스템을 적용했습니다.
 
 [공연 콘텐츠와 담당 업무](/projects/space-walker/)
 
@@ -284,7 +292,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 
 - **재현과 원인 격리:** Shotloom 브라우저 편집기에서 MToon VRM을 표시한 직후 화면이 검게 변하는 문제를 Chrome WebGPU에서 재현했습니다. Metal 네이티브에서는 나타나지 않는 문제였고, 조명 단계별로 비교해 원인을 emissive 처리로 좁혔습니다.
 - **[셰이더 플래그 수정](https://github.com/not-elm/bevy_vrm1/pull/57):** MToon의 `EMISSIVE_TEXTURE` 비트가 Standard Material 플래그와 충돌해 바인딩되지 않은 텍스처를 샘플링하고, 그 NaN이 톤매핑과 Bloom으로 퍼지는 것을 확인했습니다. WGSL이 MToon uniform의 플래그를 읽도록 수정했습니다.
-- **편집기 반영:** 라이브러리에 기여한 수정을 동료와 함께 Shotloom 편집기에 반영했습니다.
+- **편집기 반영:** 라이브러리에 기여한 수정을 Shotloom 편집기에 반영했습니다.
 
 ## 함께 일한 동료들의 추천
 

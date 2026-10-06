@@ -96,9 +96,9 @@
 
 ![Night of the Dead 오픈월드 생존 게임](../projects/images/night-of-the-dead/cover.webp)
 
-*팀이 개발한 게임의 공개 이미지입니다. 제가 구현한 장비와 전투 기능은 업데이트별 담당 기록에, 동기화의 적용 방식은 프로젝트 글에 정리했습니다.*
+*팀이 개발한 게임의 공개 이미지입니다. 제가 구현한 장비와 전투 기능은 업데이트별 담당 기록에, 동기화의 적용 방식은 프로젝트 글에 정리했습니다. 복제 대상, 전송 데이터, 전송 경로와 다수 좀비 처리의 최적화 과정은 블로그 시리즈로 따로 정리했습니다.*
 
-[장비와 전투 업데이트](/projects/night-of-the-dead/#equipment-update) / [멀티플레이 동기화](/projects/night-of-the-dead/#network-sync) / [Steam 출시 페이지](https://store.steampowered.com/app/1377380/Night_of_the_Dead/)
+[장비와 전투 업데이트](/projects/night-of-the-dead/#equipment-update) / [멀티플레이 동기화](/projects/night-of-the-dead/#network-sync) / [멀티플레이 최적화 시리즈](/posts/notd-multiplayer-optimization-overview/) / [Steam 출시 페이지](https://store.steampowered.com/app/1377380/Night_of_the_Dead/)
 
 ### 삐요 스튜디오
 

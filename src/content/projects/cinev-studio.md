@@ -29,6 +29,8 @@ link:
 - **AI 생성 모션을 선택, 편집, 저장까지 연결했다.** 비동기 생성 결과를 현재 장면에 적용하고, 편집 명령과 프로젝트 저장과 복원 경로에 통합했다.
 - **샷 초기 상태의 소유권과 복원 경로를 정리했다.** 독립 Shot 모델이 초기 상태를 관리하게 하고, 실행 중 객체 참조와 저장용 식별자를 연결했다.
 
+<a id="product-showcase"></a>
+
 ### 제품 화면과 실제 제작 사례
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/8Pq8nM0Rm-w" title="CINEV Build Storyboard 튜토리얼" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>

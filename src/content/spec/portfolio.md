@@ -106,7 +106,7 @@
 
 - **Dedicated Server 동기화:** Unreal Insights 분석을 바탕으로 Replication Graph가 거리와 소유 관계에 따라 연결별 복제 대상을 고르게 했습니다. 인벤토리처럼 크고 자주 바뀌는 배열은 Fast TArray Replication과 커스텀 NetSerialize로 변경분만 전송했습니다.
 - **다수 좀비의 실행 비용:** Animation Budget Allocator, Significance Manager와 AnimURO로 중요도와 예산에 따라 애니메이션 갱신 빈도를 조절하고, ACL로 애니메이션 데이터를 압축했습니다.
-- **게임플레이 구현:** 전투, 장비의 티어와 내구도, 파츠 개조, 보스 및 일반 좀비 AI를 구현했습니다. 얼리 액세스 개발 업데이트 #03부터 2024년 5월 1.0 정식 출시까지 담당 기능을 반영했습니다.
+- **게임플레이 구현:** 전투, 장비의 티어와 내구도, 파츠 개조, 보스 및 일반 좀비 AI를 구현했습니다.
 - **엔진 이전과 파괴 연출:** UE4에서 UE5로의 이전을 주도했습니다. 물리 엔진이 PhysX에서 Chaos로 바뀌며 Chaos Destructible로는 다수 오브젝트의 파괴 연출을 감당하기 어려워 커스텀 Destructible 시스템을 구현했습니다.
 - **개발 인프라:** JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드, 패키징 자동화를 운영했습니다.
 
@@ -175,7 +175,7 @@
 
 <div class="service-awards">
 
-![응용체계관리반 분대장 임명장](./images/army-service/squad-leader-appointment-2019-01-14.webp)
+![분대장 임명장](./images/army-service/squad-leader-appointment-2019-01-14.webp)
 
 ![을지태극훈련 지원 표창장](./images/army-service/commendation-2019-06-14.webp)
 

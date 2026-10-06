@@ -20,6 +20,10 @@
 | 진행 기간 | 2026.10 - 진행 중 |
 | 주요 기술 | Unreal Engine 5, C++, Unreal Insights, PowerShell |
 
+![Dedicated Server 하나에 접속한 클라이언트 8개의 화면과 클라이언트별 복제 상태 표시](./images/ue-dedicated-server-optimization-lab/eight-clients.webp)
+
+*서버 하나에 접속한 클라이언트 8개의 화면입니다. 각 화면 위에는 그 클라이언트에 복제된 자원 노드, NPC, 건축물 수와 플레이어 위치를 표시합니다.*
+
 최적화가 없는 오픈월드 서버에서 시작해 Relevancy, Dormancy, Net Update Frequency 같은 엔진 기능을 한 번에 하나씩 적용합니다. 측정은 PC 한 대에서 서버 하나와 클라이언트 8개를 띄우고, 한 변이 2km인 맵에 자원 노드 5,001개, NPC 350명, 건축물 500개를 고정 시드로 배치한 같은 시나리오로 반복합니다. 30초를 버리고 60초를 측정하는 실행을 세 번 거쳐 중앙값으로 서버 프레임 시간과 대역폭을 비교하고, 단계마다 원리와 측정 근거를 글로 정리합니다.
 
 기법을 켜고 끄는 핵심 설정은 [자원 노드의 Relevancy, Dormancy와 갱신 빈도 설정](https://github.com/hon454/ue-dedicated-server-optimization-lab/blob/51816f637c4b8a99013e5c14591cd41cfdb85345/Source/DSOptLab/LabResourceNode.cpp#L19-L29)에서, 단계별 차이는 [단계별로 최적화해 보기](https://hon454.github.io/ue-dedicated-server-optimization-lab/)에서 볼 수 있습니다.

@@ -26,10 +26,10 @@ lang: ko
 
 ## 프로젝트와 담당 역할
 
-삼성의 #BeFearless 캠페인을 위해 클릭트가 외주로 제작한 고소공포증 훈련 VR 앱이다. 자연 풍경을 다룬 Landscapes와 도시 풍경을 다룬 Cityscapes 두 빌드로 구성했고, Gear VR과 Oculus Go를 지원해 Oculus Store에 두 앱을 등록했다.
+삼성의 #BeFearless 캠페인을 위해 클릭트가 외주로 제작한 고소공포증 훈련 VR 앱이다. 자연 풍경을 다룬 Landscapes와 도시 풍경을 다룬 Cityscapes 두 빌드로 구성했고, Gear VR과 제공받은 개발킷 기반의 Oculus Go에 대응해 Oculus Store에 두 앱을 등록했다.
 
 ## 담당 업무
 
 - 삼성 스마트워치 Gear S2와 연동해 심박수 데이터를 앱으로 전송
 - 다국어 지원 시스템 개발
-- Gear VR과 Oculus Go 대응 및 Oculus Store 등록 지원
+- Gear VR 대응, 제공받은 개발킷 기반 Oculus Go 대응과 Oculus Store 등록 지원

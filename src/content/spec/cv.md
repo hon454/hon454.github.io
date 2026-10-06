@@ -104,7 +104,7 @@ AI 애니메이션 제작 서비스 CineV의 3D 제작 도구 개발. Unreal Eng
 
 - **과제:** 기획과 QA가 검증할 개발 빌드 배포, 크래시 수집 체계와 엔진 버전 이전
 - **수행:**
-  - GitLab Runner 기반 빌드와 패키징, Shared DDC, Symbol Store와 Sentry 크래시 수집 구성
+  - GitLab CI 기반 빌드와 패키징, Shared DDC, Symbol Store와 Sentry 크래시 수집 구성
   - Unreal Engine 5.3에서 5.7로의 이전에서 API와 서드파티 플러그인 호환성 문제 해결
   - Shipping 빌드의 설정 삭제 원인을 추적해 원본 설정을 보존하는 실행 런처 구현, Headless Commandlet과 Remote Control API로 편집과 렌더링 자동화
   - 팀에 JetBrains Rider 사용을 지속적으로 권장하고 AI 보조 개발 도구의 활용 방식 공유
@@ -137,7 +137,7 @@ Unreal Engine, C++
 
 Unreal Engine 4/5, C++, Windows Server, Unreal Insights, EOS, Steamworks, TeamCity
 
-- **개요:** 밤마다 몰려오는 좀비에 대비해 방어 시설을 짓고 생존하는 오픈월드 멀티플레이 게임. Windows Server 기반 Dedicated Server 지원
+- **개요:** 밤마다 몰려오는 좀비에 대비해 방어 시설을 짓고 생존하는 오픈월드 멀티플레이 게임. Windows Server 기반 Dedicated Server 지원, 프로그래머 3명을 포함한 약 10명 규모 팀
 - **담당 범위:** 전투, 장비, 좀비 AI와 멀티플레이 동기화, 런타임 최적화, 엔진 이전과 개발 인프라. 얼리 액세스 업데이트부터 2024년 5월 1.0 정식 출시까지 참여
 
 #### 멀티플레이 동기화 최적화
@@ -298,7 +298,7 @@ Unity, C#, OVR API, GoogleVR API
 
 - 삼성 #BeFearless 캠페인의 고소공포증 훈련 VR 앱 외주 개발, Landscapes와 Cityscapes 두 빌드 제작
 - Gear S2 스마트워치의 심박수 데이터 연동과 다국어 시스템 개발
-- Gear VR과 Oculus Go 대응, Oculus Store에 두 앱 등록
+- Gear VR 대응과 제공받은 개발킷 기반 Oculus Go 대응, Oculus Store 등록 지원
 
 [캠페인 영상과 개발 기록](/projects/be-fearless/)
 

@@ -1,7 +1,7 @@
 ---
 title: "엔진 Destructible 대신 조각 메시로 파괴 오브젝트 처리하기"
-published: 2026-10-08
-description: "Night of the Dead에서 UE4의 APEX Destruction과 UE5의 Chaos Destruction 대신, Blender에서 미리 나눈 조각 StaticMesh로 파괴 오브젝트를 처리한 구조를 엔진 방식과 비교하고, 렉이 줄어든 이유와 남은 제약을 정리한다."
+published: 2023-05-08
+description: "Night of the Dead에서 UE4의 APEX Destruction과 UE5의 Chaos Destruction 대신, Blender에서 미리 나눈 조각 StaticMesh로 파괴 오브젝트를 처리한 구조를 엔진 방식과 비교하고, 렉이 줄어든 이유를 정리한다."
 tags:
   - unreal-engine
   - cpp
@@ -15,7 +15,7 @@ lang: ko
 
 [Night of the Dead](/projects/night-of-the-dead/)의 월드에는 부술 수 있는 오브젝트가 많다. 나무와 덤불 같은 식생, 필드에 놓인 오브젝트, 던전의 구조물이 무기나 차량에 맞아 부서진다. 차량과 일부 아이템도 부서질 때 파편을 남긴다.
 
-UE4에서는 PhysX 기반의 APEX Destruction으로 이 오브젝트들을 처리했는데, 원인을 알 수 없는 에러가 너무 많이 발생했다. 그래서 우리가 직접 제어할 수 있도록 필요한 기능만 최소한으로 구현한 파괴 시스템으로 바꿨고, 실제로 렉도 많이 사라졌다. 당시 정식으로 측정한 수치는 남아 있지 않다.
+UE4에서는 PhysX 기반의 APEX Destruction으로 이 오브젝트들을 처리했는데, 원인을 알 수 없는 에러가 너무 많이 발생했다. 그래서 우리가 직접 제어할 수 있도록 필요한 기능만 최소한으로 구현한 파괴 시스템으로 바꿨고([개발 업데이트 #10](https://steamcommunity.com/games/1377380/announcements/detail/3711572693139781185)), 실제로 렉도 많이 사라졌다.
 
 이후 [개발 업데이트 #15](https://store.steampowered.com/news/app/1377380/view/3888357282609115394)에서 UE5로 이전하면서 물리 엔진이 PhysX에서 Chaos로 바뀌었다. UE5에는 PhysX와 함께 APEX Destruction도 빠졌고, 엔진의 파괴 기능은 Chaos Destruction이 맡는다. 하지만 당시 Chaos Destruction은 다루기 어려웠고 성능 문제도 있었다. 그래서 Chaos Destruction으로 옮기지 않고 UE4에서 만든 시스템을 그대로 가져갔다. 이 시스템의 조각은 일반 `UStaticMeshComponent`이고 코드가 APEX나 PhysX API를 직접 호출하지 않아서, 물리 엔진이 바뀌어도 파괴 로직을 다시 짤 필요가 없었다.
 
@@ -38,7 +38,9 @@ Chaos Destruction의 경우 Geometry Collection을 처음에 하나의 강체 �
 | 파괴 후 조각 | 자산과 컴포넌트 설정에 따른다 | 일정 시간 뒤 조각 컴포넌트 삭제 |
 | 물리 엔진 교체 | 파괴 모듈 자체가 바뀐다 (APEX에서 Chaos로) | 조각 코드는 그대로 |
 
-엔진 방식은 분할과 분리 판단을 엔진에 맡기는 대신, 문제가 생기면 원인이 엔진 모듈 안에 있을 수 있다. 커스텀 시스템은 할 수 있는 일이 적지만 조각이 생기고 움직이고 사라지는 시점을 모두 게임 코드에서 정한다.
+엔진 방식은 분할과 분리 판단을 엔진에 맡기는 대신, 문제가 생기면 원인이 엔진 모듈 안에 있을 수 있다. 커스텀 시스템은 필요한 기능만 두고, 조각이 생기고 움직이고 사라지는 시점을 모두 게임 코드에서 정한다.
+
+![엔진 Destructible과 커스텀 시스템을 파괴 전, 파괴 순간, 파괴 후 단계로 나눠 비교한 도식](./images/notd-custom-destructible/engine-vs-custom-lifecycle.svg)
 
 ## 조각 데이터
 
@@ -117,6 +119,8 @@ void UFragmentDestructionComponent::DestructAll()
 
 서버가 피해를 받으면 맞은 위치와 법선, 피해량을 멀티캐스트한다. 각 머신은 그 위치에서 `ECC_Destructible` 채널로 구 트레이스를 한 번 하고, 걸린 조각 중 이 오브젝트의 조각에만 피해를 나눈다.
 
+![맞은 지점을 중심으로 구 트레이스 범위 안의 조각에만 거리에 따라 줄어드는 피해가 들어가고, 체력이 0이 된 조각만 떨어져 나가는 부분 파괴 도식](./images/notd-custom-destructible/partial-destruction.svg)
+
 ```cpp
 void UFragmentDestructionComponent::DestructPartially(const FVector& HitPoint, const FVector& HitNormal, float Damage)
 {
@@ -179,19 +183,17 @@ float ACosmeticDebrisActor::GetLifeSpanFor(const FOptimizeStatus& Status, float 
 
 ## 렉이 줄어든 이유
 
-바꾼 뒤 렉이 많이 사라진 것은 직접 확인했지만, 어떤 요인이 얼마나 기여했는지 측정한 자료는 없다. 아래는 구조로 보았을 때의 추론이다.
-
 ### 부서지지 않은 오브젝트가 가볍다
 
 월드의 파괴 오브젝트는 대부분 부서지지 않은 상태로 놓여 있다. 커스텀 시스템에서 이 상태의 오브젝트는 `UStaticMeshComponent` 하나다. 완전 파괴만 쓰는 오브젝트는 조각 컴포넌트도, 조각의 물리 바디도 아직 없다.
 
-엔진 Destructible은 파괴 전부터 조각 구조를 가진 전용 컴포넌트로 배치된다. UE4의 `UDestructibleComponent`는 `USkinnedMeshComponent`를 상속해 조각을 본처럼 그린다. 같은 오브젝트를 일반 스태틱 메시로 그리는 쪽이 렌더링 비용이 낮았을 것으로 보이고, 오브젝트 수가 많을수록 이 차이가 커졌을 것이다.
+엔진 Destructible은 파괴 전부터 조각 구조를 가진 전용 컴포넌트로 배치된다. UE4의 `UDestructibleComponent`는 `USkinnedMeshComponent`를 상속해 조각을 본처럼 그린다. 같은 오브젝트라도 스킨드 메시보다 일반 스태틱 메시로 그리는 쪽이 렌더링 비용이 낮고, 오브젝트 수가 많을수록 이 차이가 커진다.
 
 ### 조각 비용이 상한을 가진다
 
 완전 파괴의 조각은 부서진 오브젝트에만 생기고 기본 10초 뒤 삭제된다. 그래서 동시에 시뮬레이션되는 조각 수는 대체로 최근에 부서진 오브젝트 수에 묶인다. 조각이 삭제된 뒤 오브젝트를 받은 클라이언트는 조각을 만들지 않는다.
 
-조각이 캐릭터와 충돌하지 않고 필요하면 조각끼리도 충돌하지 않으므로, 조각이 늘어도 접촉 계산이 같은 비율로 늘지 않았을 것으로 보인다.
+조각이 캐릭터와 충돌하지 않고 필요하면 조각끼리도 충돌하지 않으므로, 조각이 늘어도 접촉 계산이 그만큼 늘지 않는다.
 
 ### 분리 판단이 단순하다
 
@@ -200,13 +202,6 @@ float ACosmeticDebrisActor::GetLifeSpanFor(const FOptimizeStatus& Status, float 
 ### 부하가 큰 상황에서는 연출을 생략한다
 
 서버는 연출 전용 파편을 만들지 않는다. 클라이언트도 저사양 설정이나 프레임이 떨어진 상황, 큰 웨이브에서는 파편을 만들지 않는다. 파괴 순간에는 조각 메시가 이미 로드되어 있어 로딩으로 인한 정지도 피한다.
-
-## 남은 제약
-
-- 조각 모양은 Blender에서 자른 그대로다. 맞은 위치에 따라 새로 쪼개지지 않는다.
-- 조각 사이에 구조적 연결이 없다. 부분 파괴에서 아래 조각이 떨어져도 체력이 남은 위 조각은 제자리에 고정되어 있다.
-- 조각은 복제되지 않으므로 떨어진 조각의 위치는 클라이언트마다 다를 수 있다.
-- 오브젝트마다 조각 메시 세트를 따로 만들어 관리해야 한다.
 
 ## 참고 자료
 

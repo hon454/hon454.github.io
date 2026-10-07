@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 720" width="800" height="720" role="img" lang="ko" aria-labelledby="t d">
+<title id="t">엔진 Destructible과 커스텀 시스템의 파괴 단계 비교</title>
+<desc id="d">파괴 전, 파괴 순간, 파괴 후의 세 단계에서 엔진 Destructible은 전용 컴포넌트와 파괴 모듈이 조각을 관리하고, 커스텀 시스템은 StaticMeshComponent 하나로 있다가 체력이 0이 되면 조각 컴포넌트를 만들고 기본 10초 뒤 삭제한다.</desc>
+<defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
+<style>
+text{font-family:Pretendard,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;fill:#1f2937}
+.h{font-size:24px;font-weight:700;text-anchor:middle}
+.hs{font-size:16px;fill:#4b5563;text-anchor:middle}
+.stage{font-size:16px;font-weight:700;fill:#64748b}
+.ct{font-size:19px;font-weight:700;text-anchor:middle}
+.cl{font-size:16px;fill:#374151;text-anchor:middle}
+.mono{font-family:"JetBrains Mono",Consolas,"SFMono-Regular",monospace}
+</style>
+</defs>
+<rect width="800" height="720" fill="#f8fafc"/>
+<rect width="800" height="720" fill="url(#grid)"/>
+
+<rect x="40" y="28" width="340" height="78" rx="12" fill="#ffedd5" stroke="#ea580c" stroke-width="2.5"/>
+<text class="h" x="210" y="62">엔진 Destructible</text>
+<text class="hs" x="210" y="89">APEX Destruction, Chaos Destruction</text>
+<rect x="420" y="28" width="340" height="78" rx="12" fill="#dcfce7" stroke="#059669" stroke-width="2.5"/>
+<text class="h" x="590" y="62">커스텀 시스템</text>
+<text class="hs" x="590" y="89">조각 StaticMesh, 완전 파괴 기준</text>
+
+<rect x="24" y="126" width="752" height="170" rx="14" fill="#ffffff" fill-opacity="0.6" stroke="#e2e8f0"/>
+<text class="stage" x="40" y="152">파괴 전</text>
+<rect x="40" y="166" width="340" height="114" rx="10" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+<text class="ct" x="210" y="198">전용 컴포넌트로 배치</text>
+<text class="cl" x="210" y="230">조각 구조를 가진 파괴 전용 자산</text>
+<text class="cl" x="210" y="256">물리 엔진의 파괴 모듈이 관리</text>
+<rect x="420" y="166" width="340" height="114" rx="10" fill="#f0fdf4" stroke="#6ee7b7" stroke-width="1.5"/>
+<text class="ct mono" x="590" y="198" style="font-size:18px">UStaticMeshComponent 하나</text>
+<text class="cl" x="590" y="230">조각 컴포넌트와 물리 바디 없음</text>
+<text class="cl" x="590" y="256">조각 메시는 미리 비동기 로드</text>
+
+<line x1="210" y1="282" x2="210" y2="352" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="590" y1="282" x2="590" y2="352" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+
+<rect x="24" y="316" width="752" height="194" rx="14" fill="#ffffff" fill-opacity="0.6" stroke="#e2e8f0"/>
+<text class="stage" x="40" y="342">파괴 순간</text>
+<rect x="40" y="356" width="340" height="138" rx="10" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+<text class="ct" x="210" y="390">파괴 모듈이 분리 판단</text>
+<text class="cl" x="210" y="424">피해나 충격량이 한계를 넘으면</text>
+<text class="cl" x="210" y="450">연결이 끊기고 조각이 분리</text>
+<rect x="420" y="356" width="340" height="138" rx="10" fill="#f0fdf4" stroke="#6ee7b7" stroke-width="1.5"/>
+<text class="ct" x="590" y="390">게임 코드가 분리 판단</text>
+<text class="cl" x="590" y="422">체력이 0이 되면</text>
+<text class="cl" x="590" y="448">조각 컴포넌트 생성, 원본 숨김</text>
+<text class="cl" x="590" y="474">방사형 충격으로 시뮬레이션 시작</text>
+
+<line x1="210" y1="496" x2="210" y2="566" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="590" y1="496" x2="590" y2="566" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+
+<rect x="24" y="530" width="752" height="170" rx="14" fill="#ffffff" fill-opacity="0.6" stroke="#e2e8f0"/>
+<text class="stage" x="40" y="556">파괴 후</text>
+<rect x="40" y="570" width="340" height="114" rx="10" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+<text class="ct" x="210" y="602">조각은 파괴 모듈이 관리</text>
+<text class="cl" x="210" y="634">남는 시간과 정리는</text>
+<text class="cl" x="210" y="660">자산과 컴포넌트 설정을 따른다</text>
+<rect x="420" y="570" width="340" height="114" rx="10" fill="#f0fdf4" stroke="#6ee7b7" stroke-width="1.5"/>
+<text class="ct" x="590" y="602">기본 10초 뒤 조각 삭제</text>
+<text class="cl" x="590" y="634">그 뒤에 오브젝트를 받는</text>
+<text class="cl" x="590" y="660">클라이언트는 조각을 만들지 않음</text>
+</svg>

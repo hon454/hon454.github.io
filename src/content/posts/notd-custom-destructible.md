@@ -3,6 +3,7 @@ title: "엔진 Destructible 대신 조각 메시로 파괴 오브젝트 처리�
 published: 2023-05-08
 updated: 2023-11-28
 description: "Night of the Dead에서 UE4의 APEX Destruction과 UE5의 Chaos Destruction 대신, Blender에서 미리 나눈 조각 StaticMesh로 파괴 오브젝트를 처리한 구조를 엔진 방식과 비교하고, 파괴할 때의 프레임 저하가 줄어든 이유를 정리한다."
+image: ./images/notd-custom-destructible/notd-custom-destructible-cover.webp
 tags:
   - unreal-engine
   - cpp

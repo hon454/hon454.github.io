@@ -157,7 +157,26 @@ const documents = [
 		}
 
 		.career-document :global(.service-awards) {
-			grid-template-columns: minmax(0, 1fr);
+			gap: 0.5rem;
+		}
+	}
+
+	@media print {
+		@page {
+			size: A4;
+			margin: 15mm;
+		}
+
+		:global(body:has(.career-document) :is(#top-row, #category-bar-wrapper, #mobile-bottom-sidebar, #sidebar-toc, .floating-controls-container, .site-footer)) {
+			display: none !important;
+		}
+
+		.career-document :global(:is(h2, h3, h4)) {
+			break-after: avoid;
+		}
+
+		.career-document :global(:is(table, blockquote, figure, li)) {
+			break-inside: avoid;
 		}
 	}
 

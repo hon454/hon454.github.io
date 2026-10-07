@@ -6,7 +6,7 @@
 - **VR 장치 연동:** [CircleVR](#circlevr)의 좌표계 보정과 다중 사용자 전시, [Space Walker](#space-walker)의 실시간 모션 연동
 - **개발 도구와 오픈소스:** [Grimoire](#grimoire)의 AI 에이전트 작업 흐름, [IDE 플러그인](#copy-selection-context)과 [브라우저 확장](#github-pulls-show-reviewers) 배포, [Firefly](#firefly)와 [bevy_vrm1](#bevy_vrm1) 기여
 
-[이력서](/resume/) / [경력기술서](/cv/) / [전체 프로젝트](/projects/)
+[hon454@gmail.com](mailto:hon454@gmail.com) / [이력서](/resume/) / [경력기술서](/cv/) / [전체 프로젝트](/projects/)
 
 ## 기술 검증 프로젝트
 
@@ -24,7 +24,7 @@
 
 *서버 하나에 접속한 클라이언트 8개의 화면입니다. 각 화면 위에는 그 클라이언트에 복제된 자원 노드, NPC, 건축물 수와 플레이어 위치를 표시합니다.*
 
-최적화가 없는 오픈월드 서버에서 시작해 Relevancy, Dormancy, Net Update Frequency 같은 엔진 기능을 한 번에 하나씩 적용합니다. 측정은 PC 한 대에서 서버 하나와 클라이언트 8개를 띄우고, 한 변이 2km인 맵에 자원 노드 5,001개, NPC 350명, 건축물 500개를 고정 시드로 배치한 같은 시나리오로 반복합니다. 30초를 버리고 60초를 측정하는 실행을 세 번 거쳐 중앙값으로 서버 프레임 시간과 대역폭을 비교하고, 단계마다 원리와 측정 근거를 글로 정리합니다.
+최적화가 없는 오픈월드 서버에서 시작해 Relevancy, Dormancy, Net Update Frequency 같은 엔진 기능을 한 번에 하나씩 적용합니다. 측정은 PC 한 대에서 서버 하나와 클라이언트 8개를 띄우고, 한 변이 2km인 맵에 자원 노드 5,001개, NPC 350명, 건축물 500개를 고정 시드로 배치한 같은 시나리오로 측정을 반복합니다. 실행마다 처음 30초를 제외하고 60초를 측정하며, 세 번 실행한 중앙값으로 서버 프레임 시간과 대역폭을 비교합니다. 단계마다 원리와 측정 근거를 글로 정리합니다.
 
 기법을 켜고 끄는 핵심 설정은 [자원 노드의 Relevancy, Dormancy와 갱신 빈도 설정](https://github.com/hon454/ue-dedicated-server-optimization-lab/blob/51816f637c4b8a99013e5c14591cd41cfdb85345/Source/DSOptLab/LabResourceNode.cpp#L19-L29)에서, 단계별 차이는 [단계별로 최적화해 보기](https://hon454.github.io/ue-dedicated-server-optimization-lab/)에서 볼 수 있습니다.
 
@@ -46,15 +46,15 @@
 | 참여 기간 | 2026.04 - 2026.08 |
 | 주요 기술 | Rust, Bevy, WebAssembly, WebGPU, React, TypeScript, Tauri |
 
-![Shotloom 편집기에서 0프레임과 60프레임 사이의 카메라를 30프레임에서 평가한 화면](../projects/images/shotloom/local-09-camera-keyframe-midpoint.png)
+![Shotloom 편집기에서 0프레임과 60프레임 사이의 카메라를 30프레임에서 평가한 화면](../projects/images/shotloom/local-09-camera-keyframe-midpoint.webp)
 
 *0프레임과 60프레임에 카메라 키를 두고 30프레임에서 평가한 편집기 화면입니다. 타임라인에서 위치, 회전과 FOV 키를 속성별로 다룹니다. 카메라 키프레임의 편집부터 타임라인 평가와 저장 형식까지를 제가 구현했습니다.*
 
-- **편집 명령과 Undo/Redo:** React UI, Rust 문서 모델과 Bevy 런타임이 버전이 붙은 명령과 이벤트로 통신하도록 연결하고, 이 경로 위에 Undo/Redo와 저장, 복원을 구현했습니다.
-- **편집 트랜잭션과 롤백:** 드래그 시작부터 확정까지를 하나의 트랜잭션으로 기록하고, 명령이 거절되거나 외부 서비스가 실패하면 롤백해 UI와 런타임, 저장 상태를 일치시켰습니다.
+- **편집 명령과 Undo/Redo:** React UI, Rust 문서 모델과 Bevy 런타임을 잇는 브리지 계약에 트랜잭션 수명주기와 Undo/Redo 명령을 추가하고, 이 경로 위에 Undo/Redo와 저장, 복원을 구현했습니다.
+- **편집 트랜잭션과 롤백:** 드래그 시작부터 확정까지를 하나의 트랜잭션으로 기록하고, 명령이 거절되거나 시간이 초과되면 롤백해 UI와 런타임, 저장 상태를 일치시켰습니다.
 - **캐릭터와 카메라 저작:** 캐릭터 배치와 포즈 후보 적용, 속성별 카메라 키프레임을 편집 UI부터 타임라인 평가와 저장 형식까지 연결했습니다. 브라우저와 CLI가 같은 Rust 코어와 번들 형식을 사용하도록 구성했습니다.
 - **생성 서비스 통합:** 영상 제작 서비스 CineV의 샷을 편집 가능한 3D 장면으로 열고, 생성 영상의 마지막 프레임 이미지를 스토리보드로 돌려주도록 구현했습니다. 생성과 결과 저장을 분리해 저장에 실패하면 같은 결과를 다시 전송할 수 있게 했습니다.
-- **CI 캐시 개선:** Rust CI의 캐시를 target 아카이브에서 sccache로 바꿔 캐시 크기를 1.84GB에서 684MB로 약 63% 줄였습니다. warm CI에서 컴파일 374건이 모두 캐시에 적중했습니다.
+- **CI 캐시 개선:** Rust Engine CI의 캐시를 target 아카이브에서 sccache로 바꿔 캐시 크기를 약 1.8GB에서 684MB로 약 62% 줄였습니다. warm CI에서 컴파일 374건이 모두 캐시에 적중했습니다.
 
 [포즈와 카메라 편집 영상](/projects/shotloom/#editing-workflow) / [저장 구조와 복원 화면](/projects/shotloom/#edit-persistence) / [서비스 통합과 검증 범위](/projects/shotloom/#service-integration)
 
@@ -76,12 +76,12 @@
 
 *테이블에 프레임 값으로 따로 기입하던 모션 구간과 이벤트 시점을 애니메이션을 보며 편집하는 AnimComposite 화면입니다. 두 화면의 액션 데이터 구조를 제가 개발했습니다.*
 
-- **액션 데이터 작성 구조:** 문서와 대조하며 맞추던 액션 조건을 타입별 에셋 입력 구조로 바꾸고, 모션 구간과 이벤트 시점은 AnimComposite에서 편집하게 했습니다. 데이터 타입과 실행 경로, 변환기와 데이터 검증기를 개발했습니다. 제작자가 기억해 맞추던 조건 관계를 입력 구조와 검증기가 대신하게 됐습니다.
+- **액션 데이터 작성 구조:** 문서와 대조하며 맞추던 액션 조건을 타입별 에셋 입력 구조로 바꾸고, 모션 구간과 이벤트 시점은 AnimComposite에서 편집하게 했습니다. 데이터 타입과 실행 경로, 변환기를 개발하고 검증 프레임워크에 액션 데이터 검증기를 추가했습니다. 제작자가 기억해 맞추던 조건 관계를 입력 구조와 검증기가 대신하게 됐습니다.
 - **AI 결과의 실행과 편집:** AI의 행동 지시를 현재 장면에서 실행할 수 있는 액션으로 해석하고, 생성 모션을 선택해 타임라인에 적용하는 흐름을 구현했습니다. 이 결과도 일반 편집 데이터와 같은 Undo/Redo와 저장, 복원 경로를 거치게 했습니다.
 - **편집 UI 상태 관리:** UI Controller와 편집 State로 화면, 선택과 입력 처리를 나누고 Blackboard로 공유 상태를 전달했습니다. 새 편집 기능을 State 단위로 추가하는 구조를 만들고 공통 UI 컴포넌트를 개발했습니다.
-- **Shot 상태 모델:** Shot 모델 전환에서 상태 저장과 조회, 프레임 문맥과 재계산을 맡고 기존 저장 데이터를 새 모델로 이관했습니다.
+- **Shot 상태 모델:** 샷 초기 상태를 관리하는 Shot 모델과 ShotManager를 만들고, 상태 저장과 조회, 프레임 문맥과 재계산, 기존 저장 데이터 이관을 구현했습니다.
 - **Root Motion과 카메라:** Root Motion 키를 타임라인 조건에 맞춰 다시 계산하고, 카메라 orbit의 반경 손실과 수직 회전 뒤집힘을 해결했습니다.
-- **빌드 환경과 엔진 이전:** GitLab CI 기반 빌드와 패키징, Shared DDC, Sentry 크래시 수집을 구성했습니다. Unreal Engine 5.3에서 5.7로 이전하면서 API와 서드파티 플러그인의 호환성 문제를 해결했습니다.
+- **빌드 환경과 엔진 이전:** GitLab CI 기반 빌드와 패키징, Shared DDC를 구성하고 Sentry 크래시 수집을 고도화했습니다. Unreal Engine 5.7 이전에서는 엔진 API 변경에 따른 코드 이전을 맡았습니다.
 
 [액션 입력 화면과 실행 구조](/projects/cinev-studio/#data-authoring) / [UI 상태 관리와 도식](/projects/cinev-studio/#ui-state) / [제품 화면과 실제 제작 사례](/projects/cinev-studio/#product-showcase)
 
@@ -104,13 +104,13 @@
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/VVwmqfkluGw" title="Night of The Dead v1.0 Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-- **Dedicated Server 동기화:** Unreal Insights 분석을 바탕으로 Replication Graph가 거리와 소유 관계에 따라 연결별 복제 대상을 고르게 했습니다. 인벤토리처럼 크고 자주 바뀌는 배열은 Fast TArray Replication과 커스텀 NetSerialize로 변경분만 전송했습니다.
-- **다수 좀비의 실행 비용:** Animation Budget Allocator, Significance Manager와 AnimURO로 중요도와 예산에 따라 애니메이션 갱신 빈도를 조절하고, ACL로 애니메이션 데이터를 압축했습니다.
+- **Dedicated Server 동기화:** Unreal Insights 분석을 바탕으로 Replication Graph가 거리와 소유 관계에 따라 연결별 복제 대상을 고르게 했습니다. 상태가 드물게 바뀌는 액터는 Net Dormancy로 휴면시키고, 데이터 테이블 기반 구조체는 ID와 수량만 보내 전송 데이터를 줄였습니다.
+- **다수 좀비의 실행 비용:** 거리 LOD에 거리 순위를 더해 고품질 대상 수를 고정하고, 이 기준으로 이동 시뮬레이션과 동기화 전송률을 조절했습니다. Significance Manager로 계산한 중요도를 Animation Budget Allocator에 전달해 예산 안에서 애니메이션 갱신 빈도를 조절하고, ACL로 애니메이션 데이터를 압축했습니다.
 - **게임플레이 구현:** 전투, 장비의 티어와 내구도, 파츠 개조, 보스 및 일반 좀비 AI를 구현했습니다.
 - **엔진 이전과 파괴 연출:** UE4에서 UE5로의 이전을 주도했습니다. 물리 엔진이 PhysX에서 Chaos로 바뀌며 Chaos Destructible로는 다수 오브젝트의 파괴 연출을 감당하기 어려워 커스텀 Destructible 시스템을 구현했습니다.
 - **개발 인프라:** JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드, 패키징 자동화를 운영했습니다.
 
-[장비와 전투 업데이트](/projects/night-of-the-dead/#equipment-update) / [멀티플레이 동기화](/projects/night-of-the-dead/#network-sync) / [멀티플레이 최적화 시리즈](/posts/notd-multiplayer-optimization-overview/) / [Steam 출시 페이지](https://store.steampowered.com/app/1377380/Night_of_the_Dead/)
+[장비와 전투 업데이트](/projects/night-of-the-dead/#equipment-update) / [멀티플레이 동기화](/projects/night-of-the-dead/#network-sync) / [멀티플레이 최적화 시리즈](/posts/notd-multiplayer-optimization-overview/) / [다수 좀비 최적화](/posts/notd-zombie-horde-cost/) / [Steam 출시 페이지](https://store.steampowered.com/app/1377380/Night_of_the_Dead/)
 
 ### 삐요 스튜디오
 
@@ -145,7 +145,7 @@
 | 항목 | 내용 |
 | --- | --- |
 | 소속 기간 | 2019.06 - 2020.04 |
-| 참여 형태 | 비고용 팀 활동 |
+| 참여 형태 | 비고용 팀 활동, 군 복무와 일부 병행 |
 | 담당 직무 | 기획 및 클라이언트 프로그래머 |
 
 #### Vapor World
@@ -171,6 +171,12 @@
 | 소속 기간 | 2018.03 - 2019.10 |
 | 참여 형태 | 군 복무 |
 | 담당 직무 | SW개발병 |
+
+#### 프로그램 개발과 시스템 운영
+
+| 항목 | 내용 |
+| --- | --- |
+| 참여 기간 | 2018.03 - 2019.10 |
 | 주요 기술 | C#, WPF, VBA |
 
 <div class="service-awards">
@@ -285,7 +291,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 - **[Mermaid 렌더러 이전](https://github.com/CuteLeaf/Firefly/pull/584):** Mermaid 렌더링을 Node.js 기반 최신 버전으로 이전하며 기존 테마의 출력 형태를 유지했습니다.
 - **[카테고리 바 휠 스크롤](https://github.com/CuteLeaf/Firefly/pull/613):** 누적 이동 손실과 입력 지연을 제거하고, 가로 트랙패드 제스처를 보존하면서 목록 경계에서는 페이지 스크롤이 이어지도록 개선했습니다.
 - **[레이아웃 슬롯 수정](https://github.com/CuteLeaf/Firefly/pull/587):** 페이지별 `<head>` 콘텐츠가 최상위 레이아웃으로 전달되지 않던 Astro 슬롯 구조를 수정했습니다.
-- **[한국어 문서 작성](https://github.com/CuteLeaf/Firefly/pull/583):** 설치와 구성, 배포와 Markdown 확장 기능을 다룬 한국어 문서를 작성했습니다.
+- **[한국어 README 작성](https://github.com/CuteLeaf/Firefly/pull/583):** 설치와 구성, 배포와 Markdown 확장 기능을 다룬 한국어 README를 작성했습니다.
 
 #### [bevy_vrm1](https://github.com/not-elm/bevy_vrm1)
 
@@ -295,8 +301,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 | 주요 기술 | Rust, Bevy, WGSL, WebGPU |
 
 - **재현과 원인 격리:** Shotloom 브라우저 편집기에서 MToon VRM을 표시한 직후 화면이 검게 변하는 문제를 Chrome WebGPU에서 재현했습니다. Metal 네이티브에서는 나타나지 않는 문제였고, 조명 단계별로 비교해 원인을 emissive 처리로 좁혔습니다.
-- **[셰이더 플래그 수정](https://github.com/not-elm/bevy_vrm1/pull/57):** MToon의 `EMISSIVE_TEXTURE` 비트가 Standard Material 플래그와 충돌해 바인딩되지 않은 텍스처를 샘플링하고, 그 NaN이 톤매핑과 Bloom으로 퍼지는 것을 확인했습니다. WGSL이 MToon uniform의 플래그를 읽도록 수정했습니다.
-- **편집기 반영:** 라이브러리에 기여한 수정을 Shotloom 편집기에 반영했습니다.
+- **[셰이더 플래그 수정](https://github.com/not-elm/bevy_vrm1/pull/57):** MToon 셰이더가 `EMISSIVE_TEXTURE` 비트를 MToon uniform이 아닌 Standard Material 플래그 필드에서 읽어, WebGPU에서 바인딩되지 않은 텍스처를 샘플링하고 그 NaN이 톤매핑과 Bloom으로 퍼지는 것을 확인했습니다. 플래그를 MToon uniform에서 읽도록 수정했습니다.
 
 ## 함께 일한 동료들의 추천
 

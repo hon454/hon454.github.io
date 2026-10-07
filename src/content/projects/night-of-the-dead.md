@@ -118,7 +118,7 @@ Night of the Dead는 밤마다 몰려오는 좀비에 대비해 방어 시설을
 - 전투 판정 개편
 - 서버 세션 리스트 개편
 - 좀비 최적화
-- 네트워크 최적화 (Replication Graph, 커스텀 NetSerialize, Fast TArray Replication 적용)
+- 네트워크 최적화 (Replication Graph, Net Dormancy, 커스텀 NetSerialize, RPC 스트리밍 적용)
 - Destructible Mesh 시스템 재구성
 - 네비게이션 인보커 최적화
 - 에셋 사전 로딩 시스템 구현
@@ -198,13 +198,13 @@ Night of the Dead는 밤마다 몰려오는 좀비에 대비해 방어 시설을
 
 ### 멀티플레이 동기화
 
-Windows Server 기반 Dedicated Server를 Unreal Insights로 분석하며 복제 대상 선정, 배열 변경분 전송과 직렬화를 최적화했다. 공간상 가까운 액터 외에도 소유 관계에 따라 전달해야 하는 상태가 있어 복제 조건을 나눴다.
+Windows Server 기반 Dedicated Server를 Unreal Insights로 분석하며 복제 대상 선정, 전송 데이터와 전송 경로를 나눠 최적화했다. 공간상 가까운 액터 외에도 소유 관계에 따라 전달해야 하는 상태가 있어 복제 조건을 나눴다.
 
-Replication Graph에서 공간과 거리로 연결별 후보를 수집하고, 오너와 팀, 그룹에 종속된 액터는 해당 연결에 거리와 무관하게 포함했다. 장착 장비, 탑승 대상과 무기 부속품은 부모 액터가 복제될 때 함께 검토하도록 구성했다. 전역 매니저는 Always Relevant 노드에, 휴면 액터는 별도 노드에 두어 상태에 맞게 처리했다.
+Replication Graph에서 공간과 거리로 연결별 후보를 수집하고, 오너와 팀, 그룹에 종속된 액터는 해당 연결에 거리와 무관하게 포함했다. 장착 장비와 무기 부속품, 고용한 NPC, 탑승물과 그 위의 건물은 Dependent Actor로 묶어 부모 액터가 복제될 때 함께 검토하도록 구성했다. 전역 매니저는 Always Relevant 노드에, 휴면 액터는 별도 노드에 두어 상태에 맞게 처리했다. 상태가 드물게 바뀌는 아이템, 문, 풀링 좀비는 Net Dormancy로 휴면시켰다. 구성 방식은 [멀티플레이 최적화 돌아보기의 복제 대상](/posts/notd-multiplayer-optimization-overview/#복제-대상)에 정리했다.
 
-플레이어 인벤토리, 버프와 디버프, 퀘스트 진행도는 배열이 크고 지속적으로 갱신되는 데이터였다. Fast TArray Replication으로 항목의 추가, 변경과 삭제를 델타 동기화하고, 커스텀 NetSerialize로 조건에 맞는 데이터 표현을 사용했다. 대상 선정과 변경분 전송을 구분해 반복 검사와 전송 비용을 줄였다.
+퀘스트, 마커, NPC 퀘스트처럼 데이터 테이블에서 온 값을 가진 구조체는 이름 대신 ID를 담은 복제용 구조체로 분리하고, 커스텀 NetSerialize로 필요한 필드만 직렬화했다. 클라이언트는 `OnRep`에서 테이블을 조회해 복원한다. 접속 시 보내는 레벨 스트리밍 상태는 패키지 경로를 `int16` 코드와 비트 플래그로 압축했다. 자세한 구조는 [오픈월드의 오브젝트를 액터 대신 데이터로 두기](/posts/notd-world-objects-as-data/)와 [접속 시 레벨 스트리밍 상태 RPC 줄이기](/posts/notd-level-streaming-status-rpc/)에 정리했다.
 
-서버와 클라이언트 간 대용량 데이터 전송을 위해 RPC 기반 데이터 스트리밍을 구현하고, Epic Online Services 세션을 멀티플레이 개설 및 접속 과정에 연결했다.
+퀘스트 진행도, 지도 마커, 지도 안개처럼 접속 시 한꺼번에 보내야 하는 데이터는 레코드 단위 RPC로 나눠 보내는 스트리밍을 구현했다([Reliable 버퍼 상태를 보고 대용량 데이터 나눠 보내기](/posts/notd-reliable-rpc-data-streaming/)). Epic Online Services 세션은 멀티플레이 개설 및 접속 과정에 연결했다.
 
 ### 물리와 파괴 오브젝트
 
@@ -212,7 +212,7 @@ UE4의 PhysX 기반 Destructible 오브젝트 시스템을 구현하고 최적�
 
 ### 애니메이션
 
-다수 좀비의 애니메이션 부하를 줄이기 위해 Animation Budget Allocator, Significance Manager와 AnimURO를 적용 대상별로 운용하고 ACL로 애니메이션 데이터를 압축했다. 캐릭터와 좀비 모션의 품질을 개선하는 과정에서 IK를 활용했다.
+다수 좀비의 애니메이션 부하를 줄이기 위해 Significance Manager로 계산한 중요도를 Animation Budget Allocator에 전달해 캐릭터의 애니메이션 갱신을 예산 안에서 조절하고, ACL로 애니메이션 데이터를 압축했다. 수족관 물고기와 캐릭터 전시물처럼 여럿 배치되는 장식 개체에는 평균 프레임률이 기준보다 낮을 때만 엔진의 Update Rate Optimization을 켜는 컴포넌트를 따로 만들어 붙였다. 좀비의 이동, 동기화와 길찾기 비용까지 포함한 전체 구조는 [다수 좀비의 서버 비용과 전송량 줄이기](/posts/notd-zombie-horde-cost/)에 정리했다. 캐릭터와 좀비 모션의 품질을 개선하는 과정에서 IK를 활용했다.
 
 ### 능력치와 전투 판정
 

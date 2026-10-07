@@ -186,7 +186,7 @@ void AZombie::UpdateAnimTickOption(float DeltaSeconds)
 
 ### 클라이언트: Significance와 애니메이션 예산
 
-클라이언트에서는 엔진의 Significance Manager에 좀비를 등록하고, 계산한 값을 Animation Budget Allocator용 메시 컴포넌트(`USkeletalMeshComponentBudgeted`)에 넘겼다. 예산 할당기는 이 값이 높은 메시부터 애니메이션 평가를 배정하고 예산이 부족하면 낮은 쪽의 갱신 빈도를 줄인다.
+클라이언트에서는 엔진의 Significance Manager에 좀비를 등록하고, 계산한 값을 Animation Budget Allocator용 메시 컴포넌트(`USkeletalMeshComponentBudgeted`)에 넘겼다. Animation Budget Allocator는 이 값이 높은 메시부터 애니메이션 평가를 배정하고 예산이 부족하면 낮은 쪽의 갱신 빈도를 줄인다.
 
 좀비의 Significance는 거리 구간을 따로 두지 않고 위의 LOD를 재사용해 계산한다.
 
@@ -226,7 +226,7 @@ float AZombie::CalcSignificance(const FTransform& ViewTransform) const
 
 Update Rate Optimization은 별도 컴포넌트로 감쌌다. 약 1초 간격의 타이머로 조건을 다시 평가하며 평균 프레임률이 기준보다 높으면 URO를 끈다. 프레임에 여유가 있을 때는 품질을 낮출 이유가 없기 때문이다. 탑승이나 특수 연출처럼 애니메이션을 덮어쓰는 동안에도 끈다.
 
-Animation Budget Allocator에 등록한 메시는 엔진이 URO를 비활성화한다. 두 기법은 적용 대상에 따라 구분해야 한다. 프로젝트의 URO 컴포넌트는 소유 액터의 스킨드 메시 전체를 대상으로 설정하며 예산 할당기에 등록된 메시를 제외하는 검사는 없다. 실제 Blueprint의 부착 대상은 이번에 확인한 C++ 코드에 없으므로, URO의 적용 범위는 별도로 확인해야 한다.
+Animation Budget Allocator에 등록한 메시는 엔진이 URO를 비활성화한다. 두 기법은 적용 대상에 따라 구분해야 한다. 프로젝트의 URO 컴포넌트는 소유 액터의 스킨드 메시 전체를 대상으로 설정하며 Animation Budget Allocator에 등록된 메시를 제외하는 검사는 없다. 대신 이 컴포넌트는 수족관 물고기와 캐릭터 전시물처럼 여럿 배치되는 장식 개체에만 붙였고, 좀비는 Animation Budget Allocator만 사용해 두 기법이 같은 메시에 겹치지 않았다.
 
 ## 길찾기 비용
 
@@ -258,6 +258,46 @@ Animation Budget Allocator에 등록한 메시는 엔진이 URO를 비활성화�
 - 같은 EQS 질의의 결과이며, 결과를 가진 좀비가 설정한 거리 안에 있다.
 - 거대 좀비 여부와 공격 방식(근접, 원거리)이 같다.
 - 질의의 옵션에 따라 같은 주 대상·대체 대상을 요구하거나, 같은 대상을 향하는 방향과 앞뒤 위치를 확인한다.
+
+```cpp
+bool UZombieQueryCache::TryReuse(const AZombie* Self, const UEnvQuery* Query, const FQueryReuseParams& Params, FQueryResult& OutResult)
+{
+	const float MaxDistSq = FMath::Square(Params.bWideRange ? WideRange : NarrowRange);
+
+	for (const AZombie* Other : Zombies)
+	{
+		if (Other == Self || Other->IsGiant() != Self->IsGiant() || Other->IsMelee() != Self->IsMelee())
+		{
+			continue;
+		}
+
+		// 질의 옵션에 따라 같은 대상을 요구하거나, 같은 대상을 비슷한 방향에서 뒤따르는지 확인한다.
+		if (Params.bRequireSameTarget && (Self->GetTarget() == nullptr || Self->GetTarget() != Other->GetTarget()))
+		{
+			continue;
+		}
+		if (Params.bRequireSimilarApproach && IsFollowingFromBehind(Self, Other) == false)
+		{
+			continue;
+		}
+
+		if (Self->GetSquaredDistanceTo(Other) >= MaxDistSq)
+		{
+			continue;
+		}
+
+		if (const FQueryResult* Cached = FindResult(Other, Query))
+		{
+			OutResult = *Cached;
+			RecordHit(Query);
+			return true;
+		}
+	}
+	return false;
+}
+```
+
+방향 조건에서는 두 좀비가 대상을 향하는 방향이 비슷하고, 질의하는 좀비가 결과를 가진 좀비보다 대상에서 더 멀 때만 재사용한다. 앞에서 먼저 질의한 좀비의 결과를 뒤따르는 좀비가 쓰는 구조다.
 
 캐시를 남긴 좀비가 없으면 결과를 지운다. 액터 결과는 대상이 없거나 공격 가능한 대상이 아니게 되면 지우고 위치 같은 비액터 결과에는 기본 30초의 수명을 둔다. 모든 결과를 30초 뒤에 지우는 것은 아니다.
 

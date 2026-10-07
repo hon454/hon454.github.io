@@ -1,4 +1,4 @@
-주요 경력과 핵심 역량, 대표 성과를 빠르게 살펴볼 수 있도록 정리한 이력서입니다. 경력과 기술 검증 프로젝트, 외부활동, 오픈소스, 수상, 학력과 자격까지 전체 이력을 이 문서에서 관리합니다.
+주요 경력과 핵심 역량, 대표 성과를 빠르게 살펴볼 수 있도록 정리한 이력서입니다. 경력과 기술 검증 프로젝트, 외부활동, 오픈소스, 수상, 학력과 자격을 한 문서에 정리했습니다.
 
 회사별 주요 업무의 과제와 판단, 성과는 [경력기술서](/cv/)에서 설명합니다. 대표 작업의 화면과 영상, 공개 코드와 기여 내용은 [포트폴리오](/portfolio/)에서 확인할 수 있습니다.
 
@@ -10,9 +10,9 @@
 
 ## 핵심 역량
 
-- **게임 개발:** Unreal Engine과 Unity에서 전투, 장비, AI 등 게임플레이를 구현했습니다. Replication Graph와 델타 동기화로 Dedicated Server 동기화를 최적화하고, 애니메이션 예산 관리와 압축으로 다수 개체의 실행 비용을 관리했습니다.
+- **게임 개발:** Unreal Engine과 Unity에서 전투, 장비, AI 등 게임플레이를 구현했습니다. Replication Graph, Net Dormancy와 커스텀 NetSerialize로 Dedicated Server 동기화를 최적화하고, 애니메이션 예산 관리와 압축으로 다수 개체의 실행 비용을 관리했습니다.
 - **3D 제작 도구:** Unreal Engine과 Rust, Bevy 환경에서 액션 데이터 구조, 타임라인과 카메라 편집, Undo/Redo, 저장과 복원을 설계하고 생성형 AI 서비스의 결과를 편집 가능한 장면으로 연결했습니다.
-- **개발 환경과 협업:** TeamCity와 GitLab CI 기반 빌드 자동화, Sentry 오류 추적, 코드 리뷰와 AI 에이전트 개발 체계를 구성해 운용하고, 반복 작업을 오픈소스 도구로 만들어 배포했습니다.
+- **개발 환경과 협업:** TeamCity와 GitLab CI 기반 빌드 자동화, Sentry 크래시 수집, 코드 리뷰와 AI 에이전트 개발 체계를 구성해 운용하고, 반복 작업을 오픈소스 도구로 만들어 배포했습니다.
 
 ## 경력
 
@@ -22,16 +22,16 @@
 
 **Shotloom (2026.04 - 2026.08)** / Rust, Bevy, WebAssembly, WebGPU, React, TypeScript, Tauri
 
-- Unreal Engine과 Pixel Streaming에 의존하던 제작 도구를 브라우저 우선의 3D 편집기로 전환하는 초기 개발에 참여했습니다. 팀이 선정한 기술 스택 위에서 캐릭터와 카메라 편집, 타임라인, 문서 모델을 구현했습니다.
+- Unreal Engine과 Pixel Streaming에 의존하던 제작 도구를 브라우저 우선의 3D 편집기로 전환하는 초기 개발에 참여했습니다. 캐릭터와 카메라 편집, 타임라인, 문서 모델을 구현했습니다.
 - 편집 명령, Undo/Redo, 저장과 복원을 하나의 트랜잭션 경로로 연결하고, 브라우저와 CLI가 같은 Rust 코어와 번들 형식을 공유하도록 구성했습니다.
-- CineV에서 장면을 열어 편집하고 생성 결과의 마지막 프레임 이미지를 스토리보드로 돌려주는 흐름을 개발했습니다.
-- Grimoire를 포함한 AI 에이전트 개발 환경을 운용하며 요구사항을 이슈, 명세와 테스트로 구조화했습니다. 이 기간 개인 변경 기준 주간 병합 빈도는 평균 16.1건이었고, CINEVStudio 기간 평균은 8.2건이었습니다.
+- AI 애니메이션 제작 서비스 CineV의 샷을 Shotloom에서 3D 장면으로 열고, 생성 영상의 마지막 프레임 이미지를 스토리보드로 돌려주는 흐름을 개발했습니다.
+- 개인 오픈소스 Grimoire를 포함한 AI 에이전트 개발 환경을 운용하며 요구사항을 이슈, 명세와 테스트로 구조화하고, 여러 계층을 바꾸는 기능은 의존 작업으로 나눠 구현과 독립 검토를 분리했습니다.
 
 **CINEVStudio (2024.06 - 2026.04)** / Unreal Engine 5, C++, UMG, Sequencer, ONNX
 
 - 액션 데이터 작성 구조와 AI 행동 해석, 생성 모션 연동을 담당했습니다. 제작자가 입력한 데이터를 캐릭터의 실행과 타임라인 편집으로 연결하고, 데이터 검증기로 정합성 검사를 자동화했습니다.
-- UI Controller와 편집 State, Blackboard로 편집 UI의 상태 관리를 재구성하고 공통 UI 컴포넌트를 개발했습니다. Shot 상태의 저장과 복원, Root Motion과 카메라 편집을 구현했습니다.
-- GitLab CI 기반 빌드와 패키징, Shared DDC, Sentry 크래시 수집 환경을 구성하고 Unreal Engine 5.3에서 5.7로의 이전을 진행했습니다.
+- UI Controller와 편집 State, Blackboard로 편집 UI의 상태 관리를 재구성하고 공통 UI 컴포넌트를 개발했습니다. Shot 상태 모델과 저장, 복원 구조를 만들고 Root Motion 재계산과 카메라 orbit 문제를 해결했습니다.
+- GitLab CI 기반 빌드와 패키징, Shared DDC를 구성하고 Sentry 크래시 수집을 고도화했습니다. Unreal Engine 5.7 이전에서는 엔진 API 변경에 따른 코드 이전을 맡았습니다.
 
 ### 팀스파르타 / 튜터
 
@@ -48,8 +48,10 @@
 **Night of the Dead** / Unreal Engine 4/5, C++, Unreal Insights, EOS, Steamworks, TeamCity
 
 - 전투와 장비, 보스 및 일반 좀비 AI, 월드 상호작용을 개발하고 2024년 5월 1.0 정식 출시까지 참여했습니다.
-- Windows Server 기반 Dedicated Server에서 Replication Graph, Fast TArray Replication과 커스텀 NetSerialize를 적용해 복제 대상과 전송 데이터를 최적화했습니다.
-- 다수 좀비의 애니메이션 업데이트와 압축을 개선하고, UE4에서 UE5로의 이전을 주도했습니다. JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드 자동화를 운영했습니다.
+- Windows Server 기반 Dedicated Server에서 Replication Graph와 Net Dormancy로 연결별 복제 대상을 고르고, ID 기반 복제용 구조체와 커스텀 NetSerialize로 전송 데이터를 줄였습니다.
+- 다수 좀비의 이동, 동기화, 애니메이션, 길찾기 비용을 거리 LOD와 순위 기준으로 조절하고, ACL로 애니메이션 데이터를 압축했습니다.
+- UE4에서 UE5로의 엔진 이전을 주도하고, Chaos Destructible 대신 커스텀 Destructible 시스템을 구현했습니다.
+- JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드 자동화를 운영했습니다.
 
 ### 삐요 스튜디오 / 클라이언트 프로그래머
 
@@ -58,7 +60,8 @@
 **길고양이 이야기 2** / Unity, C#, Steamworks, STOVE SDK
 
 - 세이브와 로드, 퀘스트, 대화, 이동, 컷신과 UI 등 주요 게임 시스템을 개발했습니다.
-- 컨트롤러 입력과 상점 SDK를 연동하고, 스토어 등록부터 다국어 빌드 준비, 출시 빌드 검수와 업로드까지 출시 작업을 전담해 2023년 STOVE Windows와 Steam Windows, macOS 출시를 진행했습니다. 프로젝트는 G-STAR 2023 Indie Awards의 Games for Impact를 수상했습니다.
+- 컨트롤러 입력, Steamworks 업적과 STOVE 구매 인증을 연동했습니다.
+- 스토어 등록부터 다국어 빌드 준비, 출시 빌드 검수와 업로드까지 출시 작업을 전담해 2023년 STOVE에서 Windows 얼리 액세스를, Steam에서 Windows와 macOS 정식 출시를 진행했습니다. 프로젝트는 G-STAR 2023 Indie Awards의 Games for Impact를 수상했습니다.
 
 ### 누라임게임즈 / 게임 개발자
 
@@ -68,9 +71,9 @@ Unity, C#과 GameSparks를 사용해 Brutal League의 캠페인 모드와 보상
 
 ### 이메진템페스트 스튜디오 / 기획 및 클라이언트 프로그래머
 
-2019.06 - 2020.04 / 비고용 팀 활동
+2019.06 - 2020.04 / 비고용 팀 활동, 군 복무와 일부 병행
 
-Vapor World의 스토리와 세계관, Unity 기반 입력과 이동, 전투 시스템을 개발했습니다. 참여 기간 중 프로젝트가 제11회 새로운 경기 게임오디션 공동 2위에 선정됐고, MWU Korea Awards 2019 PC & Console 분야 Top 3에 올랐습니다.
+Vapor World의 스토리와 세계관을 기획하고, Unity 기반 입력과 이동, 전투 시스템을 개발했습니다. 참여 기간 중 프로젝트가 제11회 새로운 경기 게임오디션 공동 2위에 선정됐고, MWU Korea Awards 2019 PC & Console 분야 Top 3에 올랐습니다.
 
 ### 육군 / SW개발병
 
@@ -82,11 +85,12 @@ Vapor World의 스토리와 세계관, Unity 기반 입력과 이동, 전투 시
 
 2016.07 - 2018.02 / 정규직
 
-**onAirVR, CircleVR, Space Walker, #BeFearless** / Unity, C#, 소켓 통신, HTC Vive Tracker, Gear VR
+**onAirVR, CircleVR, Space Walker, 학도병의 편지, #BeFearless** / Unity, C#, 소켓 통신, HTC Vive Tracker, Gear VR
 
-- onAirVR 스튜디오 클라이언트와 세션별 카메라 리그를 구현하고, HTC Vive 트래커 정보를 소켓 통신으로 수신하는 기능을 개발했습니다.
-- CircleVR의 장치 간 좌표계와 장착 오프셋을 보정하고, Space Walker의 전신 모션 연동과 GPU 파티클 기반 3D 배경 인터랙션을 구현했습니다.
-- 삼성 #BeFearless 캠페인용 고소공포증 훈련 VR 앱에서 Gear S2 심박수 연동과 다국어 시스템을 개발하고 Oculus Store 출시에 참여했습니다.
+- onAirVR 스튜디오 클라이언트와 세션별 카메라 리그를 구현하고, HTC Vive Tracker 정보를 소켓 통신으로 수신하는 기능을 개발했습니다.
+- CircleVR에서 여러 체험자의 장치 간 좌표계와 장착 오프셋을 보정했습니다.
+- Space Walker의 전신 모션 연동과 GPU 파티클 기반 3D 배경 인터랙션을 구현했습니다.
+- 삼성 #BeFearless 캠페인용 고소공포증 훈련 VR 앱에서 Gear S2 심박수 연동과 다국어 시스템을 개발하고, Oculus Store 등록을 맡았습니다.
 
 ### 웹젠 / 게임 디자이너
 
@@ -102,7 +106,7 @@ Vapor World의 스토리와 세계관, Unity 기반 입력과 이동, 전투 시
 
 ## 기술 검증 프로젝트
 
-- **[UE5 Dedicated Server 최적화 실험실](https://github.com/hon454/ue-dedicated-server-optimization-lab):** 2026.10 - 진행 중. 언리얼 엔진 5.8.3 Dedicated Server의 리플리케이션 비용을 Unreal Insights로 측정하고, 최적화 기법을 하나씩 적용해 전후를 비교합니다.
+- **[UE5 Dedicated Server 최적화 실험실](https://github.com/hon454/ue-dedicated-server-optimization-lab):** 2026.10 - 진행 중. Unreal Engine 5.8.3 Dedicated Server의 리플리케이션 비용을 Unreal Insights로 측정하고, 최적화 기법을 하나씩 적용해 전후를 비교합니다.
 
 ## 외부활동
 
@@ -115,7 +119,8 @@ Vapor World의 스토리와 세계관, Unity 기반 입력과 이동, 전투 시
 - **[Grimoire](https://github.com/hon454/grimoire):** AI 에이전트의 코드 리뷰, 리뷰 대응, 작업 인계와 Git 운영을 위한 Skill과 Plugin을 개발하고 유지보수합니다.
 - **[Copy Selection Context](/projects/copy-selection-context/):** 코드와 위치 정보를 함께 전달하는 JetBrains 플러그인을 개발해 Marketplace에 배포했습니다.
 - **[GitHub Pulls Show Reviewers](/projects/github-pulls-show-reviewers/):** PR 목록에 리뷰어와 상태를 표시하는 Chrome 확장 프로그램을 개발해 Chrome Web Store에 배포했습니다.
-- **외부 기여:** [Firefly](https://github.com/CuteLeaf/Firefly)의 GitHub 카드 빌드 캐시, Mermaid 렌더러 이전, 레이아웃 슬롯과 휠 스크롤을 개선하고 한국어 문서를 작성했습니다. [bevy_vrm1](https://github.com/not-elm/bevy_vrm1/pull/57)의 WebGPU 렌더링 오류를 수정했습니다.
+- **외부 기여:** [bevy_vrm1](https://github.com/not-elm/bevy_vrm1/pull/57)의 WebGPU 렌더링 오류를 수정했습니다.
+- **외부 기여:** [Firefly](/portfolio/#firefly)의 GitHub 카드 빌드 캐시, Mermaid 렌더러 이전, 레이아웃 슬롯과 휠 스크롤을 개선하고 한국어 README를 작성했습니다.
 
 ## 수상 및 선정
 
@@ -125,7 +130,7 @@ Vapor World의 스토리와 세계관, Unity 기반 입력과 이동, 전투 시
 - **MWU Korea Awards 2019 PC & Console 분야 Top 3** / Vapor World / 2019
 - **SW 및 회의 지원 우수상** / 제80정보통신운용대대장 / 2019.06
 - **을지태극훈련 지원 표창** / 제80정보통신체계지원대장 / 2019.06
-- **아주대학교 문화콘텐츠 창작 공모전 금상** / 新승람도 / 2014.06
+- **아주대학교 제7회 문화콘텐츠창작 콘테스트 금상** / 新승람도, 2인 공동 / 2014.11
 - **KBS 꿈의 기업 입사 프로젝트 스카우트 위메이드 게임기획자 최종 4인** / 2013.06
 - **네오위즈인터넷 음악 게임, 서비스 공모전 최종 6팀** / 2012.10
 

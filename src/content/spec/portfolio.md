@@ -107,7 +107,7 @@
 - **Dedicated Server 동기화:** Unreal Insights 분석을 바탕으로 Replication Graph가 거리와 소유 관계에 따라 연결별 복제 대상을 고르게 했습니다. 상태가 드물게 바뀌는 액터는 Net Dormancy로 휴면시키고, 데이터 테이블 기반 구조체는 ID와 수량만 보내 전송 데이터를 줄였습니다.
 - **다수 좀비의 실행 비용:** 거리 LOD에 거리 순위를 더해 고품질 대상 수를 고정하고, 이 기준으로 이동 시뮬레이션과 동기화 전송률을 조절했습니다. Significance Manager로 계산한 중요도를 Animation Budget Allocator에 전달해 예산 안에서 애니메이션 갱신 빈도를 조절하고, ACL로 애니메이션 데이터를 압축했습니다.
 - **게임플레이 구현:** 전투, 장비의 티어와 내구도, 파츠 개조, 보스 및 일반 좀비 AI를 구현했습니다.
-- **엔진 이전과 파괴 연출:** UE4에서 UE5로의 이전을 주도했습니다. UE4에서 원인을 알 수 없는 에러가 잦던 APEX Destruction을 직접 제어할 수 있는 커스텀 Destructible 시스템으로 교체해 렉을 줄였고, UE5 이전 때는 Chaos Destruction 대신 이 시스템을 유지했습니다.
+- **엔진 이전과 파괴 연출:** UE4에서 UE5로의 이전을 주도했습니다. UE4에서 원인을 알 수 없는 에러가 잦던 APEX Destruction을 직접 제어할 수 있는 커스텀 Destructible 시스템으로 교체해 파괴할 때의 프레임 저하를 줄였고, UE5 이전 때는 Chaos Destruction 대신 이 시스템을 유지했습니다.
 - **개발 인프라:** JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드, 패키징 자동화를 운영했습니다.
 
 [장비와 전투 업데이트](/projects/night-of-the-dead/#equipment-update) / [멀티플레이 동기화](/projects/night-of-the-dead/#network-sync) / [멀티플레이 최적화 시리즈](/posts/notd-multiplayer-optimization-overview/) / [다수 좀비 최적화](/posts/notd-zombie-horde-cost/) / [커스텀 Destructible](/posts/notd-custom-destructible/) / [Steam 출시 페이지](https://store.steampowered.com/app/1377380/Night_of_the_Dead/)

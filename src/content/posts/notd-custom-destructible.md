@@ -1,7 +1,8 @@
 ---
 title: "엔진 Destructible 대신 조각 메시로 파괴 오브젝트 처리하기"
 published: 2023-05-08
-description: "Night of the Dead에서 UE4의 APEX Destruction과 UE5의 Chaos Destruction 대신, Blender에서 미리 나눈 조각 StaticMesh로 파괴 오브젝트를 처리한 구조를 엔진 방식과 비교하고, 렉이 줄어든 이유를 정리한다."
+updated: 2023-11-28
+description: "Night of the Dead에서 UE4의 APEX Destruction과 UE5의 Chaos Destruction 대신, Blender에서 미리 나눈 조각 StaticMesh로 파괴 오브젝트를 처리한 구조를 엔진 방식과 비교하고, 파괴할 때의 프레임 저하가 줄어든 이유를 정리한다."
 tags:
   - unreal-engine
   - cpp
@@ -15,11 +16,11 @@ lang: ko
 
 [Night of the Dead](/projects/night-of-the-dead/)의 월드에는 부술 수 있는 오브젝트가 많다. 나무와 덤불 같은 식생, 필드에 놓인 오브젝트, 던전의 구조물이 무기나 차량에 맞아 부서진다. 차량과 일부 아이템도 부서질 때 파편을 남긴다.
 
-UE4에서는 PhysX 기반의 APEX Destruction으로 이 오브젝트들을 처리했는데, 원인을 알 수 없는 에러가 너무 많이 발생했다. 그래서 우리가 직접 제어할 수 있도록 필요한 기능만 최소한으로 구현한 파괴 시스템으로 바꿨고([개발 업데이트 #10](https://steamcommunity.com/games/1377380/announcements/detail/3711572693139781185)), 실제로 렉도 많이 사라졌다.
+UE4에서는 PhysX 기반의 APEX Destruction으로 이 오브젝트들을 처리했는데, 원인을 알 수 없는 에러가 너무 많이 발생했다. 그래서 우리가 직접 제어할 수 있도록 필요한 기능만 최소한으로 구현한 파괴 시스템으로 바꿨고([개발 업데이트 #10](https://steamcommunity.com/games/1377380/announcements/detail/3711572693139781185)), 실제로 파괴할 때의 프레임 저하도 많이 줄었다.
 
 이후 [개발 업데이트 #15](https://store.steampowered.com/news/app/1377380/view/3888357282609115394)에서 UE5로 이전하면서 물리 엔진이 PhysX에서 Chaos로 바뀌었다. UE5에는 PhysX와 함께 APEX Destruction도 빠졌고, 엔진의 파괴 기능은 Chaos Destruction이 맡는다. 하지만 당시 Chaos Destruction은 다루기 어려웠고 성능 문제도 있었다. 그래서 Chaos Destruction으로 옮기지 않고 UE4에서 만든 시스템을 그대로 가져갔다. 이 시스템의 조각은 일반 `UStaticMeshComponent`이고 코드가 APEX나 PhysX API를 직접 호출하지 않아서, 물리 엔진이 바뀌어도 파괴 로직을 다시 짤 필요가 없었다.
 
-이 글은 엔진 Destructible과 커스텀 시스템의 구조를 일반화해 비교하고, 렉이 줄어든 이유를 구조에서 짚어 본다.
+이 글은 엔진 Destructible과 커스텀 시스템의 구조를 일반화해 비교하고, 프레임 저하가 줄어든 이유를 구조에서 짚어 본다.
 
 ## 엔진 Destructible과 커스텀 시스템
 
@@ -181,7 +182,7 @@ float ACosmeticDebrisActor::GetLifeSpanFor(const FOptimizeStatus& Status, float 
 
 결과가 0이면 조각을 만들지 않고 파편 액터를 바로 제거한다. 그렇지 않으면 기본 10초의 수명을 두고 조각을 만든다.
 
-## 렉이 줄어든 이유
+## 프레임 저하가 줄어든 이유
 
 ### 부서지지 않은 오브젝트가 가볍다
 
@@ -193,7 +194,7 @@ float ACosmeticDebrisActor::GetLifeSpanFor(const FOptimizeStatus& Status, float 
 
 완전 파괴의 조각은 부서진 오브젝트에만 생기고 기본 10초 뒤 삭제된다. 그래서 동시에 시뮬레이션되는 조각 수는 대체로 최근에 부서진 오브젝트 수에 묶인다. 조각이 삭제된 뒤 오브젝트를 받은 클라이언트는 조각을 만들지 않는다.
 
-조각이 캐릭터와 충돌하지 않고 필요하면 조각끼리도 충돌하지 않으므로, 조각이 늘어도 접촉 계산이 그만큼 늘지 않는다.
+조각이 캐릭터와 충돌하지 않고 필요하면 조각끼리도 충돌하지 않으므로, 조각이 늘어도 접촉 계산이 그만큼 늘지 않는다. 조각의 물리 시뮬레이션과 접촉 계산은 CPU 비용이므로, 파괴가 몰리는 순간의 CPU 비용도 이 범위 안에 묶인다.
 
 ### 분리 판단이 단순하다
 

@@ -199,7 +199,7 @@ Unreal Engine 4/5, C++, Windows Server, Unreal Insights, EOS, Steamworks, TeamCi
   - PhysX에서 Chaos로의 전환을 포함한 UE4에서 UE5로의 이전 주도
   - Replication Graph를 Lyra 샘플의 구성에 맞춰 재작성
   - Blender에서 미리 나눈 조각 StaticMesh를 파괴 시점에 만들고 일정 시간 뒤 제거하는 커스텀 Destructible 시스템 구현
-- **결과:** UE5 이전을 개발 업데이트 #15에 반영, APEX Destruction 교체 후 렉 감소 확인, 물리 엔진 교체 후에도 파괴 로직 유지
+- **결과:** UE5 이전을 개발 업데이트 #15에 반영, APEX Destruction 교체 후 파괴 시 프레임 저하 감소 확인, 물리 엔진 교체 후에도 파괴 로직 유지
 
 [UE5 이전과 Replication Graph 재작성](/posts/notd-multiplayer-optimization-overview/#replication-graph) / [커스텀 Destructible 구조와 코드](/posts/notd-custom-destructible/)
 

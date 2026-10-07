@@ -1,0 +1,35 @@
+{
+  "created": "2026-10-08",
+  "tool": "built-in image_gen",
+  "post": "src/content/posts/notd-custom-destructible.md",
+  "asset": "src/content/posts/images/notd-custom-destructible/notd-custom-destructible-cover.webp",
+  "generated": "C:/Users/hon45/.codex/generated_images/01a1172d-4b6c-70b2-b01d-d64ec907ebbe/exec-ec87fc9c-383c-4959-90fb-48a4e5e55601.png",
+  "references": [
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp",
+    "src/content/posts/images/notd-multiplayer-optimization/notd-multiplayer-optimization-overview-cover.webp"
+  ],
+  "prompt": "Use case: stylized-concept\nAsset type: 16:9 landscape blog cover for a Night of the Dead article about replacing engine Destructible modules with pre-cut StaticMesh fragments controlled by game code.\nInput images: Image 1 is the Steady Spiral mascot identity reference. Image 2 is reference for soft clay materials, lighting and ivory backdrop ONLY. Image 3 is the established Night of the Dead series reference for mascot proportions and miniature survival-world tone. All inputs are references; create a NEW scene.\nPrimary request: Show the friendly mascot inspecting a small destructible stone structure whose finite pre-cut pieces have just separated. Emphasize understandable, deliberately prepared pieces rather than a spectacular explosion.\nScene: A compact little beige stone dungeon pillar on a simple small round sand-colored base. The pillar is composed of about 7 chunky irregular fitted stone pieces; its lower stump is still on the base while three separated pieces have just dropped outward, one slightly airborne directly above the base and two resting next to the stump. Clearly matching cut surfaces show the pieces belonged to the pillar. A single Steady Spiral snail sits immediately behind this miniature object, looking at it with a calm curious smile and a little round clay hand near the separated piece, without assembling or repairing it. At most two tiny muted sage pine trees at the edge of the small base connect it to the game world.\nSubject invariants: exactly ONE chunky dark forest-green snail with a lime yellow-green spiral shell, exactly TWO thick rounded antennae, two flat ivory oval eyes and a tiny ivory smile. Keep the identity, rounded silhouette, and shell/body ratios from the original mascot. No human, extra mascots, or zombies.\nComposition: wide 16:9 canvas with generous empty warm ivory background around a compact centered scene. Snail face around x=50%, y=40%; pillar and all essential separated pieces directly below the face, around x=50%, y=65%. Keep the face and destruction relation within the CENTRAL 20% of canvas width, central 70% of height, so a tall narrow center crop still shows face, stump and separated fragments. Shell may extend right of the narrow crop. Whole scene within middle 55% width. Slightly elevated three-quarter view; clear silhouettes readable at thumbnail scale. No panels or before/after split.\nStyle/medium: premium handcrafted soft matte clay 3D illustration, thick rounded forms, tactile subtle clay surfaces, warm ivory seamless studio background, gentle diffuse upper-left light and soft contact shadows. Muted beige stone and sage miniature props, vibrant dark-green and lime mascot. Match reference finish.\nText: NONE: no titles, labels, words, letters, numbers, arrows or watermark.\nTechnical constraints: pre-cut geometry and controlled fragment activation are an illustrative metaphor, not a literal engine diagram. Do not imply automatic reconstruction, realtime cutting, guaranteed frame rate, specific measured speedup, networking synchronization or zero physics cost. Avoid explosion, fire, lightning, magic beams, energy glow, performance meters, gears, engine logos, envelopes, clocks and question marks. Do not reuse the RPC cover's props.",
+  "corrections": [],
+  "concept": "미리 나뉜 조각과 분리된 파편을 작은 기둥 모형으로 표현하고 Steady Spiral 캐릭터가 살펴보는 장면.",
+  "technicalReview": "미리 준비한 조각 메시를 이용하는 파괴 시스템의 비유다. 자동 재조립, 실시간 절단, 측정된 성능 수치 또는 물리 비용 제거를 주장하지 않는다.",
+  "validation": {
+    "status": "passed",
+    "pixelEquality": "PASS",
+    "contentVerification": "Only image frontmatter added; authored prose preserved byte-for-byte",
+    "commands": {
+      "pnpm check": "PASS: 264 files, 0 errors, 0 warnings, 0 hints",
+      "pnpm type-check": "PASS: exit 0",
+      "pnpm build": "PASS: 114 pages, full production pipeline, exit 0",
+      "pnpm dev": "PASS: home page 5 PostCard and detail cover loaded"
+    },
+    "visualReview": "Narrow-width card (384x192) shows face, pillar and fragments; desktop list side image (210x232) center crop simulated from source keeps face, stump and separated pieces."
+  },
+  "dimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "bytes": 1008736,
+  "sha256": "3ea2f5c4016167b8b977bc3afcbdb21b93a71d57629e89be0011b5cf148f15ad",
+  "format": "lossless WebP; original canvas and decoded pixels preserved"
+}

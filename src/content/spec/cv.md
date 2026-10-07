@@ -193,15 +193,15 @@ Unreal Engine 4/5, C++, Windows Server, Unreal Insights, EOS, Steamworks, TeamCi
 
 #### 엔진 이전과 파괴 연출
 
-- **과제:** UE4에서 UE5로 이전하며 PhysX가 Chaos로 바뀌었고, Chaos Destructible의 성능 제약으로 다수 오브젝트의 파괴 연출 처리가 어려워진 상황
-- **판단:** 성능 제약 분석 결과에 따라 Chaos Destructible 대신 커스텀 Destructible 시스템을 구현하는 방향 선택
+- **과제:** UE4의 PhysX 기반 APEX Destruction에서 원인을 알 수 없는 에러가 잦았고, UE5 이전으로 PhysX가 Chaos로 바뀌며 파괴 오브젝트의 처리 방식을 다시 정해야 하는 상황
+- **판단:** 직접 제어할 수 있는 최소 기능의 커스텀 Destructible 시스템을 UE4에서 구현하고, UE5 이전 때는 당시 다루기 어렵고 성능 문제가 있던 Chaos Destruction 대신 이 시스템을 유지
 - **수행:**
   - PhysX에서 Chaos로의 전환을 포함한 UE4에서 UE5로의 이전 주도
   - Replication Graph를 Lyra 샘플의 구성에 맞춰 재작성
-  - 다수 오브젝트의 파괴 연출을 처리하는 커스텀 Destructible 시스템 구현
-- **결과:** UE5 이전을 개발 업데이트 #15에 반영, 다수 오브젝트의 파괴 연출 처리
+  - Blender에서 미리 나눈 조각 StaticMesh를 파괴 시점에 만들고 일정 시간 뒤 제거하는 커스텀 Destructible 시스템 구현
+- **결과:** UE5 이전을 개발 업데이트 #15에 반영, APEX Destruction 교체 후 파괴 시 프레임 저하 감소 확인, 물리 엔진 교체 후에도 파괴 로직 유지
 
-[UE5 이전과 Replication Graph 재작성](/posts/notd-multiplayer-optimization-overview/#replication-graph)
+[UE5 이전과 Replication Graph 재작성](/posts/notd-multiplayer-optimization-overview/#replication-graph) / [커스텀 Destructible 구조와 코드](/posts/notd-custom-destructible/)
 
 #### 게임플레이와 개발 인프라
 

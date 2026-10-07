@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" width="800" height="480" role="img" lang="ko" aria-labelledby="t d">
+<title id="t">부분 파괴에서 피해가 조각에 나뉘는 방식</title>
+<desc id="d">맞은 지점을 중심으로 구 트레이스 범위 안의 조각에만 피해가 들어가고, 가까울수록 큰 피해를 받는다. 범위 밖 조각은 피해를 받지 않고, 체력이 남은 조각은 Static으로 남으며, 체력이 0이 된 조각만 시뮬레이션을 시작해 떨어져 나간다.</desc>
+<defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker>
+<style>
+text{font-family:Pretendard,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;fill:#1f2937}
+.title{font-size:22px;font-weight:700}
+.lg{font-size:16px;fill:#374151}
+.mono{font-family:"JetBrains Mono",Consolas,"SFMono-Regular",monospace;font-size:13.5px;fill:#4b5563}
+.out{fill:#e5e7eb;stroke:#9ca3af;stroke-width:1.5}
+.in{fill:#fb923c;stroke:#ea580c;stroke-width:1.5}
+</style>
+</defs>
+<rect width="800" height="480" fill="#f8fafc"/>
+<rect width="800" height="480" fill="url(#grid)"/>
+
+<text class="title" x="40" y="48">부분 파괴에서 피해가 나뉘는 방식</text>
+
+<!-- row 0 -->
+<rect class="out" x="60" y="130" width="84" height="62"/>
+<rect class="in" x="144" y="130" width="84" height="62" fill-opacity="0.33"/>
+<rect class="in" x="228" y="130" width="84" height="62" fill-opacity="0.54"/>
+<rect class="in" x="312" y="130" width="84" height="62" fill-opacity="0.33"/>
+<rect class="out" x="396" y="130" width="84" height="62"/>
+<!-- row 1 -->
+<rect class="out" x="60" y="192" width="84" height="62"/>
+<rect class="in" x="144" y="192" width="84" height="62" fill-opacity="0.43"/>
+<rect x="228" y="192" width="84" height="62" fill="#ffffff" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect class="in" x="312" y="192" width="84" height="62" fill-opacity="0.43"/>
+<rect class="out" x="396" y="192" width="84" height="62"/>
+<!-- row 2 -->
+<rect class="out" x="60" y="254" width="84" height="62"/>
+<rect class="in" x="144" y="254" width="84" height="62" fill-opacity="0.33"/>
+<rect class="in" x="228" y="254" width="84" height="62" fill-opacity="0.54"/>
+<rect class="in" x="312" y="254" width="84" height="62" fill-opacity="0.33"/>
+<rect class="out" x="396" y="254" width="84" height="62"/>
+
+<circle cx="270" cy="223" r="140" fill="none" stroke="#0891b2" stroke-width="2.5" stroke-dasharray="9 7"/>
+
+<path d="M286 236 C 306 285, 318 322, 330 358" fill="none" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arr)"/>
+<g transform="translate(350 400) rotate(16)">
+<rect x="-42" y="-31" width="84" height="62" fill="#f87171" stroke="#dc2626" stroke-width="2"/>
+<text x="0" y="6" style="font-size:16px;font-weight:700;fill:#ffffff;text-anchor:middle">체력 0</text>
+</g>
+
+<circle cx="270" cy="223" r="8" fill="#dc2626" stroke="#ffffff" stroke-width="2.5"/>
+
+<rect x="512" y="92" width="258" height="358" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+<circle cx="540" cy="128" r="8" fill="#dc2626" stroke="#ffffff" stroke-width="2.5"/>
+<text class="lg" x="562" y="134">맞은 지점</text>
+
+<circle cx="540" cy="180" r="13" fill="none" stroke="#0891b2" stroke-width="2.5" stroke-dasharray="5 4"/>
+<text class="lg" x="562" y="186">구 트레이스 범위</text>
+
+<rect class="in" x="527" y="224" width="9" height="22" fill-opacity="0.33"/>
+<rect class="in" x="536" y="224" width="9" height="22" fill-opacity="0.43"/>
+<rect class="in" x="545" y="224" width="9" height="22" fill-opacity="0.54"/>
+<text class="lg" x="562" y="240">가까울수록 큰 피해</text>
+<text class="mono" x="528" y="270">Damage × (1 − 거리 / 반경)</text>
+
+<rect class="out" x="527" y="300" width="26" height="22"/>
+<text class="lg" x="562" y="316">범위 밖: 피해 없음</text>
+
+<rect class="in" x="527" y="348" width="26" height="22" fill-opacity="0.43"/>
+<text class="lg" x="562" y="364">체력이 남음: Static 유지</text>
+
+<rect x="527" y="396" width="26" height="22" fill="#f87171" stroke="#dc2626" stroke-width="2" transform="rotate(12 540 407)"/>
+<text class="lg" x="562" y="412">체력 0: 시뮬레이션 시작</text>
+</svg>

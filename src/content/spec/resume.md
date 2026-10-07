@@ -50,7 +50,7 @@
 - 전투와 장비, 보스 및 일반 좀비 AI, 월드 상호작용을 개발하고 2024년 5월 1.0 정식 출시까지 참여했습니다.
 - Windows Server 기반 Dedicated Server에서 Replication Graph와 Net Dormancy로 연결별 복제 대상을 고르고, ID 기반 복제용 구조체와 커스텀 NetSerialize로 전송 데이터를 줄였습니다.
 - 다수 좀비의 이동, 동기화, 애니메이션, 길찾기 비용을 거리 LOD와 순위 기준으로 조절하고, ACL로 애니메이션 데이터를 압축했습니다.
-- UE4에서 UE5로의 엔진 이전을 주도하고, Chaos Destructible 대신 커스텀 Destructible 시스템을 구현했습니다.
+- UE4에서 UE5로의 엔진 이전을 주도하고, UE4에서 구현한 커스텀 Destructible 시스템을 Chaos Destruction 대신 유지했습니다.
 - JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드 자동화를 운영했습니다.
 
 ### 삐요 스튜디오 / 클라이언트 프로그래머

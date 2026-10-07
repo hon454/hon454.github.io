@@ -30,7 +30,7 @@
 **CINEVStudio (2024.06 - 2026.04)** / Unreal Engine 5, C++, UMG, Sequencer, ONNX
 
 - 액션 데이터 작성 구조와 AI 행동 해석, 생성 모션 연동을 담당했습니다. 제작자가 입력한 데이터를 캐릭터의 실행과 타임라인 편집으로 연결하고, 데이터 검증기로 정합성 검사를 자동화했습니다.
-- UI Controller와 편집 State, Blackboard로 편집 UI의 상태 관리를 재구성하고 공통 UI 컴포넌트를 개발했습니다. Shot 상태 모델과 저장, 복원 구조를 만들고 Root Motion 재계산과 카메라 orbit 문제를 해결했습니다.
+- UI Controller와 편집 State, Blackboard로 편집 UI의 상태 관리를 재구성하고 공통 UI 컴포넌트를 개발했습니다. Sequencer(MovieScene) 기반 타임라인의 Shot 상태 모델과 저장, 복원 구조를 만들고 Root Motion 재계산과 카메라 orbit 문제를 해결했습니다.
 - GitLab CI 기반 빌드와 패키징, Shared DDC를 구성하고 Sentry 크래시 수집을 고도화했습니다. Unreal Engine 5.7 이전에서는 엔진 API 변경에 따른 코드 이전을 맡았습니다.
 
 ### 팀스파르타 / 튜터

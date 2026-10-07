@@ -62,7 +62,7 @@
 
 | 항목 | 내용 |
 | --- | --- |
-| 소개 | AI가 구성한 3D 장면을 편집하고 영상으로 출력하는 Unreal Engine 기반 제작 도구 |
+| 소개 | AI가 구성한 3D 장면을 편집하고 영상으로 출력하는 Unreal Engine Sequencer(MovieScene) 기반 제작 도구 |
 | 참여 기간 | 2024.06 - 2026.04 |
 | 주요 기술 | Unreal Engine 5, C++, UMG, Sequencer, ONNX |
 

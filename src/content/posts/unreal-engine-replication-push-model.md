@@ -365,13 +365,13 @@ UnrealEditor.exe ThirdPerson.uproject /Game/ThirdPerson/Lvl_ThirdPerson -server 
 
 `-statnamedevents`가 있어야 `STAT_` 계열 스코프가 Timing 뷰에 이벤트로 나온다. `region` 채널은 서버 코드에서 `TRACE_BEGIN_REGION(TEXT("PushLab.Measure"))`로 건 측정 구간을 기록한다.
 
-![Unreal Insights 타임라인에서 PushLab.Measure 리전과 그 구간을 선택한 범위를 표시한 화면](./images/unreal-push-model/insights-timeline-measure-region.webp)
+![Timing Insights 타임라인과 측정 구간 선택](./images/unreal-push-model/insights-timeline-measure-region.webp)
 
 ① 서버 코드에서 건 `PushLab.Measure` 리전이 Timing Regions 트랙에 30초 막대로 나온다. ② 눈금자에서 이 막대의 양끝을 드래그해 같은 범위를 선택하면 Timers와 Callees 패널이 선택 구간만 집계한다. 타이머 검색창에 `Replicat`을 넣고 `ServerReplicateActors Time`을 고르면 Callees 패널에 하위 호출 트리가 나온다.
 
 Push Model을 끈 상태다.
 
-![Push Model을 끈 상태의 Callees 트리. Replicate Actor Time 호출 수, Dynamic Property Compare Time, STAT_NetDeletedSubObjects 행을 표시했다](./images/unreal-push-model/insights-callees-push-off.webp)
+![Callees 트리: push 끔](./images/unreal-push-model/insights-callees-push-off.webp)
 
 - ① `Replicate Actor Time`은 30초 동안 1,283,628회 불렸다. 액터 1000개 × 연결 2개 × 프레임 640개와 거의 같다.
 - ② `Dynamic Property Compare Time`은 638,526회로 그 절반이다. 연결이 2개여도 비교는 오브젝트당 한 번이라는 앞의 설명이 호출 수로 확인된다. 합계는 362.6 ms다.
@@ -379,13 +379,13 @@ Push Model을 끈 상태다.
 
 Push Model을 켰다.
 
-![Push Model을 켠 상태의 Callees 트리. Dynamic Property Compare Time 행을 표시했다](./images/unreal-push-model/insights-callees-push-on.webp)
+![Callees 트리: push 켬](./images/unreal-push-model/insights-callees-push-on.webp)
 
 ① 비교 호출 수는 637,682회로 그대로이고 합계가 81.9 ms로 줄었다. 호출은 오브젝트마다 하지만 dirty 비트가 없으면 바로 빠져나온다. 나머지 행은 거의 변하지 않았다.
 
 skip CVar까지 켰다.
 
-![Push Model과 skip CVar를 켠 상태의 Callees 트리. Replicate Actor Time, STAT_NetDeletedSubObjects, Dynamic Property Compare Time 행을 표시했다](./images/unreal-push-model/insights-callees-push-skip.webp)
+![Callees 트리: push + skip](./images/unreal-push-model/insights-callees-push-skip.webp)
 
 - ① `Replicate Actor Time` 호출은 1,278,753회로 그대로 남았다. skip은 이 함수 안에서 일어난다.
 - ② `STAT_NetDeletedSubObjects`도 209.42 ms로 남았다. 앞의 소스대로 skip과 상관없이 매번 실행된다.
@@ -400,7 +400,7 @@ UnrealInsights.exe -OpenTraceFile="D:/Traces/main_off.utrace" -AutoQuit -NoUI `
 
 결과는 다음과 같다.
 
-![ServerReplicateActors 프레임당 시간을 후보 수집, 연결별 액터 처리, 서브오브젝트 삭제 확인, 프로퍼티 비교, 프로퍼티 직렬화, 기타로 나눈 누적 막대 그래프. push 끔 4.28 ms, push 켬 3.84 ms, push와 skip 3.16 ms](./images/unreal-push-model/chart-breakdown.webp)
+![ServerReplicateActors 프레임당 시간 분해](./images/unreal-push-model/chart-breakdown.webp)
 
 | 항목 (ms/프레임) | push 끔 | push 켬 | push + skip |
 | --- | --- | --- | --- |
@@ -438,7 +438,7 @@ skip을 켜면 `ReplicateActor`의 61%가 1 µs 미만에 모인다. 비교 호�
 
 ### 값을 바꾸는 빈도에 따른 차이
 
-![초당 값을 바꾸는 액터 비율이 0, 1%, 10%, 100%, 매 프레임일 때 push 끔, push 켬, push와 skip의 ServerReplicateActors 시간 막대 그래프](./images/unreal-push-model/chart-change-rate.webp)
+![변경 빈도별 ServerReplicateActors 시간](./images/unreal-push-model/chart-change-rate.webp)
 
 | 초당 변경 비율 | push 끔 | push 켬 | push + skip | skip된 replicator/프레임 |
 | --- | --- | --- | --- | --- |
@@ -452,7 +452,7 @@ skip을 켜면 `ReplicateActor`의 61%가 1 µs 미만에 모인다. 비교 호�
 
 ### 연결 수에 따른 차이
 
-![클라이언트 수가 1, 2, 4, 8일 때 push 끔과 push와 skip의 ServerReplicateActors 시간 선 그래프. 8개에서 16.60 ms와 13.18 ms](./images/unreal-push-model/chart-connections.webp)
+![클라이언트 수별 ServerReplicateActors 시간](./images/unreal-push-model/chart-connections.webp)
 
 | 클라이언트 | push 끔 | push + skip | 감소 |
 | --- | --- | --- | --- |
@@ -482,7 +482,7 @@ skip을 켜면 `ReplicateActor`의 61%가 1 µs 미만에 모인다. 비교 호�
 
 워밍업 중간에 모든 액터에서 `MulticastPing()`을 한 번씩 호출한 뒤 같은 조건으로 측정했다.
 
-![unreliable multicast를 한 번 보낸 뒤의 Callees 트리. Dynamic Property Rep Time과 Dynamic Property Compare Time 행을 표시했다](./images/unreal-push-model/insights-callees-rpc-trap.webp)
+![Callees 트리: unreliable multicast 이후의 push + skip](./images/unreal-push-model/insights-callees-rpc-trap.webp)
 
 skip CVar를 켰는데도 ① 직렬화가 1,273,410회 돌고 ② 비교도 636,705회 돈다. skip된 replicator는 프레임당 1,998개에서 0.1개로 떨어졌고 `ServerReplicateActors`는 3.74 ms로 push만 켠 수준이 됐다. 앞에서 본 `GetNumBits() >= 0` 조건 그대로다. multicast를 보낸 것은 측정 시작 10초 전이었고, 그 뒤로는 RPC를 보내지 않았다.
 
@@ -499,13 +499,13 @@ UnrealEditor.exe ThirdPerson.uproject /Game/ThirdPerson/Lvl_ThirdPerson -server 
 
 `-NetTrace`는 net trace의 상세 수준이다(0 꺼짐, 1 Trace, 2 Verbose, 3 VeryVerbose). net trace는 기록량이 많아서 이 실행은 CPU 수치 비교에는 쓰지 않았다.
 
-![Networking Insights 패킷 화면에서 Outgoing 방향과 선택한 985개 패킷 범위를 표시한 화면](./images/unreal-push-model/networking-insights-packets.webp)
+![Networking Insights 송신 패킷 선택](./images/unreal-push-model/networking-insights-packets.webp)
 
 ① 서버 인스턴스의 Connection 0에서 방향을 Outgoing으로 바꾸고, ② 패킷 막대를 클릭한 뒤 Shift-클릭해 초기 복제 이후의 패킷 985개를 골랐다. 초당 100%의 액터 값이 바뀌는 조건이고, 시드가 고정되어 있어서 두 실행은 같은 순서로 값을 쓴다.
 
-![Push Model을 끈 실행의 Net Stats. PushLabActor 행과 PacketHeaderAndInfo 행을 표시했다](./images/unreal-push-model/networking-insights-push-off.webp)
+![Net Stats: push 끔](./images/unreal-push-model/networking-insights-push-off.webp)
 
-![Push Model을 켠 실행의 Net Stats. PushLabActor 행과 PacketHeaderAndInfo 행을 표시했다](./images/unreal-push-model/networking-insights-push-on.webp)
+![Net Stats: push 켬](./images/unreal-push-model/networking-insights-push-on.webp)
 
 | | ① `PushLabActor` 업데이트 | 비트 합계 | 업데이트당 평균 | ② 패킷 |
 | --- | --- | --- | --- | --- |
@@ -535,7 +535,54 @@ LogPushLab: Display: Client probe: 1000 / 1000 lab actors have Int00=777
 
 같은 액터의 다른 프로퍼티가 마킹되어 액터가 복제돼도 `Int00`은 따라가지 않는다. dirty가 아닌 push 프로퍼티는 비교 대상에서 빠지기 때문이다. Dormancy와 겹치면 더 나빠진다. 마킹하지 않은 값이 Dormancy 해제 때 전송되면서 shadow state에는 기록되지 않아, 나중에 원래 값으로 되돌린 변경을 감지하지 못하는 이슈가 열려 있다([UE-226689](https://issues.unrealengine.com/issue/UE-226689)).
 
-마킹 누락은 검증용 CVar로 찾을 수 있다. 개발 중에는 켜 두고, 성능을 잴 때는 끈다.
+### 마킹 누락을 막는 구조
+
+복제 프로퍼티를 private으로 두고 값을 바꾸는 경로를 setter로 모으면, 마킹을 빠뜨릴 자리가 setter 안으로 줄어든다. `FInventorySlot`은 `ItemId`와 `Count`를 가진 `USTRUCT`이고, 두 프로퍼티는 앞에서 본 것처럼 `bIsPushBased`로 등록했다고 가정한다.
+
+```cpp
+UCLASS()
+class AInventoryActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	void SetHealth(float NewHealth)
+	{
+		// 값이 다를 때만 대입하고 마킹한다
+		COMPARE_ASSIGN_AND_MARK_PROPERTY_DIRTY(AInventoryActor, Health, NewHealth, this);
+	}
+
+	void SetSlotCount(int32 SlotIndex, int32 NewCount)
+	{
+		// 배열 원소는 직접 비교하고, 바뀌었으면 배열 프로퍼티 전체를 마킹한다
+		FInventorySlot& Slot = Slots[SlotIndex];
+		if (Slot.Count != NewCount)
+		{
+			Slot.Count = NewCount;
+			MARK_PROPERTY_DIRTY_FROM_NAME(AInventoryActor, Slots, this);
+		}
+	}
+
+	// 여러 원소를 한 번에 고쳐야 할 때는 참조를 넘기는 순간 마킹한다
+	TArray<FInventorySlot>& GetSlots_Mutable()
+	{
+		MARK_PROPERTY_DIRTY_FROM_NAME(AInventoryActor, Slots, this);
+		return Slots;
+	}
+
+private:
+	UPROPERTY(Replicated) float Health = 100.0f;
+	UPROPERTY(Replicated) TArray<FInventorySlot> Slots;
+};
+```
+
+push는 프로퍼티 단위로 마킹하므로, 배열 원소 하나를 바꿔도 배열 프로퍼티 전체가 다음 비교 대상이 된다. 보내는 것은 비교에서 달라진 원소뿐이다. `GetSlots_Mutable()`처럼 참조를 넘기면서 마킹하는 방식은 엔진도 쓴다. `AActor::GetReplicatedMovement_Mutable()`이 `ReplicatedMovement`를 마킹한 뒤 참조를 돌려준다(`Engine/Private/Actor.cpp`). 값을 바꾸지 않고 마킹만 해도 비교 비용만 들고 전송은 없다는 것은 앞에서 확인했다.
+
+이 구조로도 막지 못하는 경우가 있다. `GetSlots_Mutable()`로 받은 참조를 보관했다가 다음 프레임 이후에 고치면, 마킹은 이미 비교에서 소비된 뒤라 변경이 전달되지 않는다. 이런 경로는 검증용 CVar로 찾는다.
+
+### 검증 CVar
+
+개발 중에는 켜 두고, 성능을 잴 때는 끈다.
 
 ```ini
 [SystemSettings]
@@ -573,78 +620,17 @@ net.IsPushModelEnabled=1
 
 ## 내 기준
 
-측정 결과를 보고 정한 기준은 다음과 같다.
+새 프로젝트에서 기본으로 하는 것은 세 가지다.
 
-- 새 프로젝트라면 복제 프로퍼티를 모두 push로 등록하고 skip CVar도 켠다. 측정한 어떤 조건에서도 push를 켠 쪽이 끈 쪽보다 느리지 않았고, skip은 Full 클래스에서만 동작하므로 섞어 쓸 이유가 없다.
-- 마킹 누락은 구조로 막는다. 복제 프로퍼티를 private으로 두고 값을 바꾸는 경로를 setter로 모은다. 구체적인 형태는 목록 아래의 코드와 같다.
-- unreliable multicast를 보내는 액터는 skip이 영구히 꺼진다는 것을 감안한다. 자주 skip되어야 하는 액터라면 그 RPC를 다른 액터로 옮길지 따져 본다.
-- skip을 노리고 상태를 컴포넌트로 쪼개지 않는다. 이번 측정에서는 replicator가 늘어나는 비용이 더 컸다.
-- 캐릭터처럼 엔진 부모 클래스 때문에 Partial인 액터는 비교 비용 감소까지만 기대한다.
+- 복제 프로퍼티는 모두 push로 등록하고 skip CVar를 켠다. 측정한 어떤 조건에서도 push를 켠 쪽이 끈 쪽보다 느리지 않았고, skip은 Full 클래스에서만 동작하므로 섞어 쓸 이유가 없다.
+- 값을 바꾸는 경로는 setter로 모은다([마킹 누락을 막는 구조](#마킹-누락을-막는-구조)).
 - 패키지 빌드의 Target.cs에 `bWithPushModel = true`가 있는지 확인한다. 없으면 PIE에서 본 동작과 다르게 조용히 폴링으로 돈다.
 
-마킹 누락을 막는 구조는 다음과 같다.
+push로 이득을 기대하기 전에는 다음을 확인한다.
 
-```cpp
-USTRUCT()
-struct FInventorySlot
-{
-	GENERATED_BODY()
-
-	UPROPERTY() int32 ItemId = 0;
-	UPROPERTY() int32 Count = 0;
-};
-
-UCLASS()
-class AInventoryActor : public AActor
-{
-	GENERATED_BODY()
-
-public:
-	float GetHealth() const { return Health; }
-
-	void SetHealth(float NewHealth)
-	{
-		// 값이 다를 때만 대입하고 마킹한다
-		COMPARE_ASSIGN_AND_MARK_PROPERTY_DIRTY(AInventoryActor, Health, NewHealth, this);
-	}
-
-	void SetSlotCount(int32 SlotIndex, int32 NewCount)
-	{
-		// 배열 원소는 직접 비교하고, 바뀌었으면 배열 프로퍼티 전체를 마킹한다
-		FInventorySlot& Slot = Slots[SlotIndex];
-		if (Slot.Count != NewCount)
-		{
-			Slot.Count = NewCount;
-			MARK_PROPERTY_DIRTY_FROM_NAME(AInventoryActor, Slots, this);
-		}
-	}
-
-	// 여러 원소를 한 번에 고쳐야 할 때는 참조를 넘기는 순간 마킹한다
-	TArray<FInventorySlot>& GetSlots_Mutable()
-	{
-		MARK_PROPERTY_DIRTY_FROM_NAME(AInventoryActor, Slots, this);
-		return Slots;
-	}
-
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override
-	{
-		Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-		FDoRepLifetimeParams Params;
-		Params.bIsPushBased = true;
-		DOREPLIFETIME_WITH_PARAMS_FAST(AInventoryActor, Health, Params);
-		DOREPLIFETIME_WITH_PARAMS_FAST(AInventoryActor, Slots, Params);
-	}
-
-private:
-	UPROPERTY(Replicated) float Health = 100.0f;
-	UPROPERTY(Replicated) TArray<FInventorySlot> Slots;
-};
-```
-
-push는 프로퍼티 단위로 마킹하므로, 배열 원소 하나를 바꿔도 배열 프로퍼티 전체가 다음 비교 대상이 된다. 보내는 것은 비교에서 달라진 원소뿐이다. `GetSlots_Mutable()`처럼 참조를 넘기면서 마킹하는 방식은 엔진도 쓴다. `AActor::GetReplicatedMovement_Mutable()`이 `ReplicatedMovement`를 마킹한 뒤 참조를 돌려준다(`Engine/Private/Actor.cpp`). 값을 바꾸지 않고 마킹만 해도 비교 비용만 들고 전송은 없다는 것은 앞에서 확인했다.
-
-이 구조로도 막지 못하는 경우가 있다. `GetSlots_Mutable()`로 받은 참조를 보관했다가 다음 프레임 이후에 고치면, 마킹은 이미 비교에서 소비된 뒤라 변경이 전달되지 않는다. 이런 경로는 개발 빌드에서 `net.PushModelValidateProperties`를 켜고 경고가 나오는지로 확인한다.
+- unreliable multicast를 보내는 액터인가. 한 번이라도 보내면 그 연결에서 skip이 영구히 꺼진다. 자주 skip되어야 하는 액터라면 그 RPC를 다른 액터로 옮길지 따져 본다.
+- 엔진 부모 클래스 때문에 Partial 클래스인가. 캐릭터가 그렇다. 이때는 비교 비용 감소까지만 기대한다.
+- skip을 노리고 상태를 컴포넌트로 쪼개려는가. 이번 측정에서는 replicator가 늘어나는 비용이 더 커서 오히려 35% 느려졌다.
 
 엔진 헤더도 이 기능의 한계를 적어 두었다.
 

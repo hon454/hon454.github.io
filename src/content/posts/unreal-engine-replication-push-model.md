@@ -306,9 +306,9 @@ protected:
 - 서버는 액터 1000개를 스폰하고, 매 프레임 "초당 변경 비율 × 액터 수"만큼 무작위 액터의 무작위 프로퍼티 하나에 새 값을 쓰고 마킹한다. 난수 시드는 고정했다.
 - 클라이언트가 모두 접속하면 20초 워밍업 뒤 30초를 측정한다. 측정 구간에는 CSV 캡처와 Insights 리전 `PushLab.Measure`를 건다.
 - 서버는 에디터 바이너리를 `-server`로 띄웠다. 런처판 5.8에서는 Push Model이 켜진 Server 타깃을 빌드할 수 없어서다. 클라이언트는 렌더링 없이 띄웠다.
-- Ryzen 9 5950X에서 서버를 논리 코어 0~15에, 클라이언트를 16~31에 고정했다. 같은 조건을 반복했을 때 실행마다 결과가 ±10%가량 흔들려서, 서로 간섭하는 요인을 줄이려는 설정이다.
+- Ryzen 9 5950X에서 서버는 논리 코어 0번부터 15번에, 클라이언트는 16번부터 31번에 고정했다. 같은 조건을 반복했을 때 실행마다 결과가 ±10%가량 흔들려서, 서로 간섭하는 요인을 줄이려는 설정이다.
 - 연결 대역폭 제한을 100 MB/s로 올렸다. 기본값(100 KB/s)에서는 매 프레임 값을 바꾸는 조건에서 연결이 포화되어, 연결당 프레임마다 처리하는 액터가 1000개에서 24개로 줄었다. 그 상태에서는 CPU가 아니라 대역폭 한계를 재게 된다.
-- 서버 최대 틱은 30 Hz지만 실제 프레임은 47 ms 안팎(약 21 Hz)이었다. Windows의 sleep 해상도 때문으로 보인다. 모든 조건에 같게 적용되고, 지표가 프레임당 복제 시간이므로 비교에는 영향이 없다.
+- 서버 최대 틱은 30 Hz로 두었고, 실제로는 프레임당 47 ms 안팎(약 21 Hz)으로 돌았다. 지표가 프레임당 복제 시간이므로 조건 간 비교에는 영향이 없다.
 
 서버와 클라이언트는 다음처럼 띄웠다. 실험용 인자(액터 수, 변경 비율 등)는 뺐다.
 
@@ -320,7 +320,7 @@ UnrealEditor.exe ThirdPerson.uproject /Game/ThirdPerson/Lvl_ThirdPerson -server 
 UnrealEditor.exe ThirdPerson.uproject 127.0.0.1 -game -nullrhi -nosound -log
 ```
 
-대역폭 제한은 `DefaultEngine.ini`로 쓰면 다음과 같다. 실험에서는 같은 값을 `-ini:Engine:[섹션]:키=값` 인자로 서버와 클라이언트에 함께 넘겼다.
+대역폭 제한 설정은 다음과 같다. 클라이언트가 요청하는 속도와 서버가 허용하는 속도를 모두 올려야 하므로 서버와 클라이언트 양쪽에 적용한다.
 
 ```ini
 [/Script/Engine.Player]
@@ -413,7 +413,7 @@ UnrealInsights.exe -OpenTraceFile="D:/Traces/main_off.utrace" -AutoQuit -NoUI `
 
 Push Model은 비교 칸을 0.58 ms에서 0.14 ms로 줄였다. 비교는 처음부터 전체의 14%였으므로 Push Model 단독으로 줄일 수 있는 폭도 그 정도다. skip은 직렬화 칸과 연결별 처리 칸의 일부를 줄였다. 가장 큰 칸인 연결별 액터 처리는 skip을 켜도 2.13 ms가 남는다.
 
-호출 하나하나의 길이도 봤다. `TimingInsights.ExportTimingEvents`로 이벤트를 내보내 분포를 만들었다. 타이머 이름에 공백이 있어서 명령줄 안에서는 따옴표가 겹치므로, 명령을 response file에 쓰고 `@=` 접두사로 넘겼다. response file(`main_off.events.rsp`)에는 한 줄에 명령 하나를 쓴다.
+호출 하나하나의 길이도 봤다. `TimingInsights.ExportTimingEvents`로 이벤트를 내보내 분포를 만들었다. 명령은 response file(`main_off.events.rsp`)에 쓰고 `@=` 접두사로 넘긴다.
 
 ```text
 TimingInsights.ExportTimingEvents "D:/Traces/main_off.events.csv" -columns="TimerName,Duration" -threads="GameThread" -timers="Replicate Actor Time,Dynamic Property Compare Time" -region="PushLab.Measure"
@@ -424,7 +424,7 @@ UnrealInsights.exe -OpenTraceFile="D:/Traces/main_off.utrace" -AutoQuit -NoUI `
     -ExecOnAnalysisCompleteCmd="@=D:/Traces/main_off.events.rsp"
 ```
 
-response file 안의 경로는 슬래시로 쓴다. 역슬래시로 쓰면 이스케이프로 처리되어 사라져, Insights 로그에 `G:ThirdPersonSavedPushLab...`처럼 망가진 경로가 찍히고 원하는 위치에 파일이 생기지 않았다.
+> 타이머 이름처럼 공백이 든 인자는 명령줄에서 따옴표가 겹치므로 response file로 넘긴다. 파일 안의 경로는 슬래시로 쓴다. 역슬래시는 이스케이프로 처리되어 사라진다.
 
 | 조건 | `Replicate Actor Time` p50 / p90 / p99 | 비교 호출 수 | 비교 p50 |
 | --- | --- | --- | --- |
@@ -434,7 +434,7 @@ response file 안의 경로는 슬래시로 쓴다. 역슬래시로 쓰면 이�
 
 skip을 켜면 `ReplicateActor`의 61%가 1 µs 미만에 모인다. 비교 호출 수에는 캐릭터와 컨트롤러 같은 다른 액터도 포함된다. skip 조건에서 남은 비교는 실제로 바뀐 오브젝트의 비교라서 1회당 시간은 오히려 길다.
 
-`-statnamedevents`는 µs 단위 스코프마다 이벤트를 기록하므로 측정값을 부풀릴 수 있다. 같은 조건에서 추적 없이 CSV만 기록한 5회 평균은 4.57 ms, 추적한 실행은 4.28 ms로 실행 간 편차 안에 있었다. 이 실험 규모에서는 추적 비용이 결과를 바꾸지 않았다.
+> `-statnamedevents`는 µs 단위 스코프마다 이벤트를 기록하므로 측정값을 부풀릴 수 있다. 같은 조건에서 추적 없이 CSV만 기록한 5회 평균은 4.57 ms, 추적한 실행은 4.28 ms로 실행 간 편차 안에 있었다. 이 실험 규모에서는 추적 비용이 결과를 바꾸지 않았다.
 
 ### 값을 바꾸는 빈도에 따른 차이
 
@@ -618,7 +618,7 @@ net.IsPushModelEnabled=1
 
 엔진 설정에는 Iris에서 Full push를 유지해야 하는 클래스 목록이 있다(`Config/BaseEngine.ini`의 `EnsureFullyPushModelClassNames`). 목록에는 `SceneComponent`, `StaticMeshComponent`, `CapsuleComponent` 같은 컴포넌트와 `WorldDataLayers`만 있고 Actor, Pawn, Character는 없다. Iris로 옮겨도 캐릭터는 Partial로 남는다.
 
-## 내 기준
+## Push Model 적용 기준
 
 새 프로젝트에서 기본으로 하는 것은 세 가지다.
 

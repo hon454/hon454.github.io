@@ -19,27 +19,27 @@ lang: ko
 - UE 5.8.3에서 Push Model은 기본으로 꺼져 있다. 컴파일 스위치 `bWithPushModel`, 런타임 CVar `Net.IsPushModelEnabled`, 프로퍼티별 `bIsPushBased` 등록이 모두 필요하다. `bWithPushModel`은 Editor 타깃에서만 기본으로 켜져서 패키지 빌드는 Target.cs에 넣지 않으면 조용히 폴링으로 돈다.
 - `DOREPLIFETIME`과 `DOREPLIFETIME_CONDITION`으로는 push로 등록할 수 없고, 등록을 빠뜨린 프로퍼티도 push가 아닌 설정으로 자동 등록된다. 둘 다 경고가 없다.
 - 마킹은 "보내라"가 아니라 "비교해 봐라"는 표시다. dirty가 아닌 push 기반 프로퍼티의 비교만 건너뛰고, 언제 복제할지는 바꾸지 않는다.
-- 액터 1000개, 클라이언트 2개, 초당 1%의 액터만 값이 바뀌는 조건에서 `ServerReplicateActors`는 Push Model만 켜면 13%, skip CVar까지 켜면 26% 줄었다. 송신 바이트와 Network Profiler의 Waste는 그대로였고, 줄어든 것은 비교 횟수와 서버 CPU다.
+- 액터 1000개, 클라이언트 2개, 초당 1%의 액터만 값이 바뀌는 조건에서 `ServerReplicateActors`는 10회 평균으로 Push Model만 켜면 13%, skip CVar까지 켜면 26% 줄었다. 송신 바이트와 Network Profiler의 Waste는 그대로였고, 줄어든 것은 비교 횟수와 서버 CPU다.
 - skip CVar는 모든 복제 프로퍼티가 push인 클래스에서만 동작한다. `ACharacter`를 상속한 클래스는 받지 못하고, unreliable multicast를 한 번 보낸 액터는 그 연결에서 영구히 받지 못한다. skip을 노리고 상태를 컴포넌트로 나누면 오히려 35% 느려졌다.
-- 값이 드물게 바뀌는 액터는 Dormancy가 훨씬 싸다(0.17 ms). 액터마다 초당 한 번 바뀌는 조건에서는 Push + Skip이 더 빨랐다.
-- 측정한 어떤 조건에서도 Push Model을 켜서 느려지지 않았으므로 기본으로 켤 만하다. 다만 마킹을 빠뜨려도 오류가 나지 않으니 값을 바꾸는 경로를 setter로 모으고 검증 CVar로 확인한다.
+- 값이 드물게 바뀌는 액터는 Dormancy가 훨씬 싸다(0.17 ms). 액터마다 평균 초당 한 번 바뀌는 조건에서는 Push + Skip이 더 빨랐다.
+- 측정한 조건 안에서는 Push Model을 켜서 느려진 경우가 없었다. 새 프로젝트에서는 직접 관리하는 복제 프로퍼티를 push로 등록하는 것을 기본 선택으로 삼는다. 다만 마킹을 빠뜨려도 오류가 나지 않으니 값을 바꾸는 경로를 setter로 모으고 검증 CVar로 확인한다.
 :::
 
-레거시 복제는 복제할 때마다 프로퍼티의 현재 값을 마지막으로 보낸 값과 비교해 바뀐 것을 찾는다. Push Model은 값을 바꾼 코드가 직접 표시하게 해서 이 비교를 건너뛴다. 그래서 "켜면 복제가 빨라진다"고 알려져 있지만, 줄어드는 것은 서버 CPU이고 송신량은 그대로다. 얼마나 줄어드는지도 클래스 구성과 별도 CVar에 따라 크게 달라진다.
+레거시 복제는 복제할 때마다 프로퍼티의 현재 값을 마지막으로 비교한 값과 비교해 바뀐 것을 찾는다. Push Model은 값을 바꾼 코드가 직접 표시하게 해서 이 비교를 건너뛴다. 그래서 "켜면 복제가 빨라진다"고 알려져 있지만, 줄어드는 것은 서버 CPU이고 송신량은 그대로다. 얼마나 줄어드는지도 클래스 구성과 별도 CVar에 따라 크게 달라진다.
 
 이 글은 레거시 복제 시스템(Iris가 아닌 기본 복제)의 Push Model을 엔진 소스와 측정으로 정리한다. ThirdPerson 템플릿 프로젝트에 복제 프로퍼티 16개짜리 액터 1000개를 띄우고, 데디케이티드 서버의 `ServerReplicateActors` 시간을 CSV 프로파일러와 Unreal Insights로 쟀다. 클라이언트 2개, 초당 1%의 액터만 값이 바뀌는 조건에서 결과는 다음과 같았다.
 
-| 조건 | `ServerReplicateActors` 프레임당 평균 | 비율 |
+| 조건 | `ServerReplicateActors` 프레임당 평균 (10회) | 비율 |
 | --- | --- | --- |
 | Push 끔 | 4.57 ms | 100 |
-| Push 켬 | 3.98 ms | 87 |
-| Push + Skip | 3.39 ms | 74 |
+| Push 켬 | 3.97 ms | 87 |
+| Push + Skip | 3.36 ms | 74 |
 
 Push + Skip은 Push Model과 `net.PushModelSkipUndirtiedReplication`(이하 skip CVar)을 함께 켠 조건이다. Push Model만 켜면 프로퍼티 비교 비용이 줄고, skip CVar까지 켜면 연결별 작업의 일부가 줄어든다. 아래에서 각 단계를 소스 위치와 Insights 화면으로 확인하고, 같은 조건에서 [Dormancy와도 비교](#dormancy와-비교하면)한다. 소스 경로는 UE 5.8.3 기준이며 `Engine/Source/Runtime/`을 생략했다.
 
 ## 폴링 복제가 매 프레임 하는 일
 
-기본 복제는 프로퍼티 값이 바뀌었는지를 엔진이 직접 확인한다. 서버는 복제 대상 오브젝트마다 마지막으로 보낸 값의 사본(shadow state)을 둔다. 복제를 검토할 때는 현재 값과 shadow state를 비교해 다른 프로퍼티를 changelist에 기록한다. 이 비교가 `FRepLayout::CompareProperties`다.
+기본 복제는 프로퍼티 값이 바뀌었는지를 엔진이 직접 확인한다. 서버는 복제 대상 오브젝트마다 마지막으로 비교했을 때의 값 사본(shadow state)을 둔다. 복제를 검토할 때는 현재 값과 shadow state를 비교해 다른 프로퍼티를 changelist에 기록하고, 달라진 값을 shadow state에 덮어쓴다. 이 비교가 `FRepLayout::CompareProperties`다. shadow state는 비교할 때 갱신되므로 "마지막으로 보낸 값"이 아니다. 어느 연결에 무엇을 보냈는지는 뒤에서 볼 연결별 전송 이력이 따로 관리한다.
 
 비교는 연결마다 하지 않는다. 비교 결과는 오브젝트의 `FRepChangelistState`에 쌓이고, 같은 프레임에 같은 오브젝트를 복제하는 다른 연결은 이 결과를 재사용한다(`Engine/Private/RepLayout.cpp`). 연결별로 하는 일은 그다음이다. 각 연결의 replicator가 공유 changelist에서 아직 보내지 않은 변경을 골라 조건(`COND_OwnerOnly` 등)을 적용하고 직렬화한다.
 
@@ -50,7 +50,7 @@ Push + Skip은 Push Model과 `net.PushModelSkipUndirtiedReplication`(이하 skip
 
 Push Model은 첫째 층을, skip CVar는 둘째 층의 일부를 줄인다.
 
-![](./images/unreal-push-model/diagram-cost-layers.webp)
+![폴링 복제 비용의 두 층: 오브젝트당 한 번 하는 프로퍼티 비교와 연결마다 하는 changelist 확인·직렬화. Push Model은 첫째 층을, skip CVar는 둘째 층의 일부를 줄인다](./images/unreal-push-model/diagram-cost-layers.webp)
 
 ## Push Model을 켜는 세 개의 스위치
 
@@ -178,7 +178,7 @@ UE_LOG(LogTemp, Log, TEXT("Push Model: %s"), IS_PUSH_MODEL_ENABLED() ? TEXT("ena
 
 마킹한 비트가 비교에서 소비되고 지워지기까지의 흐름은 다음과 같다. 각 단계의 소스는 아래 절에서 확인한다.
 
-![](./images/unreal-push-model/diagram-dirty-lifecycle.webp)
+![dirty 비트의 라이프사이클: 마킹으로 비트를 세우고, NetDriver별 사본으로 옮긴 뒤, 비교 단계에서 소비하고 지운다](./images/unreal-push-model/diagram-dirty-lifecycle.webp)
 
 ### 마킹은 비트 하나를 세운다
 
@@ -288,7 +288,7 @@ bWroteSomethingImportant |= UpdateDeletedSubObjects(Bunch);
 
 skip CVar는 액터 본체의 `ReplicateProperties` 호출 하나만 건너뛴다. `ReplicateActor` 호출 자체, 서브오브젝트 복제, 삭제된 서브오브젝트 확인은 매번 돈다. 반면 서브오브젝트(복제 컴포넌트 등)는 각자의 replicator에서 같은 판정을 하고 skip되면 그 서브오브젝트의 처리를 일찍 끝낸다(`DataChannel.cpp`의 `UActorChannel::WriteSubObjectInBunch`).
 
-![](./images/unreal-push-model/diagram-skip-scope.webp)
+![skip CVar가 건너뛰는 범위: ReplicateActor 안에서 액터 본체의 ReplicateProperties 호출 하나만 건너뛰고, 서브오브젝트 복제와 삭제된 서브오브젝트 확인은 매번 돈다](./images/unreal-push-model/diagram-skip-scope.webp)
 
 FastArray가 있는 클래스를 skip 대상에 넣을 때 FastArray는 따로 마킹하지 않아도 된다. `MarkItemDirty`와 `MarkArrayDirty`가 `IncrementArrayReplicationKey`에서 FastArray 프로퍼티를 마킹한다(`Net/Core/Classes/Net/Serialization/FastArraySerializer.h`). 마킹할 오브젝트와 RepIndex는 처음 직렬화할 때 기억하므로(`RepLayout.cpp`의 `CachePushModelState`) 첫 복제 전의 호출은 마킹하지 않는다. 첫 복제는 앞에서 본 대로 모든 비트가 dirty인 상태라 문제가 없다.
 
@@ -388,12 +388,12 @@ protected:
 ```
 
 - 액터 클래스는 세 가지다. 16개를 모두 push로 등록한 Full 클래스, 여기에 바뀌지 않는 폴링 프로퍼티 하나를 더한 Partial 클래스, 그리고 Carrier 클래스다. Carrier 클래스는 액터 본체에 폴링 프로퍼티 하나만 두고, 16개 프로퍼티는 Full 컴포넌트에 담아 붙였다.
-- 서버는 액터 1000개를 스폰하고, 매 프레임 "초당 변경 비율 × 액터 수"만큼 무작위 액터의 무작위 프로퍼티 하나에 새 값을 쓰고 마킹한다. 난수 시드는 고정했다.
+- 서버는 액터 1000개를 스폰하고, 매 프레임 "초당 변경 비율 × 액터 수 × DeltaTime"을 누적해 1이 넘을 때마다 무작위 액터의 무작위 프로퍼티 하나에 새 값을 쓰고 마킹한다. 액터는 중복을 허용해 고르므로 변경 비율은 "액터당 평균 초당 쓰기 횟수"다. 1%면 액터 하나가 평균 100초에 한 번, 3000%면 평균 초당 30번 바뀐다. 난수 시드는 고정했다.
 - 클라이언트가 모두 접속하면 20초 워밍업 뒤 30초를 측정한다. 측정 구간에는 CSV 캡처와 Insights 리전 `PushLab.Measure`를 건다.
 - 서버는 에디터 바이너리를 `-server`로 띄웠다. 런처판 5.8에서는 Push Model이 켜진 Server 타깃을 빌드할 수 없어서다. 클라이언트는 렌더링 없이 띄웠다.
 - Ryzen 9 5950X에서 서버는 논리 코어 0번부터 15번에, 클라이언트는 16번부터 31번에 고정했다. 같은 조건을 반복했을 때 실행마다 결과가 ±10%가량 흔들려서, 서로 간섭하는 요인을 줄이려는 설정이다.
-- 연결 대역폭 제한을 100 MB/s로 올렸다. 기본값(100 KB/s)에서는 매 프레임 값을 바꾸는 조건에서 연결이 포화되어 연결당 프레임마다 처리하는 액터가 1000개에서 24개로 줄었다. 그 상태에서는 CPU가 아니라 대역폭 한계를 재게 된다.
-- 서버 최대 틱은 30 Hz로 두었다. 실제로는 프레임당 47 ms 안팎(약 21 Hz)으로 돌았다. 지표가 프레임당 복제 시간이므로 조건 간 비교에는 영향이 없다.
+- 연결 대역폭 제한을 100 MB/s로 올렸다. 기본값(100 KB/s)에서는 3000% 조건에서 연결이 포화되어 연결당 프레임마다 처리하는 액터가 1000개에서 24개로 줄었다. 그 상태에서는 CPU가 아니라 대역폭 한계를 재게 된다.
+- 서버 최대 틱은 30 Hz로 두었다. 실제로는 실행에 따라 프레임당 33~47 ms(약 21~30 Hz)로 돌았고, 그에 따라 연결당 프레임마다 처리한 액터 수도 774~1,005개로 달라졌다. 프레임당 시간으로 나눠도 프레임마다 한 일의 양까지 같아지지는 않으므로, 메인 조건은 `ReplicateActor` 1회당 시간으로도 함께 비교했다.
 
 서버와 클라이언트는 다음처럼 띄웠다. 실험용 인자(액터 수, 변경 비율 등)는 뺐다.
 
@@ -427,15 +427,15 @@ MaxInternetClientRate=100000000
 
 ### 메인 조건의 측정 결과
 
-메인 조건(Full 클래스 1000개, 초당 1% 변경, 클라이언트 2개)을 조건당 5회씩 번갈아 실행했다.
+메인 조건(Full 클래스 1000개, 초당 1% 변경, 클라이언트 2개)을 조건당 5회씩 번갈아 실행하는 세트를 두 번 돌렸다. 첫 세트의 프레임 시간이 실행마다 33~47 ms로 흔들려서 둘째 세트를 추가했는데, 둘째 세트도 42~47 ms로 흔들렸다. 표의 평균은 10회 평균이다.
 
-| 조건 | 5회 `ServerReplicateActors` 평균 (ms) | 평균 | `ReplicateActor` 1회당 |
-| --- | --- | --- | --- |
-| Push 끔 | 4.91 / 4.17 / 4.05 / 4.77 / 4.97 | 4.57 | 2.33 µs |
-| Push 켬 | 4.19 / 3.66 / 3.76 / 3.96 / 4.32 | 3.98 | 2.16 µs |
-| Push + Skip | 3.31 / 3.02 / 3.62 / 3.72 / 3.27 | 3.39 | 1.72 µs |
+| 조건 | 1차 5회 `ServerReplicateActors` (ms) | 2차 5회 (ms) | 10회 평균 | 비율 | `ReplicateActor` 1회당 (10회) | 비율 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Push 끔 | 4.91 / 4.17 / 4.05 / 4.77 / 4.97 | 4.80 / 5.28 / 4.42 / 4.22 / 4.16 | 4.57 | 100 | 2.36 µs | 100 |
+| Push 켬 | 4.19 / 3.66 / 3.76 / 3.96 / 4.32 | 4.52 / 4.04 / 3.94 / 3.82 / 3.43 | 3.97 | 87 | 2.08 µs | 88 |
+| Push + Skip | 3.31 / 3.02 / 3.62 / 3.72 / 3.27 | 4.06 / 3.29 / 3.12 / 3.43 / 2.81 | 3.36 | 74 | 1.71 µs | 73 |
 
-비율로는 100 : 87 : 74로, 예상한 100 : 95 : 90보다 이득이 컸다. 다만 "비교는 원래 싸다"는 판단 자체는 맞았다. 아래 Insights 시간 분해에서 비교는 전체의 14%였다. 차이는 skip CVar가 비교가 아니라 연결별 작업을 줄이는 데서 나왔다.
+프레임당 시간으로는 100 : 87 : 74로, 예상한 100 : 95 : 90보다 이득이 컸다. 프레임 시간이 흔들리면 프레임마다 처리한 액터 수도 달라지므로 `ReplicateActor` 1회당 시간으로도 비교했는데, 10회 평균의 비율은 100 : 88 : 73으로 거의 같았다. 다만 5회 세트 하나만 보면 Push 켬의 1회당 비율은 93과 83 사이를 오갔다. Push Model만 켰을 때의 13%는 ±5포인트쯤의 해상도로 읽어야 한다. skip CVar까지 켠 쪽은 두 세트와 두 지표에서 모두 71~74 사이였다. 다만 "비교는 원래 싸다"는 판단 자체는 맞았다. 아래 Insights 시간 분해에서 비교는 전체의 14%였다. 차이는 skip CVar가 비교가 아니라 연결별 작업을 줄이는 데서 나왔다.
 
 ### Unreal Insights로 시간 분해하기
 
@@ -483,9 +483,9 @@ UnrealInsights.exe -OpenTraceFile="D:/Traces/main_off.utrace" -AutoQuit -NoUI `
     -ExecOnAnalysisCompleteCmd="TimingInsights.ExportTimerStatistics D:/Traces/main_off.timers.csv -region=PushLab.Measure -threads=GameThread"
 ```
 
-결과는 다음과 같다. 트레이스를 기록한 1회 실행의 값이라 앞의 CSV 5회 평균과 합계가 조금 다르다.
+결과는 다음과 같다. 트레이스를 기록한 1회 실행의 값이라 앞의 CSV 10회 평균과 합계가 조금 다르다.
 
-![](./images/unreal-push-model/chart-breakdown.webp)
+![ServerReplicateActors 시간 분해 막대 차트: Push 끔, Push 켬, Push + Skip 세 조건의 프레임당 ms를 후보 수집, 연결별 액터 처리, 서브오브젝트 삭제 확인, 프로퍼티 비교, 프로퍼티 직렬화로 나눈 것](./images/unreal-push-model/chart-breakdown.webp)
 
 | 항목 (ms/프레임) | Push 끔 | Push 켬 | Push + Skip |
 | --- | --- | --- | --- |
@@ -496,9 +496,11 @@ UnrealInsights.exe -OpenTraceFile="D:/Traces/main_off.utrace" -AutoQuit -NoUI `
 | 프로퍼티 직렬화 | 0.24 | 0.23 | 0.01 |
 | 합계 | 4.28 | 3.84 | 3.16 |
 
+합계는 `ServerReplicateActors` 전체 시간이고, 위 다섯 항목에 넣지 않은 작은 스코프가 0.06 ms가량 더 들어 있다.
+
 Push Model은 비교 칸을 0.58 ms에서 0.14 ms로 줄였다. 비교는 처음부터 전체의 14%였으므로 Push Model 단독으로 줄일 수 있는 폭도 그 정도다. skip CVar는 직렬화 칸과 연결별 액터 처리 칸의 일부를 줄였다. 가장 큰 칸인 연결별 액터 처리는 skip CVar를 켜도 2.13 ms가 남는다.
 
-> `-statnamedevents`는 µs 단위 스코프마다 이벤트를 기록하므로 측정값을 부풀릴 수 있다. 같은 조건에서 추적 없이 CSV만 기록한 5회 평균은 4.57 ms, 추적한 실행은 4.28 ms로 실행 간 편차 안에 있었다. 이 실험 규모에서는 추적 비용이 결과를 바꾸지 않았다.
+> `-statnamedevents`는 µs 단위 스코프마다 이벤트를 기록하므로 측정값을 부풀릴 수 있다. 같은 조건에서 추적 없이 CSV만 기록한 10회 평균은 4.57 ms, 추적한 실행 1회는 4.28 ms였다. 추적 실행이 1회뿐이고 그 값이 추적 없는 실행의 범위(4.05~5.28 ms) 안에 있어서, 이번 비교로는 추적 비용과 실행 간 편차를 분리하지 못했다. 분해 표는 세 조건의 상대 비교에만 쓴다.
 
 호출 하나하나의 길이도 봤다. `TimingInsights.ExportTimingEvents`로 이벤트를 내보내 분포를 만들었다. 명령은 response file(`main_off.events.rsp`)에 쓰고 `@=` 접두사로 넘긴다.
 
@@ -523,26 +525,26 @@ skip CVar를 켜면 `ReplicateActor`의 61%가 1 µs 미만에 모인다. 비교
 
 ### 값을 바꾸는 빈도에 따른 차이
 
-![](./images/unreal-push-model/chart-change-rate.webp)
+![값을 바꾸는 빈도별 ServerReplicateActors 시간 막대 차트: 변경 비율 0, 1%, 10%, 100%, 3000%에서 Push 끔, Push 켬, Push + Skip의 프레임당 ms](./images/unreal-push-model/chart-change-rate.webp)
 
 | 초당 변경 비율 | Push 끔 | Push 켬 | Push + Skip | skip된 replicator/프레임 |
 | --- | --- | --- | --- | --- |
 | 0 | 4.72 | 3.68 | 2.95 | 2,000 |
-| 1% (5회 평균) | 4.57 | 3.98 | 3.39 | 1,998 |
+| 1% (10회 평균) | 4.57 | 3.97 | 3.36 | 1,998 |
 | 10% | 4.21 | 3.73 | 3.07 | 1,978 |
 | 100% | 4.35 | 4.03 | 3.38 | 1,820 |
-| 3000% (매 프레임) | 8.55 | 8.06 | 8.43 | 118 |
+| 3000% (액터당 초당 30회) | 8.55 | 8.06 | 8.43 | 118 |
 
-1%를 뺀 나머지는 1회씩 측정했으므로 ±10% 안의 차이는 잡음으로 본다. 100%까지는 Push + Skip이 꾸준히 25% 안팎 앞섰다. 매 프레임 바뀌는 조건에서는 skip할 replicator가 거의 없어서 skip CVar의 효과가 사라졌다. 이때도 Push Model을 켠 쪽이 끈 쪽보다 느리지는 않았다.
+1%를 뺀 나머지는 1회씩 측정했으므로 ±10% 안의 차이는 잡음으로 본다. 100%까지는 Push + Skip이 꾸준히 25% 안팎 앞섰다. 액터당 초당 30회 바뀌는 조건에서는 한 프레임에 액터 대부분이 한 번 이상 바뀌어 skip할 replicator가 거의 없고, skip CVar의 효과가 사라졌다. 이때도 Push Model을 켠 쪽이 끈 쪽보다 느리지는 않았다.
 
 ### 연결 수에 따른 차이
 
-![](./images/unreal-push-model/chart-connections.webp)
+![클라이언트 수별 ServerReplicateActors 시간 꺾은선 차트: 클라이언트 1, 2, 4, 8개에서 Push 끔과 Push + Skip의 프레임당 ms](./images/unreal-push-model/chart-connections.webp)
 
 | 클라이언트 | Push 끔 | Push + Skip | 감소 |
 | --- | --- | --- | --- |
 | 1 | 2.30 ms | 1.63 ms | 29% |
-| 2 | 4.57 ms | 3.39 ms | 26% |
+| 2 | 4.57 ms | 3.36 ms | 26% |
 | 4 | 7.62 ms | 5.99 ms | 21% |
 | 8 | 16.60 ms | 13.18 ms | 21% |
 
@@ -552,7 +554,7 @@ skip CVar를 켜면 `ReplicateActor`의 61%가 1 µs 미만에 모인다. 비교
 
 | 조건 | `ServerReplicateActors` | skip된 replicator/프레임 |
 | --- | --- | --- |
-| Full, Push + Skip | 3.39 ms | 1,998 |
+| Full, Push + Skip | 3.36 ms | 1,998 |
 | Partial, Push 켬 | 3.80 ms | 0 |
 | Partial, Push + Skip | 3.79 ms | 0.1 |
 | Carrier, Push 끔 | 6.24 ms | 0 |
@@ -597,7 +599,7 @@ UnrealEditor.exe ThirdPerson.uproject /Game/ThirdPerson/Lvl_ThirdPerson -server 
 | Push 끔 | 45,265 | 4,676,627 | 103 bits | 985 |
 | Push 켬 | 45,240 | 4,677,280 | 103 bits | 985 |
 
-폴링이든 push든 보내는 것은 바뀐 프로퍼티뿐이므로 송신 내용은 같다. `FVector` 프로퍼티는 200 bits, `int32`와 `float`은 40 bits로 두 실행이 같았다. 매 프레임 바뀌는 조건의 CSV에서도 프레임당 송신량은 37.26 KB, 37.27 KB, 37.24 KB로 같았다. Push Model이 줄이는 것은 서버 CPU다.
+폴링이든 push든 보내는 것은 바뀐 프로퍼티뿐이므로 송신 내용은 같다. `FVector` 프로퍼티는 200 bits, `int32`와 `float`은 40 bits로 두 실행이 같았다. 3000% 조건의 CSV에서도 프레임당 송신량은 37.26 KB, 37.27 KB, 37.24 KB로 같았다. Push Model이 줄이는 것은 서버 CPU다.
 
 ### Network Profiler로 비교 횟수 세기
 
@@ -640,7 +642,7 @@ Waste는 `ReplicateActor`를 부른 횟수 중 아무것도 보내지 않은 비
 | Push 켬 | 3,473.96 | 42,660.81 | 20.08 | 99.95 |
 | Push + Skip | 677.53 | 43,724.04 | 20.07 | 99.95 |
 
-Waste는 세 조건에서 같았다. Push Model은 보낼지 판단하는 방법을 바꿀 뿐 보내는 내용을 바꾸지 않는다. skip으로 건너뛴 호출도 `TrackReplicateActor`로 기록되므로(`Engine/Private/DataChannel.cpp`의 `ReplicateActor`) 분모에서 빠지지 않는다. 그래서 Waste가 그대로라고 Push Model이 효과가 없다고 읽으면 안 된다. 효과는 `ReplicateActor`에 쓴 시간인 MS 열에서 보인다. Push Model만 켜면 8% 줄었고 skip CVar까지 켜면 82% 줄었다. 이 비율은 기록 비용이 들어간 값이어서 앞의 CPU 측정(13%, 26%)보다 크게 나온다.
+Waste는 세 조건에서 같았다. Push Model은 보낼지 판단하는 방법을 바꿀 뿐 보내는 내용을 바꾸지 않는다. skip으로 건너뛴 호출도 `TrackReplicateActor`로 기록되므로(`Engine/Private/DataChannel.cpp`의 `ReplicateActor`) 분모에서 빠지지 않는다. 그래서 Waste가 그대로라고 Push Model이 효과가 없다고 읽으면 안 된다. 효과는 `ReplicateActor`에 쓴 시간인 MS 열에서 보인다. Push Model만 켜면 8% 줄었고 skip CVar까지 켜면 82% 줄었다. 앞의 CPU 측정보다 감소율이 훨씬 큰 데는 두 가지 이유가 있다. MS 열은 `ServerReplicateActors` 전체가 아니라 `ReplicateActor` 안쪽만 재므로 skip CVar가 건드리지 않는 후보 수집과 우선순위 계산이 빠져 있고, 비교와 직렬화마다 프로파일러가 기록을 남기므로 skip으로 건너뛴 호출에서는 그 기록 비용까지 함께 사라진다. 이 열은 세 조건의 상대 비교에만 쓴다.
 
 ### Dormancy와 비교하면
 
@@ -658,7 +660,7 @@ Actor->SetHealth(NewHealth); // 내부에서 마킹한다
 
 | 조건 | `ServerReplicateActors` |
 | --- | --- |
-| 깨어 있음, Push + Skip (앞의 5회 평균) | 3.39 ms |
+| 깨어 있음, Push + Skip (앞의 10회 평균) | 3.36 ms |
 | Dormancy, Push 끔 | 0.16 ms |
 | Dormancy, Push 켬 | 0.16 ms |
 | Dormancy, Push + Skip | 0.17 ms |
@@ -667,24 +669,24 @@ Push + Skip의 약 5%다. 측정 중 활성 네트워크 오브젝트는 프레�
 
 값을 바꾸는 빈도를 올리면 결과가 뒤집힌다.
 
-![](./images/unreal-push-model/chart-dormancy.webp)
+![Dormancy와 변경 빈도별 ServerReplicateActors 시간 막대 차트: 변경 비율 1%, 10%, 100%, 3000%에서 깨어 있는 Push 끔, 깨어 있는 Push + Skip, Dormancy Push + Skip의 프레임당 ms](./images/unreal-push-model/chart-dormancy.webp)
 
 | 초당 변경 비율 | 깨어 있음, Push 끔 | 깨어 있음, Push + Skip | Dormancy, Push + Skip | 활성 오브젝트/프레임 |
 | --- | --- | --- | --- | --- |
-| 1% | 4.57 | 3.39 | 0.17 | 10.9 |
+| 1% | 4.57 | 3.36 | 0.17 | 10.9 |
 | 10% | 4.21 | 3.07 | 0.42 | 19.3 |
 | 100% | 4.35 | 3.38 | 4.01 | 97.8 |
-| 3000% (매 프레임) | 8.55 | 8.43 | 24.23 | 833.7 |
+| 3000% (액터당 초당 30회) | 8.55 | 8.43 | 24.23 | 833.7 |
 
 활성 오브젝트는 Dormancy 조건의 값이다. Push Model을 끈 Dormancy는 0.16, 0.42, 4.14, 24.91 ms로 Push + Skip과 비슷했다.
 
-액터가 평균 10초에 한 번 바뀌는(10%) 조건까지는 Dormancy가 크게 앞섰다. 1초에 한 번(100%)이면 Push + Skip이 앞섰고, 매 프레임 바뀌면 Dormancy가 약 3배 느렸다.
+액터가 평균 10초에 한 번 바뀌는(10%) 조건까지는 Dormancy가 크게 앞섰다. 1초에 한 번(100%)이면 Push + Skip이 앞섰고, 초당 30회(3000%)면 Dormancy가 약 3배 느렸다.
 
-같은 100% 조건의 트레이스에서 차이가 난 곳은 직렬화였다. 깨어 있는 Push + Skip에서 `Dynamic Property Rep Time`은 호출당 0.75 µs, 프레임당 0.12 ms였다. Dormancy에서는 호출당 9.84 µs, 프레임당 2.09 ms였다. 깨어난 액터는 채널을 새로 열고(채널 생성이 프레임당 85.6회), 호출당 시간이 13배인 것으로 보아 바뀐 프로퍼티 하나가 아니라 상태 전체를 다시 직렬화하는 것으로 보인다. 송신 패킷도 프레임당 2.0개에서 17.4개로 늘었고, 매 프레임 바뀌는 조건의 송신량은 37.2 KB에서 80.1 KB가 됐다.
+같은 100% 조건의 트레이스에서 차이가 난 곳은 직렬화였다. 깨어 있는 Push + Skip에서 `Dynamic Property Rep Time`은 호출당 0.75 µs, 프레임당 0.12 ms였다. Dormancy에서는 호출당 9.84 µs, 프레임당 2.09 ms였다. 깨어난 액터는 채널을 새로 열고(채널 생성이 프레임당 85.6회), 호출당 시간이 13배인 것으로 보아 바뀐 프로퍼티 하나가 아니라 상태 전체를 다시 직렬화하는 것으로 보인다. 송신 패킷도 프레임당 2.0개에서 17.4개로 늘었고, 3000% 조건의 프레임당 송신량은 37.2 KB에서 80.1 KB가 됐다.
 
 표의 수치 밖에서 드는 비용도 있다. `ServerReplicateActors` 다음에 도는 `UNetConnection::Tick`의 채널 Tick(`STAT_NetConnection_TickChannels`)이 깨어 있을 때 0.004 ms에서 0.92 ms로 늘었고, 게임 코드에서 부른 `FlushNetDormancy`에 0.25 ms가 더 들었다.
 
-깨우는 순서는 Epic의 [Actor Network Dormancy](https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-network-dormancy-in-unreal-engine) 문서를 따랐다. 문서는 깨울 때 shadow state를 현재 값으로 다시 만들기 때문에 깨운 다음에 바꾸라고 한다. 순서를 바꿔 값을 먼저 바꾸고 flush하는 probe도 돌려 봤는데, 이번 실험의 일반 프로퍼티는 1000개 모두 전달됐다. 문서는 이 동작을 기대면 안 되는 구현 세부로 보고, FastArray는 이 순서에서 변경이 전달되지 않을 수 있다고 적는다. 앞에서 본 [UE-226689](https://issues.unrealengine.com/issue/UE-226689)도 Dormancy 해제와 마킹이 엮인 문제다.
+깨우는 순서는 Epic의 [Actor Network Dormancy](https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-network-dormancy-in-unreal-engine) 문서를 따랐다. 문서는 깨울 때 shadow state를 현재 값으로 다시 만들기 때문에 깨운 다음에 바꾸라고 한다. 순서를 바꿔 값을 먼저 바꾸고 flush하는 probe도 돌려 봤는데, 이번 실험의 일반 프로퍼티는 1000개 모두 전달됐다. 문서는 이 동작을 기대면 안 되는 구현 세부로 보고, FastArray는 이 순서에서 변경이 전달되지 않을 수 있다고 적는다. 다음 절에서 볼 [UE-226689](https://issues.unrealengine.com/issue/UE-226689)도 Dormancy 해제와 마킹이 엮인 문제다.
 
 ### 다른 측정과 비교하면
 
@@ -811,7 +813,7 @@ net.IsPushModelEnabled=1
 
 새 프로젝트에서 기본으로 하는 것은 세 가지다.
 
-- 복제 프로퍼티는 모두 push로 등록하고 skip CVar를 켠다. 측정한 어떤 조건에서도 Push Model을 켠 쪽이 실행 간 편차를 넘어 느려지지 않았다. skip CVar는 Full 클래스에서만 동작하므로 섞어 쓸 이유도 없다.
+- 직접 관리하는 복제 프로퍼티는 push로 등록하고 skip CVar를 켠다. 이번에 측정한 조건에서는 Push Model을 켠 쪽이 실행 간 편차를 넘어 느려진 경우가 없었다. 다만 측정한 것은 수치형 프로퍼티 16개짜리 액터이고, 엔진 헤더가 적어 둔 메모리 비용(`TargetRules.cs`의 `bWithPushModel` 주석)은 재지 않았다. skip CVar는 Full 클래스에서만 동작하므로 한 클래스 안에서 섞어 쓸 이유는 없다. 값을 바꾸는 경로를 통제하기 어려운 코드는 따로 검토한다.
 - 값을 바꾸는 경로는 setter로 모은다([마킹 누락을 막는 구조](#마킹-누락을-막는-구조)).
 - 패키지 빌드의 Target.cs에 `bWithPushModel = true`가 있는지 확인한다. 없으면 PIE에서 본 동작과 다르게 조용히 폴링으로 돈다.
 
@@ -829,7 +831,7 @@ Push Model은 Dormancy를 대신하지 않는다. 값이 몇 초에 한 번 바�
 >
 > `Net/Core/Public/Net/Core/PushModel/PushModel.h`
 
-이번 측정의 26%도 그 문장과 크게 다르지 않다. 그래도 손해 보는 조건을 찾지 못했고, 마킹을 강제하는 구조가 값을 바꾸는 경로를 한곳으로 모으는 효과도 있어서 기본값으로 쓰기에는 충분하다고 본다.
+이번 측정의 26%도 그 문장과 크게 다르지 않다. 그래도 측정한 조건 안에서는 손해 보는 경우를 찾지 못했고, 마킹을 강제하는 구조가 값을 바꾸는 경로를 한곳으로 모으는 효과도 있다. 수치형 프로퍼티 위주의 실험이라 다른 구성에서는 결과가 다를 수 있지만, 새 프로젝트에서 직접 관리하는 프로퍼티를 push로 등록하는 것을 기본 선택으로 삼기에는 충분하다고 본다.
 
 ## 참고 자료
 

@@ -164,7 +164,16 @@ Push Model은 무엇을 비교할지만 바꾼다. 액터를 언제 복제 검�
 
 Push Model만 켜면 연결별 작업은 그대로 남는다. 바뀐 것이 없어도 각 연결의 replicator는 changelist를 확인한다. `net.PushModelSkipUndirtiedReplication`(기본값 `false`)을 켜면 replicator가 이 확인을 건너뛸 수 있다. 판정은 `FObjectReplicator::CanSkipUpdate`(`Engine/Private/DataReplication.cpp`)가 한다.
 
-skip 대상이 되려면 먼저 replicator를 초기화할 때 클래스가 `FullPushProperties`여야 하고, FastArray 같은 CustomDelta 프로퍼티가 없어야 한다. FastArray가 있는 클래스는 `net.PushModelSkipUndirtiedFastArrays`까지 켜고 FastArray 프로퍼티도 push로 등록해야 한다. 그다음 매번 다음 조건을 모두 통과해야 한다.
+skip 대상이 되려면 먼저 replicator를 초기화할 때 클래스가 `FullPushProperties`여야 하고, FastArray 같은 CustomDelta 프로퍼티가 없어야 한다. FastArray가 있는 클래스는 FastArray 프로퍼티도 push로 등록하고 CVar를 하나 더 켜야 한다.
+
+```ini
+[SystemSettings]
+net.PushModelSkipUndirtiedReplication=1
+; FastArray가 있는 클래스도 skip 대상에 넣는다 (기본값 0)
+net.PushModelSkipUndirtiedFastArrays=1
+```
+
+그다음 매번 다음 조건을 모두 통과해야 한다.
 
 - 이 연결로 초기 복제(NetInitial) 중이 아니다.
 - RepFlags가 지난번과 같다.
@@ -218,7 +227,17 @@ skip CVar를 받으려면 클래스가 Full 클래스여야 하고, Full 클래�
 | `APawn` | `PlayerState`, `Controller` 등을 `DOREPLIFETIME`으로 등록 | Partial |
 | `ACharacter` | 모두 `DOREPLIFETIME_CONDITION` | Partial |
 | `AGameStateBase` | push 파라미터를 만들고도 `DOREPLIFETIME`으로 등록 | Partial |
-| `AController`, `APlayerController` | `Controller.IsPushBased`, `PlayerController.IsPushBased` CVar를 켤 때만 push | 기본 Partial |
+| `AController`, `APlayerController` | 아래 CVar를 켤 때만 push | 기본 Partial |
+
+컨트롤러는 CVar로 push 등록을 켤 수 있다. 등록은 `GetLifetimeReplicatedProps`에서 하므로 시작 전에 설정한다.
+
+```ini
+[SystemSettings]
+; AController의 복제 프로퍼티를 push로 등록한다 (기본값 0)
+Controller.IsPushBased=1
+; APlayerController의 복제 프로퍼티를 push로 등록한다 (기본값 0)
+PlayerController.IsPushBased=1
+```
 
 `AActor`를 직접 상속한 액터는 자기 프로퍼티를 모두 push로 등록하면 Full이 된다. `ACharacter`를 상속한 캐릭터는 무엇을 추가해도 Full이 될 수 없다. 추가한 push 프로퍼티의 비교 비용은 줄지만 skip은 받지 못한다.
 
@@ -286,10 +305,34 @@ protected:
 - 액터 클래스는 세 가지다. 16개를 모두 push로 등록한 Full 클래스, 여기에 바뀌지 않는 폴링 프로퍼티 하나를 더한 Partial 클래스, 폴링 프로퍼티 하나만 있는 액터에 16개 프로퍼티를 가진 Full 컴포넌트를 붙인 Carrier 클래스다.
 - 서버는 액터 1000개를 스폰하고, 매 프레임 "초당 변경 비율 × 액터 수"만큼 무작위 액터의 무작위 프로퍼티 하나에 새 값을 쓰고 마킹한다. 난수 시드는 고정했다.
 - 클라이언트가 모두 접속하면 20초 워밍업 뒤 30초를 측정한다. 측정 구간에는 CSV 캡처와 Insights 리전 `PushLab.Measure`를 건다.
-- 서버는 에디터 바이너리를 `-server`로 띄웠다. 런처판 5.8에서는 Push Model이 켜진 Server 타깃을 빌드할 수 없어서다. 클라이언트는 `-game -nullrhi`로 띄웠다.
+- 서버는 에디터 바이너리를 `-server`로 띄웠다. 런처판 5.8에서는 Push Model이 켜진 Server 타깃을 빌드할 수 없어서다. 클라이언트는 렌더링 없이 띄웠다.
 - Ryzen 9 5950X에서 서버를 논리 코어 0~15에, 클라이언트를 16~31에 고정했다. 같은 조건을 반복했을 때 실행마다 결과가 ±10%가량 흔들려서, 서로 간섭하는 요인을 줄이려는 설정이다.
-- `MaxClientRate`, `MaxInternetClientRate`, `ConfiguredInternetSpeed`를 100 MB/s로 올렸다. 기본값(100 KB/s)에서는 매 프레임 값을 바꾸는 조건에서 연결이 포화되어, 연결당 프레임마다 처리하는 액터가 1000개에서 24개로 줄었다. 그 상태에서는 CPU가 아니라 대역폭 한계를 재게 된다.
+- 연결 대역폭 제한을 100 MB/s로 올렸다. 기본값(100 KB/s)에서는 매 프레임 값을 바꾸는 조건에서 연결이 포화되어, 연결당 프레임마다 처리하는 액터가 1000개에서 24개로 줄었다. 그 상태에서는 CPU가 아니라 대역폭 한계를 재게 된다.
 - 서버 최대 틱은 30 Hz지만 실제 프레임은 47 ms 안팎(약 21 Hz)이었다. Windows의 sleep 해상도 때문으로 보인다. 모든 조건에 같게 적용되고, 지표가 프레임당 복제 시간이므로 비교에는 영향이 없다.
+
+서버와 클라이언트는 다음처럼 띄웠다. 실험용 인자(액터 수, 변경 비율 등)는 뺐다.
+
+```powershell
+# 데디케이티드 서버: 에디터 바이너리로 uncooked 실행
+UnrealEditor.exe ThirdPerson.uproject /Game/ThirdPerson/Lvl_ThirdPerson -server -log -NoVerifyGC
+
+# 클라이언트: 렌더링과 사운드 없이 접속
+UnrealEditor.exe ThirdPerson.uproject 127.0.0.1 -game -nullrhi -nosound -log
+```
+
+대역폭 제한은 `DefaultEngine.ini`로 쓰면 다음과 같다. 실험에서는 같은 값을 `-ini:Engine:[섹션]:키=값` 인자로 서버와 클라이언트에 함께 넘겼다.
+
+```ini
+[/Script/Engine.Player]
+; 클라이언트가 요청하는 연결 속도 (bytes/s, 기본값 100000)
+ConfiguredInternetSpeed=100000000
+ConfiguredLanSpeed=100000000
+
+[/Script/OnlineSubsystemUtils.IpNetDriver]
+; 서버가 연결마다 허용하는 최대 속도 (bytes/s, 기본값 100000)
+MaxClientRate=100000000
+MaxInternetClientRate=100000000
+```
 
 조건마다 서버를 새로 띄우고 `Net.IsPushModelEnabled`와 `net.PushModelSkipUndirtiedReplication`만 바꿨다. 같은 바이너리를 쓰므로 빌드 차이는 결과에 섞이지 않는다.
 
@@ -311,7 +354,16 @@ protected:
 
 ### Unreal Insights로 시간 분해하기
 
-`-trace=cpu,frame,bookmark,region -statnamedevents`로 기록한 트레이스를 Unreal Insights로 열었다. `-statnamedevents`가 있어야 `STAT_` 계열 스코프가 Timing 뷰에 이벤트로 나온다.
+서버를 다음 인자로 띄워 트레이스를 기록하고 Unreal Insights로 열었다.
+
+```powershell
+UnrealEditor.exe ThirdPerson.uproject /Game/ThirdPerson/Lvl_ThirdPerson -server -log `
+    -trace=cpu,frame,bookmark,region,log `
+    -statnamedevents `
+    -tracefile="D:/Traces/main_off.utrace"
+```
+
+`-statnamedevents`가 있어야 `STAT_` 계열 스코프가 Timing 뷰에 이벤트로 나온다. `region` 채널은 서버 코드에서 `TRACE_BEGIN_REGION(TEXT("PushLab.Measure"))`로 건 측정 구간을 기록한다.
 
 ![Unreal Insights 타임라인에서 PushLab.Measure 리전과 그 구간을 선택한 범위를 표시한 화면](./images/unreal-push-model/insights-timeline-measure-region.webp)
 
@@ -339,7 +391,14 @@ skip CVar까지 켰다.
 - ② `STAT_NetDeletedSubObjects`도 209.42 ms로 남았다. 앞의 소스대로 skip과 상관없이 매번 실행된다.
 - ③ 비교는 599회로 줄었다. 실제로 값이 바뀐 액터만 비교한다. 직렬화(`Dynamic Property Rep Time`)도 1,198회, 2.49 ms로 거의 사라졌다.
 
-같은 트레이스에서 타이머별 exclusive 시간을 내보내 프레임당 값으로 나누면 다음과 같다. Insights의 `TimingInsights.ExportTimerStatistics` 명령으로 리전과 스레드를 지정해 CSV로 받았다.
+같은 트레이스에서 타이머별 exclusive 시간을 CSV로 내보내 프레임당 값으로 나눴다. Insights는 UI 없이 트레이스를 분석한 뒤 명령을 실행할 수 있고, `-region`과 `-threads`로 측정 구간과 스레드를 지정할 수 있다.
+
+```powershell
+UnrealInsights.exe -OpenTraceFile="D:/Traces/main_off.utrace" -AutoQuit -NoUI `
+    -ExecOnAnalysisCompleteCmd="TimingInsights.ExportTimerStatistics D:/Traces/main_off.timers.csv -region=PushLab.Measure -threads=GameThread"
+```
+
+결과는 다음과 같다.
 
 ![ServerReplicateActors 프레임당 시간을 후보 수집, 연결별 액터 처리, 서브오브젝트 삭제 확인, 프로퍼티 비교, 프로퍼티 직렬화, 기타로 나눈 누적 막대 그래프. push 끔 4.28 ms, push 켬 3.84 ms, push와 skip 3.16 ms](./images/unreal-push-model/chart-breakdown.webp)
 
@@ -354,7 +413,18 @@ skip CVar까지 켰다.
 
 Push Model은 비교 칸을 0.58 ms에서 0.14 ms로 줄였다. 비교는 처음부터 전체의 14%였으므로 Push Model 단독으로 줄일 수 있는 폭도 그 정도다. skip은 직렬화 칸과 연결별 처리 칸의 일부를 줄였다. 가장 큰 칸인 연결별 액터 처리는 skip을 켜도 2.13 ms가 남는다.
 
-호출 하나하나의 길이도 봤다. `TimingInsights.ExportTimingEvents`로 이벤트를 내보내 분포를 만들었다. 타이머 이름에 공백이 있어서 명령을 response file로 넘겼다(`-ExecOnAnalysisCompleteCmd="@=<파일>"`). response file 안에서는 경로의 역슬래시가 이스케이프로 처리되어 사라지므로 슬래시로 써야 한다.
+호출 하나하나의 길이도 봤다. `TimingInsights.ExportTimingEvents`로 이벤트를 내보내 분포를 만들었다. 타이머 이름에 공백이 있어서 명령줄 안에서는 따옴표가 겹치므로, 명령을 response file에 쓰고 `@=` 접두사로 넘겼다. response file(`main_off.events.rsp`)에는 한 줄에 명령 하나를 쓴다.
+
+```text
+TimingInsights.ExportTimingEvents "D:/Traces/main_off.events.csv" -columns="TimerName,Duration" -threads="GameThread" -timers="Replicate Actor Time,Dynamic Property Compare Time" -region="PushLab.Measure"
+```
+
+```powershell
+UnrealInsights.exe -OpenTraceFile="D:/Traces/main_off.utrace" -AutoQuit -NoUI `
+    -ExecOnAnalysisCompleteCmd="@=D:/Traces/main_off.events.rsp"
+```
+
+response file 안의 경로는 슬래시로 쓴다. 역슬래시로 쓰면 이스케이프로 처리되어 사라져, Insights 로그에 `G:ThirdPersonSavedPushLab...`처럼 망가진 경로가 찍히고 원하는 위치에 파일이 생기지 않았다.
 
 | 조건 | `Replicate Actor Time` p50 / p90 / p99 | 비교 호출 수 | 비교 p50 |
 | --- | --- | --- | --- |
@@ -418,7 +488,16 @@ skip CVar를 켰는데도 ① 직렬화가 1,273,410회 돌고 ② 비교도 636
 
 ### 대역폭은 바뀌지 않는다
 
-Push Model이 네트워크 트래픽을 줄인다는 설명도 있어서 Networking Insights로 확인했다. 서버를 `-trace=net -NetTrace=2`로 띄우면 패킷과 프로퍼티 단위의 비트 수가 기록된다. 이 실행은 CPU 수치 비교에는 쓰지 않았다.
+Push Model이 네트워크 트래픽을 줄인다는 설명도 있어서 Networking Insights로 확인했다. 서버를 다음처럼 띄우면 패킷과 프로퍼티 단위의 비트 수가 기록된다.
+
+```powershell
+UnrealEditor.exe ThirdPerson.uproject /Game/ThirdPerson/Lvl_ThirdPerson -server -log `
+    -trace=net,frame,bookmark,region,log `
+    -NetTrace=2 `
+    -tracefile="D:/Traces/rate1_off_net.utrace"
+```
+
+`-NetTrace`는 net trace의 상세 수준이다(0 꺼짐, 1 Trace, 2 Verbose, 3 VeryVerbose). net trace는 기록량이 많아서 이 실행은 CPU 수치 비교에는 쓰지 않았다.
 
 ![Networking Insights 패킷 화면에서 Outgoing 방향과 선택한 985개 패킷 범위를 표시한 화면](./images/unreal-push-model/networking-insights-packets.webp)
 
@@ -456,7 +535,19 @@ LogPushLab: Display: Client probe: 1000 / 1000 lab actors have Int00=777
 
 같은 액터의 다른 프로퍼티가 마킹되어 액터가 복제돼도 `Int00`은 따라가지 않는다. dirty가 아닌 push 프로퍼티는 비교 대상에서 빠지기 때문이다. Dormancy와 겹치면 더 나빠진다. 마킹하지 않은 값이 Dormancy 해제 때 전송되면서 shadow state에는 기록되지 않아, 나중에 원래 값으로 되돌린 변경을 감지하지 못하는 이슈가 열려 있다([UE-226689](https://issues.unrealengine.com/issue/UE-226689)).
 
-마킹 누락은 `net.PushModelValidateProperties`로 찾을 수 있다. 모든 push 프로퍼티를 비교해서 마킹되지 않은 변경이 있으면 경고하는 검증용 CVar로, Shipping과 Test 빌드에는 들어가지 않는다(`Net/Core/Public/Net/Core/PushModel/PushModelMacros.h`의 `WITH_PUSH_VALIDATION_SUPPORT`). 모든 프로퍼티를 비교하므로 켠 상태로 성능을 재면 안 된다. `net.PushModelValidateSkipUpdate`도 skip을 막으므로 측정 때는 끈다.
+마킹 누락은 검증용 CVar로 찾을 수 있다. 개발 중에는 켜 두고, 성능을 잴 때는 끈다.
+
+```ini
+[SystemSettings]
+; 모든 push 프로퍼티를 비교해서 마킹되지 않은 변경이 있으면 경고한다 (기본값 0)
+; 모든 프로퍼티를 비교하므로 켠 상태로는 Push Model의 이득이 사라진다
+net.PushModelValidateProperties=1
+; skip할 수 있다고 판단한 오브젝트가 실제로 데이터를 썼는지 검사한다 (기본값 0)
+; 검사하려고 skip하지 않고 복제하므로 이것도 측정 때는 끈다
+net.PushModelValidateSkipUpdate=1
+```
+
+`net.PushModelValidateProperties`는 Shipping과 Test 빌드에는 들어가지 않는다(`Net/Core/Public/Net/Core/PushModel/PushModelMacros.h`의 `WITH_PUSH_VALIDATION_SUPPORT`).
 
 ## Iris: push를 더 적극적으로 쓰는 차세대 복제 시스템
 

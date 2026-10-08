@@ -1,7 +1,7 @@
 ---
 title: "Unreal Engine Push Model: 소스 분석과 Unreal Insights 실측"
 published: 2026-10-08
-description: "UE 5.8.3 기준으로 레거시 복제의 Push Model이 켜지는 조건, dirty 비트가 소비되는 경로, net.PushModelSkipUndirtiedReplication이 건너뛰는 범위를 엔진 소스로 확인하고, ThirdPerson 템플릿에 액터 1000개를 띄워 Unreal Insights와 Networking Insights로 CPU 시간과 대역폭을 측정한다. 같은 조건에서 Dormancy와도 비교한다."
+description: "UE 5.8.3 기준으로 레거시 복제의 Push Model이 켜지는 조건, dirty 비트가 소비되는 경로, net.PushModelSkipUndirtiedReplication이 건너뛰는 범위를 엔진 소스로 확인하고, ThirdPerson 템플릿에 액터 1000개를 띄워 Unreal Insights, Networking Insights, Network Profiler로 CPU 시간, 대역폭, 비교 횟수를 측정한다. 같은 조건에서 Dormancy와도 비교한다."
 tags:
   - unreal-engine
   - networking
@@ -14,6 +14,15 @@ category: Unreal Engine
 draft: false
 lang: ko
 ---
+
+:::note[TL;DR]
+- UE 5.8.3에서 Push Model은 기본으로 꺼져 있다. 컴파일 스위치 `bWithPushModel`, 런타임 CVar `Net.IsPushModelEnabled`, 프로퍼티별 `bIsPushBased` 등록이 모두 갖춰져야 동작한다.
+- 마킹은 "보내라"가 아니라 "비교해 봐라"는 표시다. dirty가 아닌 push 프로퍼티의 비교만 건너뛰고, 언제 복제할지는 바꾸지 않는다.
+- 액터 1000개, 클라이언트 2개, 초당 1%의 액터만 값이 바뀌는 조건에서 `ServerReplicateActors`는 push만 켜면 13%, skip CVar까지 켜면 26% 줄었다. 송신 바이트는 그대로였다.
+- skip CVar는 모든 복제 프로퍼티가 push인 클래스에서만 동작한다. `ACharacter`를 상속한 클래스는 받지 못하고, unreliable multicast를 한 번 보낸 액터는 그 연결에서 영구히 받지 못한다.
+- 값이 드물게 바뀌는 액터는 Dormancy가 훨씬 싸다(0.17 ms). 액터마다 초당 한 번 바뀌는 조건에서는 push + skip이 더 빨랐다.
+- 마킹을 빠뜨려도 오류가 나지 않는다. 값을 바꾸는 경로를 setter로 모으고 검증 CVar로 확인한다.
+:::
 
 Push Model은 "켜면 복제가 빨라진다"는 설명으로 많이 알려져 있다. 그런데 UE 5.8.3에서 Push Model은 기본으로 꺼져 있다. 켜는 스위치는 세 개이고, 그중 하나는 Editor 타깃에서만 기본으로 켜진다. 켠 뒤에도 무엇이 줄어드는지는 클래스 구성과 별도 CVar에 따라 달라진다.
 
@@ -40,7 +49,7 @@ push + skip은 Push Model과 `net.PushModelSkipUndirtiedReplication`(이하 skip
 
 Push Model은 첫째 층을, skip CVar는 둘째 층의 일부를 줄인다.
 
-![폴링 복제 비용의 두 층](./images/unreal-push-model/diagram-cost-layers.webp)
+![](./images/unreal-push-model/diagram-cost-layers.webp)
 
 ## Push Model을 켜는 세 개의 스위치
 
@@ -107,17 +116,54 @@ void AMyActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 
 `MARK_PROPERTY_DIRTY` 계열 매크로는 `NetCore` 모듈에 있으므로 Build.cs에 의존성을 추가한다. 빠뜨리면 링크 오류가 난다.
 
+등록 매크로는 이름이 비슷하지만 push로 등록할 수 있는 것은 `FDoRepLifetimeParams`를 받는 계열뿐이다(`Engine/Public/Net/UnrealNetwork.h`).
+
+| 매크로 | RepIndex를 구하는 방식 | push 등록 |
+| --- | --- | --- |
+| `DOREPLIFETIME` | 실행 중에 이름으로 검색 | 불가 |
+| `DOREPLIFETIME_CONDITION`, `DOREPLIFETIME_CONDITION_NOTIFY` | 실행 중에 이름으로 검색 | 불가 |
+| `DOREPLIFETIME_WITH_PARAMS` | 실행 중에 이름으로 검색 | 가능 |
+| `DOREPLIFETIME_WITH_PARAMS_FAST` | UHT가 만든 `ENetFields_Private`에서 컴파일 시간에 읽음 | 가능 |
+| `DOREPLIFETIME_WITH_PARAMS_FAST_STATIC_ARRAY` | 위와 같음. 정적 배열 전용 | 가능 |
+
+`DOREPLIFETIME_CONDITION`과 `DOREPLIFETIME_CONDITION_NOTIFY`는 조건을 받지만 내부에서 `FDoRepLifetimeParams`를 새로 만들어 조건만 채우므로 `bIsPushBased`는 `false`로 남는다. 기존 코드를 push로 옮길 때는 이 매크로를 `DOREPLIFETIME_WITH_PARAMS_FAST`로 바꾸고 `Params.Condition`과 `Params.RepNotifyCondition`을 직접 채운다.
+
+```cpp
+FDoRepLifetimeParams Params;
+Params.bIsPushBased = true;
+Params.Condition = COND_OwnerOnly;
+DOREPLIFETIME_WITH_PARAMS_FAST(AMyActor, Ammo, Params);
+```
+
+`_FAST`라는 이름 때문에 복제가 빨라질 것 같지만 차이는 등록할 때만 난다. `GetLifetimeReplicatedProps`는 `FRepLayout`을 만들 때 CDO에서 불리므로(`RepLayout.cpp`의 `FRepLayout::InitFromClass`) NetDriver별, 클래스별로 한 번 실행된다. 실제로 갈리는 것은 실수가 드러나는 시점이다. `_FAST`는 RepIndex를 `ENetFields_Private` enum에서 읽는데, 이 enum에는 복제 프로퍼티만 들어 있어서 `Replicated`가 빠진 프로퍼티를 넘기면 컴파일 오류가 난다. `_FAST`가 없는 쪽은 실행 중에 이름으로 프로퍼티를 찾고, `Replicated`가 아니면 Fatal 로그를 남기고 멈춘다. 이 검사는 Shipping과 Test 빌드에서는 빠진다.
+
+정적 배열은 `_FAST`로 등록하면 컴파일되지 않는다. UHT가 정적 배열에는 `Name_STATIC_ARRAY`와 `Name_STATIC_ARRAY_END` 항목만 만들기 때문이다. 그래서 `DOREPLIFETIME_WITH_PARAMS_FAST_STATIC_ARRAY`를 써야 한다. `_FAST`가 없는 매크로는 프로퍼티의 `ArrayDim`을 읽어 배열 원소 전체를 알아서 등록한다.
+
+부모 클래스가 등록한 프로퍼티를 자식 클래스에서 다른 파라미터로 다시 등록하면 개발 빌드에서 check에 걸린다. 같은 RepIndex로 두 번 등록할 때 조건과 `bIsPushBased`가 같아야 하기 때문이다(`CoreUObject/Public/UObject/CoreNet.h`의 `FLifetimeProperty::operator==`). 등록을 바꾸려면 `RESET_REPLIFETIME_WITH_PARAMS`를 쓴다. 다만 이 매크로로 `ACharacter`의 프로퍼티를 push로 바꾸는 것은 캐릭터를 Full 클래스로 만드는 방법이 되지 못한다. `ACharacter`의 프로퍼티를 쓰는 엔진 코드에는 `MARK_PROPERTY_DIRTY` 호출이 없으므로, push로 바꾼 프로퍼티는 초기 복제 이후의 변경을 보내지 않게 된다.
+
 `bIsPushBased`는 프로퍼티별 설정이지만 그 효과는 클래스 단위로도 갈린다. `FRepLayout`은 부모 클래스에서 물려받은 것까지 포함해 모든 복제 프로퍼티가 push 기반인 클래스에 `ERepLayoutFlags::FullPushProperties`를 붙이고, 일부만 push 기반이면 `PartialPushSupport`를 붙인다.
 
 이 글에서는 앞의 경우를 **Full 클래스**, 뒤의 경우를 **Partial 클래스**라고 부른다. push가 아닌 프로퍼티가 하나만 섞여도 Partial 클래스다. 뒤에서 볼 skip CVar는 Full 클래스에서만 동작한다.
 
-`GetLifetimeReplicatedProps`에서 등록을 빠뜨린 복제 프로퍼티도 Partial의 원인이 된다. 엔진은 빠진 프로퍼티를 기본 설정으로 자동 등록하는데, 기본 설정의 `bIsPushBased`는 `false`다(`CoreUObject/Public/UObject/CoreNet.h`의 `FLifetimeProperty`, `RepLayout.cpp`의 `DefaultLifetimeProp`). 경고도 없다.
+`GetLifetimeReplicatedProps`에서 등록을 빠뜨린 복제 프로퍼티도 Partial의 원인이 된다. 엔진은 빠진 프로퍼티를 기본 설정으로 자동 등록하는데, 기본 설정의 `bIsPushBased`는 `false`다(`CoreUObject/Public/UObject/CoreNet.h`의 `FLifetimeProperty`, `RepLayout.cpp`의 `DefaultLifetimeProp`). 기본 설정에서는 경고도 없다.
+
+빠뜨린 프로퍼티를 찾을 때는 CVar 두 개를 함께 켠다(`Net/Core/Private/Net/Core/Misc/NetCVars.cpp`).
+
+```ini
+[SystemSettings]
+; 등록하지 않은 복제 프로퍼티를 자동 등록하지 않는다 (기본값 1)
+Net.AutoRegisterReplicatedProperties=0
+; 등록하지 않은 복제 프로퍼티마다 ensure를 띄운다 (기본값 0)
+Net.EnsureOnMissingReplicatedPropertiesRegister=1
+```
+
+ensure는 자동 등록을 끈 경우에만 뜨고, 그 상태에서 빠진 프로퍼티는 `COND_Never`가 되어 복제되지 않는다. 진단할 때만 잠깐 켜는 설정이다.
 
 ## dirty 비트의 라이프사이클
 
 마킹한 비트가 비교에서 소비되고 지워지기까지의 흐름은 다음과 같다. 각 단계의 소스는 아래 절에서 확인한다.
 
-![dirty 비트의 라이프사이클](./images/unreal-push-model/diagram-dirty-lifecycle.webp)
+![](./images/unreal-push-model/diagram-dirty-lifecycle.webp)
 
 ### 마킹은 비트 하나를 세운다
 
@@ -227,7 +273,7 @@ bWroteSomethingImportant |= UpdateDeletedSubObjects(Bunch);
 
 skip은 액터 본체의 `ReplicateProperties` 호출 하나만 건너뛴다. `ReplicateActor` 호출 자체, 서브오브젝트 복제, 삭제된 서브오브젝트 확인은 매번 돈다. 반면 서브오브젝트(복제 컴포넌트 등)는 각자의 replicator에서 같은 판정을 하고 skip되면 그 서브오브젝트의 처리를 일찍 끝낸다(`DataChannel.cpp`의 `UActorChannel::WriteSubObjectInBunch`).
 
-![ReplicateActor 안에서 skip이 건너뛰는 범위](./images/unreal-push-model/diagram-skip-scope.webp)
+![](./images/unreal-push-model/diagram-skip-scope.webp)
 
 FastArray가 있는 클래스를 skip 대상에 넣을 때 FastArray는 따로 마킹하지 않아도 된다. `MarkItemDirty`와 `MarkArrayDirty`가 `IncrementArrayReplicationKey`에서 FastArray 프로퍼티를 마킹한다(`Net/Core/Classes/Net/Serialization/FastArraySerializer.h`). 마킹할 오브젝트와 RepIndex는 처음 직렬화할 때 기억하므로(`RepLayout.cpp`의 `CachePushModelState`) 첫 복제 전의 호출은 마킹하지 않는다. 첫 복제는 앞에서 본 대로 모든 비트가 dirty인 상태라 문제가 없다.
 
@@ -281,6 +327,8 @@ if (bWasRepMovementModified)
 ## Blueprint 복제 변수
 
 Blueprint에서 선언한 복제 변수는 체크박스 없이 Push Model 대상이 된다. `UBlueprintGeneratedClass`가 lifetime 프로퍼티를 만들 때 `PUSH_MAKE_BP_PROPERTIES_PUSH_MODEL()`을 넘긴다. 이 매크로는 `Net.IsPushModelEnabled`와 `Net.MakeBpPropertiesPushModel`(기본값 `true`)이 모두 켜져 있으면 참이다. Blueprint 컴파일러는 Set 노드와 참조로 넘기는 함수 호출 뒤에 `MarkPropertyDirtyFromRepIndex` 호출을 자동으로 넣는다.
+
+이 자동 마킹은 Blueprint에서 선언한 변수에만 붙지 않는다. Set 노드는 프로퍼티에 `CPF_Net` 플래그가 있는지만 보므로(`Engine/Source/Editor/BlueprintGraph/Private/VariableSetHandler.cpp`, `UK2Node_VariableSet::IsNetProperty`) C++에서 `BlueprintReadWrite`로 연 push 프로퍼티도 Set 노드로 바꾸면 마킹된다. 반대로 Blueprint에서 C++의 `BlueprintCallable` setter를 부를 때는 그 C++ 함수 안에서 마킹해야 한다.
 
 다만 참조로 값을 바꾸는 Set by-ref 계열 노드는 마킹하지 않는다는 이슈가 등록돼 있다([UE-194745](https://issues.unrealengine.com/issue/UE-194745)). Blueprint 변수가 클라이언트에 반영되지 않는다면 이 경로를 먼저 의심할 만하다.
 
@@ -422,7 +470,7 @@ UnrealInsights.exe -OpenTraceFile="D:/Traces/main_off.utrace" -AutoQuit -NoUI `
 
 결과는 다음과 같다. 트레이스를 기록한 1회 실행의 값이라 앞의 CSV 5회 평균과 합계가 조금 다르다.
 
-![ServerReplicateActors 프레임당 시간 분해](./images/unreal-push-model/chart-breakdown.webp)
+![](./images/unreal-push-model/chart-breakdown.webp)
 
 | 항목 (ms/프레임) | push 끔 | push 켬 | push + skip |
 | --- | --- | --- | --- |
@@ -460,7 +508,7 @@ skip을 켜면 `ReplicateActor`의 61%가 1 µs 미만에 모인다. 비교 호�
 
 ### 값을 바꾸는 빈도에 따른 차이
 
-![변경 빈도별 ServerReplicateActors 시간](./images/unreal-push-model/chart-change-rate.webp)
+![](./images/unreal-push-model/chart-change-rate.webp)
 
 | 초당 변경 비율 | push 끔 | push 켬 | push + skip | skip된 replicator/프레임 |
 | --- | --- | --- | --- | --- |
@@ -474,7 +522,7 @@ skip을 켜면 `ReplicateActor`의 61%가 1 µs 미만에 모인다. 비교 호�
 
 ### 연결 수에 따른 차이
 
-![클라이언트 수별 ServerReplicateActors 시간](./images/unreal-push-model/chart-connections.webp)
+![](./images/unreal-push-model/chart-connections.webp)
 
 | 클라이언트 | push 끔 | push + skip | 감소 |
 | --- | --- | --- | --- |
@@ -536,6 +584,49 @@ UnrealEditor.exe ThirdPerson.uproject /Game/ThirdPerson/Lvl_ThirdPerson -server 
 
 폴링이든 push든 보내는 것은 바뀐 프로퍼티뿐이므로 송신 내용은 같다. `FVector` 프로퍼티는 200 bits, `int32`와 `float`은 40 bits로 두 실행이 같았다. 매 프레임 바뀌는 조건의 CSV에서도 프레임당 송신량은 37.26 KB, 37.27 KB, 37.24 KB로 같았다. Push Model이 줄이는 것은 서버 CPU다.
 
+### Network Profiler로 비교 횟수 세기
+
+Networking Insights 이전부터 있던 Network Profiler도 5.8.3에 남아 있다. Shipping과 Test가 아닌 빌드에서 동작하고(`USE_NETWORK_PROFILER`), 서버 명령줄에 `networkprofiler=true`를 주거나 콘솔에서 `netprofile enable`을 실행하면 `Saved/Profiling`에 `.nprof` 파일이 기록된다. 파일은 `Engine/Binaries/DotNET/NetworkProfiler.exe`로 연다. 런처로 설치한 5.8에는 이 실행 파일이 없어서 소스 빌드에서 만든 것을 썼다.
+
+이 도구에는 Insights에 없는 값이 두 가지 있다. 하나는 오브젝트와 프로퍼티별 비교 횟수이고, 다른 하나는 액터별 Waste다. 비교 횟수는 `Net.ProfilerUseComparisonTracking`(기본값 0)을 켜야 기록된다. 이번에는 메인 조건(액터 1000개, 클라이언트 2개, 초당 1%)에서 30초 측정 구간에만 기록이 걸리도록 하네스가 다음 콘솔 명령을 실행했다.
+
+```
+Net.ProfilerUseComparisonTracking 1
+netprofile enable
+; 30초 측정
+netprofile disable
+```
+
+프로파일러는 복제할 때마다 기록을 남기므로 이 실행의 시간 값에는 기록 비용이 들어 있다. 시간은 세 조건끼리만 비교하고 앞의 CPU 측정과는 섞지 않는다.
+
+![Network Profiler All Objects: push 끔](./images/unreal-push-model/network-profiler-objects-push-off.webp)
+
+All Objects 탭의 왼쪽은 클래스별 합계, 오른쪽은 선택한 클래스의 프로퍼티별 횟수다. push를 끄면 ① `PushLabActor`의 비교가 640,366회, 비교 시간이 517.5 ms다. 프레임마다 액터 1000개를 한 번씩 비교한 횟수로, 클라이언트가 2개여도 두 배가 되지 않는다. 비교는 오브젝트당 한 번이고 결과를 연결들이 공유한다는 앞의 설명과 맞는다. ② 프로퍼티도 모두 640,366회씩 비교했지만 실제로 바뀐 것은 프로퍼티마다 11~26회였다.
+
+![Network Profiler All Objects: push 켬](./images/unreal-push-model/network-profiler-objects-push-on.webp)
+
+push를 켜도 ① 오브젝트 단위 비교 호출은 639,368회로 거의 같다. Full 클래스라도 skip CVar가 없으면 매 프레임 비교 함수에 들어가기 때문이다. 대신 비교 시간은 139.0 ms로 줄었다. ② 프로퍼티별 비교 횟수가 바뀐 횟수와 같아졌고, `AActor`에서 물려받은 프로퍼티는 한 번도 비교하지 않았다. dirty가 아닌 push 프로퍼티를 건너뛰는 동작이 이 숫자로 그대로 보인다.
+
+| 조건 | ① `PushLabActor` 비교 호출 | 비교 시간 | ② `Int00` 비교 | `Int00` 변경 |
+| --- | --- | --- | --- | --- |
+| push 끔 | 640,366 | 517.5 ms | 640,366 | 21 |
+| push 켬 | 639,368 | 139.0 ms | 21 | 21 |
+| push + skip | 601 | 0.5 ms | 21 | 21 |
+
+skip CVar까지 켜면 오브젝트 단위 비교 호출이 601회로 줄어든다. dirty가 없는 액터는 `ReplicateProperties`에 들어가지 않으므로 비교 함수도 부르지 않는다. 시드가 고정되어 있어서 세 실행의 프로퍼티별 변경 횟수는 같았다.
+
+![Network Profiler Actors: push + skip](./images/unreal-push-model/network-profiler-actors-push-skip.webp)
+
+Waste는 `ReplicateActor`를 부른 횟수 중 아무것도 보내지 않은 비율이다. 뷰어는 `100 - Rep HZ / Update HZ × 100`으로 계산한다(`Engine/Source/Programs/NetworkProfiler/NetworkProfiler/PartialNetworkStream.cs`). ① push + skip에서 `PushLabActor`는 초당 43,724회 처리되었고 그중 20.07회만 무언가를 보냈다. Waste는 99.95다.
+
+| 조건 | MS | Update HZ | Rep HZ | Waste |
+| --- | --- | --- | --- | --- |
+| push 끔 | 3,766.40 | 42,698.61 | 20.07 | 99.95 |
+| push 켬 | 3,473.96 | 42,660.81 | 20.08 | 99.95 |
+| push + skip | 677.53 | 43,724.04 | 20.07 | 99.95 |
+
+Waste는 세 조건에서 같았다. push는 보낼지 판단하는 방법을 바꿀 뿐 보내는 내용을 바꾸지 않는다. skip으로 건너뛴 호출도 `TrackReplicateActor`로 기록되므로(`Engine/Private/DataChannel.cpp`의 `ReplicateActor`) 분모에서 빠지지 않는다. 그래서 Waste가 그대로라고 Push Model이 효과가 없다고 읽으면 안 된다. 효과는 `ReplicateActor`에 쓴 시간인 MS 열에서 보인다. push만 켜면 8% 줄었고 skip까지 켜면 82% 줄었다. 이 비율은 기록 비용이 들어간 값이어서 앞의 CPU 측정(13%, 26%)보다 크게 나온다.
+
 ### Dormancy와 비교하면
 
 시간 분해에서 가장 큰 칸은 연결별 액터 처리였고, push + skip을 켜도 2.13 ms가 남았다. 이 칸은 액터가 `ReplicateActor`에 들어가는 한 남는다. 액터를 복제 검토 대상에서 아예 빼는 기능은 Dormancy다. `DORM_DormantAll`인 액터는 모든 연결에서 채널이 닫히면 활성 네트워크 오브젝트 목록에서 빠지고, `FlushNetDormancy`나 `ForceNetUpdate`로 깨울 때만 다시 복제된다.
@@ -561,7 +652,7 @@ push + skip의 약 5%다. 측정 중 활성 네트워크 오브젝트는 프레�
 
 값을 바꾸는 빈도를 올리면 결과가 뒤집힌다.
 
-![Dormancy와 변경 빈도별 ServerReplicateActors 시간](./images/unreal-push-model/chart-dormancy.webp)
+![](./images/unreal-push-model/chart-dormancy.webp)
 
 | 초당 변경 비율 | 깨어 있음, push 끔 | 깨어 있음, push + skip | Dormancy, push + skip | 활성 오브젝트/프레임 |
 | --- | --- | --- | --- | --- |
@@ -646,6 +737,21 @@ private:
 
 push는 프로퍼티 단위로 마킹하므로 배열 원소 하나를 바꿔도 배열 프로퍼티 전체가 다음 비교 대상이 된다. 실제로 보내는 원소는 비교에서 달라진 것뿐이다. `GetSlots_Mutable()`처럼 참조를 넘기면서 마킹하는 방식은 엔진도 쓴다. `AActor::GetReplicatedMovement_Mutable()`이 `ReplicatedMovement`를 마킹한 뒤 참조를 돌려준다(`Engine/Private/Actor.cpp`). 값을 바꾸지 않고 마킹만 해도 비교 비용만 들고 전송은 없다는 것은 앞에서 확인했다.
 
+클래스 이름과 `this`를 매번 적는 게 번거롭다면 프로젝트 공용 헤더에 래퍼 매크로를 둘 수 있다. `ThisClass`는 `GENERATED_BODY()`가 클래스마다 선언하는 별칭이다.
+
+```cpp
+#define MARK_DIRTY(PropertyName) MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, PropertyName, this)
+#define SET_AND_MARK(PropertyName, NewValue) COMPARE_ASSIGN_AND_MARK_PROPERTY_DIRTY(ThisClass, PropertyName, NewValue, this)
+
+// 앞의 AInventoryActor::SetHealth를 매크로로 줄이면 다음과 같다
+void SetHealth(float NewHealth)
+{
+	SET_AND_MARK(Health, NewHealth);
+}
+```
+
+이 매크로는 부모 클래스에서 선언한 프로퍼티에 쓸 때 함정이 있다. 마킹 매크로는 RepIndex를 `ThisClass::ENetFields_Private`에서 읽는데, UHT는 복제 프로퍼티가 있는 클래스마다 자기 프로퍼티만 담은 `ENetFields_Private`를 만든다. 자식 클래스에 복제 프로퍼티가 없으면 enum이 없으니 부모의 enum을 찾아가서 컴파일된다. 자식에 복제 프로퍼티를 하나라도 추가하는 순간 자식의 enum이 부모의 enum을 가리고, 멀쩡하던 마킹 코드가 컴파일 오류로 바뀐다. ThirdPerson 프로젝트에서 두 경우를 빌드해 확인했다. 부모 프로퍼티는 선언한 클래스 이름을 직접 적거나 부모의 setter를 거쳐 마킹한다.
+
 다만 `GetSlots_Mutable()`로 받은 참조를 보관했다가 다음 프레임 이후에 고치는 경우는 이 구조로도 막지 못한다. 마킹은 이미 비교에서 소비된 뒤라 변경이 전달되지 않는다. 이런 경로는 검증용 CVar로 찾는다.
 
 ### 검증 CVar
@@ -712,10 +818,13 @@ Push Model은 Dormancy를 대신하지 않는다. 값이 몇 초에 한 번 바�
 
 ## 참고 자료
 
-- Unreal Engine 5.8.3 소스: `Net/Core/Public/Net/Core/PushModel/PushModel.h`, `Net/Core/Private/Net/Core/PushModel/PushModel.cpp`, `Engine/Private/RepLayout.cpp`, `Engine/Private/DataReplication.cpp`, `Engine/Private/DataChannel.cpp`, `Engine/Private/ActorReplication.cpp`, `Engine/Private/NetConnection.cpp`, `Net/Core/Classes/Net/Serialization/FastArraySerializer.h`, `Programs/UnrealBuildTool/Configuration/Rules/TargetRules.cs`
+- Unreal Engine 5.8.3 소스: `Net/Core/Public/Net/Core/PushModel/PushModel.h`, `Net/Core/Private/Net/Core/PushModel/PushModel.cpp`, `Engine/Private/RepLayout.cpp`, `Engine/Private/DataReplication.cpp`, `Engine/Private/DataChannel.cpp`, `Engine/Private/ActorReplication.cpp`, `Engine/Private/NetConnection.cpp`, `Net/Core/Classes/Net/Serialization/FastArraySerializer.h`, `Engine/Public/Net/UnrealNetwork.h`, `CoreUObject/Public/UObject/CoreNet.h`, `Net/Core/Private/Net/Core/Misc/NetCVars.cpp`, `Engine/Private/NetworkProfiler.cpp`, `Engine/Source/Editor/BlueprintGraph/Private/VariableSetHandler.cpp`, `Engine/Source/Programs/NetworkProfiler/NetworkProfiler/PartialNetworkStream.cs`, `Programs/UnrealBuildTool/Configuration/Rules/TargetRules.cs`
 - [Replicating UObjects in Unreal Engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/replicating-uobjects-in-unreal-engine)
 - [Actor Network Dormancy in Unreal Engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-network-dormancy-in-unreal-engine)
 - [Developing and Launching a New Replication System, Unreal Fest Orlando 2025](https://www.youtube.com/watch?v=K472O2rVvG0)
 - [Migrate to Iris in Unreal Engine](https://dev.epicgames.com/documentation/en-us/unreal-engine/migrate-to-iris-in-unreal-engine)
 - [Kieran Newland, Push Model Networking](https://www.kierannewland.co.uk/push-model-networking-unreal-engine/)
+- [hzFishy's Game Dev Notes, Push Model](https://notes.hzfishy.fr/Unreal-Engine/Networking/Core/Push-Model)
+- [Sneaky Kitty Game Dev, Unreal Engine Networking: Push Model](https://www.youtube.com/watch?v=hDIU4I8k-28)
+- [enigma tutorials, UPROPERTY Replication (Normal & Push)](https://www.youtube.com/watch?v=NWAdK2ndYWc)
 - [UE-194745](https://issues.unrealengine.com/issue/UE-194745), [UE-226689](https://issues.unrealengine.com/issue/UE-226689)

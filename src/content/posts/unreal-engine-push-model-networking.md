@@ -1,5 +1,5 @@
 ---
-title: "Unreal Engine Push Model: 소스 분석과 Unreal Insights 실측"
+title: "Unreal Engine - Push Model Networking: 분석과 실측"
 published: 2026-10-08
 description: "UE 5.8.3 기준으로 레거시 복제의 Push Model이 켜지는 조건, dirty 비트가 소비되는 경로, net.PushModelSkipUndirtiedReplication이 건너뛰는 범위를 엔진 소스로 확인하고, ThirdPerson 템플릿에 액터 1000개를 띄워 Unreal Insights, Networking Insights, Network Profiler로 CPU 시간, 대역폭, 비교 횟수를 측정한다. 같은 조건에서 Dormancy와도 비교한다."
 tags:
@@ -16,12 +16,13 @@ lang: ko
 ---
 
 :::note[TL;DR]
-- UE 5.8.3에서 Push Model은 기본으로 꺼져 있다. 컴파일 스위치 `bWithPushModel`, 런타임 CVar `Net.IsPushModelEnabled`, 프로퍼티별 `bIsPushBased` 등록이 모두 갖춰져야 동작한다.
+- UE 5.8.3에서 Push Model은 기본으로 꺼져 있다. 컴파일 스위치 `bWithPushModel`, 런타임 CVar `Net.IsPushModelEnabled`, 프로퍼티별 `bIsPushBased` 등록이 모두 필요하다. `bWithPushModel`은 Editor 타깃에서만 기본으로 켜져서 패키지 빌드는 Target.cs에 넣지 않으면 조용히 폴링으로 돈다.
+- `DOREPLIFETIME`과 `DOREPLIFETIME_CONDITION`으로는 push로 등록할 수 없고, 등록을 빠뜨린 프로퍼티도 push가 아닌 설정으로 자동 등록된다. 둘 다 경고가 없다.
 - 마킹은 "보내라"가 아니라 "비교해 봐라"는 표시다. dirty가 아닌 push 프로퍼티의 비교만 건너뛰고, 언제 복제할지는 바꾸지 않는다.
-- 액터 1000개, 클라이언트 2개, 초당 1%의 액터만 값이 바뀌는 조건에서 `ServerReplicateActors`는 push만 켜면 13%, skip CVar까지 켜면 26% 줄었다. 송신 바이트는 그대로였다.
-- skip CVar는 모든 복제 프로퍼티가 push인 클래스에서만 동작한다. `ACharacter`를 상속한 클래스는 받지 못하고, unreliable multicast를 한 번 보낸 액터는 그 연결에서 영구히 받지 못한다.
+- 액터 1000개, 클라이언트 2개, 초당 1%의 액터만 값이 바뀌는 조건에서 `ServerReplicateActors`는 push만 켜면 13%, skip CVar까지 켜면 26% 줄었다. 송신 바이트와 Network Profiler의 Waste는 그대로였고, 줄어든 것은 비교 횟수와 서버 CPU다.
+- skip CVar는 모든 복제 프로퍼티가 push인 클래스에서만 동작한다. `ACharacter`를 상속한 클래스는 받지 못하고, unreliable multicast를 한 번 보낸 액터는 그 연결에서 영구히 받지 못한다. skip을 노리고 상태를 컴포넌트로 나누면 오히려 35% 느려졌다.
 - 값이 드물게 바뀌는 액터는 Dormancy가 훨씬 싸다(0.17 ms). 액터마다 초당 한 번 바뀌는 조건에서는 push + skip이 더 빨랐다.
-- 마킹을 빠뜨려도 오류가 나지 않는다. 값을 바꾸는 경로를 setter로 모으고 검증 CVar로 확인한다.
+- 측정한 어떤 조건에서도 push를 켜서 느려지지 않았으므로 기본으로 켤 만하다. 다만 마킹을 빠뜨려도 오류가 나지 않으니 값을 바꾸는 경로를 setter로 모으고 검증 CVar로 확인한다.
 :::
 
 Push Model은 "켜면 복제가 빨라진다"는 설명으로 많이 알려져 있다. 그런데 UE 5.8.3에서 Push Model은 기본으로 꺼져 있다. 켜는 스위치는 세 개이고, 그중 하나는 Editor 타깃에서만 기본으로 켜진다. 켠 뒤에도 무엇이 줄어드는지는 클래스 구성과 별도 CVar에 따라 달라진다.

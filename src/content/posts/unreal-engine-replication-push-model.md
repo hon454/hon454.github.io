@@ -21,11 +21,11 @@ Push Model은 "켜면 복제가 빨라진다"는 설명으로 많이 알려져 �
 
 | 조건 | `ServerReplicateActors` 프레임당 평균 | 비율 |
 | --- | --- | --- |
-| Push Model 끔 | 4.57 ms | 100 |
-| Push Model 켬 | 3.98 ms | 87 |
-| Push Model 켬 + `net.PushModelSkipUndirtiedReplication` | 3.39 ms | 74 |
+| push 끔 | 4.57 ms | 100 |
+| push 켬 | 3.98 ms | 87 |
+| push + skip | 3.39 ms | 74 |
 
-Push Model만 켜면 프로퍼티 비교 비용이 줄고, skip CVar까지 켜면 연결별 작업의 일부가 줄어든다. 송신 바이트는 바뀌지 않았다. 아래에서 각 단계를 소스 위치와 Insights 화면으로 확인한다. 소스 경로는 UE 5.8.3 기준이며 `Engine/Source/Runtime/`을 생략했다.
+push + skip은 Push Model과 `net.PushModelSkipUndirtiedReplication`(이하 skip CVar)을 함께 켠 조건이다. Push Model만 켜면 프로퍼티 비교 비용이 줄고, skip CVar까지 켜면 연결별 작업의 일부가 줄어든다. 송신 바이트는 바뀌지 않았다. 아래에서 각 단계를 소스 위치와 Insights 화면으로 확인한다. 소스 경로는 UE 5.8.3 기준이며 `Engine/Source/Runtime/`을 생략했다.
 
 ## 폴링 복제가 매 프레임 하는 일
 
@@ -39,6 +39,8 @@ Push Model만 켜면 프로퍼티 비교 비용이 줄고, skip CVar까지 켜�
 - 연결마다: changelist를 확인하고, 보낼 것이 있으면 직렬화한다. 보낼 것이 없어도 확인은 한다.
 
 Push Model은 첫째 층을, skip CVar는 둘째 층의 일부를 줄인다.
+
+![폴링 복제 비용의 두 층](./images/unreal-push-model/diagram-cost-layers.webp)
 
 ## Push Model을 켜는 세 개의 스위치
 
@@ -110,6 +112,10 @@ void AMyActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 이 글에서는 앞의 경우를 **Full 클래스**, 뒤의 경우를 **Partial 클래스**라고 부른다. push가 아닌 프로퍼티가 하나만 섞여도 Partial 클래스다. 뒤에서 볼 skip CVar는 Full 클래스에서만 동작한다.
 
 ## dirty 비트의 라이프사이클
+
+마킹한 비트가 비교에서 소비되고 지워지기까지의 흐름은 다음과 같다. 각 단계의 소스는 아래 절에서 확인한다.
+
+![dirty 비트의 라이프사이클](./images/unreal-push-model/diagram-dirty-lifecycle.webp)
 
 ### 마킹은 비트 하나를 세운다
 
@@ -215,6 +221,8 @@ bWroteSomethingImportant |= UpdateDeletedSubObjects(Bunch);
 
 skip은 액터 본체의 `ReplicateProperties` 호출 하나만 건너뛴다. `ReplicateActor` 호출 자체, 서브오브젝트 복제, 삭제된 서브오브젝트 확인은 매번 돈다. 반면 서브오브젝트(복제 컴포넌트 등)는 각자의 replicator에서 같은 판정을 하고 skip되면 그 서브오브젝트의 처리를 일찍 끝낸다(`DataChannel.cpp`의 `UActorChannel::WriteSubObjectInBunch`).
 
+![ReplicateActor 안에서 skip이 건너뛰는 범위](./images/unreal-push-model/diagram-skip-scope.webp)
+
 ## 엔진 클래스는 이미 push 기반인가
 
 skip CVar는 Full 클래스에서만 동작한다. Full 클래스가 되려면 부모 클래스에서 물려받은 복제 프로퍼티까지 모두 push 기반이어야 하므로 어떤 엔진 클래스를 상속하느냐가 중요하다. 5.8.3에서 엔진 클래스의 상태는 다음과 같다.
@@ -241,7 +249,7 @@ PlayerController.IsPushBased=1
 
 `AActor`를 직접 상속한 액터는 자기 프로퍼티를 모두 push로 등록하면 Full이 된다. `ACharacter`를 상속한 캐릭터는 무엇을 추가해도 Full이 될 수 없다. 추가한 push 프로퍼티의 비교 비용은 줄지만 skip은 받지 못한다.
 
-`AActor::ReplicatedMovement`는 push 기반이지만, 물리 시뮬레이션이 아닌 액터에서는 `GatherCurrentMovement`가 값이 같아도 매번 dirty로 표시한다.
+`AActor::ReplicatedMovement`는 push 기반이지만, 물리 시뮬레이션이 아닌 액터에서는 `GatherCurrentMovement`가 값이 같아도 매번 마킹한다.
 
 ```cpp
 // Engine/Private/ActorReplication.cpp, AActor::GatherCurrentMovement
@@ -254,7 +262,7 @@ if (bWasRepMovementModified)
 }
 ```
 
-움직임을 복제하는 액터는 Push Model을 켜도 `ReplicatedMovement`를 매번 비교한다. 템플릿 캐릭터만 있는 상태로도 재 봤다. Push Model과 skip CVar를 모두 켰을 때와 모두 껐을 때 둘 다 0.09 ms로 차이가 없었다.
+움직임을 복제하는 액터는 Push Model을 켜도 `ReplicatedMovement`를 매번 비교한다. 템플릿 캐릭터만 있는 상태로도 재 봤다. `ServerReplicateActors`는 push + skip일 때와 모두 껐을 때 둘 다 0.09 ms로 차이가 없었다.
 
 ## Blueprint 복제 변수
 
@@ -346,11 +354,11 @@ MaxInternetClientRate=100000000
 
 | 조건 | 5회 `ServerReplicateActors` 평균 (ms) | 평균 | `ReplicateActor` 1회당 |
 | --- | --- | --- | --- |
-| Push Model 끔 | 4.91 / 4.17 / 4.05 / 4.77 / 4.97 | 4.57 | 2.33 µs |
-| Push Model 켬 | 4.19 / 3.66 / 3.76 / 3.96 / 4.32 | 3.98 | 2.16 µs |
+| push 끔 | 4.91 / 4.17 / 4.05 / 4.77 / 4.97 | 4.57 | 2.33 µs |
+| push 켬 | 4.19 / 3.66 / 3.76 / 3.96 / 4.32 | 3.98 | 2.16 µs |
 | push + skip | 3.31 / 3.02 / 3.62 / 3.72 / 3.27 | 3.39 | 1.72 µs |
 
-비율로는 100 : 87 : 74로, 예상한 100 : 95 : 90보다 이득이 컸다. 다만 "비교는 원래 싸다"는 판단 자체는 Insights로 보면 맞았다. 차이는 skip이 비교가 아니라 연결별 작업을 줄이는 데서 나왔다.
+비율로는 100 : 87 : 74로, 예상한 100 : 95 : 90보다 이득이 컸다. 다만 "비교는 원래 싸다"는 판단 자체는 맞았다. 아래 Insights 시간 분해에서 비교는 전체의 14%였다. 차이는 skip이 비교가 아니라 연결별 작업을 줄이는 데서 나왔다.
 
 ### Unreal Insights로 시간 분해하기
 
@@ -398,7 +406,7 @@ UnrealInsights.exe -OpenTraceFile="D:/Traces/main_off.utrace" -AutoQuit -NoUI `
     -ExecOnAnalysisCompleteCmd="TimingInsights.ExportTimerStatistics D:/Traces/main_off.timers.csv -region=PushLab.Measure -threads=GameThread"
 ```
 
-결과는 다음과 같다.
+결과는 다음과 같다. 트레이스를 기록한 1회 실행의 값이라 앞의 CSV 5회 평균과 합계가 조금 다르다.
 
 ![ServerReplicateActors 프레임당 시간 분해](./images/unreal-push-model/chart-breakdown.webp)
 
@@ -411,7 +419,9 @@ UnrealInsights.exe -OpenTraceFile="D:/Traces/main_off.utrace" -AutoQuit -NoUI `
 | 프로퍼티 직렬화 | 0.24 | 0.23 | 0.01 |
 | 합계 | 4.28 | 3.84 | 3.16 |
 
-Push Model은 비교 칸을 0.58 ms에서 0.14 ms로 줄였다. 비교는 처음부터 전체의 14%였으므로 Push Model 단독으로 줄일 수 있는 폭도 그 정도다. skip은 직렬화 칸과 연결별 처리 칸의 일부를 줄였다. 가장 큰 칸인 연결별 액터 처리는 skip을 켜도 2.13 ms가 남는다.
+Push Model은 비교 칸을 0.58 ms에서 0.14 ms로 줄였다. 비교는 처음부터 전체의 14%였으므로 Push Model 단독으로 줄일 수 있는 폭도 그 정도다. skip은 직렬화 칸과 연결별 액터 처리 칸의 일부를 줄였다. 가장 큰 칸인 연결별 액터 처리는 skip을 켜도 2.13 ms가 남는다.
+
+> `-statnamedevents`는 µs 단위 스코프마다 이벤트를 기록하므로 측정값을 부풀릴 수 있다. 같은 조건에서 추적 없이 CSV만 기록한 5회 평균은 4.57 ms, 추적한 실행은 4.28 ms로 실행 간 편차 안에 있었다. 이 실험 규모에서는 추적 비용이 결과를 바꾸지 않았다.
 
 호출 하나하나의 길이도 봤다. `TimingInsights.ExportTimingEvents`로 이벤트를 내보내 분포를 만들었다. 명령은 response file(`main_off.events.rsp`)에 쓰고 `@=` 접두사로 넘긴다.
 
@@ -426,15 +436,13 @@ UnrealInsights.exe -OpenTraceFile="D:/Traces/main_off.utrace" -AutoQuit -NoUI `
 
 > 타이머 이름처럼 공백이 든 인자는 명령줄에서 따옴표가 겹치므로 response file로 넘긴다. 파일 안의 경로는 슬래시로 쓴다. 역슬래시는 이스케이프로 처리되어 사라진다.
 
-| 조건 | `Replicate Actor Time` p50 / p90 / p99 | 비교 호출 수 | 비교 p50 |
+| 조건 | `Replicate Actor Time` p50 / p90 / p99 | 비교 호출 수 (GameThread 전체) | 비교 p50 |
 | --- | --- | --- | --- |
 | push 끔 | 1.5 / 2.4 / 3.6 µs | 642,335 | 0.5 µs |
 | push 켬 | 1.2 / 2.0 / 2.9 µs | 641,992 | 0.1 µs |
 | push + skip | 0.9 / 1.5 / 2.1 µs | 4,906 | 1.2 µs |
 
 skip을 켜면 `ReplicateActor`의 61%가 1 µs 미만에 모인다. 비교 호출 수에는 캐릭터와 컨트롤러 같은 다른 액터도 포함된다. skip 조건에서 남은 비교는 실제로 바뀐 오브젝트의 비교라서 1회당 시간은 오히려 길다.
-
-> `-statnamedevents`는 µs 단위 스코프마다 이벤트를 기록하므로 측정값을 부풀릴 수 있다. 같은 조건에서 추적 없이 CSV만 기록한 5회 평균은 4.57 ms, 추적한 실행은 4.28 ms로 실행 간 편차 안에 있었다. 이 실험 규모에서는 추적 비용이 결과를 바꾸지 않았다.
 
 ### 값을 바꾸는 빈도에 따른 차이
 
@@ -461,7 +469,7 @@ skip을 켜면 `ReplicateActor`의 61%가 1 µs 미만에 모인다. 비교 호�
 | 4 | 7.62 ms | 5.99 ms | 21% |
 | 8 | 16.60 ms | 13.18 ms | 21% |
 
-비교를 연결들이 공유하는데도 전체 시간은 연결 수에 거의 비례해 늘었다. 복제 비용의 대부분이 연결별 작업이라는 뜻이다. skip이 줄이는 몫도 그 연결별 작업의 일부다. 연결이 늘수록 감소율이 조금 낮아진 것은 skip이 건드리지 않는 연결별 비용이 함께 늘기 때문으로 보인다.
+비교를 연결들이 공유하는데도 전체 시간은 연결 수에 거의 비례해 늘었다. 복제 비용의 대부분이 연결별 작업이라는 뜻이다. skip이 줄이는 몫도 그 연결별 작업의 일부다. 연결이 늘수록 감소율이 조금 낮아진 것은 skip이 건드리지 않는 연결별 작업이 함께 늘기 때문으로 보인다.
 
 ### Partial 클래스와 컴포넌트로 옮기기
 
@@ -518,7 +526,7 @@ UnrealEditor.exe ThirdPerson.uproject /Game/ThirdPerson/Lvl_ThirdPerson -server 
 
 영어권에 공개된 측정으로는 Kieran Newland의 글이 있다([Push Model Networking](https://www.kierannewland.co.uk/push-model-networking-unreal-engine/), UE 5.3.2). 그 측정에서는 Push Model만 켰을 때 -17%, skip CVar까지 켰을 때 -54%였다. 이번 측정의 -13%와 -26%보다 skip의 효과가 훨씬 크다.
 
-그 측정은 액터 20개에 액터당 컴포넌트 20개를 붙이고, 컴포넌트마다 float 하나를 복제하는 구성이다. 복제 대상 대부분이 서브오브젝트다. 서브오브젝트는 skip되면 그 서브오브젝트의 처리를 일찍 끝내지만, 액터 본체는 `ReplicateProperties` 한 줄만 건너뛰고 나머지 연결별 처리가 남는다. 이번 실험은 프로퍼티가 액터 본체에 있는 구성이라 남는 몫이 컸다. 같은 CVar의 효과가 -54%와 -26%로 갈린 것도 그 때문으로 보인다. 두 숫자 중 어느 한쪽이 맞다기보다, skip의 효과는 상태가 액터 본체에 있는지 서브오브젝트에 있는지에 따라 달라진다고 본다.
+그 측정은 액터 20개에 액터당 컴포넌트 20개를 붙이고, 컴포넌트마다 float 하나를 복제하는 구성이다. 복제 대상 대부분이 서브오브젝트다. 서브오브젝트는 skip되면 그 서브오브젝트의 처리를 일찍 끝내지만, 액터 본체는 `ReplicateProperties` 한 줄만 건너뛰고 나머지 연결별 작업이 남는다. 이번 실험은 프로퍼티가 액터 본체에 있는 구성이라 남는 몫이 컸다. 같은 CVar의 효과가 -54%와 -26%로 갈린 것도 그 때문으로 보인다. 두 숫자 중 어느 한쪽이 맞다기보다, skip의 효과는 상태가 액터 본체에 있는지 서브오브젝트에 있는지에 따라 달라진다고 본다.
 
 ## 마킹을 빠뜨리면
 

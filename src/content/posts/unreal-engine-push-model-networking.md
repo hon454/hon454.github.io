@@ -25,7 +25,7 @@ lang: ko
 - 측정한 어떤 조건에서도 push를 켜서 느려지지 않았으므로 기본으로 켤 만하다. 다만 마킹을 빠뜨려도 오류가 나지 않으니 값을 바꾸는 경로를 setter로 모으고 검증 CVar로 확인한다.
 :::
 
-Push Model은 "켜면 복제가 빨라진다"는 설명으로 많이 알려져 있다. 그런데 UE 5.8.3에서 Push Model은 기본으로 꺼져 있다. 켜는 스위치는 세 개이고, 그중 하나는 Editor 타깃에서만 기본으로 켜진다. 켠 뒤에도 무엇이 줄어드는지는 클래스 구성과 별도 CVar에 따라 달라진다.
+레거시 복제는 복제할 때마다 프로퍼티의 현재 값을 마지막으로 보낸 값과 비교해 바뀐 것을 찾는다. Push Model은 값을 바꾼 코드가 직접 표시하게 해서 이 비교를 건너뛴다. 그래서 "켜면 복제가 빨라진다"고 알려져 있지만, 줄어드는 것은 서버 CPU이고 송신량은 그대로다. 얼마나 줄어드는지도 클래스 구성과 별도 CVar에 따라 크게 달라진다.
 
 이 글은 레거시 복제 시스템(Iris가 아닌 기본 복제)의 Push Model을 엔진 소스와 측정으로 정리한다. ThirdPerson 템플릿 프로젝트에 복제 프로퍼티 16개짜리 액터 1000개를 띄우고, 데디케이티드 서버의 `ServerReplicateActors` 시간을 CSV 프로파일러와 Unreal Insights로 쟀다. 클라이언트 2개, 초당 1%의 액터만 값이 바뀌는 조건에서 결과는 다음과 같았다.
 
@@ -35,7 +35,7 @@ Push Model은 "켜면 복제가 빨라진다"는 설명으로 많이 알려져 �
 | push 켬 | 3.98 ms | 87 |
 | push + skip | 3.39 ms | 74 |
 
-push + skip은 Push Model과 `net.PushModelSkipUndirtiedReplication`(이하 skip CVar)을 함께 켠 조건이다. Push Model만 켜면 프로퍼티 비교 비용이 줄고, skip CVar까지 켜면 연결별 작업의 일부가 줄어든다. 송신 바이트는 바뀌지 않았다. 같은 조건에서 액터를 Dormancy로 재우면 0.17 ms까지 내려갔지만, 액터마다 초당 한 번씩 값이 바뀌는 조건에서는 Dormancy가 push + skip보다 느렸다. 아래에서 각 단계를 소스 위치와 Insights 화면으로 확인한다. 소스 경로는 UE 5.8.3 기준이며 `Engine/Source/Runtime/`을 생략했다.
+push + skip은 Push Model과 `net.PushModelSkipUndirtiedReplication`(이하 skip CVar)을 함께 켠 조건이다. Push Model만 켜면 프로퍼티 비교 비용이 줄고, skip CVar까지 켜면 연결별 작업의 일부가 줄어든다. 아래에서 각 단계를 소스 위치와 Insights 화면으로 확인하고, 같은 조건에서 [Dormancy와도 비교](#dormancy와-비교하면)한다. 소스 경로는 UE 5.8.3 기준이며 `Engine/Source/Runtime/`을 생략했다.
 
 ## 폴링 복제가 매 프레임 하는 일
 

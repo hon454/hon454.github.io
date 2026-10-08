@@ -462,6 +462,20 @@ LogPushLab: Display: Client probe: 1000 / 1000 lab actors have Int00=777
 
 Iris(`net.Iris.UseIrisReplication`, 5.8.3 기본값 0)는 push 정보를 레거시보다 적극적으로 쓰도록 설계됐다. `net.Iris.PushModelMode`의 기본값이 2(켜짐)라서, `Net.IsPushModelEnabled`와 `WITH_PUSH_MODEL`만 켜져 있으면 Iris는 기본으로 push를 쓴다(`Net/Iris/Private/Iris/ReplicationSystem/LegacyPushModel.h`의 `IsIrisPushModelEnabled`). 다만 push가 필수는 아니다. 두 스위치가 꺼져 있으면 모든 오브젝트의 상태 전체를 폴링하고(`FObjectPoller::ForcePollObject`), 켜져 있어도 push 기반이 아닌 멤버는 매번 폴링한다.
 
+Iris에서 push가 동작하는 데 필요한 스위치만 추리면 다음과 같다.
+
+```ini
+[SystemSettings]
+; Iris 사용 (5.8.3 기본값 0)
+net.Iris.UseIrisReplication=1
+; 레거시와 같은 Push Model 스위치. 꺼져 있으면 Iris는 모든 상태를 폴링한다
+net.IsPushModelEnabled=1
+; 기본값 2(켜짐, 런타임에 바꿀 수 있음). 적지 않아도 된다
+; net.Iris.PushModelMode=2
+```
+
+패키지 빌드라면 [앞에서 본 것처럼](#1-컴파일-스위치-bwithpushmodel) Target.cs의 `bWithPushModel = true`도 필요하다. 이 예시는 push 관련 스위치만 모은 것이다. Iris 자체를 켜려면 Iris 플러그인과 모듈의 `SetupIrisSupport(Target)` 같은 준비가 더 필요하므로 Epic의 [Migrate to Iris](https://dev.epicgames.com/documentation/en-us/unreal-engine/migrate-to-iris-in-unreal-engine) 문서를 따른다. 이번 실험은 Iris를 켜고 측정하지 않았다.
+
 레거시와 가장 다른 점은 push 정보를 쓰는 단계다. Iris는 복제 전에 오브젝트 값을 내부 상태로 복사하는 폴링 단계(`FObjectPoller`)를 거친다. 모든 멤버가 push 기반인 Full push 오브젝트는 dirty가 아니고 GC의 영향도 받지 않았다면 폴링 루프에 들어가기 전에 목록에서 빠진다(`ObjectPoller.cpp`, `net.Iris.Poll.FilterOutNonDirtyPushBasedObjects` 기본값 `true`). 레거시가 비교 단계에서 프로퍼티를 건너뛴다면, Iris는 그보다 앞에서 오브젝트 단위로 걸러 낸다. 기본 설정에서는 마킹된 오브젝트가 `NetUpdateFrequency`로 정해진 폴링 주기를 기다리지 않고 그 프레임에 폴링된다는 점도 다르다.
 
 엔진 설정에는 Iris에서 Full push를 유지해야 하는 클래스 목록이 있다(`Config/BaseEngine.ini`의 `EnsureFullyPushModelClassNames`). 목록에는 `SceneComponent`, `StaticMeshComponent`, `CapsuleComponent` 같은 컴포넌트와 `WorldDataLayers`만 있고 Actor, Pawn, Character는 없다. Iris로 옮겨도 캐릭터는 Partial로 남는다.

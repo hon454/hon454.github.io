@@ -160,6 +160,20 @@ Net.EnsureOnMissingReplicatedPropertiesRegister=1
 
 ensure는 자동 등록을 끈 경우에만 뜨고, 그 상태에서 빠진 프로퍼티는 `COND_Never`가 되어 복제되지 않는다. 진단할 때만 잠깐 켜는 설정이다.
 
+### 켜졌는지 확인하기
+
+스위치가 빠지면 마킹하지 않은 값도 복제된다. 폴링으로 돌고 있으니 당연한 결과지만, 코드만 보면 Push Model이 고장 난 것처럼 보인다. 포럼에도 `bIsPushBased`로 등록하고 마킹했는데 마킹과 상관없이 복제된다는 질문이 있었고, 원인은 `net.IsPushModelEnabled`를 켜지 않은 것이었다([포럼 글](https://forums.unrealengine.com/t/push-model-networking/510684)). 같은 스레드에는 패키지한 데디케이티드 서버에서 Target.cs의 `bWithPushModel = true`도 필요했다는 보고가 이어진다. 같은 증상은 초기 복제에서도 나오는데, 이 경우는 [마킹을 빠뜨리면](#마킹을-빠뜨리면)에서 다룬다.
+
+앞의 두 스위치는 `IS_PUSH_MODEL_ENABLED()` 하나로 확인할 수 있다. `WITH_PUSH_MODEL`이 꺼진 빌드에서는 `false`로 정의되고, 켜진 빌드에서는 `Net.IsPushModelEnabled` 값을 돌려준다(`Net/Core/Public/Net/Core/PushModel/PushModel.h`). 서버가 시작할 때 로그로 남겨 두면 패키지 빌드가 조용히 폴링으로 도는 것을 바로 알 수 있다.
+
+```cpp
+UE_LOG(LogTemp, Log, TEXT("Push Model: %s"), IS_PUSH_MODEL_ENABLED() ? TEXT("enabled") : TEXT("disabled"));
+```
+
+콘솔에서는 `Net.IsPushModelEnabled`를 값 없이 입력하면 현재 값이 나온다. `bWithPushModel`이 꺼진 빌드에서는 CVar 자체가 등록되지 않으므로 알 수 없는 명령으로 처리된다. 둘 다 지금의 CVar 값을 보여 줄 뿐이라, 세션 도중에 바꿨다면 이미 만들어진 `FRepLayout`과 다를 수 있다.
+
+세 번째 스위치인 프로퍼티별 등록은 이 방법으로 확인되지 않는다. 프로퍼티가 실제로 push로 동작하는지는 Network Profiler의 프로퍼티별 비교 횟수로 볼 수 있다([아래 절](#network-profiler로-비교-횟수-세기)). push 기반이 아닌 프로퍼티는 값이 바뀌지 않아도 매번 비교된다.
+
 ## dirty 비트의 라이프사이클
 
 마킹한 비트가 비교에서 소비되고 지워지기까지의 흐름은 다음과 같다. 각 단계의 소스는 아래 절에서 확인한다.
@@ -829,3 +843,4 @@ Push Model은 Dormancy를 대신하지 않는다. 값이 몇 초에 한 번 바�
 - [Sneaky Kitty Game Dev, Unreal Engine Networking: Push Model](https://www.youtube.com/watch?v=hDIU4I8k-28)
 - [enigma tutorials, UPROPERTY Replication (Normal & Push)](https://www.youtube.com/watch?v=NWAdK2ndYWc)
 - [UE-194745](https://issues.unrealengine.com/issue/UE-194745), [UE-226689](https://issues.unrealengine.com/issue/UE-226689)
+- [Push Model Networking, Epic Developer Community Forums](https://forums.unrealengine.com/t/push-model-networking/510684)

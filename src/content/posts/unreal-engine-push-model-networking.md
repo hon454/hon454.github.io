@@ -1,6 +1,7 @@
 ---
 title: "Unreal Engine - Push Model Networking: 분석과 실측"
 published: 2026-10-08
+image: ../../assets/images/posts/unreal-engine-push-model-networking-cover.webp
 description: "UE 5.8.3 기준으로 레거시 복제의 Push Model이 켜지는 조건, dirty 비트가 소비되는 경로, net.PushModelSkipUndirtiedReplication이 건너뛰는 범위를 엔진 소스로 확인하고, ThirdPerson 템플릿에 액터 1000개를 띄워 Unreal Insights, Networking Insights, Network Profiler로 CPU 시간, 대역폭, 비교 횟수를 측정한다. 같은 조건에서 Dormancy와도 비교한다."
 tags:
   - unreal-engine

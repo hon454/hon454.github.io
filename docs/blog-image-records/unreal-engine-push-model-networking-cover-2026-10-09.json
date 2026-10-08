@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-09",
+  "post": "src/content/posts/unreal-engine-push-model-networking.md",
+  "scope": "cover",
+  "tool": "built-in image_gen",
+  "asset": "src/assets/images/posts/unreal-engine-push-model-networking-cover.webp",
+  "dimensions": {
+    "width": 1600,
+    "height": 900
+  },
+  "references": [
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+  ],
+  "selectedVersion": 1,
+  "selection": "사용자 최종 요청에 따라 처음의 돋보기 버전을 적용했다.",
+  "generated": "C:/Users/hon45/.codex/generated_images/01a11c34-365b-7000-8146-d5172a21b32f/exec-9134a39b-cb44-4ab8-8c3c-5857f48e3e28.png",
+  "concept": "Steady Spiral 달팽이가 여러 상태 블록 중 dirty 표시가 있는 하나를 돋보기로 살펴보는 장면. 마킹은 비교 대상으로 표시하는 것이며 즉시 전송이나 대역폭 절감을 의미하지 않는다.",
+  "iterations": [
+    {
+      "version": 1,
+      "prompt": "Use case: stylized-concept\nAsset type: one 16:9 blog cover illustration for an Unreal Engine Push Model networking article.\nInput images: Image 1 is the exact Steady Spiral mascot identity reference. Image 2 is a material, lighting and visual style reference only, not a scene to copy.\nPrimary request: Create a new warm, soft clay 3D illustration that conveys selective comparison of explicitly marked state properties. One Steady Spiral snail attentively examines a single marked block among otherwise unmarked blocks using a simple rounded magnifying glass. This represents a dirty mark selecting which property should be compared, not a command to immediately transmit data.\nScene/backdrop: seamless warm ivory tabletop and ivory background, gentle studio light, soft contact shadows.\nSubject: one adorable thick rounded dark forest-green snail with a large bright lime spiral shell, two rounded antennae, ivory oval eyes, tiny smiling mouth, faithful to Image 1's face, body, shell proportions and silhouette. The snail can have one small rounded arm holding the magnifying glass as in the style reference.\nProps: a small low rounded tray with a neat 3-by-3 array of pale sage and ivory clay state blocks. Exactly one block has a small raised warm amber dot as a change marker; the magnifying glass is focused on that block, clearly revealing its dot. The other eight blocks are quiet and unmarked. No blocks are removed or sent anywhere. A short simple rounded marking stylus rests next to the tray.\nStyle/medium: high quality soft handcrafted clay miniature with subtle surface texture; match Image 2's cozy 3D material, minimal set and shadows.\nComposition/framing: wide landscape 16:9. Entire main scene is compact and centered: snail face and shell, tray, marked block and glass occupy the central 52 percent of width and central 65 percent of height; ample clean ivory padding around all edges so centered square and 2:1 post-card crops preserve the mascot and marked-block interaction. Snail is the hero, no other snails. Three-quarter view slightly above the tabletop, readable at thumbnail size, crisp subject, no strong blur.\nConstraints: no title, no written text, no numbers, no letters, no Unreal logo, no watermark. No envelopes, delivery routes, network packets, clocks, speed marks or question marks. Do not imply instant replication, reduced bandwidth or sleeping/dormancy. Keep this a conceptual cover rather than a technical flowchart. All essential forms fully visible, calm focused expression, restrained composition.",
+      "review": "캐릭터와 점토 질감은 일치하나 Push 동작이 드러나지 않아 사용자 요청에 따라 수정했다."
+    },
+    {
+      "version": 2,
+      "prompt": "Use case: stylized-concept\nAsset type: revised 16:9 blog cover for Unreal Engine Push Model Networking.\nInput images: Image 1 is the prior cover to revise. Image 2 is the original Steady Spiral identity reference. Image 3 is the established blog clay illustration style reference.\nPrimary request: Make PUSH visually unmistakable. The Steady Spiral snail is physically PUSHING one changed property block forward out of a tray of passive state blocks and onto a small inspection pad. Its two small rounded dark green hands are firmly pressed against the rear face of the block; its body leans forward with effort, antennae tilt slightly forward, and it looks at the block with a determined friendly face. Clearly show hand-to-block contact and an outstretched pushing pose. The marked block has a single raised warm amber dot on its top. Place the snail at center-right, pushing the block toward center-left, keeping both within a compact central scene. In front of the block sits one small upright ivory magnifying glass on a rounded low stand aimed toward it: the destination is a comparison/inspection spot, not a client or a network. The block is partway across the rim of the low tray into the inspection spot, making selective nomination intuitive. Remaining unmarked ivory and pale sage blocks stay quietly behind in the tray. Use only 4-6 remaining blocks to reduce clutter. No stylus is needed.\nScene/backdrop: warm seamless ivory tabletop and ivory background, soft studio light and contact shadows.\nIdentity invariants: faithful thick rounded dark forest-green body, bright lime large spiral shell, two rounded antennae, ivory oval eyes and tiny ivory mouth from Image 2. Keep Image 1's material and overall colors, matching Image 3's warm clay miniature quality. Do not redesign the mascot.\nComposition: 16:9 landscape, compact centered group with generous ivory padding around every edge. The mascot face, pushing hands, marked block and inspection glass must all fit in the central 52 percent of canvas width and 65 percent of height for centered square and 2:1 thumbnail crops. Slightly elevated three-quarter view. Pushing motion through posture and physical contact, not written labels or arrows. Rounded matte clay shapes, subtle surface texture, crisp readable silhouettes at small size.\nTechnical meaning: the dirty-marked property is pushed into consideration for comparison. No immediate sending, bandwidth saving, acceleration, latency or dormancy claims. Do not depict transmitting a block or data packet to another snail.\nAvoid: title, text, letters, digits, labels, logos, watermark, arrows, envelopes, network cables, speed lines, clocks, extra snails, a cart, unnecessary decorative props. Produce a single polished new cover.",
+      "review": "두 손이 marked block에 닿고 블록이 비교 자리로 나오는 구도로 변경했다. 소품 수를 줄이고 stylus를 생략했다."
+    }
+  ],
+  "export": "Generated PNG converted to 1600×900 WebP at quality 90 using repository sharp. Source PNG retained at the built-in tool location.",
+  "validation": {
+    "status": "passed",
+    "commands": {
+      "pnpm check": "PASS: 264 files, 0 errors, 0 warnings, 0 hints",
+      "pnpm type-check": "PASS: exit 0",
+      "pnpm build": "PASS: full production pipeline, 116 HTML files, Pagefind indexed 87 pages, exit 0",
+      "pnpm preview": "PASS: first cover loaded on home and post detail pages"
+    },
+    "visualReview": "Desktop list center crop preserves the face, magnifying glass and marked block; mobile 390px grid (2:1 crop) and post detail show the complete main scene. The right edge of the shell and peripheral tray can be cropped in the narrow desktop list image.",
+    "notes": "Initial build failed with a missing prerender runtime chunk at rss.xml; rerunning the full build passed. GitHub card refresh could not resolve api.github.com and used cached data. No screenshots were attached or committed."
+  }
+}

@@ -15,7 +15,7 @@ draft: false
 lang: ko
 ---
 
-Push Model은 "켜면 복제가 빨라진다"는 설명으로 많이 알려져 있다. 그런데 UE 5.8.3에서 Push Model은 기본으로 꺼져 있고, 켜는 스위치는 세 개이며, 그중 하나는 Editor 타깃에서만 기본으로 켜진다. 켠 뒤에도 무엇이 줄어드는지는 클래스 구성과 별도 CVar에 따라 달라진다.
+Push Model은 "켜면 복제가 빨라진다"는 설명으로 많이 알려져 있다. 그런데 UE 5.8.3에서 Push Model은 기본으로 꺼져 있다. 켜는 스위치는 세 개이고, 그중 하나는 Editor 타깃에서만 기본으로 켜진다. 켠 뒤에도 무엇이 줄어드는지는 클래스 구성과 별도 CVar에 따라 달라진다.
 
 이 글은 레거시 복제 시스템(Iris가 아닌 기본 복제)의 Push Model을 엔진 소스와 측정으로 정리한다. ThirdPerson 템플릿 프로젝트에 복제 프로퍼티 16개짜리 액터 1000개를 띄우고, 데디케이티드 서버의 `ServerReplicateActors` 시간을 CSV 프로파일러와 Unreal Insights로 쟀다. 클라이언트 2개, 초당 1%의 액터만 값이 바뀌는 조건에서 결과는 다음과 같았다.
 
@@ -29,11 +29,11 @@ Push Model만 켜면 프로퍼티 비교 비용이 줄고, skip CVar까지 켜�
 
 ## 폴링 복제가 매 프레임 하는 일
 
-기본 복제는 프로퍼티 값이 바뀌었는지를 엔진이 직접 확인한다. 서버는 복제 대상 오브젝트마다 마지막으로 보낸 값의 사본(shadow state)을 가지고 있고, 복제를 검토할 때 현재 값과 shadow state를 비교해 다른 프로퍼티를 changelist에 기록한다. 이 비교가 `FRepLayout::CompareProperties`다.
+기본 복제는 프로퍼티 값이 바뀌었는지를 엔진이 직접 확인한다. 서버는 복제 대상 오브젝트마다 마지막으로 보낸 값의 사본(shadow state)을 둔다. 복제를 검토할 때는 현재 값과 shadow state를 비교해 다른 프로퍼티를 changelist에 기록한다. 이 비교가 `FRepLayout::CompareProperties`다.
 
 비교는 연결마다 하지 않는다. 비교 결과는 오브젝트의 `FRepChangelistState`에 쌓이고, 같은 프레임에 같은 오브젝트를 복제하는 다른 연결은 이 결과를 재사용한다(`Engine/Private/RepLayout.cpp`). 연결별로 하는 일은 그다음이다. 각 연결의 replicator가 공유 changelist에서 아직 보내지 않은 변경을 골라 조건(`COND_OwnerOnly` 등)을 적용하고 직렬화한다.
 
-정리하면 폴링 복제의 비용은 두 층이다.
+폴링 복제의 비용은 두 층으로 나뉜다.
 
 - 오브젝트당 한 번: 모든 복제 프로퍼티를 shadow state와 비교한다.
 - 연결마다: changelist를 확인하고, 보낼 것이 있으면 직렬화한다. 보낼 것이 없어도 확인은 한다.
@@ -120,7 +120,7 @@ void AMyActor::SetHealth(float NewHealth)
 }
 ```
 
-`MARK_PROPERTY_DIRTY_FROM_NAME`은 UHT가 생성한 `ENetFields_Private`로 프로퍼티의 RepIndex를 컴파일 시간에 구하고, 오브젝트의 push 상태에 비트 하나를 세운다(`Net/Core/Private/Net/Core/PushModel/PushModel.cpp`의 `MarkPropertyDirty`). 값을 읽는 것은 복제 시점이므로 대입과 마킹의 순서는 상관없고, 같은 프레임에 여러 번 마킹해도 결과는 같다. `COMPARE_ASSIGN_AND_MARK_PROPERTY_DIRTY`는 새 값이 기존 값과 다를 때만 대입하고 마킹한다. 엔진의 `AController::SetPawn_Direct`도 이 매크로를 쓴다.
+`MARK_PROPERTY_DIRTY_FROM_NAME`은 UHT가 생성한 `ENetFields_Private`로 프로퍼티의 RepIndex를 컴파일 시간에 구하고, 오브젝트의 push 상태에 비트 하나를 세운다(`Net/Core/Private/Net/Core/PushModel/PushModel.cpp`의 `MarkPropertyDirty`). 값을 읽는 것은 복제 시점이므로 대입과 마킹의 순서는 상관없다. 같은 프레임에 여러 번 마킹해도 결과는 같다. `COMPARE_ASSIGN_AND_MARK_PROPERTY_DIRTY`는 새 값이 기존 값과 다를 때만 대입하고 마킹한다. 엔진의 `AController::SetPawn_Direct`도 이 매크로를 쓴다.
 
 오브젝트가 아직 복제 등록 전이면 마킹은 아무 일도 하지 않는다. 대신 처음 등록될 때 모든 프로퍼티가 dirty인 상태로 시작한다(`Net/Core/Private/Net/Core/PushModel/Types/PushModelPerObjectState.h`의 생성자가 `DirtiedThisFrame`을 `true`로 채운다). 그래서 스폰 직후에 설정한 값은 마킹이 없어도 첫 복제에 실린다.
 
@@ -144,7 +144,7 @@ Full 클래스는 이 판정조차 프로퍼티마다 하지 않는다. dirty �
 
 ### dirty여도 비교는 한다
 
-마킹은 "보내라"가 아니라 "비교해 봐라"는 표시다. dirty 프로퍼티도 `PropertiesAreIdentical`로 shadow state와 비교하고, 같으면 changelist에 넣지 않는다. 같은 값으로 마킹하면 비교 비용만 들고 아무것도 전송되지 않는다.
+마킹은 "보내라"가 아니라 "비교해 봐라"는 표시다. dirty 프로퍼티도 `PropertiesAreIdentical`로 shadow state와 비교하고 같으면 changelist에 넣지 않는다. 같은 값으로 마킹하면 비교 비용만 들고 아무것도 전송되지 않는다.
 
 이 때문에 `REPNOTIFY_Always`도 Push Model과 무관하게 동작한다. 엔진은 이 값을 다음과 같이 정의한다.
 
@@ -154,17 +154,17 @@ Full 클래스는 이 판정조차 프로퍼티마다 하지 않는다. dirty �
 
 조건은 "서버에서 받았을 때"다. 받은 값이 클라이언트의 로컬 값과 같아도 RepNotify를 부른다는 수신 쪽 규칙이고(`RepLayout.cpp`의 `ReceivePropertyHelper`), 서버가 무엇을 보낼지에는 관여하지 않는다. 서버가 같은 값을 다시 마킹해도 보낸 것이 없으므로 클라이언트에서 RepNotify는 불리지 않는다. 처음에 나는 이 경우 RepNotify가 불릴 거라고 생각했는데, 보내는 쪽과 받는 쪽의 규칙을 섞어서 본 것이었다.
 
-비교가 끝나면 그 오브젝트의 dirty 비트는 지워진다. 비교는 오브젝트당 한 번이고 결과는 연결들이 공유하므로, 연결마다 dirty 비트를 따로 두지 않는다. 조건부 프로퍼티는 비교 단계에서 조건을 보지 않고 모두 비교한 뒤 연결별로 걸러 낸다.
+비교가 끝나면 그 오브젝트의 dirty 비트는 지워진다. 비교는 오브젝트당 한 번이고 결과는 연결들이 공유한다. 그래서 dirty 비트도 연결마다 따로 두지 않는다. 조건부 프로퍼티는 비교 단계에서 조건을 보지 않고 모두 비교한 뒤 연결별로 걸러 낸다.
 
 ### 언제 복제할지는 바꾸지 않는다
 
-Push Model은 무엇을 비교할지만 바꾼다. 액터를 언제 복제 검토 대상으로 볼지는 `NetUpdateFrequency`, `ForceNetUpdate`, Dormancy, 관련성 검사가 그대로 정한다. 마킹은 `ForceNetUpdate`를 부르지 않으므로, 마킹한 값도 다음 복제 주기를 기다린다.
+Push Model은 무엇을 비교할지만 바꾼다. 액터를 언제 복제 검토 대상으로 볼지는 `NetUpdateFrequency`, `ForceNetUpdate`, Dormancy, 관련성 검사가 그대로 정한다. 마킹은 `ForceNetUpdate`를 부르지 않으므로 마킹한 값도 다음 복제 주기를 기다린다.
 
 ## 오브젝트를 통째로 건너뛰는 `net.PushModelSkipUndirtiedReplication`
 
 Push Model만 켜면 연결별 작업은 그대로 남는다. 바뀐 것이 없어도 각 연결의 replicator는 changelist를 확인한다. `net.PushModelSkipUndirtiedReplication`(기본값 `false`)을 켜면 replicator가 이 확인을 건너뛸 수 있다. 판정은 `FObjectReplicator::CanSkipUpdate`(`Engine/Private/DataReplication.cpp`)가 한다.
 
-skip 대상이 되려면 먼저 replicator를 초기화할 때 클래스가 `FullPushProperties`여야 하고, FastArray 같은 CustomDelta 프로퍼티가 없어야 한다. FastArray가 있는 클래스는 FastArray 프로퍼티도 push로 등록하고 CVar를 하나 더 켜야 한다.
+skip 대상이 되려면 먼저 replicator를 초기화할 때 클래스가 `FullPushProperties`여야 하고 FastArray 같은 CustomDelta 프로퍼티가 없어야 한다. FastArray가 있는 클래스는 FastArray 프로퍼티도 push로 등록하고 CVar를 하나 더 켜야 한다.
 
 ```ini
 [SystemSettings]
@@ -195,7 +195,7 @@ if (bHasRPCQueued)
 }
 ```
 
-unreliable multicast RPC는 바로 보내지지 않고 replicator의 `RemoteFunctions`에 쌓였다가 다음 프로퍼티 복제 때 함께 나간다(`Engine/Private/NetDriver.cpp`의 `ProcessRemoteFunctionForChannelPrivate`). `RemoteFunctions`는 처음 쌓을 때 할당되고, 전송한 뒤에는 `Reset()`만 하고 해제하지 않는다. 비트 수가 0이 되어도 `GetNumBits() >= 0`은 참이므로, unreliable multicast를 한 번이라도 보낸 액터는 그 연결에서 다시는 skip되지 않는다. 아래 실험에서 그대로 재현됐다.
+unreliable multicast RPC는 바로 보내지지 않고 replicator의 `RemoteFunctions`에 쌓였다가 다음 프로퍼티 복제 때 함께 나간다(`Engine/Private/NetDriver.cpp`의 `ProcessRemoteFunctionForChannelPrivate`). `RemoteFunctions`는 처음 쌓을 때 할당되고 전송한 뒤에는 `Reset()`만 하고 해제하지 않는다. 비트 수가 0이 되어도 `GetNumBits() >= 0`은 여전히 참이다. 그래서 unreliable multicast를 한 번이라도 보낸 액터는 그 연결에서 다시는 skip되지 않는다. 아래 실험에서 그대로 재현됐다.
 
 skip이 건너뛰는 범위도 생각보다 좁다.
 
@@ -213,11 +213,11 @@ bWroteSomethingImportant |= DoSubObjectReplication(Bunch, RepFlags);
 bWroteSomethingImportant |= UpdateDeletedSubObjects(Bunch);
 ```
 
-건너뛰는 것은 액터 본체의 `ReplicateProperties` 호출 하나다. `ReplicateActor` 호출 자체, 서브오브젝트 복제, 삭제된 서브오브젝트 확인은 매번 돈다. 반면 서브오브젝트(복제 컴포넌트 등)는 각자의 replicator에서 같은 판정을 하고, skip되면 그 서브오브젝트의 처리를 일찍 끝낸다(`DataChannel.cpp`의 `UActorChannel::WriteSubObjectInBunch`).
+skip은 액터 본체의 `ReplicateProperties` 호출 하나만 건너뛴다. `ReplicateActor` 호출 자체, 서브오브젝트 복제, 삭제된 서브오브젝트 확인은 매번 돈다. 반면 서브오브젝트(복제 컴포넌트 등)는 각자의 replicator에서 같은 판정을 하고 skip되면 그 서브오브젝트의 처리를 일찍 끝낸다(`DataChannel.cpp`의 `UActorChannel::WriteSubObjectInBunch`).
 
 ## 엔진 클래스는 이미 push 기반인가
 
-skip CVar를 받으려면 클래스가 Full 클래스여야 하고, Full 클래스는 부모 클래스에서 물려받은 복제 프로퍼티까지 모두 push 기반이어야 한다. 그래서 어떤 엔진 클래스를 상속하느냐가 중요하다. 5.8.3에서 엔진 클래스의 상태는 다음과 같다.
+skip CVar는 Full 클래스에서만 동작한다. Full 클래스가 되려면 부모 클래스에서 물려받은 복제 프로퍼티까지 모두 push 기반이어야 하므로 어떤 엔진 클래스를 상속하느냐가 중요하다. 5.8.3에서 엔진 클래스의 상태는 다음과 같다.
 
 | 클래스 | 복제 프로퍼티의 push 등록 | 이 클래스만 놓고 본 분류 |
 | --- | --- | --- |
@@ -254,13 +254,13 @@ if (bWasRepMovementModified)
 }
 ```
 
-움직임을 복제하는 액터는 Push Model을 켜도 `ReplicatedMovement`를 매번 비교한다. 템플릿 캐릭터만 있는 상태에서 Push Model과 skip CVar를 모두 켠 측정과 끈 측정은 둘 다 0.09 ms로 차이가 없었다.
+움직임을 복제하는 액터는 Push Model을 켜도 `ReplicatedMovement`를 매번 비교한다. 템플릿 캐릭터만 있는 상태로도 재 봤다. Push Model과 skip CVar를 모두 켰을 때와 모두 껐을 때 둘 다 0.09 ms로 차이가 없었다.
 
 ## Blueprint 복제 변수
 
-Blueprint에서 선언한 복제 변수는 체크박스 없이 Push Model 대상이 된다. `UBlueprintGeneratedClass`가 lifetime 프로퍼티를 만들 때 `PUSH_MAKE_BP_PROPERTIES_PUSH_MODEL()`을 넘기고, 이 매크로는 `Net.IsPushModelEnabled`와 `Net.MakeBpPropertiesPushModel`(기본값 `true`)이 모두 켜져 있으면 참이다. Blueprint 컴파일러는 Set 노드와 참조로 넘기는 함수 호출 뒤에 `MarkPropertyDirtyFromRepIndex` 호출을 자동으로 넣는다.
+Blueprint에서 선언한 복제 변수는 체크박스 없이 Push Model 대상이 된다. `UBlueprintGeneratedClass`가 lifetime 프로퍼티를 만들 때 `PUSH_MAKE_BP_PROPERTIES_PUSH_MODEL()`을 넘긴다. 이 매크로는 `Net.IsPushModelEnabled`와 `Net.MakeBpPropertiesPushModel`(기본값 `true`)이 모두 켜져 있으면 참이다. Blueprint 컴파일러는 Set 노드와 참조로 넘기는 함수 호출 뒤에 `MarkPropertyDirtyFromRepIndex` 호출을 자동으로 넣는다.
 
-자동 삽입에도 빈틈이 있다. 참조로 값을 바꾸는 Set by-ref 계열 노드는 마킹하지 않는다는 이슈가 등록돼 있다([UE-194745](https://issues.unrealengine.com/issue/UE-194745)). Blueprint 변수가 클라이언트에 반영되지 않는다면 이 경로를 먼저 의심할 만하다.
+다만 참조로 값을 바꾸는 Set by-ref 계열 노드는 마킹하지 않는다는 이슈가 등록돼 있다([UE-194745](https://issues.unrealengine.com/issue/UE-194745)). Blueprint 변수가 클라이언트에 반영되지 않는다면 이 경로를 먼저 의심할 만하다.
 
 ## ThirdPerson 템플릿으로 측정하기
 
@@ -302,13 +302,13 @@ protected:
 };
 ```
 
-- 액터 클래스는 세 가지다. 16개를 모두 push로 등록한 Full 클래스, 여기에 바뀌지 않는 폴링 프로퍼티 하나를 더한 Partial 클래스, 폴링 프로퍼티 하나만 있는 액터에 16개 프로퍼티를 가진 Full 컴포넌트를 붙인 Carrier 클래스다.
+- 액터 클래스는 세 가지다. 16개를 모두 push로 등록한 Full 클래스, 여기에 바뀌지 않는 폴링 프로퍼티 하나를 더한 Partial 클래스, 그리고 Carrier 클래스다. Carrier 클래스는 액터 본체에 폴링 프로퍼티 하나만 두고, 16개 프로퍼티는 Full 컴포넌트에 담아 붙였다.
 - 서버는 액터 1000개를 스폰하고, 매 프레임 "초당 변경 비율 × 액터 수"만큼 무작위 액터의 무작위 프로퍼티 하나에 새 값을 쓰고 마킹한다. 난수 시드는 고정했다.
 - 클라이언트가 모두 접속하면 20초 워밍업 뒤 30초를 측정한다. 측정 구간에는 CSV 캡처와 Insights 리전 `PushLab.Measure`를 건다.
 - 서버는 에디터 바이너리를 `-server`로 띄웠다. 런처판 5.8에서는 Push Model이 켜진 Server 타깃을 빌드할 수 없어서다. 클라이언트는 렌더링 없이 띄웠다.
 - Ryzen 9 5950X에서 서버는 논리 코어 0번부터 15번에, 클라이언트는 16번부터 31번에 고정했다. 같은 조건을 반복했을 때 실행마다 결과가 ±10%가량 흔들려서, 서로 간섭하는 요인을 줄이려는 설정이다.
-- 연결 대역폭 제한을 100 MB/s로 올렸다. 기본값(100 KB/s)에서는 매 프레임 값을 바꾸는 조건에서 연결이 포화되어, 연결당 프레임마다 처리하는 액터가 1000개에서 24개로 줄었다. 그 상태에서는 CPU가 아니라 대역폭 한계를 재게 된다.
-- 서버 최대 틱은 30 Hz로 두었고, 실제로는 프레임당 47 ms 안팎(약 21 Hz)으로 돌았다. 지표가 프레임당 복제 시간이므로 조건 간 비교에는 영향이 없다.
+- 연결 대역폭 제한을 100 MB/s로 올렸다. 기본값(100 KB/s)에서는 매 프레임 값을 바꾸는 조건에서 연결이 포화되어 연결당 프레임마다 처리하는 액터가 1000개에서 24개로 줄었다. 그 상태에서는 CPU가 아니라 대역폭 한계를 재게 된다.
+- 서버 최대 틱은 30 Hz로 두었다. 실제로는 프레임당 47 ms 안팎(약 21 Hz)으로 돌았다. 지표가 프레임당 복제 시간이므로 조건 간 비교에는 영향이 없다.
 
 서버와 클라이언트는 다음처럼 띄웠다. 실험용 인자(액터 수, 변경 비율 등)는 뺐다.
 
@@ -461,7 +461,7 @@ skip을 켜면 `ReplicateActor`의 61%가 1 µs 미만에 모인다. 비교 호�
 | 4 | 7.62 ms | 5.99 ms | 21% |
 | 8 | 16.60 ms | 13.18 ms | 21% |
 
-비교를 연결들이 공유하는데도 전체 시간은 연결 수에 거의 비례해 늘었다. 복제 비용의 대부분이 연결별 작업이라는 뜻이고, skip이 줄이는 몫도 그 연결별 작업의 일부다. 연결이 늘수록 감소율이 조금 낮아진 것은 skip이 건드리지 않는 연결별 비용이 함께 늘기 때문으로 보인다.
+비교를 연결들이 공유하는데도 전체 시간은 연결 수에 거의 비례해 늘었다. 복제 비용의 대부분이 연결별 작업이라는 뜻이다. skip이 줄이는 몫도 그 연결별 작업의 일부다. 연결이 늘수록 감소율이 조금 낮아진 것은 skip이 건드리지 않는 연결별 비용이 함께 늘기 때문으로 보인다.
 
 ### Partial 클래스와 컴포넌트로 옮기기
 
@@ -476,7 +476,7 @@ skip을 켜면 `ReplicateActor`의 61%가 1 µs 미만에 모인다. 비교 호�
 
 폴링 프로퍼티 하나가 섞인 Partial 클래스는 skip CVar를 켜도 skip되지 않았다. `ACharacter`를 상속한 캐릭터가 이 경우다.
 
-그래서 캐릭터처럼 Partial일 수밖에 없는 액터라면, 자주 바뀌지 않는 상태를 Full 컴포넌트로 옮겨 그 컴포넌트만이라도 skip을 받게 하면 되지 않을까 생각했다. Carrier 클래스가 그 구성이다. 컴포넌트는 실제로 skip됐지만(프레임당 1,998회) 전체는 5.10 ms로 Partial(3.79 ms)보다 35% 느렸다. 액터마다 replicator가 하나 더 생기고 서브오브젝트 처리 비용이 붙는 것이 skip으로 아끼는 몫보다 컸다. 이 측정에서는 skip을 노리고 상태를 쪼개는 것이 손해였다.
+그래서 캐릭터처럼 Partial일 수밖에 없는 액터라면 자주 바뀌지 않는 상태를 Full 컴포넌트로 옮겨 그 컴포넌트만이라도 skip을 받게 하면 되지 않을까 생각했다. Carrier 클래스가 그 구성이다. 컴포넌트는 실제로 skip됐지만(프레임당 1,998회) 전체는 5.10 ms로 Partial(3.79 ms)보다 35% 느렸다. 액터마다 replicator가 하나 더 생기고 서브오브젝트 처리 비용이 붙는 것이 skip으로 아끼는 몫보다 컸다. 이 측정에서는 skip을 노리고 상태를 쪼개는 것이 손해였다.
 
 ### unreliable multicast 한 번이 skip을 끈다
 
@@ -501,7 +501,7 @@ UnrealEditor.exe ThirdPerson.uproject /Game/ThirdPerson/Lvl_ThirdPerson -server 
 
 ![Networking Insights 송신 패킷 선택](./images/unreal-push-model/networking-insights-packets.webp)
 
-① 서버 인스턴스의 Connection 0에서 방향을 Outgoing으로 바꾸고, ② 패킷 막대를 클릭한 뒤 Shift-클릭해 초기 복제 이후의 패킷 985개를 골랐다. 초당 100%의 액터 값이 바뀌는 조건이고, 시드가 고정되어 있어서 두 실행은 같은 순서로 값을 쓴다.
+① 서버 인스턴스의 Connection 0에서 방향을 Outgoing으로 바꾸고, ② 패킷 막대를 클릭한 뒤 Shift-클릭해 초기 복제 이후의 패킷 985개를 골랐다. 초당 100%의 액터 값이 바뀌는 조건이다. 시드가 고정되어 있어서 두 실행은 같은 순서로 값을 쓴다.
 
 ![Net Stats: push 끔](./images/unreal-push-model/networking-insights-push-off.webp)
 
@@ -518,7 +518,7 @@ UnrealEditor.exe ThirdPerson.uproject /Game/ThirdPerson/Lvl_ThirdPerson -server 
 
 영어권에 공개된 측정으로는 Kieran Newland의 글이 있다([Push Model Networking](https://www.kierannewland.co.uk/push-model-networking-unreal-engine/), UE 5.3.2). 그 측정에서는 Push Model만 켰을 때 -17%, skip CVar까지 켰을 때 -54%였다. 이번 측정의 -13%와 -26%보다 skip의 효과가 훨씬 크다.
 
-그 측정은 액터 20개에 액터당 컴포넌트 20개를 붙이고, 컴포넌트마다 float 하나를 복제하는 구성이다. 복제 대상 대부분이 서브오브젝트다. 서브오브젝트는 skip되면 그 서브오브젝트의 처리를 일찍 끝내지만, 액터 본체는 `ReplicateProperties` 한 줄만 건너뛰고 나머지 연결별 처리가 남는다. 이번 실험은 프로퍼티가 액터 본체에 있는 구성이라 남는 몫이 컸고, 그래서 같은 CVar의 효과가 -54%와 -26%로 갈린 것으로 보인다. 두 숫자 중 어느 쪽이 맞느냐보다, skip의 효과는 상태가 액터 본체에 있는지 서브오브젝트에 있는지에 달려 있다고 보는 편이 정확하다.
+그 측정은 액터 20개에 액터당 컴포넌트 20개를 붙이고, 컴포넌트마다 float 하나를 복제하는 구성이다. 복제 대상 대부분이 서브오브젝트다. 서브오브젝트는 skip되면 그 서브오브젝트의 처리를 일찍 끝내지만, 액터 본체는 `ReplicateProperties` 한 줄만 건너뛰고 나머지 연결별 처리가 남는다. 이번 실험은 프로퍼티가 액터 본체에 있는 구성이라 남는 몫이 컸다. 같은 CVar의 효과가 -54%와 -26%로 갈린 것도 그 때문으로 보인다. 두 숫자 중 어느 한쪽이 맞다기보다, skip의 효과는 상태가 액터 본체에 있는지 서브오브젝트에 있는지에 따라 달라진다고 본다.
 
 ## 마킹을 빠뜨리면
 
@@ -533,11 +533,11 @@ LogPushLab: Display: Client probe: 0 / 1000 lab actors have Int00=777
 LogPushLab: Display: Client probe: 1000 / 1000 lab actors have Int00=777
 ```
 
-같은 액터의 다른 프로퍼티가 마킹되어 액터가 복제돼도 `Int00`은 따라가지 않는다. dirty가 아닌 push 프로퍼티는 비교 대상에서 빠지기 때문이다. Dormancy와 겹치면 더 나빠진다. 마킹하지 않은 값이 Dormancy 해제 때 전송되면서 shadow state에는 기록되지 않아, 나중에 원래 값으로 되돌린 변경을 감지하지 못하는 이슈가 열려 있다([UE-226689](https://issues.unrealengine.com/issue/UE-226689)).
+같은 액터의 다른 프로퍼티가 마킹되어 액터가 복제돼도 `Int00`은 따라가지 않는다. dirty가 아닌 push 프로퍼티는 비교 대상에서 빠지기 때문이다. Dormancy와 겹치면 더 나빠진다. 마킹하지 않은 값이 Dormancy 해제 때 전송은 되지만 shadow state에는 기록되지 않아서, 나중에 값을 원래대로 되돌리면 그 변경을 감지하지 못한다. 이 이슈는 아직 열려 있다([UE-226689](https://issues.unrealengine.com/issue/UE-226689)).
 
 ### 마킹 누락을 막는 구조
 
-복제 프로퍼티를 private으로 두고 값을 바꾸는 경로를 setter로 모으면, 마킹을 빠뜨릴 자리가 setter 안으로 줄어든다. `FInventorySlot`은 `ItemId`와 `Count`를 가진 `USTRUCT`이고, 두 프로퍼티는 앞에서 본 것처럼 `bIsPushBased`로 등록했다고 가정한다.
+복제 프로퍼티를 private으로 두고 값을 바꾸는 경로를 setter로 모으면 마킹을 빠뜨릴 자리가 setter 안으로 줄어든다. `FInventorySlot`은 `ItemId`와 `Count`를 가진 `USTRUCT`다. `Health`와 `Slots`는 앞에서 본 것처럼 `bIsPushBased`로 등록했다고 가정한다.
 
 ```cpp
 UCLASS()
@@ -576,9 +576,9 @@ private:
 };
 ```
 
-push는 프로퍼티 단위로 마킹하므로, 배열 원소 하나를 바꿔도 배열 프로퍼티 전체가 다음 비교 대상이 된다. 보내는 것은 비교에서 달라진 원소뿐이다. `GetSlots_Mutable()`처럼 참조를 넘기면서 마킹하는 방식은 엔진도 쓴다. `AActor::GetReplicatedMovement_Mutable()`이 `ReplicatedMovement`를 마킹한 뒤 참조를 돌려준다(`Engine/Private/Actor.cpp`). 값을 바꾸지 않고 마킹만 해도 비교 비용만 들고 전송은 없다는 것은 앞에서 확인했다.
+push는 프로퍼티 단위로 마킹하므로 배열 원소 하나를 바꿔도 배열 프로퍼티 전체가 다음 비교 대상이 된다. 실제로 보내는 원소는 비교에서 달라진 것뿐이다. `GetSlots_Mutable()`처럼 참조를 넘기면서 마킹하는 방식은 엔진도 쓴다. `AActor::GetReplicatedMovement_Mutable()`이 `ReplicatedMovement`를 마킹한 뒤 참조를 돌려준다(`Engine/Private/Actor.cpp`). 값을 바꾸지 않고 마킹만 해도 비교 비용만 들고 전송은 없다는 것은 앞에서 확인했다.
 
-이 구조로도 막지 못하는 경우가 있다. `GetSlots_Mutable()`로 받은 참조를 보관했다가 다음 프레임 이후에 고치면, 마킹은 이미 비교에서 소비된 뒤라 변경이 전달되지 않는다. 이런 경로는 검증용 CVar로 찾는다.
+다만 `GetSlots_Mutable()`로 받은 참조를 보관했다가 다음 프레임 이후에 고치는 경우는 이 구조로도 막지 못한다. 마킹은 이미 비교에서 소비된 뒤라 변경이 전달되지 않는다. 이런 경로는 검증용 CVar로 찾는다.
 
 ### 검증 CVar
 
@@ -614,7 +614,7 @@ net.IsPushModelEnabled=1
 
 패키지 빌드라면 [앞에서 본 것처럼](#1-컴파일-스위치-bwithpushmodel) Target.cs의 `bWithPushModel = true`도 필요하다. 이 예시는 push 관련 스위치만 모은 것이다. Iris 자체를 켜려면 Iris 플러그인과 모듈의 `SetupIrisSupport(Target)` 같은 준비가 더 필요하므로 Epic의 [Migrate to Iris](https://dev.epicgames.com/documentation/en-us/unreal-engine/migrate-to-iris-in-unreal-engine) 문서를 따른다. 이번 실험은 Iris를 켜고 측정하지 않았다.
 
-레거시와 가장 다른 점은 push 정보를 쓰는 단계다. Iris는 복제 전에 오브젝트 값을 내부 상태로 복사하는 폴링 단계(`FObjectPoller`)를 거친다. 모든 멤버가 push 기반인 Full push 오브젝트는 dirty가 아니고 GC의 영향도 받지 않았다면 폴링 루프에 들어가기 전에 목록에서 빠진다(`ObjectPoller.cpp`, `net.Iris.Poll.FilterOutNonDirtyPushBasedObjects` 기본값 `true`). 레거시가 비교 단계에서 프로퍼티를 건너뛴다면, Iris는 그보다 앞에서 오브젝트 단위로 걸러 낸다. 기본 설정에서는 마킹된 오브젝트가 `NetUpdateFrequency`로 정해진 폴링 주기를 기다리지 않고 그 프레임에 폴링된다는 점도 다르다.
+레거시와 가장 다른 점은 push 정보를 쓰는 단계다. Iris는 복제 전에 오브젝트 값을 내부 상태로 복사하는 폴링 단계(`FObjectPoller`)를 거친다. Full push 오브젝트(모든 멤버가 push 기반인 오브젝트)는 dirty가 아니고 GC의 영향도 받지 않았다면 폴링 루프에 들어가기 전에 목록에서 빠진다(`ObjectPoller.cpp`, `net.Iris.Poll.FilterOutNonDirtyPushBasedObjects` 기본값 `true`). 레거시가 비교 단계에서 프로퍼티를 건너뛴다면, Iris는 그보다 앞에서 오브젝트 단위로 걸러 낸다. 기본 설정에서는 마킹된 오브젝트가 `NetUpdateFrequency`로 정해진 폴링 주기를 기다리지 않고 그 프레임에 폴링된다는 점도 다르다.
 
 엔진 설정에는 Iris에서 Full push를 유지해야 하는 클래스 목록이 있다(`Config/BaseEngine.ini`의 `EnsureFullyPushModelClassNames`). 목록에는 `SceneComponent`, `StaticMeshComponent`, `CapsuleComponent` 같은 컴포넌트와 `WorldDataLayers`만 있고 Actor, Pawn, Character는 없다. Iris로 옮겨도 캐릭터는 Partial로 남는다.
 
@@ -622,7 +622,7 @@ net.IsPushModelEnabled=1
 
 새 프로젝트에서 기본으로 하는 것은 세 가지다.
 
-- 복제 프로퍼티는 모두 push로 등록하고 skip CVar를 켠다. 측정한 어떤 조건에서도 push를 켠 쪽이 끈 쪽보다 느리지 않았고, skip은 Full 클래스에서만 동작하므로 섞어 쓸 이유가 없다.
+- 복제 프로퍼티는 모두 push로 등록하고 skip CVar를 켠다. 측정한 어떤 조건에서도 push를 켠 쪽이 끈 쪽보다 느리지 않았다. skip은 Full 클래스에서만 동작하므로 섞어 쓸 이유도 없다.
 - 값을 바꾸는 경로는 setter로 모은다([마킹 누락을 막는 구조](#마킹-누락을-막는-구조)).
 - 패키지 빌드의 Target.cs에 `bWithPushModel = true`가 있는지 확인한다. 없으면 PIE에서 본 동작과 다르게 조용히 폴링으로 돈다.
 

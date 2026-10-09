@@ -323,7 +323,7 @@ PlayerController.IsPushBased=1
 
 GAS의 `UAbilitySystemComponent`는 부모인 `UGameplayTasksComponent`까지 포함해 복제 프로퍼티를 모두 push로 등록하고, 값을 바꿀 때는 `GetRepAnimMontageInfo_Mutable()`처럼 마킹하고 참조를 돌려주는 getter를 쓴다. AttributeSet은 프로젝트가 정의하므로 push 등록 여부도 프로젝트가 정한다. GAS가 attribute 값을 쓰는 경로(`FGameplayAttribute::SetNumericValueChecked`)가 `MARK_PROPERTY_DIRTY`를 부르므로 attribute를 `bIsPushBased`로 등록해도 GameplayEffect로 바꾼 값은 전달된다. 다만 `GAMEPLAYATTRIBUTE_VALUE_INITTER`가 만드는 `InitHealth` 같은 함수는 값을 직접 쓰고 마킹하지 않는다.
 
-Epic의 Lyra 샘플(5.8.3)도 `ALyraPlayerState`의 프로퍼티 대부분을 push로 등록해 두었다. 하지만 Target.cs에 `bWithPushModel`이 없고 `DefaultEngine.ini`에 `net.IsPushModelEnabled`도 없다. 그대로 빌드하면 에디터와 패키지 빌드 모두 폴링으로 돈다. 코드가 Push Model을 쓰는 모양이라고 해서 프로젝트에서 켜져 있다는 뜻은 아니다.
+Epic의 Lyra 샘플도 `ALyraPlayerState`의 프로퍼티 대부분을 push로 등록해 두었다. 하지만 Target.cs에 `bWithPushModel`이 없고 `DefaultEngine.ini`에 `net.IsPushModelEnabled`도 없다. 그대로 빌드하면 에디터와 패키지 빌드 모두 폴링으로 돈다. 코드가 Push Model을 쓰는 모양이라고 해서 프로젝트에서 켜져 있다는 뜻은 아니다.
 
 `AActor::ReplicatedMovement`는 push 기반이지만, 물리 시뮬레이션이 아닌 액터에서는 `GatherCurrentMovement`가 값이 같아도 매번 마킹한다.
 
@@ -351,6 +351,19 @@ Blueprint에서 선언한 복제 변수는 체크박스 없이 Push Model 대상
 ## ThirdPerson 템플릿으로 측정하기
 
 ### 실험 구성
+
+측정 환경은 다음과 같다.
+
+| 항목 | 값 |
+| --- | --- |
+| 엔진 | UE 5.8.3 런처판(CL 58210709), Development |
+| OS | Windows 11 26H2 |
+| CPU, 메모리 | Ryzen 9 5950X(16코어 32스레드), 64 GB |
+| 서버 | 에디터 바이너리 `-server`, uncooked, 논리 코어 0~15 고정 |
+| 클라이언트 | 2개, `-game -nullrhi -nosound`, 같은 PC에서 127.0.0.1로 접속, 논리 코어 16~31 고정 |
+| 서버 최대 틱 | 30 Hz |
+| 연결 대역폭 제한 | 100 MB/s |
+| 측정 구간 | 클라이언트가 모두 접속한 뒤 20초 워밍업, 30초 측정 |
 
 템플릿 캐릭터만으로는 측정할 대상이 거의 없어서 별도 액터를 추가했다. 대표 코드는 다음과 같다.
 
@@ -390,11 +403,11 @@ protected:
 
 - 액터 클래스는 세 가지다. 16개를 모두 push로 등록한 Full 클래스, 여기에 바뀌지 않는 폴링 프로퍼티 하나를 더한 Partial 클래스, 그리고 Carrier 클래스다. Carrier 클래스는 액터 본체에 폴링 프로퍼티 하나만 두고, 16개 프로퍼티는 Full 컴포넌트에 담아 붙였다.
 - 서버는 액터 1000개를 스폰하고, 매 프레임 "초당 변경 비율 × 액터 수 × DeltaTime"을 누적해 1이 넘을 때마다 무작위 액터의 무작위 프로퍼티 하나에 새 값을 쓰고 마킹한다. 액터는 중복을 허용해 고르므로 변경 비율은 "액터당 평균 초당 쓰기 횟수"다. 1%면 액터 하나가 평균 100초에 한 번, 3000%면 평균 초당 30번 바뀐다. 난수 시드는 고정했다.
-- 클라이언트가 모두 접속하면 20초 워밍업 뒤 30초를 측정한다. 측정 구간에는 CSV 캡처와 Insights 리전 `PushLab.Measure`를 건다.
-- 서버는 에디터 바이너리를 `-server`로 띄웠다. 런처판 5.8에서는 Push Model이 켜진 Server 타깃을 빌드할 수 없어서다. 클라이언트는 렌더링 없이 띄웠다.
-- Ryzen 9 5950X에서 서버는 논리 코어 0번부터 15번에, 클라이언트는 16번부터 31번에 고정했다. 같은 조건을 반복했을 때 실행마다 결과가 ±10%가량 흔들려서, 서로 간섭하는 요인을 줄이려는 설정이다.
-- 연결 대역폭 제한을 100 MB/s로 올렸다. 기본값(100 KB/s)에서는 3000% 조건에서 연결이 포화되어 연결당 프레임마다 처리하는 액터가 1000개에서 24개로 줄었다. 그 상태에서는 CPU가 아니라 대역폭 한계를 재게 된다.
-- 서버 최대 틱은 30 Hz로 두었다. 실제로는 실행에 따라 프레임당 33~47 ms(약 21~30 Hz)로 돌았고, 그에 따라 연결당 프레임마다 처리한 액터 수도 774~1,005개로 달라졌다. 프레임당 시간으로 나눠도 프레임마다 한 일의 양까지 같아지지는 않으므로, 메인 조건은 `ReplicateActor` 1회당 시간으로도 함께 비교했다.
+- 측정 구간에는 CSV 캡처와 Insights 리전 `PushLab.Measure`를 건다.
+- 서버를 에디터 바이너리로 띄운 것은 런처판 5.8에서 Push Model이 켜진 Server 타깃을 빌드할 수 없어서다.
+- 같은 조건을 반복해도 실행마다 결과가 ±10%가량 흔들려서, 서버와 클라이언트를 서로 다른 코어에 고정해 간섭을 줄였다.
+- 대역폭 제한을 기본값(100 KB/s)으로 두면 3000% 조건에서 연결이 포화되어 연결당 프레임마다 처리하는 액터가 1000개에서 24개로 줄었다. 그 상태에서는 CPU가 아니라 대역폭 한계를 재게 된다.
+- 서버 프레임은 실행에 따라 33\~47 ms(약 21\~30 Hz)였고, 그에 따라 연결당 프레임마다 처리한 액터 수도 774\~1,005개로 달라졌다. 프레임당 시간으로 나눠도 프레임마다 한 일의 양까지 같아지지는 않으므로, 메인 조건은 `ReplicateActor` 1회당 시간으로도 함께 비교했다.
 
 서버와 클라이언트는 다음처럼 띄웠다. 실험용 인자(액터 수, 변경 비율 등)는 뺐다.
 
@@ -428,7 +441,7 @@ MaxInternetClientRate=100000000
 
 ### 메인 조건의 측정 결과
 
-메인 조건(Full 클래스 1000개, 초당 1% 변경, 클라이언트 2개)을 조건당 5회씩 번갈아 실행하는 세트를 두 번 돌렸다. 첫 세트의 프레임 시간이 실행마다 33~47 ms로 흔들려서 둘째 세트를 추가했는데, 둘째 세트도 42~47 ms로 흔들렸다. 표의 평균은 10회 평균이다.
+메인 조건(Full 클래스 1000개, 초당 1% 변경, 클라이언트 2개)을 조건당 5회씩 번갈아 실행하는 세트를 두 번 돌렸다. 첫 세트의 프레임 시간이 실행마다 33\~47 ms로 흔들려서 둘째 세트를 추가했는데, 둘째 세트도 42\~47 ms로 흔들렸다. 표의 평균은 10회 평균이다.
 
 | 조건 | 1차 5회 `ServerReplicateActors` (ms) | 2차 5회 (ms) | 10회 평균 | 비율 | `ReplicateActor` 1회당 (10회) | 비율 |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -604,7 +617,7 @@ UnrealEditor.exe ThirdPerson.uproject /Game/ThirdPerson/Lvl_ThirdPerson -server 
 
 ### Network Profiler로 비교 횟수 세기
 
-Networking Insights 이전부터 있던 Network Profiler도 5.8.3에 남아 있다. Shipping과 Test가 아닌 빌드에서 동작하고(`USE_NETWORK_PROFILER`), 서버 명령줄에 `networkprofiler=true`를 주거나 콘솔에서 `netprofile enable`을 실행하면 `Saved/Profiling`에 `.nprof` 파일이 기록된다. 파일은 `Engine/Binaries/DotNET/NetworkProfiler.exe`로 연다. 런처로 설치한 5.8에는 이 실행 파일이 없어서 소스 빌드에서 만든 것을 썼다.
+Networking Insights 이전부터 있던 Network Profiler도 아직 남아 있다. Shipping과 Test가 아닌 빌드에서 동작하고(`USE_NETWORK_PROFILER`), 서버 명령줄에 `networkprofiler=true`를 주거나 콘솔에서 `netprofile enable`을 실행하면 `Saved/Profiling`에 `.nprof` 파일이 기록된다. 파일은 `Engine/Binaries/DotNET/NetworkProfiler.exe`로 연다. 런처로 설치한 5.8에는 이 실행 파일이 없어서 소스 빌드에서 만든 것을 썼다.
 
 이 도구에는 Insights에 없는 값이 두 가지 있다. 하나는 오브젝트와 프로퍼티별 비교 횟수이고, 다른 하나는 액터별 Waste다. 비교 횟수는 `Net.ProfilerUseComparisonTracking`(기본값 0)을 켜야 기록된다. 이번에는 메인 조건(액터 1000개, 클라이언트 2개, 초당 1%)에서 30초 측정 구간에만 기록이 걸리도록 하네스가 다음 콘솔 명령을 실행했다.
 
@@ -796,7 +809,7 @@ Iris에서 Push Model이 동작하는 데 필요한 스위치만 추리면 다�
 
 ```ini
 [SystemSettings]
-; Iris 사용 (5.8.3 기본값 0)
+; Iris 사용 (기본값 0)
 net.Iris.UseIrisReplication=1
 ; 레거시와 같은 Push Model 스위치. 꺼져 있으면 Iris는 모든 상태를 폴링한다
 net.IsPushModelEnabled=1

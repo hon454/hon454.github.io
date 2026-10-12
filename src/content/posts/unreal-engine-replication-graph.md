@@ -81,7 +81,11 @@ Grid는 거리 검사를 대체하지 않는다. Grid 노드는 플레이어가 
 
 드라이버는 셋이다. 기본 드라이버(`Generic`), 플러그인의 `UBasicReplicationGraph`, 뒤의 커스텀 그래프 절에서 만드는 `UOpenWorldReplicationGraph`. OpenWorld 그래프는 소품을 static, 루트를 dormancy, AI와 탈것을 dynamic 경로로 Grid에 넣고 dynamic 액터에 frequency bucket 3개를 쓴다. Basic은 모든 액터를 dormancy 경로로 넣는다. 주 비교 조건은 5회, 나머지는 3회 반복해 평균을 쓰고, 실행마다 프레임 시간이 흔들리므로 프레임당 ms와 함께 Insights의 호출 수(`Prioritize_InnerLoop`가 검토한 액터 수, `Replicate Actor Time`의 호출 수)를 같이 본다. 밀집 조건에는 갱신률을 맞춘 대조군 둘을 더했다. OpenWorld 그래프의 버킷을 1개로 줄인 것과, 기본 드라이버의 `NetUpdateFrequency`를 10으로 낮춘 것이다.
 
-Unreal Insights에는 리플리케이션 그래프 전용 트랙이 없지만 `-statnamedevents`로 띄우면 `UReplicationGraph_ServerReplicateActors` 아래에 `NET_PrepareReplication`(Grid의 dynamic 액터 셀 갱신이 여기), `NET_ReplicateActors_GatherForConnection`, `NET_ReplicateActors_PrioritizeForConnection`, `NET_ReplicateActors_ReplicateActorsForConnection`, `NET_ReplicateActors_LookForNonRelevantChannels` 타이머가 연결마다 보인다. `Prioritize_InnerLoop`의 호출 수가 검토한 액터 수이고 `Replicate Actor Time`의 호출 수가 보낸 액터 수다. 아래의 단계별 분해는 이 타이머로 했다. `RG_QUICK_SCOPE_CYCLE_COUNTER`로 선언된 `Prioritize_InnerLoop*`, `ReplicateSingleActor` 등은 Test·Shipping에서 컴파일되지 않는다.
+Unreal Insights에는 리플리케이션 그래프 전용 트랙이 없지만 `-statnamedevents`로 띄우면 타이머가 보인다. 아래는 OpenWorld 그래프의 Cluster 런에서 서버 프레임 하나를 확대한 것이다.
+
+![](./images/unreal-replication-graph/insights-frame-timeline.webp)
+
+① `UReplicationGraph_ServerReplicateActors` 4.56 ms 아래에 `NET_PrepareReplication`(Grid의 dynamic 액터 셀 갱신이 여기)이 한 번 오고, 그 뒤에 연결마다 ② ③ `NET_ReplicateActors_GatherForConnection`, `NET_ReplicateActors_ProcessGatheredLists`(2.69 ms와 1.61 ms. 안에 `PrioritizeForConnection`과 `ReplicateActorsForConnection`), `NET_ReplicateActors_LookForNonRelevantChannels`가 이어진다. 프레임의 나머지 41.6 ms는 틱 레이트 대기다. `Prioritize_InnerLoop`의 호출 수가 검토한 액터 수이고 `Replicate Actor Time`의 호출 수가 보낸 액터 수다. 아래의 단계별 분해는 이 타이머로 했다. `RG_QUICK_SCOPE_CYCLE_COUNTER`로 선언된 `Prioritize_InnerLoop*`, `ReplicateSingleActor` 등은 Test·Shipping에서 컴파일되지 않는다.
 
 ### 드라이버와 분포
 
@@ -111,13 +115,20 @@ Uniform에서 리플리케이션 그래프는 기본 드라이버의 7분의 1�
 
 기본 드라이버의 `NetUpdateFrequency`를 10으로 낮춘 것은 아무것도 바꾸지 못했다. 서버가 초당 21 프레임이라 100 Hz든 10 Hz든 매 프레임이 갱신 차례다. 갱신 주기 설정은 서버 프레임 레이트보다 낮아야 뜻이 있다. 반대로 OpenWorld의 버킷을 1개로 줄이면 호출 수가 1,555회로 기본 드라이버와 같아지고, 이때 리플리케이션 그래프는 9.89 ms로 기본 드라이버보다 22% 느리다.
 
-어디서 느린지는 Insights가 보여 준다. `UActorChannel::ReplicateActor` 안의 시간은 5.80 ms와 5.60 ms로 같고 호출당 약 1.8 µs다. 후보를 고르는 단계도 비슷하다. 기본 드라이버는 consider list 0.69 ms와 두 연결의 우선순위 0.80 ms를 합쳐 1.49 ms, 리플리케이션 그래프는 prepare와 gather 0.16 ms에 우선순위 계산 1.31 ms다. 차이는 `ReplicateSingleActor`가 채널 밖에서 하는 일에 있다.
+어디서 느린지는 Insights가 보여 준다. 측정 구간 60초를 선택하고 Callees 트리를 기본 드라이버와 버킷 1개 리플리케이션 그래프에서 펼친 것이다.
+
+![](./images/unreal-replication-graph/insights-callees-default.webp)
+
+![](./images/unreal-replication-graph/insights-callees-buckets1.webp)
+
+① `UActorChannel::ReplicateActor` 안의 시간은 7.51 s와 7.22 s, 프레임당 5.80 ms와 5.60 ms로 같고 호출당 약 1.8 µs다. 후보를 고르는 단계도 비슷하다. 기본 드라이버는 ③ consider list 894.94 ms와 ② 두 연결의 우선순위 1.04 s를 합쳐 프레임당 1.49 ms, 리플리케이션 그래프는 prepare와 gather 0.16 ms에 ③ 우선순위 계산 1.68 s, 프레임당 1.31 ms다. 차이는 `NET_ReplicateActors_ReplicateSingleActor`가 채널 밖에서 하는 일, ② `DependentActors` 1.72 s와 `CallPreReplication` 1.1 s에 있다.
 
 | 리플리케이션 그래프의 채널 밖 작업 | ms |
 | --- | --- |
-| 액터마다 `PreReplication` 호출 | 0.86 |
-| dependent actor 목록 확인 | 0.19 |
-| 연결 정보의 프레임 번호 갱신과 채널 조회 | 1.32 |
+| 액터마다 `PreReplication` 호출(`CallPreReplication`) | 0.86 |
+| dependent actor 순회와 그 채널 닫힘 프레임 갱신(`DependentActors`) | 1.32 |
+| 나머지. dependent 목록 수집, 연결 정보의 프레임 번호 갱신, 채널 조회 | 0.19 |
+| 연결별 리스트 순회와 채널 정리(`ReplicateActorsForConnection` 잔여, `LookForNonRelevantChannels`) | 0.32 |
 | 합계 | 2.69 |
 
 기본 드라이버의 리플리케이션 루프 잔여는 0.93 ms다. `PreReplication`은 consider list를 만들면서 부르므로 앞의 0.69 ms 안에 들어 있다. 리플리케이션한 액터 하나당 채널 밖 비용은 기본 0.30 µs, 리플리케이션 그래프 0.86 µs다. 리플리케이션 그래프의 영속 리스트는 검토할 액터를 줄이는 장치이고, 보낼 액터가 많을수록 액터당 부가 비용은 기본 드라이버보다 크다.

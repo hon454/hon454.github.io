@@ -18,7 +18,7 @@ lang: ko
 ---
 
 :::note[TL;DR]
-- Replication Graph는 기본 드라이버가 매 프레임 모든 액터 × 모든 연결에 대해 하는 관련성 검토를 노드의 영속 리스트로 바꾼다. 송신량이나 액터당 복제 비용은 줄이지 않는다.
+- Replication Graph는 기본 드라이버가 매 프레임 모든 액터 × 모든 연결에 대해 하는 relevancy 검토를 노드의 영속 리스트로 바꾼다. 송신량이나 액터당 리플리케이션 비용은 줄이지 않는다.
 - 액터 5,000개, 클라이언트 2개에서 프레임당 `ServerReplicateActors`는 맵 전체에 흩어진 조건에서 기본 2.54 ms, 그래프 0.35 ms이고, 모두 한곳에 몰린 조건에서 8.09 ms와 4.48 ms다. 밀집에서의 차이는 frequency bucket이 보내는 횟수를 3분의 1로 줄여서이고, 횟수를 맞추면 그래프가 22% 느리다. 액터 수와 연결 수에 기본 드라이버는 선형(액터당 0.46 µs, 연결당 0.78 ms)이고 그래프는 viewer 근처 액터 수만 따른다.
 - 기본 드라이버의 dormancy 절약은 액터가 모든 연결에서 잠든 뒤에만 생긴다. 넓은 맵의 잠든 소품은 기본 드라이버에서 매 프레임 검토된다.
 - 설정값 중 측정에서 효과가 컸던 것은 버킷 수와 `NetUpdateFrequency`뿐이다. `DistancePriorityScale` 0은 거리 컬링을 끄고, `ActorChannelFrameTimeout` 0은 채널을 닫지 않는다.
@@ -26,11 +26,13 @@ lang: ko
 - 도입 기준은 하나다. `stat net`에서 consider와 prioritize 시간이 `ReplicateActor` 시간보다 크면 그래프가 그 몫을 줄인다. 아니라면 액터당 0.5 µs를 더 쓰는 쪽이다.
 :::
 
-기본 복제 드라이버는 매 프레임 모든 복제 액터를 모든 연결에 대해 다시 검토한다. 액터 수와 연결 수가 함께 커지면 실제로 보내는 데이터가 적어도 이 검토만으로 서버 CPU가 소모된다. Replication Graph는 이 검토를 액터별 가상 함수 호출에서 노드가 유지하는 영속 리스트로 바꾸는 `UReplicationDriver` 구현이다. Fortnite Battle Royale의 100명, 약 5만 개 복제 액터를 감당하려고 만들어졌고 4.20에 플러그인으로 공개됐다.
+Night of the Dead에 Replication Graph를 빠르게 도입하려고 Lyra 프로젝트를 대략 분석해서 거의 흡사하게 적용한 적이 있다. 지금 Iris 리플리케이션 시스템을 공부하기 전에 기존의 Replication Graph를 제대로 알아 두려고 5.8.3 소스 분석과 실측을 했다.
 
-5.8.3 소스로 그래프의 동작을 확인하고, 테스트 프로젝트에서 기본 드라이버, `UBasicReplicationGraph`, 커스텀 그래프를 같은 조건으로 측정했다. 소스 경로는 UE 5.8.3 기준이다. 엔진 파일은 `Engine/Source/Runtime/`을, 플러그인 파일은 `Engine/Plugins/Runtime/ReplicationGraph/Source/`를 생략했다.
+기본 리플리케이션 드라이버는 매 프레임 모든 리플리케이션 액터를 모든 연결에 대해 다시 검토한다. 액터 수와 연결 수가 함께 커지면 실제로 보내는 데이터가 적어도 이 검토만으로 서버 CPU가 소모된다. Replication Graph는 이 검토를 액터별 가상 함수 호출에서 노드가 유지하는 영속 리스트로 바꾸는 `UReplicationDriver` 구현이다. Fortnite Battle Royale의 100명, 약 5만 개 리플리케이션 액터를 감당하려고 만들어졌고 4.20에 플러그인으로 공개됐다.
 
-## 오픈월드 멀티플레이어의 복제 부하 모델
+테스트 프로젝트에서 기본 드라이버, `UBasicReplicationGraph`, 커스텀 그래프를 같은 조건으로 측정했다. 소스 경로는 UE 5.8.3 기준이다. 엔진 파일은 `Engine/Source/Runtime/`을, 플러그인 파일은 `Engine/Plugins/Runtime/ReplicationGraph/Source/`를 생략했다.
+
+## 오픈월드 멀티플레이어의 리플리케이션 부하 모델
 
 Replication Graph를 어떻게 구성할지는 게임의 액터가 어떤 범주로 나뉘는지에 달려 있다. 아래 표는 2018년 라이브스트림에서 Dave Ratti가 보여준 Fortnite 그래프와 Lyra 5.8.3의 `ULyraReplicationGraph`, Epic 지식 베이스의 Fast Shared Path 문서에서 오픈월드 멀티플레이어의 범주를 추린 것이다. 측정에 쓴 랩 액터 종류도 이 범주를 따른다.
 
@@ -43,7 +45,7 @@ Replication Graph를 어떻게 구성할지는 게임의 액터가 어떤 범주
 | 탈것과 탑승물 | 차량, 차량의 무기 | 탈것은 움직이고 무기는 탈것을 따라감 | 탈것은 dynamic, 무기는 dependent actor |
 | 발사체 | 총알, 수류탄 | 짧게 살고 많이 생김 | dynamic 리스트, 셀 재구축 금지 목록 |
 | 전역 상태 | GameState, 안전지대 | 소수, 모두에게 항상 필요 | AlwaysRelevant 노드 |
-| 분대 | 4인 스쿼드 | 거리와 무관하게 서로 보여야 함 | 팀 공유 노드 |
+| 스쿼드 | 4인 스쿼드 | 거리와 무관하게 서로 보여야 함 | 팀 공유 노드 |
 | 본인 소유 | 인벤토리, 컨트롤러 | 소유자에게만 | 연결별 AlwaysRelevant 노드 |
 | 플레이어 상태 | 100개 PlayerState | 모두에게 필요하지만 느려도 됨 | 빈도 제한 노드 |
 
@@ -51,27 +53,27 @@ Replication Graph를 어떻게 구성할지는 게임의 액터가 어떤 범주
 
 `UNetDriver::ServerReplicateActors`는 매 네트워크 틱마다 다음을 한다(`Engine/Private/NetDriver.cpp`).
 
-1. `ServerReplicateActors_BuildConsiderList`: `FNetworkObjectList`의 활성 액터를 순회해 `NetUpdateFrequency`로 계산한 `NextUpdateTime`이 지난 액터를 고려 목록에 넣는다. dormant 액터는 별도 목록에 있어 순회에서 빠진다.
-2. 연결마다 `ServerReplicateActors_PrioritizeActors`: 고려 목록의 액터마다 `AActor::IsNetRelevantFor`를 호출하고, 관련 있는 액터에 `GetNetPriority`를 호출해 우선순위를 매기고 정렬한다.
+1. `ServerReplicateActors_BuildConsiderList`: `FNetworkObjectList`의 활성 액터를 순회해 `NetUpdateFrequency`로 계산한 `NextUpdateTime`이 지난 액터를 consider list에 넣는다. dormant 액터는 별도 목록에 있어 순회에서 빠진다.
+2. 연결마다 `ServerReplicateActors_PrioritizeActors`: consider list의 액터마다 `AActor::IsNetRelevantFor`를 호출하고, 관련 있는 액터에 `GetNetPriority`를 호출해 우선순위를 매기고 정렬한다.
 3. 연결마다 `ServerReplicateActors_ProcessPrioritizedActorsRange`: 정렬된 순서로 채널을 열고 `UActorChannel::ReplicateActor`를 호출한다. 연결이 포화되면 멈춘다.
 
-비용은 2번에 집중된다. `IsNetRelevantFor`와 `GetNetPriority`는 가상 함수라 엔진은 답이 언제 바뀌는지 알 수 없고, 매 프레임 모든 액터×모든 연결에 대해 다시 부른다. 2018년 라이브스트림에서 Ratti는 이것을 객체 지향적으로는 깔끔하지만 상위 수준에서 최적화할 수 없는 블랙박스라고 설명했다. 복제 액터 5만 개 중 4만 5천 개가 어떤 플레이어 근처에도 없어도 100개 연결에 대해 매 프레임 이 검사를 거친다.
+비용은 2번에 집중된다. `IsNetRelevantFor`와 `GetNetPriority`는 가상 함수라 엔진은 답이 언제 바뀌는지 알 수 없고, 매 프레임 모든 액터×모든 연결에 대해 다시 부른다. 2018년 라이브스트림에서 Ratti는 이것을 객체 지향적으로는 깔끔하지만 상위 수준에서 최적화할 수 없는 블랙박스라고 설명했다. 리플리케이션 액터 5만 개 중 4만 5천 개가 어떤 플레이어 근처에도 없어도 100개 연결에 대해 매 프레임 이 검사를 거친다.
 
-관련성 검사를 통과한 액터만 3번에 들어가므로, 넓은 맵에 액터가 흩어진 게임일수록 2번의 비용이 실제 송신 작업보다 커진다. 반대로 액터가 모두 한곳에 몰려 모든 연결에 관련 있으면 2번은 어차피 다 통과하고 3번이 지배한다. Replication Graph는 2번의 비용 구조를 바꾸는 시스템이지 3번을 줄이는 시스템이 아니다. 프로퍼티 비교와 직렬화는 그대로 `UActorChannel::ReplicateActor`가 한다.
+relevancy 검사를 통과한 액터만 3번에 들어가므로, 넓은 맵에 액터가 흩어진 게임일수록 2번의 비용이 실제 송신 작업보다 커진다. 반대로 액터가 모두 한곳에 몰려 모든 연결에 관련 있으면 2번은 어차피 다 통과하고 3번이 지배한다. Replication Graph는 2번의 비용 구조를 바꾸는 시스템이지 3번을 줄이는 시스템이 아니다. 프로퍼티 비교와 직렬화는 그대로 `UActorChannel::ReplicateActor`가 한다.
 
 ## Replication Graph가 바꾸는 것
 
-Replication Graph는 `UReplicationDriver`를 구현한 `UReplicationGraph`다. 서버의 `UNetDriver`가 복제 드라이버를 가지고 있으면 `ServerReplicateActors`는 CSV 통계 범위만 열고 바로 `ReplicationDriver->ServerReplicateActors`로 넘긴다. 레거시 경로의 고려 목록 구성과 우선순위 계산은 전혀 돌지 않고, `AActor::IsNetRelevantFor`와 `GetNetPriority`도 호출되지 않는다(`Public/ReplicationGraph.h` 첫머리의 설명이고, 플러그인 안에서 `IsNetRelevantFor`를 부르는 곳은 디버그 액터의 오버라이드뿐이다).
+Replication Graph는 `UReplicationDriver`를 구현한 `UReplicationGraph`다. 서버의 `UNetDriver`가 리플리케이션 드라이버를 가지고 있으면 `ServerReplicateActors`는 CSV 통계 범위만 열고 바로 `ReplicationDriver->ServerReplicateActors`로 넘긴다. 레거시 경로의 consider list 구성과 우선순위 계산은 전혀 돌지 않고, `AActor::IsNetRelevantFor`와 `GetNetPriority`도 호출되지 않는다(`Public/ReplicationGraph.h` 첫머리의 설명이고, 플러그인 안에서 `IsNetRelevantFor`를 부르는 곳은 디버그 액터의 오버라이드뿐이다).
 
 그래프는 프레임을 세 단계로 처리한다.
 
 1. **Gather**: 연결마다 전역 노드와 그 연결의 노드에 `GatherActorListsForConnection`을 호출해 후보 리스트를 모은다. 노드는 대부분 프레임을 넘어 유지되는 리스트를 돌려주므로 "어떤 액터를 고려할지"를 다시 계산하지 않는다.
-2. **Prioritize**: 모은 리스트의 액터마다 dormancy, 복제 주기, 거리 컬링을 적용하고 우선순위 점수를 매겨 정렬한다.
+2. **Prioritize**: 모은 리스트의 액터마다 dormancy, 리플리케이션 주기, 거리 컬링을 적용하고 우선순위 점수를 매겨 정렬한다.
 3. **Replicate**: 정렬된 순서로 `ReplicateSingleActor`를 호출하고, 연결이 포화되면 멈춘다.
 
-![Replication Graph의 한 프레임: 전역 노드와 연결 노드에서 리스트를 모으고, 연결마다 dormancy·주기·거리로 거른 뒤 점수로 정렬해 복제한다](./images/unreal-replication-graph/diagram-frame.webp)
+![Replication Graph의 한 프레임: 전역 노드와 연결 노드에서 리스트를 모으고, 연결마다 dormancy·주기·거리로 거른 뒤 점수로 정렬해 리플리케이션한다](./images/unreal-replication-graph/diagram-frame.webp)
 
-그래프를 "거리 기반에서 그리드 기반으로 관련성 제어를 바꾸고, 노드별 조건을 매 틱 오브젝트마다 검사하는 것"으로 이해하기 쉽다. 소스를 보면 두 가지가 다르다. 그리드는 거리 검사를 대체하지 않는다. 그리드 노드는 플레이어가 있는 셀의 리스트를 돌려줄 뿐이고, 셀에는 컬 반경이 셀과 겹치는 모든 액터가 들어 있으므로 반경 밖 액터도 섞여 있다. 실제 거리 검사는 2단계에서 연결별 `CullDistanceSquared`로 따로 한다. 라이브스트림의 표현으로는 그리드가 broad phase, 거리 검사가 narrow phase다. 그리고 노드는 매 틱 조건을 검사하지 않는다. 노드의 역할은 조건을 한 번 평가해 리스트에 넣어 두고 바뀔 때만 옮기는 것이며, 매 틱 돌아가는 per-actor 검사는 2단계에 모여 있다.
+그래프를 "거리 기반에서 그리드 기반으로 relevancy 제어를 바꾸고, 노드별 조건을 매 틱 오브젝트마다 검사하는 것"으로 이해하기 쉽다. 소스를 보면 두 가지가 다르다. 그리드는 거리 검사를 대체하지 않는다. 그리드 노드는 플레이어가 있는 셀의 리스트를 돌려줄 뿐이고, 셀에는 컬 반경이 셀과 겹치는 모든 액터가 들어 있으므로 반경 밖 액터도 섞여 있다. 실제 거리 검사는 2단계에서 연결별 `CullDistanceSquared`로 따로 한다. 라이브스트림의 표현으로는 그리드가 broad phase, 거리 검사가 narrow phase다. 그리고 노드는 매 틱 조건을 검사하지 않는다. 노드의 역할은 조건을 한 번 평가해 리스트에 넣어 두고 바뀔 때만 옮기는 것이며, 매 틱 돌아가는 per-actor 검사는 2단계에 모여 있다.
 
 그래프가 줄이는 것은 서버 CPU이고 송신량이 아니다. 어떤 액터를 어느 연결에 보낼지가 같다면 보내는 바이트도 같다. 다만 그래프 쪽에는 레거시에 없는 두 가지 송신 측 도구가 있다. 빈도 버킷과 거리별 주기로 "언제 보낼지"를 조절하는 노드, 그리고 이동 상태를 한 번 직렬화해 모든 연결에 재사용하는 Fast Shared 경로다. Fast Shared는 클래스 설정의 `FastSharedReplicationFunc`에 등록한 함수가 쏘는 unreliable multicast를 공유 번치에 한 번 직렬화해 채널이 열린 모든 연결에 보내는 경로이고, Lyra의 `ALyraCharacter::UpdateSharedReplication`처럼 액터 쪽 코드가 필요하다. 측정에 쓴 그래프는 이 경로를 켜지 않았다. 랩 액터에는 이동 상태가 없고, 효과가 "플레이어 폰 수 × 연결 수"에서 나오므로 클라이언트 16개로는 보여 줄 폭이 작기 때문이다.
 
@@ -85,11 +87,10 @@ Replication Graph는 `UReplicationDriver`를 구현한 `UReplicationGraph`다. �
 | 액터 | `FGlobalActorReplicationInfo` | `AddNetworkActor`에서 클래스 정보를 복사해 생성 | `WorldLocation`, `bWantsToBeDormant`, `ForceNetUpdateFrame`, `Settings`(클래스 정보 사본), `DependentActorList` |
 | 연결×액터 | `FConnectionReplicationActorInfo` | 그 연결이 그 액터를 처음 만질 때 `FindOrAdd`로 생성 | `Channel`, `CullDistanceSquared`, `ReplicationPeriodFrame`, `NextReplicationFrameNum`, `LastRepFrameNum`, `bDormantOnConnection`, `bForceCullDistanceToZero` |
 
-세 층은 위에서 아래로 복사된다. 액터 정보는 생성될 때 클래스 정보를 `Settings`에 복사하고, 연결×액터 정보는 생성될 때 액터 정보에서 `ReplicationPeriodFrame`, `FastPath_ReplicationPeriodFrame`, 컬 거리 세 개만 복사한다. 복사이므로 나중에 윗층을 바꿔도 아래층에는 전파되지 않는다. 그래서 세 가지 일이 생긴다.
+세 층은 위에서 아래로 복사된다. 액터 정보는 생성될 때 클래스 정보를 `Settings`에 복사하고, 연결×액터 정보는 생성될 때 액터 정보에서 `ReplicationPeriodFrame`, `FastPath_ReplicationPeriodFrame`, 컬 거리 세 개만 복사한다. 복사이므로 나중에 윗층을 바꿔도 아래층에는 전파되지 않는다. 그래서 두 가지 일이 생긴다.
 
 - 클래스 정보 조회는 `TClassMap::Get`이 부모 클래스를 거슬러 올라가 찾은 값을 요청한 클래스 이름으로 복사해 캐시한다. 자식 클래스가 한 번이라도 조회된 뒤에 부모 클래스에 `SetClassInfo`를 해도 그 자식에는 반영되지 않는다.
 - 런타임에 컬 거리를 바꾸려면 클래스, 액터, 모든 연결의 정보를 따로 고쳐야 한다. 엔진의 `SetAllCullDistanceSettingsForActor`와 디버그 명령 `Net.RepGraph.SetClassCullDistance`가 세 층을 각각 쓰는 이유다.
-- `FGlobalActorReplicationInfoMap::Get`은 없는 액터의 항목을 만들어 버린다. multicast RPC 경로와 연결 맵의 `FindOrAdd`가 그래프에 등록되지 않은 액터의 정보를 만들 수 있고, `RemoveNetworkActor`는 이런 항목을 발견하면 경고를 남긴다.
 
 액터 정보의 `WorldLocation`은 액터가 추가될 때와 그리드 노드의 `PrepareForReplication`에서 갱신된다. 거리 검사와 셀 계산은 모두 이 캐시 값을 쓰며, 라이브스트림에서 `GetActorLocation` 중복 호출을 없앴다고 말한 것이 이 캐시다.
 
@@ -140,7 +141,7 @@ LogNet: InitBase GameNetDriver (NetDriverDefinition GameNetDriver) using replica
 
 ### GridSpatialization2D
 
-거리 기반 관련성을 맡는 노드다. 설정은 `CellSize`, `SpatialBias`, `ConnectionMaxZ` 셋이고 모두 생성자에서 0 또는 월드 최대로 초기화되므로 프로젝트가 채워야 한다. 그리드는 `SpatialBias`를 원점으로 +X, +Y 방향으로만 자라는 2차원 배열이다.
+거리 기반 relevancy를 맡는 노드다. 설정은 `CellSize`, `SpatialBias`, `ConnectionMaxZ` 셋이고 모두 생성자에서 0 또는 월드 최대로 초기화되므로 프로젝트가 채워야 한다. 그리드는 `SpatialBias`를 원점으로 +X, +Y 방향으로만 자라는 2차원 배열이다.
 
 액터는 세 경로로 들어온다.
 
@@ -177,21 +178,15 @@ GridSpatialization2D
 
 Dormancy 노드의 핵심은 연결마다 리스트 사본을 둔다는 것이다. 연결이 처음 셀을 gather하면 마스터 리스트를 통째로 복사한 `ConnectionDormancyNode`를 만들고, 이 사본은 gather 때마다 `bDormantOnConnection`인 액터를 빼며 줄어든다. 즉 연결별 사본은 "이 연결이 아직 한 번도 받지 못한 dormant 액터" 목록이고, 다 받고 나면 빈 리스트가 된다. 액터가 flush되면 `DormancyFlush` 이벤트로 모든 연결 사본에 다시 들어간다.
 
-여기에 trickle이 있다. 사본이 10번 gather된 뒤부터는 새로 잠든 액터가 없는 프레임마다 남은 액터 하나의 연결별 컬 거리를 0으로 강제한다(`bForceCullDistanceToZero`, `Net.RepGraph.TrickleDistCullOnDormancyNodes`). 컬 거리 밖에 있어서 영영 복제되지 못하는 dormant 액터를 프레임에 하나씩 억지로 보내 사본을 비우려는 장치다. 연결 노드의 첫 gather가 비싸다는 헤더 주석은 이 구조에서 나온다. 셀에 dormant 액터가 많으면 새 연결마다 그만큼 복사하고 하나씩 검사한다.
+여기에 trickle이 있다. 사본이 10번 gather된 뒤부터는 새로 잠든 액터가 없는 프레임마다 남은 액터 하나의 연결별 컬 거리를 0으로 강제한다(`bForceCullDistanceToZero`, `Net.RepGraph.TrickleDistCullOnDormancyNodes`). 컬 거리 밖에 있어서 영영 리플리케이션되지 못하는 dormant 액터를 프레임에 하나씩 억지로 보내 사본을 비우려는 장치다. 연결 노드의 첫 gather가 비싸다는 헤더 주석은 이 구조에서 나온다. 셀에 dormant 액터가 많으면 새 연결마다 그만큼 복사하고 하나씩 검사한다.
 
 사본은 저절로 사라지지 않는다. 연결이 끊겨도 셀의 dormancy 노드는 그 연결의 사본을 가지고 있다. `Net.RepGraph.DormancyNodeObsoleteBehavior`를 1로 두고 `SetNumFramesUntilObsolete`를 설정해야 오래 gather되지 않은 사본을 지운다. 기본값이 0인 이유는 add/remove 반복 비용이다. 뒤의 재현에서 노드 수를 센다.
 
-Dormant 액터가 뷰에서 벗어났을 때 클라이언트에서 파괴하는 기능도 이 노드에 걸려 있다. `bDestroyDormantDynamicActors`는 기본 `true`이지만 `Net.RepGraph.DormantDynamicActorsDestruction`이 0이라 아무것도 하지 않는다. 둘 다 켜면 연결이 `Net.RepGraph.DormantCellsTTLDefault` 프레임 동안 보지 않은 셀의 dormant 액터에 파괴 정보를 보내고, 연결이 돌아오면 처음부터 다시 복제한다. 루트가 수천 개인 맵에서 클라이언트 메모리를 아끼는 대가로 재진입 시 초기 복제를 다시 치르는 거래다.
+Dormant 액터가 뷰에서 벗어났을 때 클라이언트에서 파괴하는 기능도 이 노드에 걸려 있다. `bDestroyDormantDynamicActors`는 기본 `true`이지만 `Net.RepGraph.DormantDynamicActorsDestruction`이 0이라 아무것도 하지 않는다. 둘 다 켜면 연결이 `Net.RepGraph.DormantCellsTTLDefault` 프레임 동안 보지 않은 셀의 dormant 액터에 파괴 정보를 보내고, 연결이 돌아오면 처음부터 다시 리플리케이션한다. 루트가 수천 개인 맵에서 클라이언트 메모리를 아끼는 대가로 재진입 시 초기 리플리케이션을 다시 치르는 거래다.
 
 ### ActorListFrequencyBuckets
 
 동적 액터의 기본 자식 노드다. 액터를 `NumBuckets`개 버킷에 가장 적은 쪽부터 나눠 넣고, gather 때 `ReplicationFrameNum % NumBuckets`번 버킷만 돌려준다. 버킷 3개면 각 액터는 세 프레임에 한 번만 후보가 된다. `ReplicationPeriodFrame`은 그 위에 따로 적용되므로 실제 주기는 둘 중 긴 쪽이다. `BucketThresholds`에 액터 수별 버킷 수를 주면 셀의 액터 수에 따라 버킷 수가 자동으로 바뀌는데 기본값은 비어 있어 고정이다. `EnableFastPath`를 켜면 차례가 아닌 버킷을 Fast Shared 플래그로 돌려줘서 이동 상태만 매 프레임 보낼 수 있다.
-
-### DynamicSpatialFrequency
-
-거리와 시야 방향으로 주기를 정하는 노드다. `FSpatializationZone`마다 viewer 시선과의 내적 하한, 컬 거리 대비 거리 구간, 최소·최대 주기를 두고, 액터의 거리 비율을 그 구간에 선형 보간해 `ReplicationPeriodFrame`을 계산한다. 기본 영역은 시야 안 10~50% 거리에서 5 Hz부터 1 Hz까지, 시야 밖과 등 뒤는 1 Hz이고, Fast Shared가 가능한 액터는 시야 안에서 20 Hz까지 올라간다. 기본값은 30 Hz 틱을 가정해 계산돼 있어 틱 레이트가 다르면 `Net.RepGraph.DyanmicSpatialization.Reinit`(오타가 실제 이름이다)로 다시 만들거나 `Settings`를 직접 준다.
-
-이 노드는 다른 노드와 달리 리스트를 돌려주지 않는다. gather 안에서 직접 `ReplicateSingleActor`를 호출하고, 연결 정보의 `ReplicationPeriodFrame`과 `NextReplicationFrameNum`을 프레임마다 다시 쓴다. 따라서 다음 절의 우선순위 계산을 거치지 않으며 `DistancePriorityScale`, `StarvationPriorityScale`, `AccumulatedNetPriorityBias`는 이 노드의 액터에 아무 영향이 없다. `ForceNetUpdate`는 `ReadyForNextReplication`이 보는 값이라 그대로 동작한다. `MaxNearestActors`를 주면 거리순으로 N개만 남기고 주기를 계산한다. AI 폰이 수백 개인 게임에서 "멀리 있는 좀비는 초당 한 번만"을 구현하는 노드가 이것이다.
 
 ### UBasicReplicationGraph가 전부 dormancy로 넣는 이유
 
@@ -214,20 +209,20 @@ gather가 끝나면 `ReplicateActorListsForConnections_Default`가 Default 플�
 2. `bDormantOnConnection`이면 건너뛴다. 주석대로 "항상 첫 번째이자 가장 빠른 검사"여야 해서 전역 정보 조회보다 앞에 있다. Dormant 액터의 프레임당 비용은 맵 조회 하나다.
 3. `ReadyForNextReplication`: `NextReplicationFrameNum <= FrameNum`이거나 `ForceNetUpdateFrame > LastRepFrameNum`이어야 한다.
 4. 거리 컬링. `DistancePriorityScale > 0`인 클래스만 대상이다. viewer마다 캐시된 `WorldLocation`까지의 거리 제곱을 재고, 모든 viewer가 연결별 컬 거리 밖일 때만 컬링된다. `bForceCullDistanceToZero`가 켜진 액터는 여기서 빠질 수 없다. `AInfo`와 `APlayerController`는 기본 클래스 설정이 `DistancePriorityScale = 0`이라 이 단계 자체를 거치지 않는다.
-5. 점수 계산과 `UpdateActorChannelCloseFrameNum`. 채널 타임아웃은 복제가 아니라 거리 검사를 통과한 시점에 갱신된다.
+5. 점수 계산과 `UpdateActorChannelCloseFrameNum`. 채널 타임아웃은 리플리케이션이 아니라 거리 검사를 통과한 시점에 갱신된다.
 
-점수는 낮을수록 먼저 복제된다. 정렬이 오름차순이고 중요도 보정이 모두 뺄셈이기 때문이다.
+점수는 낮을수록 먼저 리플리케이션된다. 정렬이 오름차순이고 중요도 보정이 모두 뺄셈이기 때문이다.
 
 | 항목 | 계산 | 기본값에서의 범위 |
 | --- | --- | --- |
 | 기준 | `AccumulatedNetPriorityBias` | 0 |
 | 거리 | `Clamp(최단 거리² / MaxDistanceScaling, 0, 1) × DistancePriorityScale` | 0~1. `MaxDistanceScaling`은 `60000²`, 즉 600 m |
 | starvation | `1 - Clamp((FrameNum - LastRepFrameNum) × StarvationPriorityScale / MaxFramesSinceLastRep, 0, 1)` | 0~1. `MaxFramesSinceLastRep`는 20. 오래 못 받을수록 0에 가까움 |
-| 잠들려는 액터 | `bWantsToBeDormant`이고 한 번 이상 복제됐으면 | −1.5 |
+| 잠들려는 액터 | `bWantsToBeDormant`이고 한 번 이상 리플리케이션됐으면 | −1.5 |
 | `ForceNetUpdate` | `ForceNetUpdateFrame > LastRepFrameNum` | −1 |
 | 본인 viewer·ViewTarget | `Net.ForceConnectionViewerPriority`(기본 1)면 | −MAX_FLT, 아니면 −10 |
 
-`AccumulatedNetPriorityBias`가 클수록 덜 중요해진다는 뜻이다. 이름만 보고 양수를 넣으면 반대로 동작한다. 잠들려는 액터에 −1.5를 주는 이유는 주석에 있다. dormancy는 마지막 복제가 ack돼야 완료되므로, 새로 스폰된 액터들이 잠들려는 액터를 계속 밀어내면 영영 잠들지 못한다. 정렬은 `TArray::Sort`, 즉 introsort라 같은 점수의 액터는 프레임마다 순서가 바뀔 수 있다. Epic이 포럼에서 "우선순위는 고려 순서만 바꾸며 액터 간 순서는 보장되지 않는다"고 답한 것과 맞는다.
+`AccumulatedNetPriorityBias`가 클수록 덜 중요해진다는 뜻이다. 이름만 보고 양수를 넣으면 반대로 동작한다. 잠들려는 액터에 −1.5를 주는 이유는 주석에 있다. dormancy는 마지막 리플리케이션이 ack돼야 완료되므로, 새로 스폰된 액터들이 잠들려는 액터를 계속 밀어내면 영영 잠들지 못한다. 정렬은 `TArray::Sort`, 즉 introsort라 같은 점수의 액터는 프레임마다 순서가 바뀔 수 있다. Epic이 포럼에서 "우선순위는 고려 순서만 바꾸며 액터 간 순서는 보장되지 않는다"고 답한 것과 맞는다.
 
 정렬된 리스트는 `ReplicateActorsForConnection`이 앞에서부터 `ReplicateSingleActor`로 보낸다. 같은 프레임에 두 리스트에서 돌아온 액터는 `LastRepFrameNum == FrameNum`으로 두 번째에 건너뛴다. 포화 검사는 액터 하나를 보낸 뒤에 `QueuedBits + SendBuffer.GetNumBits() <= 0` 하나로 한다. 포화되면 남은 액터에 대해 아무것도 하지 않는다. 레거시 드라이버가 포화로 밀린 액터에 `ForceNetUpdate`를 걸어 주는 것과 달리, 다음 프레임에 starvation 항이 낮아져 앞으로 오는 것이 전부다.
 
@@ -237,13 +232,13 @@ gather가 끝나면 `ReplicateActorListsForConnections_Default`가 Default 플�
 
 1. 채널이 있는데 `Closing`이면 0을 돌려주고 끝. `LastRepFrameNum`을 갱신하기 전에 빠지므로 액터는 매 프레임 다시 점수를 받고 다시 여기서 빠진다.
 2. `LastRepFrameNum = FrameNum`, `NextReplicationFrameNum = FrameNum + ReplicationPeriodFrame`. 채널에 들어가기 전에 쓰므로 0바이트를 보내도 주기는 소비된다.
-3. `PreReplication`은 액터당 프레임당 한 번. 연결이 몇 개든 처음 복제하는 연결이 한 번 치른다.
+3. `PreReplication`은 액터당 프레임당 한 번. 연결이 몇 개든 처음 리플리케이션하는 연결이 한 번 치른다.
 4. 채널이 없으면 `CreateChannelByName(NAME_Actor)`와 `SetChannelActor`.
-5. `bWantsToBeDormant`면 `StartBecomingDormant`. 복제할 때마다 다시 건다.
+5. `bWantsToBeDormant`면 `StartBecomingDormant`. 리플리케이션할 때마다 다시 건다.
 6. `UActorChannel::ReplicateActor`. `bTearOff`면 바로 `Close(TearOff)`.
-7. dependent actor를 재귀적으로 복제한다. 자식이 `ReadyForNextReplication`일 때만 보내고, 자식의 바이트는 부모의 반환값에 더해진다.
+7. dependent actor를 재귀적으로 리플리케이션한다. 자식이 `ReadyForNextReplication`일 때만 보내고, 자식의 바이트는 부모의 반환값에 더해진다.
 
-채널은 프레임 수로 닫힌다. `UpdateActorChannelCloseFrameNum`은 `FrameNum + ReplicationPeriodFrame + ActorChannelFrameTimeout + GlobalActorChannelFrameNumTimeout`을 계산해 기존 값보다 크면 갱신한다. 기본값으로 주기 1, 타임아웃 4, 전역 여유 2이므로 마지막으로 gather되고 7프레임 뒤에 닫힌다. `LookForNonRelevantChannels`가 매 프레임 연결의 채널 맵을 돌며 지난 채널을 `Close(Relevancy)`한다. 레거시의 `RelevantTimeout`이 초 단위인 것과 달리 전부 프레임 단위다. `ActorChannelFrameTimeout`이 0이면 그래프는 관련성으로 채널을 닫지 않는다.
+채널은 프레임 수로 닫힌다. `UpdateActorChannelCloseFrameNum`은 `FrameNum + ReplicationPeriodFrame + ActorChannelFrameTimeout + GlobalActorChannelFrameNumTimeout`을 계산해 기존 값보다 크면 갱신한다. 기본값으로 주기 1, 타임아웃 4, 전역 여유 2이므로 마지막으로 gather되고 7프레임 뒤에 닫힌다. `LookForNonRelevantChannels`가 매 프레임 연결의 채널 맵을 돌며 지난 채널을 `Close(Relevancy)`한다. 레거시의 `RelevantTimeout`이 초 단위인 것과 달리 전부 프레임 단위다. `ActorChannelFrameTimeout`이 0이면 그래프는 relevancy로 채널을 닫지 않는다.
 
 닫힌 채널의 처리에서 레거시와 그래프가 갈린다. `UActorChannel::Close`는 `Closing`을 세우고 `UNetConnection::RemoveActorChannel`로 엔진의 `ActorChannels` 맵에서 액터를 뺀다. 레거시 드라이버는 그 순간부터 그 액터에 채널이 없다고 보고 다음 틱에 새 채널을 열 수 있다. 그래프는 같은 시점에 호출되는 `NotifyActorChannelRemoved`가 비어 있고, ack가 와서 `CleanUp`될 때의 `NotifyActorChannelCleanedUp`에서야 연결 정보의 `Channel`을 비운다.
 
@@ -257,7 +252,7 @@ void UNetReplicationGraphConnection::NotifyActorChannelRemoved(AActor* Actor)
 }
 ```
 
-close와 ack 사이의 창에서 그래프는 액터를 복제하지 않고(1번), FastShared에서도 건너뛰며, multicast RPC 경로도 `Closing` 채널을 "채널 없음"으로 보지만 새로 열지도 않는다. 이 창이 "dormant로 보낸 직후의 reliable RPC가 유실되는" UE-378758의 자리이고, 재현 절에서 `PktLag`로 창을 늘려 확인한다.
+close와 ack 사이의 창에서 그래프는 액터를 리플리케이션하지 않고(1번), FastShared에서도 건너뛰며, multicast RPC 경로도 `Closing` 채널을 "채널 없음"으로 보지만 새로 열지도 않는다. 이 창이 "dormant로 보낸 직후의 reliable RPC가 유실되는" UE-378758의 자리이고, 재현 절에서 `PktLag`로 창을 늘려 확인한다.
 
 ## Dormancy, dependent actor, RPC
 
@@ -269,17 +264,17 @@ close와 ack 사이의 창에서 그래프는 액터를 복제하지 않고(1번
 
 액터가 실제로 연결에서 잠드는 것은 채널 쪽 일이다. `ReplicateSingleActor`가 `StartBecomingDormant`를 걸면 채널은 틱마다 `ReadyForDormancy`를 검사한다. 모든 replicator가 보낸 변경을 ack받고 NAK가 없어야 하며, `DormancyHysteresis`가 있으면 그만큼 더 기다린다. 그 뒤 `BecomeDormant`가 `Close(Dormancy)`를 하고, `UNetDriver::NotifyActorFullyDormantForConnection`이 그래프의 연결 정보에 `bDormantOnConnection = true`를 쓴다. 이 순간부터 우선순위 2번 검사에서 빠진다.
 
-맵에 배치된 `DORM_Initial` 액터는 그래프에 아예 들어가지 않는다. `IsActorValidForReplicationGather`가 startup 액터의 `DORM_Initial`을 거부하고, 첫 `FlushNetDormancy`에서 `DORM_DormantAll`로 바뀌며 그때 `AddNetworkActor`된다. 스폰된 액터의 `DORM_Initial`은 거부되지 않고 `bWantsToBeDormant`로 들어가 첫 복제 뒤에 잠든다.
+맵에 배치된 `DORM_Initial` 액터는 그래프에 아예 들어가지 않는다. `IsActorValidForReplicationGather`가 startup 액터의 `DORM_Initial`을 거부하고, 첫 `FlushNetDormancy`에서 `DORM_DormantAll`로 바뀌며 그때 `AddNetworkActor`된다. 스폰된 액터의 `DORM_Initial`은 거부되지 않고 `bWantsToBeDormant`로 들어가 첫 리플리케이션 뒤에 잠든다.
 
 ### Dependent actor
 
-차량의 무기, 폰의 인벤토리처럼 부모가 복제될 때만 함께 복제되면 되는 액터는 노드에 넣지 않고 `GlobalActorReplicationInfoMap.AddDependentActor(Parent, Child)`로 등록한다. 자식은 `ReplicateSingleActor` 안에서 부모 직후에 재귀 복제되고, 채널 닫힘 프레임을 부모 이상으로 받으며, 자신의 `ReplicationPeriodFrame`은 지킨다. 5.2에서 `GetDependentActorList`는 deprecated되어 빈 목록을 돌려주므로 4.x 코드를 옮길 때 주의한다. 보장되는 것은 "부모와 같은 프레임에 고려된다"까지다. 포화되면 자식도 밀리고, 같은 패킷에 들어간다는 보장도 없다.
+차량의 무기, 폰의 인벤토리처럼 부모가 리플리케이션될 때만 함께 리플리케이션되면 되는 액터는 노드에 넣지 않고 `GlobalActorReplicationInfoMap.AddDependentActor(Parent, Child)`로 등록한다. 자식은 `ReplicateSingleActor` 안에서 부모 직후에 재귀 리플리케이션되고, 채널 닫힘 프레임을 부모 이상으로 받으며, 자신의 `ReplicationPeriodFrame`은 지킨다. 5.2에서 `GetDependentActorList`는 deprecated되어 빈 목록을 돌려주므로 4.x 코드를 옮길 때 주의한다. 보장되는 것은 "부모와 같은 프레임에 고려된다"까지다. 포화되면 자식도 밀리고, 같은 패킷에 들어간다는 보장도 없다.
 
 ### multicast RPC가 채널을 연다
 
 그래프가 있으면 `UNetDriver::ProcessRemoteFunction`은 그래프의 `ProcessRemoteFunction`에 넘기고, 그래프는 항상 true를 돌려준다. 레거시 RPC 경로는 돌지 않는다.
 
-multicast는 연결마다 돈다. 연결에 채널이 없고 클래스가 `RPC_Multicast_OpenChannelForClass`에서 true이면, 컬 거리가 0이거나 viewer 중 하나가 컬 거리 안에 있을 때 채널을 새로 연다. 그리고 닫힘 프레임을 다음 프레임으로 잡고, 그 연결에서 dormant였다면 끝에 `FlushNetDormancy`를 한다. 즉 잠들어 있거나 아직 gather된 적 없는 액터에 multicast를 보내면 채널이 열리고 전체 복제가 따라온다. 기본값은 `AActor`가 true, `AController`가 false다. 컨트롤러는 비소유자에게 채널이 열리면 복제가 깨지기 때문이다.
+multicast는 연결마다 돈다. 연결에 채널이 없고 클래스가 `RPC_Multicast_OpenChannelForClass`에서 true이면, 컬 거리가 0이거나 viewer 중 하나가 컬 거리 안에 있을 때 채널을 새로 연다. 그리고 닫힘 프레임을 다음 프레임으로 잡고, 그 연결에서 dormant였다면 끝에 `FlushNetDormancy`를 한다. 즉 잠들어 있거나 아직 gather된 적 없는 액터에 multicast를 보내면 채널이 열리고 전체 리플리케이션이 따라온다. 기본값은 `AActor`가 true, `AController`가 false다. 컨트롤러는 비소유자에게 채널이 열리면 리플리케이션이 깨지기 때문이다.
 
 여기에 5.8.3에 남아 있는 구멍이 있다. 소유자 RPC 경로는 채널을 열기 전에 `NetDriver->IsLevelInitializedForActor`를 확인하지만 multicast 경로는 확인하지 않는다. 클라이언트가 seamless travel을 끝내기 전에 서버가 영속 레벨 액터(GameState 등)에 reliable multicast를 보내면 전환 레벨의 클라이언트에 채널이 열리고, 클라이언트는 도착 후 그 액터를 파괴해 버린다. 포럼에서 Epic이 알려진 문제(UE-361443)로 확인했고 2026년 7월 기준 미수정이다. 랩에 travel 시나리오가 없어 소스 확인까지만 했다. 우회책은 `ProcessRemoteFunction`을 오버라이드해 multicast에서도 같은 검사를 넣는 것이다.
 
@@ -305,13 +300,13 @@ multicast는 연결마다 돈다. 연결에 채널이 없고 클래스가 `RPC_M
 
 **`CellSize`.** 셀이 작으면 액터 하나가 더 많은 셀에 등록되고(컬 거리 150 m에 25 m 셀이면 12×12 셀) 동적 액터의 셀 갱신이 잦아진다. 셀이 크면 viewer 셀에 컬 거리 밖 액터가 많이 섞여 우선순위 단계의 검토 항목이 는다. 400 m 셀에서 검토 항목이 181개로 두 배가 됐지만 비용은 0.04 ms 차이다. 이 밀도에서는 셀 크기가 성능을 거의 바꾸지 않는다. 라이브스트림과 Lyra의 기본값처럼 컬 거리와 같은 자릿수로 두고, `NET_PrepareReplication`과 검토 항목 수를 보며 조정하면 된다.
 
-**버킷 수.** 동적 액터의 복제 주기 하한이 버킷 수 프레임이 된다. 버킷 1개는 매 프레임이라 호출이 33회로 늘고 검토 항목도 146개로 는다. Uniform에서는 viewer 근처의 동적 액터가 적어 0.07 ms 차이지만, Cluster에서는 측정 절에서 보듯 4.48 ms와 9.89 ms를 가른다. 버킷은 "사거리 안의 움직이는 액터 수"에 비례해 효과가 나는 설정이고, 그 수가 많은 게임에서 가장 먼저 만질 값이다. 서버 30 Hz에 버킷 3개면 동적 액터가 10 Hz로 가는 것이므로 이동 보간이 그 주기를 감당하는지 클라이언트 쪽에서 확인해야 한다.
+**버킷 수.** 동적 액터의 리플리케이션 주기 하한이 버킷 수 프레임이 된다. 버킷 1개는 매 프레임이라 호출이 33회로 늘고 검토 항목도 146개로 는다. Uniform에서는 viewer 근처의 동적 액터가 적어 0.07 ms 차이지만, Cluster에서는 측정 절에서 보듯 4.48 ms와 9.89 ms를 가른다. 버킷은 "사거리 안의 움직이는 액터 수"에 비례해 효과가 나는 설정이고, 그 수가 많은 게임에서 가장 먼저 만질 값이다. 서버 30 Hz에 버킷 3개면 동적 액터가 10 Hz로 가는 것이므로 이동 보간이 그 주기를 감당하는지 클라이언트 쪽에서 확인해야 한다.
 
 **`NetUpdateFrequency`.** 그래프는 클래스 초기화 때 CDO의 값으로 `RoundToInt(NetServerMaxTickRate / NetUpdateFrequency)`를 `ReplicationPeriodFrame`으로 바꾸고, 그 뒤로는 프레임 수로만 센다. 30 Hz 서버에서 100은 1프레임, 10은 3프레임, 2는 15프레임이다. 호출이 21, 14, 8회로 줄고 시간이 그에 비례한다. 레거시 드라이버와 달리 `MinNetUpdateFrequency`로 늘어나는 적응형 주기는 없고, 버킷과 겹치면 둘 중 긴 주기가 적용된다. 런타임에 `SetNetUpdateFrequency`를 불러도 그래프에는 반영되지 않고, 바꾸려면 `Net.RepGraph.SetPeriodFrame`처럼 세 층을 같이 고쳐야 한다.
 
-**`DynamicSpatialFrequency`.** 버킷 대신 이 노드로 바꾸면 호출은 16회로 줄지만 시간은 0.40 ms로 는다. gather 때 셀의 모든 동적 액터에 대해 거리와 내적을 계산하고 주기를 다시 쓴 뒤 직접 복제하므로, 우선순위 단계의 검토 항목은 48개로 줄고 대신 gather가 0.01 ms에서 0.07 ms가 된다. 동적 액터가 사거리 안에 수백 개 있을 때 보내는 양을 줄이려는 설정이지 CPU를 줄이는 설정이 아니다. 존 표를 적을 때는 엔진이 `DotP <= MinDotProduct`인 첫 존을 고른다는 점에 주의해야 한다. 헤더 주석은 "이상"이라고 적고 있지만 코드는 반대이며, 랩에서 실제로 걸려 넘어진 지점이다.
+**`DynamicSpatialFrequency`.** 거리와 시야 방향으로 주기를 정하는 노드다. `FSpatializationZone`마다 시선과의 내적 하한, 컬 거리 대비 거리 구간, 최소·최대 주기를 두고 선형 보간해 `ReplicationPeriodFrame`을 쓴다. 기본 존은 시야 안 10~50% 거리에서 5 Hz부터 1 Hz까지, 시야 밖과 등 뒤는 1 Hz이며 30 Hz 틱을 가정하므로 틱 레이트가 다르면 `Net.RepGraph.DyanmicSpatialization.Reinit`(오타가 실제 이름이다)로 다시 만든다. 리스트를 돌려주지 않고 gather 안에서 직접 리플리케이션하므로 우선순위 계산을 거치지 않고, `DistancePriorityScale`과 `StarvationPriorityScale`은 이 노드의 액터에 효과가 없다. 버킷 대신 이 노드로 바꾸면 호출은 16회로 줄지만 시간은 0.40 ms로 는다. 셀의 모든 동적 액터에 대해 거리와 내적을 계산하고 주기를 다시 쓰므로 우선순위 단계의 검토 항목은 48개로 줄고 대신 gather가 0.01 ms에서 0.07 ms가 된다. 동적 액터가 사거리 안에 수백 개 있을 때 보내는 양을 줄이려는 설정이지 CPU를 줄이는 설정이 아니다. 존 표를 적을 때는 엔진이 `DotP <= MinDotProduct`인 첫 존을 고른다는 점에 주의해야 한다. 헤더 주석은 "이상"이라고 적고 있지만 코드는 반대이며, 랩에서 실제로 걸려 넘어진 지점이다.
 
-**`DistancePriorityScale`.** 이름은 우선순위 가중치지만 0으로 두면 거리 컬링 자체가 꺼진다. 우선순위 계산의 거리 검사가 `if (DistancePriorityScale > 0)` 블록 안에 있기 때문이다. 측정에서 채널이 76에서 153으로, 호출이 34회로 늘었다. viewer 셀에 들어 있지만 컬 거리 밖인 액터가 전부 복제된 것이다. 거리 우선순위를 끄고 싶으면 0이 아니라 아주 작은 양수를 줘야 한다. 엔진이 `AInfo`와 `APlayerController`에 0을 주는 것은 그 클래스들이 거리로 컬링되면 안 되기 때문이다.
+**`DistancePriorityScale`.** 이름은 우선순위 가중치지만 0으로 두면 거리 컬링 자체가 꺼진다. 우선순위 계산의 거리 검사가 `if (DistancePriorityScale > 0)` 블록 안에 있기 때문이다. 측정에서 채널이 76에서 153으로, 호출이 34회로 늘었다. viewer 셀에 들어 있지만 컬 거리 밖인 액터가 전부 리플리케이션된 것이다. 거리 우선순위를 끄고 싶으면 0이 아니라 아주 작은 양수를 줘야 한다. 엔진이 `AInfo`와 `APlayerController`에 0을 주는 것은 그 클래스들이 거리로 컬링되면 안 되기 때문이다.
 
 **`StarvationPriorityScale`.** 오래 못 받은 액터를 앞으로 당기는 가중치다. 이 부하에서는 연결이 포화되지 않아 모든 후보가 매 프레임 보내지므로 0으로 둬도 아무것도 바뀌지 않는다. 포화돼서 뒤의 액터가 밀릴 때만 순서를 바꾸는 값이고, 그런 상황인지는 `Net.RepGraph.StarvedList`로 본다.
 
@@ -331,7 +326,7 @@ multicast는 연결마다 돈다. 연결에 채널이 없고 클래스가 `RPC_M
 공유
   Team (팀마다 하나)           팀원의 폰. 같은 팀의 연결들이 공유
 연결별
-  AlwaysRelevant_ForConnection PC, 폰, ViewTarget, 본인 PlayerState, owner 전용 액터, 스트리밍 레벨의 항상 관련 액터
+  AlwaysRelevant_ForConnection PC, 폰, ViewTarget, 본인 PlayerState, owner 전용 액터, 스트리밍 레벨의 always relevant 액터
   TearOff_ForConnection        기본 그래프가 생성
 ```
 
@@ -339,7 +334,7 @@ Lyra와 다른 점은 팀 노드와 owner 전용 라우팅이다. Lyra는 `bOnly
 
 ### 클래스 라우팅 테이블
 
-클래스를 노드에 대응시키는 enum(`NotRouted`, `RelevantAllConnections`, `RelevantOwnerConnection`, `Spatialize_Static`, `Spatialize_Dynamic`, `Spatialize_Dormancy`)을 두고, 레거시 플래그에서 기본값을 유도한 뒤 프로젝트 설정으로 덮어쓴다. 유도 규칙은 Lyra를 따랐다. 부모 클래스와 플래그가 같으면 부모의 매핑을 쓰고, `bAlwaysRelevant`면 전역, `bOnlyRelevantToOwner`면 owner 연결, 나머지 복제 액터는 `Spatialize_Dynamic`이다. 동적이 기본값인 이유는 그것이 항상 맞는 쪽이기 때문이다. 정적으로 잘못 넣으면 움직이는 액터가 보이지 않고, 동적으로 넣으면 비용만 든다. 정적과 dormancy는 클래스를 알 때만 명시한다.
+클래스를 노드에 대응시키는 enum(`NotRouted`, `RelevantAllConnections`, `RelevantOwnerConnection`, `Spatialize_Static`, `Spatialize_Dynamic`, `Spatialize_Dormancy`)을 두고, 레거시 플래그에서 기본값을 유도한 뒤 프로젝트 설정으로 덮어쓴다. 유도 규칙은 Lyra를 따랐다. 부모 클래스와 플래그가 같으면 부모의 매핑을 쓰고, `bAlwaysRelevant`면 전역, `bOnlyRelevantToOwner`면 owner 연결, 나머지 리플리케이션 액터는 `Spatialize_Dynamic`이다. 동적이 기본값인 이유는 그것이 항상 맞는 쪽이기 때문이다. 정적으로 잘못 넣으면 움직이는 액터가 보이지 않고, 동적으로 넣으면 비용만 든다. 정적과 dormancy는 클래스를 알 때만 명시한다.
 
 ```ini
 ; DefaultGame.ini
@@ -350,7 +345,7 @@ Lyra와 다른 점은 팀 노드와 owner 전용 라우팅이다. Lyra는 `bOnly
 +ClassSettings=(ActorClass="/Script/ThirdPerson.RepGraphLabWeapon",ClassNodeMapping=NotRouted)
 ```
 
-`InitGlobalActorClassSettings`에서 `TObjectIterator<UClass>`로 복제 액터 클래스를 전부 돌며 매핑과 `FClassReplicationInfo`를 등록한다. 이때 두 가지를 빠뜨리면 안 된다. 이름이 `SKEL_`, `REINST_`로 시작하는 Blueprint 컴파일 중간 클래스는 건너뛰어야 하고, `GlobalActorReplicationInfoMap.SetInitClassInfoFunc`로 lazy init을 걸어야 한다. 그래프는 `BeginPlay` 전에 초기화되므로 그 시점에 로드되지 않은 Blueprint 서브클래스는 순회에 나오지 않고, 처음 조회될 때 이 함수로 매핑과 설정을 받는다. 이것을 빠뜨리면 부모 클래스 값이 복사돼 동작은 하지만 그 서브클래스에 특별한 설정을 줄 길이 없어진다. `FClassReplicationInfo`는 CDO의 `NetCullDistanceSquared`와 `NetUpdateFrequency`에서 만들고, 캐릭터처럼 손으로 맞출 클래스는 `ExplicitlySetClasses`에 넣어 CDO 유도가 덮어쓰지 못하게 한다.
+`InitGlobalActorClassSettings`에서 `TObjectIterator<UClass>`로 리플리케이션 액터 클래스를 전부 돌며 매핑과 `FClassReplicationInfo`를 등록한다. 이때 두 가지를 빠뜨리면 안 된다. 이름이 `SKEL_`, `REINST_`로 시작하는 Blueprint 컴파일 중간 클래스는 건너뛰어야 하고, `GlobalActorReplicationInfoMap.SetInitClassInfoFunc`로 lazy init을 걸어야 한다. 그래프는 `BeginPlay` 전에 초기화되므로 그 시점에 로드되지 않은 Blueprint 서브클래스는 순회에 나오지 않고, 처음 조회될 때 이 함수로 매핑과 설정을 받는다. 이것을 빠뜨리면 부모 클래스 값이 복사돼 동작은 하지만 그 서브클래스에 특별한 설정을 줄 길이 없어진다. `FClassReplicationInfo`는 CDO의 `NetCullDistanceSquared`와 `NetUpdateFrequency`에서 만들고, 캐릭터처럼 손으로 맞출 클래스는 `ExplicitlySetClasses`에 넣어 CDO 유도가 덮어쓰지 못하게 한다.
 
 ### 팀 노드와 컬 거리 0
 
@@ -374,9 +369,9 @@ Params.OutGatheredReplicationLists.AddReplicationActorList(TeamActorList);
 
 ### 실제로 걸려 넘어진 것
 
-그래프와 무관한 사고를 빼면 두 가지가 남는다. 첫 번째는 액터를 `SetHidden(true)`로 둔 것이다. 레거시 `AActor::IsNetRelevantFor`는 숨겨져 있고 충돌이 없는 액터를 관련 없음으로 판정하므로 기본 드라이버 조건에서 액터가 하나도 복제되지 않았다. 그래프는 이 함수를 부르지 않아 그래프 조건은 멀쩡했다. "그래프를 끄면 정상인지" 비교하는 습관이 그래프 쪽 버그뿐 아니라 이런 차이도 드러낸다. 비슷한 종류로, 스크린샷용 탑다운 카메라로 뷰 타깃을 300 m 위로 올리자 그 클라이언트가 받는 액터가 5,000개에서 88개로 줄었다. 그래프의 viewer는 폰이 아니라 `GetPlayerViewPoint`가 돌려주는 카메라 위치이므로, 관전 카메라가 있는 게임이라면 viewer가 어디인지부터 확인해야 한다.
+그래프와 무관한 사고를 빼면 두 가지가 남는다. 첫 번째는 액터를 `SetHidden(true)`로 둔 것이다. 레거시 `AActor::IsNetRelevantFor`는 숨겨져 있고 충돌이 없는 액터를 관련 없음으로 판정하므로 기본 드라이버 조건에서 액터가 하나도 리플리케이션되지 않았다. 그래프는 이 함수를 부르지 않아 그래프 조건은 멀쩡했다. "그래프를 끄면 정상인지" 비교하는 습관이 그래프 쪽 버그뿐 아니라 이런 차이도 드러낸다. 비슷한 종류로, 스크린샷용 탑다운 카메라로 뷰 타깃을 300 m 위로 올리자 그 클라이언트가 받는 액터가 5,000개에서 88개로 줄었다. 그래프의 viewer는 폰이 아니라 `GetPlayerViewPoint`가 돌려주는 카메라 위치이므로, 관전 카메라가 있는 게임이라면 viewer가 어디인지부터 확인해야 한다.
 
-두 번째는 `DynamicSpatialFrequency`의 존 표다. 헤더의 `MinDotProduct` 주석("이 값 이상이어야 이 존")을 믿고 `{0.8 앞쪽}, {-1.0 나머지}` 순으로 적었더니, 정면에 있는 액터가 어느 존에도 들어가지 않았다. `CalcFrequencyForActor`는 `DotP <= MinDotProduct`인 첫 존을 고른다. 결과는 두 가지였다. 정면의 AI가 복제에서 빠졌고, 액터마다 프레임마다 "was not placed in any valid zone" 경고가 60초에 18,886줄 찍혀 그 로그 비용 1.1 ms가 측정값에 들어갔다. 처음에는 DSF 노드의 gather가 1.3 ms로 나와 DSF가 비싼 줄 알았다. Insights에서 `STAT_FMsgLogf`가 gather 안에 있는 것을 보고 알았다. 존은 오름차순으로 적고 마지막을 1.0으로 끝내야 한다.
+두 번째는 `DynamicSpatialFrequency`의 존 표다. 헤더의 `MinDotProduct` 주석("이 값 이상이어야 이 존")을 믿고 `{0.8 앞쪽}, {-1.0 나머지}` 순으로 적었더니, 정면에 있는 액터가 어느 존에도 들어가지 않았다. `CalcFrequencyForActor`는 `DotP <= MinDotProduct`인 첫 존을 고른다. 결과는 두 가지였다. 정면의 AI가 리플리케이션에서 빠졌고, 액터마다 프레임마다 "was not placed in any valid zone" 경고가 60초에 18,886줄 찍혀 그 로그 비용 1.1 ms가 측정값에 들어갔다. 처음에는 DSF 노드의 gather가 1.3 ms로 나와 DSF가 비싼 줄 알았다. Insights에서 `STAT_FMsgLogf`가 gather 안에 있는 것을 보고 알았다. 존은 오름차순으로 적고 마지막을 1.0으로 끝내야 한다.
 
 ## 테스트 프로젝트로 측정하기
 
@@ -386,17 +381,16 @@ Params.OutGatheredReplicationLists.AddReplicationActorList(TeamActorList);
 
 랩 서브시스템은 커맨드라인으로 조건을 받아 다음 순서로 돈다.
 
-1. 클라이언트 N개가 붙고 폰을 가질 때까지 기다린다.
-2. 플레이어 폰을 배치하고 둘씩 같은 팀으로 묶는다. Uniform과 NearPlayers에서는 분대 단위로 맵 곳곳에 흩고, Cluster에서는 PlayerStart에 모아 둔다. 플레이어마다 owner 전용 인벤토리 액터를 하나 스폰한다.
-3. 랩 액터를 스폰한다. 기본 구성은 5,000개를 소품 60%, 루트 20%, AI 15%, 탈것 5%로 나누고, 탈것마다 dependent actor인 무기를 하나 더 붙인다. 전역 액터 3개가 추가된다. 모든 랩 액터는 Push Model 랩과 같은 16개의 복제 프로퍼티를 push 기반으로 등록한다.
-4. 60초 warmup. 절반 지점에서 소품의 90%를 `DORM_DormantAll`로 보낸다. 루트는 처음부터 dormant다.
-5. 60초 측정. CSV 프로파일러 캡처와 Insights 트레이스 리전을 연다. 측정 중 깨어 있는 액터의 1%가 초마다 프로퍼티 하나씩을 바꾸고, 루트의 0.1%가 초마다 flush 후 쓰기를 한다. AI는 초당 3 m로 직선 이동하며 영역 경계에서 튕긴다.
+1. 클라이언트 N개가 붙으면 플레이어 폰을 배치하고 둘씩 같은 팀으로 묶는다. Uniform과 NearPlayers에서는 스쿼드 단위로 맵 곳곳에 흩고, Cluster에서는 PlayerStart에 모아 둔다. 플레이어마다 owner 전용 인벤토리 액터를 하나 스폰한다.
+2. 랩 액터를 스폰한다. 기본 구성은 5,000개를 소품 60%, 루트 20%, AI 15%, 탈것 5%로 나누고, 탈것마다 dependent actor인 무기를 하나 더 붙인다. 전역 액터 3개가 추가된다. 모든 랩 액터는 Push Model 랩과 같은 16개의 리플리케이션 프로퍼티를 push 기반으로 등록한다.
+3. 60초 warmup. 절반 지점에서 소품의 90%를 `DORM_DormantAll`로 보낸다. 루트는 처음부터 dormant다.
+4. 60초 측정. CSV 프로파일러 캡처와 Insights 트레이스 리전을 연다. 측정 중 깨어 있는 액터의 1%가 초마다 프로퍼티 하나씩을 바꾸고, 루트의 0.1%가 초마다 flush 후 쓰기를 한다. AI는 초당 3 m로 직선 이동하며 영역 경계에서 튕긴다.
 
 공간 분포는 세 가지다. 컬 거리는 모든 랩 클래스에서 150 m(`NetCullDistanceSquared` 기본값)다.
 
 | 분포 | 액터 위치 | 플레이어 위치 | 뜻 |
 | --- | --- | --- | --- |
-| Uniform | 2 km × 2 km에 균일 | 분대별로 흩어짐 | 게임 중반. 컬 반경 안에 액터의 약 2% |
+| Uniform | 2 km × 2 km에 균일 | 스쿼드별로 흩어짐 | 게임 중반. 컬 반경 안에 액터의 약 2% |
 | Cluster | PlayerStart 중심 컬 반경의 80% 안 | 모두 PlayerStart | 핫드롭. 모든 액터가 모든 연결에 관련 |
 | NearPlayers | 플레이어마다 자기 주변 컬 반경의 80% 안 | 맵 곳곳에 흩어짐 | 중간 지점. 플레이어마다 자기 몫만 보이고, 2인이면 각자 절반 |
 
@@ -408,7 +402,7 @@ Params.OutGatheredReplicationLists.AddReplicationActorList(TeamActorList);
 
 ### 드라이버와 분포
 
-측정 전에는 흩어진 조건에서는 그래프가 유리하고, 모든 액터가 모든 연결에 관련된 밀집 조건에서는 복제 비용이 같은 위에 노드 판별 비용이 얹혀 그래프가 오히려 손해일 거라고 예상했다.
+측정 전에는 흩어진 조건에서는 그래프가 유리하고, 모든 액터가 모든 연결에 관련된 밀집 조건에서는 리플리케이션 비용이 같은 위에 노드 판별 비용이 얹혀 그래프가 오히려 손해일 거라고 예상했다.
 
 ![드라이버와 분포별 ServerReplicateActors 시간. Cluster 8.09 / 3.44 / 4.48, NearPlayers 6.47 / 2.25 / 2.84, Uniform 2.54 / 0.40 / 0.35 ms](./images/unreal-replication-graph/chart-drivers.webp)
 
@@ -420,7 +414,7 @@ Params.OutGatheredReplicationLists.AddReplicationActorList(TeamActorList);
 
 프레임당 `ServerReplicateActors` ms, 5회 평균과 표준편차다. 기본 드라이버의 NearPlayers와 Uniform은 런마다 서버 프레임 시간이 41~47 ms로 흔들려 편차가 ±8%이고, 나머지 조건은 ±2% 안이다. 아래의 단계별 분해는 Insights 트레이스가 있는 첫 번째 런 하나의 값이다.
 
-흩어진 조건은 예측대로다. Uniform에서 그래프는 기본 드라이버의 7분의 1이다. 기본 드라이버의 2.8 ms를 분해하면 consider list 구성 1.7 ms, 두 연결의 우선순위 계산 0.9 ms이고, 실제 `ReplicateActor`는 프레임당 67회 호출에 0.2 ms다. 5,200개 중 연결당 31개만 보내는데 비용의 90% 이상이 보낼지 말지를 정하는 데 든다. OpenWorld 그래프는 같은 조건에서 `PrepareForReplication` 0.12 ms, gather와 우선순위 0.05 ms(검토 항목 71개), 복제 0.13 ms다. 그리드가 viewer 셀의 리스트만 돌려주므로 나머지 5,100개는 아예 검토 대상이 아니다.
+흩어진 조건은 예측대로다. Uniform에서 그래프는 기본 드라이버의 7분의 1이다. 기본 드라이버의 2.8 ms를 분해하면 consider list 구성 1.7 ms, 두 연결의 우선순위 계산 0.9 ms이고, 실제 `ReplicateActor`는 프레임당 67회 호출에 0.2 ms다. 5,200개 중 연결당 31개만 보내는데 비용의 90% 이상이 보낼지 말지를 정하는 데 든다. OpenWorld 그래프는 같은 조건에서 `PrepareForReplication` 0.12 ms, gather와 우선순위 0.05 ms(검토 항목 71개), 리플리케이션 0.13 ms다. 그리드가 viewer 셀의 리스트만 돌려주므로 나머지 5,100개는 아예 검토 대상이 아니다.
 
 밀집 조건은 예측과 다르다. 모든 액터가 모든 연결에 관련 있는 Cluster에서도 OpenWorld 그래프가 기본 드라이버의 55%, Basic이 43%다. 다만 이것은 판별 비용의 차이가 아니라 보내는 횟수의 차이다. 연결당 `ReplicateActor` 호출이 기본 1,561회, Basic 524회, OpenWorld 735회다. 두 그래프 모두 동적 액터를 frequency bucket 3개에 나눠 세 프레임에 한 번만 후보로 올린다. Basic은 모든 액터를 dormancy 경로로 넣으므로 깨어 있는 1,580개 전부가 버킷 대상이다. OpenWorld는 AI와 탈것 1,000개만 버킷에 있어 333회, 깨어 있는 소품 315개는 static 리스트라 매 프레임, dependent 무기가 탈것에 묻어 83회로 더 많다. 보내는 횟수가 다르면 비교가 아니므로 갱신률을 맞춘 대조군을 두었다.
 
@@ -428,7 +422,7 @@ Params.OutGatheredReplicationLists.AddReplicationActorList(TeamActorList);
 
 기본 드라이버의 `NetUpdateFrequency`를 10으로 낮춘 것은 아무것도 바꾸지 못했다. 서버가 초당 21 프레임이라 100 Hz든 10 Hz든 매 프레임이 갱신 차례다. 갱신 주기 설정은 서버 프레임 레이트보다 낮아야 뜻이 있다. 반대로 OpenWorld의 버킷을 1개로 줄이면 호출 수가 1,555회로 기본 드라이버와 같아지고, 이때 그래프는 9.89 ms로 기본 드라이버보다 22% 느리다. "같은 양을 보내면 노드 판별이 공짜가 아니다"는 맞았고, 기본 설정으로 돌리면 밀집에서 그래프가 느릴 것이라는 결론은 틀렸다.
 
-어디서 느린지는 Insights가 보여 준다. `UActorChannel::ReplicateActor` 안의 시간은 5.80 ms와 5.60 ms로 같다. 호출당 약 1.8 µs이고 그 안의 프로퍼티 비교가 1.0 ms와 0.9 ms로 같다. 후보를 고르는 단계도 비슷하다. 기본 드라이버의 consider list 0.69 ms와 두 연결의 우선순위 0.80 ms를 합친 1.49 ms에 대해, 그래프는 prepare와 gather 0.16 ms에 우선순위 계산 1.31 ms(프레임당 2,687개 항목 검토, 정렬 0.13 ms)다. 차이는 `ReplicateSingleActor`가 채널 밖에서 하는 일에 있다. 액터마다 `PreReplication` 호출 0.86 ms(기본 드라이버는 consider list를 만들면서 부르므로 0.69 ms 안에 들어 있다), dependent actor 목록 확인 0.19 ms, 연결 정보의 프레임 번호 갱신과 채널 조회 1.32 ms를 합쳐 2.69 ms로, 기본 드라이버의 복제 루프 잔여 0.93 ms보다 1.76 ms 많다. 복제한 액터 하나당 채널 밖 비용이 기본 0.30 µs, 그래프 0.86 µs다. 그래프의 영속 리스트는 검토할 액터를 줄이는 장치이지 보낼 액터의 처리 비용을 줄이는 장치가 아니다. 보낼 액터가 많을수록 액터당 부가 비용이 기본 드라이버보다 크다.
+어디서 느린지는 Insights가 보여 준다. `UActorChannel::ReplicateActor` 안의 시간은 5.80 ms와 5.60 ms로 같다. 호출당 약 1.8 µs다. 후보를 고르는 단계도 비슷하다. 기본 드라이버의 consider list 0.69 ms와 두 연결의 우선순위 0.80 ms를 합친 1.49 ms에 대해, 그래프는 prepare와 gather 0.16 ms에 우선순위 계산 1.31 ms다. 차이는 `ReplicateSingleActor`가 채널 밖에서 하는 일에 있다. 액터마다 `PreReplication` 호출 0.86 ms(기본 드라이버는 consider list를 만들면서 부르므로 0.69 ms 안에 들어 있다), dependent actor 목록 확인 0.19 ms, 연결 정보의 프레임 번호 갱신과 채널 조회 1.32 ms를 합쳐 2.69 ms로, 기본 드라이버의 리플리케이션 루프 잔여 0.93 ms보다 1.76 ms 많다. 리플리케이션한 액터 하나당 채널 밖 비용이 기본 0.30 µs, 그래프 0.86 µs다. 그래프의 영속 리스트는 검토할 액터를 줄이는 장치이지 보낼 액터의 처리 비용을 줄이는 장치가 아니다. 보낼 액터가 많을수록 액터당 부가 비용이 기본 드라이버보다 크다.
 
 NearPlayers는 둘의 중간이어야 하는데 기본 드라이버는 6.47 ms로 Cluster에 가깝다. 보내는 양은 연결당 770회로 Cluster의 절반인데, consider list 구성이 1.38 ms로 Cluster의 두 배이고 우선순위 계산이 1.97 ms다. 원인은 dormancy의 집계 단위다. 랩은 소품의 90%와 루트 전부를 `DORM_DormantAll`로 두는데, `FNetworkObjectList`는 액터가 모든 연결에서 dormant가 됐을 때만 active 목록에서 뺀다(`Engine/Private/NetworkObjectList.cpp`, `MarkDormant`의 `DormantConnections.Num() == NumConnections`). Cluster에서는 두 클라이언트가 모든 액터를 받으므로 3,685개가 빠져 active가 1,580개이지만, 흩어진 분포에서는 각 소품을 한 클라이언트만 받으므로 영영 active에 남고 매 프레임 5,265개 전부가 consider list를 거친다. Uniform의 1.7 ms도 같은 이유다. CSV의 `NumberOfFullyDormantActors`가 Cluster에서만 0이 아닌 것이 그 흔적이다. 기본 드라이버의 dormancy 절약은 모든 연결이 그 액터를 한 번씩 본 뒤에만 생기고, 넓은 맵에서는 그런 일이 잘 일어나지 않는다. 그래프는 dormant 액터를 연결별 `bDormantOnConnection`으로 걸러서 이 문제가 없다.
 
@@ -436,19 +430,19 @@ NearPlayers는 둘의 중간이어야 하는데 기본 드라이버는 6.47 ms�
 
 ![액터 수별 ServerReplicateActors 시간. 기본 드라이버 0.59, 2.23, 4.38, 9.69 ms, OpenWorld 그래프 0.18, 0.31, 0.46, 0.82 ms](./images/unreal-replication-graph/chart-actors.webp)
 
-Uniform에서 액터 수를 1,000에서 20,000으로 늘리면 기본 드라이버는 0.59에서 9.69 ms로 정비례한다. 액터 하나당 프레임당 0.46 µs이고, 20,000개 런의 분해는 consider list 5.2 ms, 우선순위 3.8 ms, 복제 0.5 ms다. OpenWorld 그래프는 0.18에서 0.82 ms로 4.5배 늘고, 그 증가분은 열린 채널 수(50 → 254)에 비례한다. 그래프의 비용은 맵의 액터 수가 아니라 viewer 근처의 액터 수를 따른다.
+Uniform에서 액터 수를 1,000에서 20,000으로 늘리면 기본 드라이버는 0.59에서 9.69 ms로 정비례한다. 액터 하나당 프레임당 0.46 µs이고, 20,000개 런의 분해는 consider list 5.2 ms, 우선순위 3.8 ms, 리플리케이션 0.5 ms다. OpenWorld 그래프는 0.18에서 0.82 ms로 4.5배 늘고, 그 증가분은 열린 채널 수(50 → 254)에 비례한다. 그래프의 비용은 맵의 액터 수가 아니라 viewer 근처의 액터 수를 따른다.
 
 ![클라이언트 수별 ServerReplicateActors 시간. 기본 드라이버 2.05, 3.16, 5.46, 13.00 ms, OpenWorld 그래프 0.31, 0.50, 0.91, 2.14 ms](./images/unreal-replication-graph/chart-connections.webp)
 
-연결 수에서는 둘 다 선형이지만 기울기가 6배 다르다. 기본 드라이버는 연결당 0.78 ms, OpenWorld는 0.13 ms다. 16 연결에서 기본 드라이버의 13.0 ms 중 9.2 ms가 16번의 우선순위 계산이다. 액터 5,200개 × 연결 16개의 `IsNetRelevantFor` 호출이 이 숫자다. 그래프의 2.14 ms는 복제 0.9 ms와 나머지 1.3 ms이고, 연결마다 자기 셀의 리스트만 본다.
+연결 수에서는 둘 다 선형이지만 기울기가 6배 다르다. 기본 드라이버는 연결당 0.78 ms, OpenWorld는 0.13 ms다. 16 연결에서 기본 드라이버의 13.0 ms 중 9.2 ms가 16번의 우선순위 계산이다. 액터 5,200개 × 연결 16개의 `IsNetRelevantFor` 호출이 이 숫자다. 그래프의 2.14 ms는 리플리케이션 0.9 ms와 나머지 1.3 ms이고, 연결마다 자기 셀의 리스트만 본다.
 
-### 휴면 비율과 Push Model
+### dormant 비율과 Push Model
 
-![휴면 비율과 Push Model에 따른 ServerReplicateActors 시간. 소품 휴면 0% 2.56 / 0.63, 90% 2.13 / 0.36, Push 끔 2.20 / 0.39, Push + Skip 2.39 / 0.42 ms](./images/unreal-replication-graph/chart-dormancy-push.webp)
+![dormant 비율과 Push Model에 따른 ServerReplicateActors 시간. 소품 dormant 0% 2.56 / 0.63, 90% 2.13 / 0.36, Push 끔 2.20 / 0.39, Push + Skip 2.39 / 0.42 ms](./images/unreal-replication-graph/chart-dormancy-push.webp)
 
-소품을 모두 깨어 있게 두면 기본 드라이버는 2.13에서 2.56 ms, OpenWorld는 0.36에서 0.63 ms로 늘고 채널 수가 73에서 167로 는다. 깨어 있는 소품은 값이 바뀔 때마다 보내지고 채널이 열린 채로 유지된다. 기본 드라이버의 consider list는 앞서 본 대로 어차피 5,200개 전부라 변화는 복제 단계에만 나타난다.
+소품을 모두 깨어 있게 두면 기본 드라이버는 2.13에서 2.56 ms, OpenWorld는 0.36에서 0.63 ms로 늘고 채널 수가 73에서 167로 는다. 깨어 있는 소품은 값이 바뀔 때마다 보내지고 채널이 열린 채로 유지된다. 기본 드라이버의 consider list는 앞서 본 대로 어차피 5,200개 전부라 변화는 리플리케이션 단계에만 나타난다.
 
-Push Model은 그래프 위에서 그대로 동작하지만 이 부하에서는 잴 수 있는 차이가 없다. `net.PushModelSkipUndirtiedReplication`은 `UActorChannel::ReplicateActor` 안에서 판정되고 그래프의 `ReplicateSingleActor`도 같은 함수를 부르므로, 그래프 쪽에 Push Model을 의식하는 코드는 없다. 다만 그래프는 채널에 들어가기 전에 `LastRepFrameNum`을 쓰므로 Push Model이 안에서 비교를 건너뛰어 0바이트로 끝나도 주기는 소비되고 `NumReplicatedCleanActors`로 집계된다. 프레임당 복제가 41건이고 변경률이 1%라 프로퍼티 비교 시간이 0.025 ms에서 0.013 ms로 줄어도 `ServerReplicateActors`의 3~6%다. Push + Skip 조건의 평균이 오히려 높은 것은 프레임 시간 편차 안이다. Push Model 포스트에서 본 절약은 보내는 액터가 많을 때 비교 시간에서 나오는 것이고, 그래프가 보내는 액터 수를 먼저 줄여 버리면 남는 몫이 작다. 두 최적화는 서로 다른 층을 줄이므로 함께 켜서 손해 볼 것은 없다.
+Push Model은 그래프 위에서 그대로 동작하지만 이 부하에서는 잴 수 있는 차이가 없다. `net.PushModelSkipUndirtiedReplication`은 `UActorChannel::ReplicateActor` 안에서 판정되고 그래프의 `ReplicateSingleActor`도 같은 함수를 부르므로, 그래프 쪽에 Push Model을 의식하는 코드는 없다. 다만 그래프는 채널에 들어가기 전에 `LastRepFrameNum`을 쓰므로 Push Model이 안에서 비교를 건너뛰어 0바이트로 끝나도 주기는 소비되고 `NumReplicatedCleanActors`로 집계된다. 프레임당 리플리케이션이 41건이고 변경률이 1%라 프로퍼티 비교 시간이 0.025 ms에서 0.013 ms로 줄어도 `ServerReplicateActors`의 3~6%다. Push + Skip 조건의 평균이 오히려 높은 것은 프레임 시간 편차 안이다. Push Model 포스트에서 본 절약은 보내는 액터가 많을 때 비교 시간에서 나오는 것이고, 그래프가 보내는 액터 수를 먼저 줄여 버리면 남는 몫이 작다. 두 최적화는 서로 다른 층을 줄이므로 함께 켜서 손해 볼 것은 없다.
 
 ## 5.8.3에 남아 있는 버그와 함정
 
@@ -470,7 +464,7 @@ Epic 포럼에 2026년 5월 올라온 보고(UE-378758)다. 액터를 `DORM_Dorm
 
 클라이언트 둘이 받은 RPC 수다. 그래프에서는 4프레임 뒤에 보낸 reliable RPC 50개가 전부 사라졌고 8프레임 뒤에는 18개가 사라졌다. 기본 드라이버는 같은 지연에서 잃지 않는다.
 
-순서는 이렇다. `SetNetDormancy`를 받은 액터는 다음 복제에서 `StartBecomingDormant`가 걸리고, 마지막 갱신이 비어 있고 ack 안 된 변경이 없으면(`FObjectReplicator::ReadyForDormancy`) 바로 다음 틱에 `Close(Dormancy)`가 된다. 한동안 값이 바뀌지 않은 액터는 잠재우자마자 채널이 닫히는 셈이다. 닫힘 번치가 200 ms 뒤에 도착하고 그 ack가 돌아올 때까지 채널은 `Closing`이고, 그 사이의 multicast는 `ProcessRemoteFunction`이 그 연결을 `continue`로 건너뛴다. reliable이어도 재시도는 없다. ack가 돌아와 채널이 정리된 연결부터 새 채널이 열리며 RPC가 다시 가므로, 8프레임에서는 일부만 도착했고 12프레임부터는 전부 도착했다. 지연 없이 돌린 첫 시도에서는 어느 드라이버도 잃지 않았는데, 창이 로컬 ack 한 번의 길이뿐이기 때문이다.
+순서는 이렇다. `SetNetDormancy`를 받은 액터는 다음 리플리케이션에서 `StartBecomingDormant`가 걸리고, 마지막 갱신이 비어 있고 ack 안 된 변경이 없으면(`FObjectReplicator::ReadyForDormancy`) 바로 다음 틱에 `Close(Dormancy)`가 된다. 한동안 값이 바뀌지 않은 액터는 잠재우자마자 채널이 닫히는 셈이다. 닫힘 번치가 200 ms 뒤에 도착하고 그 ack가 돌아올 때까지 채널은 `Closing`이고, 그 사이의 multicast는 `ProcessRemoteFunction`이 그 연결을 `continue`로 건너뛴다. reliable이어도 재시도는 없다. ack가 돌아와 채널이 정리된 연결부터 새 채널이 열리며 RPC가 다시 가므로, 8프레임에서는 일부만 도착했고 12프레임부터는 전부 도착했다. 지연 없이 돌린 첫 시도에서는 어느 드라이버도 잃지 않았는데, 창이 로컬 ack 한 번의 길이뿐이기 때문이다.
 
 우회는 순서를 바꾸는 것이다. reliable RPC를 먼저 보내고 잠재우거나, 잠든 액터에 RPC를 보내야 하면 그 연결의 채널이 정리된 뒤(`NotifyActorChannelCleanedUp`)로 미룬다. 우회는 측정하지 않았다.
 
@@ -497,7 +491,7 @@ Ensure condition failed: !Actor->bNetTemporary [File: ReplicationGraph.cpp] [Lin
 ReplicationGraph does not support bNetTemporary. Actor: RepGraphLabProjectile_0 has bNetTemporary set.
 ```
 
-그 뒤의 동작은 2019년 포럼의 "그래프가 `bNetTemporary`를 무시하고 수백 번 복제한다"는 관찰과 같다. `bNetTemporary` 액터의 첫 번치는 `bClose`가 켜져 있어 채널을 열면서 닫고, 레거시 드라이버는 `SentTemporaries`로 그 액터를 다시 고려하지 않는다(`Engine/Private/DataChannel.cpp`, `NetDriver.cpp`). 그래프는 이 목록을 보지 않으므로 닫힌 채널이 정리되면 다음 버킷 차례에 채널을 새로 열어 다시 보낸다. 측정에서 프레임당 채널 열기가 0.02회에서 5.1회가 됐고 `ServerReplicateActors`는 0.35에서 0.59 ms로 늘었다. 살아 있는 발사체가 7개 안팎일 때의 값이다. 기본 드라이버는 같은 조건에서 2.51 ms로 발사체가 없을 때와 같다. 발사체는 `bNetTemporary` 대신 짧은 수명의 dynamic 액터로 두고 셀 재구축 금지 목록에 넣는다.
+그 뒤의 동작은 2019년 포럼의 "그래프가 `bNetTemporary`를 무시하고 수백 번 리플리케이션한다"는 관찰과 같다. `bNetTemporary` 액터의 첫 번치는 `bClose`가 켜져 있어 채널을 열면서 닫고, 레거시 드라이버는 `SentTemporaries`로 그 액터를 다시 고려하지 않는다(`Engine/Private/DataChannel.cpp`, `NetDriver.cpp`). 그래프는 이 목록을 보지 않으므로 닫힌 채널이 정리되면 다음 버킷 차례에 채널을 새로 열어 다시 보낸다. 측정에서 프레임당 채널 열기가 0.02회에서 5.1회가 됐고 `ServerReplicateActors`는 0.35에서 0.59 ms로 늘었다. 살아 있는 발사체가 7개 안팎일 때의 값이다. 기본 드라이버는 같은 조건에서 2.51 ms로 발사체가 없을 때와 같다. 발사체는 `bNetTemporary` 대신 짧은 수명의 dynamic 액터로 두고 셀 재구축 금지 목록에 넣는다.
 
 한 가지는 드라이버와 무관하다. 두 드라이버 모두 클라이언트의 발사체 수가 60초 동안 600개까지 늘었다. 클라이언트는 채널이 닫혀도 `bNetTemporary` 액터를 파괴하지 않고(`UActorChannel::CleanUp`의 `!Actor->bNetTemporary` 조건), `SetLifeSpan`은 authority에서만 타이머를 건다. `bNetTemporary`는 서버의 파괴가 전달되지 않는 계약이라 클라이언트가 스스로 지우는 코드가 있어야 하는데 이 랩에는 그것이 없었다. 그래프로 옮기면서 플래그를 떼면 서버의 파괴가 채널 닫힘으로 전달되므로 이 문제도 같이 사라진다.
 
@@ -553,9 +547,7 @@ RepGraphLabProp_1923                     0.9762 (Dist: 9709.84 | 0.03)     (Fram
 RepGraphLabGlobal_0                      1.9500 (Dist: 77347.03 | 1.00)    (FramesLastRep: 1 | 0.95)
 ```
 
-트리는 앞 절의 구조 그대로다. 한 액터가 여러 셀에 나오는 것이 정상이고, 연결 0의 dormancy 사본이 마스터와 같은 158개인 것은 이 연결이 그 액터들을 아직 하나도 받지 못했다는 뜻이다. 컬 거리 사각형 때문에 셀에는 들어 있지만 실제 거리는 150 m 밖이라 매 프레임 컬링되고 있고, trickle이 프레임에 하나씩 흘려보낼 대상이 바로 이 목록이다.
-
-우선순위 결과는 개발 빌드에서만 나온다. `[Skipped Actors]`에는 사유가 붙는다. 15개는 셀 리스트에 있지만 거리가 컬 거리를 넘는 액터이고, 3개는 주기가 안 됐다. `[Passed Actors]`는 점수 오름차순이다. 본인 폰과 컨트롤러는 viewer 규칙으로 `-MAX_FLT`이고, 같은 폰이 여러 번 나오는 것은 그리드, 팀 노드, 연결 노드가 각각 돌려줬기 때문이다. 두 번째부터는 `LastRepFrameNum`으로 건너뛴다. AI 593의 0.8515는 3프레임 전에 받았으니 starvation 항 1 − 3/20 = 0.85에 거리 항 0.0015를 더한 값이고, 전역 액터의 1.95는 1프레임 전에 받은 0.95에 거리 항 1.00이 더해진 값이다. 전역 액터는 원점에 있고 viewer는 773 m 떨어져 있으므로 거리 항이 상한에 걸렸다. 항상 관련 노드에 있다고 거리 가중치에서 빠지는 것은 아니다. 라이브스트림의 디버깅 워크플로가 이것이다. 플레이하면서 찍고, Passed가 길면 리스트를 줄일 방법을 찾는다.
+트리는 앞 절의 구조 그대로다. 한 액터가 여러 셀에 나오는 것이 정상이고, 연결 0의 dormancy 사본이 마스터와 같은 158개인 것은 이 연결이 그 액터들을 아직 하나도 받지 못했다는 뜻이다. 셀에는 들어 있지만 실제 거리는 150 m 밖이라 매 프레임 컬링되고 있고, trickle이 프레임에 하나씩 흘려보낼 대상이 바로 이 목록이다. 우선순위 결과는 개발 빌드에서만 나온다. `[Skipped Actors]`에는 사유가 붙는다. 15개는 거리가 컬 거리를 넘는 액터이고, 3개는 주기가 안 됐다. `[Passed Actors]`는 점수 오름차순이다. 본인 폰과 컨트롤러는 viewer 규칙으로 `-MAX_FLT`이고, 같은 폰이 여러 번 나오는 것은 그리드, 팀 노드, 연결 노드가 각각 돌려줬기 때문이다. AI 593의 0.8515는 3프레임 전에 받았으니 starvation 항 1 − 3/20 = 0.85에 거리 항 0.0015를 더한 값이다. 전역 액터의 거리 항이 1.00으로 상한에 걸린 것처럼, AlwaysRelevant 노드에 있다고 거리 가중치에서 빠지는 것은 아니다. 플레이하면서 찍고 Passed가 길면 리스트를 줄일 방법을 찾는 것이 라이브스트림의 디버깅 워크플로다.
 
 `Net.RepGraph.PrintAllActorInfo <문자열>`은 이름이 문자열을 포함하는 액터의 클래스 정보, 전역 정보, 연결 정보를 찍는다. 세 층이 어떻게 복사됐는지 눈으로 확인하는 가장 빠른 방법이다.
 
@@ -568,7 +560,7 @@ RepGraphLabGlobal_0                      1.9500 (Dist: 77347.03 | 1.00)    (Fram
 | `Net.RepDriver.Enable` | cvar | 1 | 0이면 그래프를 두고도 기본 드라이버로 간다 |
 | `Net.RepGraph.DormancyNodeObsoleteBehavior` | cvar | 0 | 1이면 오래 gather되지 않은 연결별 dormancy 사본을 지운다 |
 | `Net.RepGraph.TrickleDistCullOnDormancyNodes` | cvar* | 1 | 거리 밖 dormant 액터를 프레임당 하나씩 흘려보냄 |
-| `Net.RepGraph.DormantDynamicActorsDestruction`, `DormantCellsTTLDefault` | cvar | 0, 200 | 관련성 밖 dormant 액터를 클라이언트에서 파괴, 그 전에 셀이 보이지 않아야 하는 프레임 수 |
+| `Net.RepGraph.DormantDynamicActorsDestruction`, `DormantCellsTTLDefault` | cvar | 0, 200 | relevancy 밖 dormant 액터를 클라이언트에서 파괴, 그 전에 셀이 보이지 않아야 하는 프레임 수 |
 | `Net.RepGraph.HandleDynamicActorRename` | cvar | 0 | 동적 액터의 Outer가 바뀔 때 레벨 캐시 갱신. 5.5 업그레이드 노트가 1을 권장 |
 | `Net.RepGraph.NbDestroyedGridsToTriggerGC` | cvar | 100 | 재구축으로 파괴한 셀이 이 수를 넘으면 GC |
 | `Net.RepGraph.UseLegacyBudget`, `FixedBudget` | cvar | 1, 0 | 선언만 있고 읽는 곳이 없다 |
@@ -591,7 +583,7 @@ Unreal Insights에는 그래프 전용 트랙이 없지만 `-statnamedevents`로
 | `NET_PrepareReplication` | 전역 노드의 `PrepareForReplication`. 그리드의 동적 셀 갱신이 여기 |
 | `NET_ReplicateActors_GatherForConnection` | 연결 하나의 gather |
 | `NET_ReplicateActors_PrioritizeForConnection` | 연결 하나의 우선순위 계산. `Prioritize_InnerLoop`의 호출 수가 검토한 액터 수 |
-| `NET_ReplicateActors_ReplicateActorsForConnection` | 연결 하나의 복제 루프 |
+| `NET_ReplicateActors_ReplicateActorsForConnection` | 연결 하나의 리플리케이션 루프 |
 | `NET_ReplicateActors_ReplicateSingleActor`, `Replicate Actor Time` | 액터 하나 |
 | `NET_ReplicateActors_LookForNonRelevantChannels` | 채널 닫기 |
 
@@ -599,7 +591,7 @@ Unreal Insights에는 그래프 전용 트랙이 없지만 `-statnamedevents`로
 
 ## 5.8의 Replication Graph와 Iris
 
-"deprecated"라는 말이 블로그에 돌지만 Epic의 공개 발언은 그렇지 않다. 2026년 1월 포럼 글 "5.7 Iris Strategy"에서 Epic의 Alex Koumandarakis는 레거시 복제 시스템과 Replication Graph를 deprecate할 계획이 없고, 세 시스템이 나란히 지원되도록 계획돼 있다고 답했다. 다만 릴리스 노트의 그래프 수정은 5.4에서 끝나고 5.6부터 5.8까지는 항목이 없으며, 5.8 노트는 "legacy" RepGraph라고 따옴표를 쳐서 부른다. 유지보수는 되고 개발은 멈춘 상태로 읽는 것이 정확하다.
+"deprecated"라는 말이 블로그에 돌지만 Epic의 공개 발언은 그렇지 않다. 2026년 1월 포럼 글 "5.7 Iris Strategy"에서 Epic의 Alex Koumandarakis는 레거시 리플리케이션 시스템과 Replication Graph를 deprecate할 계획이 없고, 세 시스템이 나란히 지원되도록 계획돼 있다고 답했다. 다만 릴리스 노트의 그래프 수정은 5.4에서 끝나고 5.6부터 5.8까지는 항목이 없으며, 5.8 노트는 "legacy" RepGraph라고 따옴표를 쳐서 부른다. 유지보수는 되고 개발은 멈춘 상태로 읽는 것이 정확하다.
 
 Iris와의 관계는 "둘 중 하나"다. 5.8 문서 "Migrate to Iris"는 Iris가 replication graph를 지원하지 않으며, Iris의 필터와 프라이오리타이저가 그래프 기능의 대체물이라고 적고 있다. Fortnite는 2024년 4월에 Iris로 전환했다고 Unreal Fest Orlando 2025에서 Petter Rangström이 말했다. 같은 강연에서 그래프가 "Fortnite가 요구하는 액터·연결 수는 감당했지만 경쟁 게임 같은 고밀도 액션에서는 여전히 struggling"했다는 것이 Iris를 만든 동기로 나온다. 그 강연의 "Porting" 슬라이드(20분 30초)를 소스로 보강해 표로 옮기면 다음과 같다.
 
@@ -608,7 +600,7 @@ Iris와의 관계는 "둘 중 하나"다. 5.8 문서 "Migrate to Iris"는 Iris�
 | `AlwaysRelevant` 노드, `NotRouted` | ini의 클래스별 always/never relevant 설정 |
 | `GridSpatialization2D` | `UNetObjectGridFilter`와 거리 기반 프라이오리타이저 |
 | `AlwaysRelevant_ForConnection` | never relevant로 두고 inclusion group에 추가 |
-| 빈도 버킷, `DynamicSpatialFrequency`, `ReplicationPeriodFrame` | 프라이오리타이저. 누적 priority가 1을 넘을 때 복제하고 1 미만의 priority로 빈도를 낮춘다 |
+| 빈도 버킷, `DynamicSpatialFrequency`, `ReplicationPeriodFrame` | 프라이오리타이저. 누적 priority가 1을 넘을 때 리플리케이션하고 1 미만의 priority로 빈도를 낮춘다 |
 | 연결별 컬 거리 override, dependent actor | `ReplicationSystemUtil` |
 | dormancy 노드, Fast Shared, TearOff 노드 | 강연에서 언급 없음 |
 
@@ -616,11 +608,11 @@ Iris와의 관계는 "둘 중 하나"다. 5.8 문서 "Migrate to Iris"는 Iris�
 
 ## 도입 기준
 
-기준은 하나다. 서버의 `ServerReplicateActors`에서 보낼지 말지를 정하는 비용이 실제로 보내는 비용보다 큰가. 기본 드라이버에서 `stat net`의 `Consider Actors Time`과 `Prioritize Actors Time`을 합친 값이 `Replicate Actor Time`보다 크면 그래프가 그 몫을 줄인다. 둘이 비슷하거나 복제 쪽이 크면 그래프는 액터당 0.5 µs쯤을 더 쓰는 쪽이다. 그 비율을 키우는 것은 복제 액터 수와 연결 수의 곱이다. 맵이 넓고 액터가 흩어져 있을수록, 연결이 많을수록 차이가 커진다. 반대로 액터 대부분이 모든 플레이어에게 관련 있는 게임(작은 아레나, 소규모 협동)에서는 그래프가 줄일 검토가 없고, 보내는 양을 줄이려면 기본 드라이버의 `NetUpdateFrequency`를 서버 프레임 레이트보다 낮게 잡는 것으로 충분하다.
+기준은 하나다. 서버의 `ServerReplicateActors`에서 보낼지 말지를 정하는 비용이 실제로 보내는 비용보다 큰가. 기본 드라이버에서 `stat net`의 `Consider Actors Time`과 `Prioritize Actors Time`을 합친 값이 `Replicate Actor Time`보다 크면 그래프가 그 몫을 줄인다. 둘이 비슷하거나 리플리케이션 쪽이 크면 그래프는 액터당 0.5 µs쯤을 더 쓰는 쪽이다. 그 비율을 키우는 것은 리플리케이션 액터 수와 연결 수의 곱이다. 맵이 넓고 액터가 흩어져 있을수록, 연결이 많을수록 차이가 커진다. 반대로 액터 대부분이 모든 플레이어에게 관련 있는 게임(작은 아레나, 소규모 협동)에서는 그래프가 줄일 검토가 없고, 보내는 양을 줄이려면 기본 드라이버의 `NetUpdateFrequency`를 서버 프레임 레이트보다 낮게 잡는 것으로 충분하다.
 
 도입하기로 했다면 순서는 다음과 같다.
 
-1. 그래프 없이 `stat net`이나 Insights로 검토 비용과 복제 비용의 비율을 잰다. 이 수치가 없으면 도입 뒤에 무엇이 나아졌는지 말할 수 없다.
+1. 그래프 없이 `stat net`이나 Insights로 검토 비용과 리플리케이션 비용의 비율을 잰다. 이 수치가 없으면 도입 뒤에 무엇이 나아졌는지 말할 수 없다.
 2. `UBasicReplicationGraph`로 켜고 같은 조건을 다시 잰다. 그래프 쪽 버그인지 가릴 때는 `-RepDriverDisable`로 끄고 비교한다.
 3. 커스텀 그래프는 클래스 라우팅 테이블부터 만든다. 앞의 부하 모델 표대로 나누고, 모르는 클래스는 동적으로 둔다.
 4. 버킷 수와 `NetUpdateFrequency`로 보내는 횟수를 정하고, `Net.RepGraph.PrintAll`로 Passed 목록이 기대한 액터로만 차 있는지 확인한다. 셀 크기와 우선순위 스케일은 측정 없이 만지지 않는다.

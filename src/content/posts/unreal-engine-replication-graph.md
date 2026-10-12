@@ -308,13 +308,45 @@ Team Node는 같은 팀의 연결들이 공유하는 노드라 전역 노드 목
 - **`DynamicSpatialFrequency` 존 표.** 헤더의 `MinDotProduct` 주석은 이 값 이상이어야 그 존이라고 적고 있지만, `CalcFrequencyForActor`는 `DotP <= MinDotProduct`인 첫 존을 고른다. 주석대로 `{0.8 앞쪽}, {-1.0 나머지}` 순으로 적으면 정면의 액터가 어느 존에도 들어가지 않아 리플리케이션에서 빠지고, 액터마다 프레임마다 "was not placed in any valid zone" 경고가 찍혀 60초에 18,886줄, 프레임당 1.1 ms의 로그 비용이 측정값에 들어갔다. 존은 오름차순으로 적고 마지막을 1.0으로 끝낸다.
 - **viewer는 카메라다.** 리플리케이션 그래프의 viewer는 Pawn이 아니라 `GetPlayerViewPoint`가 돌려주는 위치다. ViewTarget을 300 m 위로 올리자 그 클라이언트가 받는 액터가 5,000개에서 88개로 줄었다. 관전 카메라가 있는 게임은 viewer가 어디인지부터 확인한다.
 
-## 5.8.3에서 재현한 버그와 함정
+## 도입 기준, 그리고 Iris
 
-커뮤니티에 보고된 것 중 5.8.3 소스에서 확인되고 랩에서 재현되는 것들이다.
+기준은 비율 하나다. 서버의 `ServerReplicateActors`에서 보낼지 말지를 정하는 비용이 실제로 보내는 비용보다 큰가. 기본 드라이버에서 `stat net`의 `Consider Actors Time`과 `Prioritize Actors Time`을 합친 값이 `Replicate Actor Time`보다 크면 리플리케이션 그래프가 그 몫을 줄인다. 둘이 비슷하거나 리플리케이션 쪽이 크면 리플리케이션 그래프는 액터당 0.5 µs쯤을 더 쓰는 쪽이다. 측정에서는 Insights의 consider list와 prioritize 타이머로 같은 비율을 봤다. 그 비율을 키우는 것은 리플리케이션 액터 수와 연결 수의 곱이다. 맵이 넓고 액터가 흩어져 있을수록, 연결이 많을수록 차이가 커진다. 반대로 액터 대부분이 모든 플레이어에게 관련 있는 게임(작은 아레나, 소규모 협동)에서는 리플리케이션 그래프가 줄일 검토가 없고, 보내는 양을 줄이려면 기본 드라이버의 `NetUpdateFrequency`를 서버 프레임 레이트보다 낮게 잡는 것으로 충분하다.
+
+도입하기로 했다면 순서는 다음과 같다.
+
+1. 리플리케이션 그래프 없이 `stat net`이나 Insights로 검토 비용과 리플리케이션 비용의 비율을 잰다. 이 수치가 없으면 도입 뒤에 무엇이 나아졌는지 말할 수 없다.
+2. `UBasicReplicationGraph`로 켜고 같은 조건을 다시 잰다.
+3. 커스텀 그래프는 클래스 라우팅 테이블부터 만든다. 앞의 범주 표대로 나누고, 모르는 클래스는 dynamic으로 둔다.
+4. 버킷 수와 `NetUpdateFrequency`로 보내는 횟수를 정하고, `Net.RepGraph.PrintAll`로 Passed 목록이 기대한 액터로만 차 있는지 확인한다. 셀 크기와 우선순위 스케일은 측정 없이 만지지 않는다.
+5. 부록 A의 버그를 피한다. dormant 직후의 reliable multicast, Seamless Travel 중의 multicast, 옮기는 static 액터, `bNetTemporary`, 끊긴 연결의 dormancy 사본이다.
+
+비용도 있다. 플러그인은 `IsBetaVersion: true`로 선언돼 있고 Iris와 양립하지 않으며, 클래스 라우팅은 액터 클래스가 늘 때마다 유지보수 대상이고 잘못 라우팅된 액터는 조용히 보이지 않는다. 그래서 2번에서 멈추는 것도 선택이다. Basic 그래프는 측정에서 커스텀 그래프와 같은 자릿수였고, Team Node와 owner 변경이 필요 없는 게임이라면 그것으로 충분하다.
+
+플러그인의 앞날은 "deprecated"라는 말이 블로그에 돌지만 Epic의 공개 발언은 그렇지 않다. 2026년 1월 포럼 글 "5.7 Iris Strategy"에서 Epic의 Alex Koumandarakis는 레거시 리플리케이션 시스템과 Replication Graph를 deprecate할 계획이 없고, 세 시스템이 나란히 지원되도록 계획돼 있다고 답했다. 다만 릴리스 노트의 리플리케이션 그래프 항목은 5.4의 수정과 5.5 업그레이드 노트의 `HandleDynamicActorRename` 권장이 마지막이고 5.6부터 5.8까지는 없으며, 5.8 노트는 "legacy" RepGraph라고 따옴표를 쳐서 부른다. 유지보수는 되고 개발은 멈춘 상태로 보인다.
+
+Iris와의 관계는 둘 중 하나다. 5.8 문서 "Migrate to Iris"는 Iris가 replication graph를 지원하지 않으며, Iris의 Filter와 Prioritizer가 리플리케이션 그래프 기능의 대체물이라고 적고 있다. 소스에서는 `SetReplicationDriver`가 NetDriver가 Iris를 쓰도록 설정돼 있으면 `checkf`로 멈추고, 5.5부터는 핸드셰이크에서 상대가 Iris를 쓰면 드라이버를 내려놓는다. Fortnite는 2024년 4월에 Iris로 전환했다고 Unreal Fest Orlando 2025에서 Petter Rangström이 말했다. 같은 강연에서 리플리케이션 그래프가 "Fortnite가 요구하는 액터·연결 수는 감당했지만 경쟁 게임 같은 고밀도 액션에서는 여전히 struggling"했다는 것이 Iris를 만든 동기로 나온다. 그 강연의 "Porting" 슬라이드(20분 30초)를 소스로 보강해 표로 옮기면 다음과 같다.
+
+| Replication Graph | Iris |
+| --- | --- |
+| `AlwaysRelevant` 노드, `NotRouted` | ini의 클래스별 always/never relevant 설정 |
+| `GridSpatialization2D` | `UNetObjectGridFilter`와 거리 기반 Prioritizer |
+| `AlwaysRelevant_ForConnection` | never relevant로 두고 inclusion group에 추가 |
+| frequency bucket, `DynamicSpatialFrequency`, `ReplicationPeriodFrame` | Prioritizer. 누적 priority가 1을 넘을 때 리플리케이션하고 1 미만의 priority로 빈도를 낮춘다 |
+| 연결별 Cull Distance override, dependent actor | `ReplicationSystemUtil` |
+| dormancy 노드, Fast Shared, TearOff 노드 | 강연에서 언급 없음 |
+
+`NetUpdateFrequency`의 의미가 바뀐다는 점이 가장 큰 차이다. Iris에서는 폴링 주기일 뿐이고 언제 보낼지는 누적 priority가 정한다. 리플리케이션 그래프의 `ReplicationPeriodFrame`을 그대로 옮길 자리는 없다. 5.8.3 기준으로 리플리케이션 그래프는 플러그인 하나와 C++ 약 1,200줄(측정에 쓴 리플리케이션 그래프의 헤더, 구현, 설정 합계)로 켜지고 Fortnite가 2024년까지 쓴 경로다. Iris는 직렬화 코드까지 이식해야 하고 리플레이가 아직 레거시 경로를 쓴다.
+
+## 부록 A. 5.8.3에서 재현한 버그와 함정
+
+커뮤니티에 보고된 것 중 5.8.3 소스에서 확인되고 랩에서 재현되는 것들이다. 버그마다 현상과 원인, 대처를 먼저 적고 소스 분석과 랩 재현은 접어 두었다.
 
 ### Dormant 직후의 reliable multicast가 유실된다
 
-Epic 포럼에 2026년 5월 올라온 보고(UE-378758)다. 액터를 `DORM_DormantAll`로 보낸 직후 reliable multicast를 보내면, 네트워크 지연이 있을 때 일부 클라이언트가 받지 못한다. Epic이 재현을 확인했고 2026년 7월 기준 미수정이다.
+Epic 포럼에 2026년 5월 올라온 보고(UE-378758)다. 액터를 `DORM_DormantAll`로 보낸 직후 reliable multicast를 보내면 네트워크 지연이 있을 때 일부 클라이언트가 받지 못하며, Epic이 재현을 확인했고 2026년 7월 기준 미수정이다. 원인은 잠재운 액터의 채널이 `Closing`인 동안 리플리케이션 그래프가 close bunch의 ack가 올 때까지 연결 정보의 채널을 비우지 않고, multicast 경로가 그 연결을 건너뛰며 새로 열지도 않는 데 있다. 랩에서는 `PktLag=200`에서 잠재운 지 4프레임 뒤에 보낸 reliable RPC 50개가 전부 사라졌고 기본 드라이버는 하나도 잃지 않았다. 우회는 reliable RPC를 먼저 보내고 잠재우거나, 잠든 액터에 보내야 하면 그 연결의 채널이 정리된 뒤(`NotifyActorChannelCleanedUp`)로 미루는 것이다.
+
+<details>
+<summary>소스 분석과 랩 재현</summary>
 
 원인은 닫힌 채널의 처리에서 레거시와 리플리케이션 그래프가 갈리는 데 있다. `SetNetDormancy`를 받은 액터는 다음 리플리케이션에서 `StartBecomingDormant`가 걸리고, ack 안 된 변경이 없으면(`FObjectReplicator::ReadyForDormancy`) 바로 다음 틱에 `Close(Dormancy)`가 된다. 한동안 값이 바뀌지 않은 액터는 잠재우자마자 채널이 닫히는 셈이다. `UActorChannel::Close`는 `Closing`을 세우고 엔진의 `ActorChannels` 맵에서 액터를 빼므로, 기본 드라이버는 그 순간부터 채널이 없다고 보고 다음 틱에 새 채널을 열 수 있다. 리플리케이션 그래프는 같은 시점에 호출되는 `NotifyActorChannelRemoved`가 비어 있고(주석: "we're still waiting for the close bunch to be acked"), close bunch의 ack가 와서 `CleanUp`될 때의 `NotifyActorChannelCleanedUp`에서야 연결 정보의 `Channel`을 비운다. 그 사이 `ReplicateSingleActor`는 `Closing` 채널을 만나면 0을 돌려주고, multicast RPC 경로는 그 연결을 `continue`로 건너뛰며 새로 열지도 않는다. reliable이어도 재시도는 없다.
 
@@ -334,13 +366,16 @@ Epic 포럼에 2026년 5월 올라온 보고(UE-378758)다. 액터를 `DORM_Dorm
 
 close bunch가 200 ms 뒤에 도착하고 그 ack가 돌아올 때까지 채널은 `Closing`이다. ack가 돌아와 채널이 정리된 연결부터 새 채널이 열리며 RPC가 다시 가므로, 8프레임에서는 일부만 도착했고 12프레임부터는 전부 도착했다. 지연이 없으면 창이 로컬 ack 한 번의 길이뿐이라 어느 드라이버도 잃지 않는다.
 
-우회는 순서를 바꾸는 것이다. reliable RPC를 먼저 보내고 잠재우거나, 잠든 액터에 RPC를 보내야 하면 그 연결의 채널이 정리된 뒤(`NotifyActorChannelCleanedUp`)로 미룬다.
+</details>
 
 ### Static으로 넣은 액터를 옮기면 보이지 않는다
 
-`AddActor_Static`은 추가 시점의 위치로 셀을 정하고 다시 계산하지 않는다. 스폰 직후 위치를 바꾸는 액터, 플레이어가 집어서 옮기는 소품을 static으로 두면 옛 셀에 남는다. 포럼과 블로그에 "static 액터가 뭉텅이로 사라진다"는 보고가 반복되는 이유로 보인다.
+`AddActor_Static`은 추가 시점의 위치로 셀을 정하고 다시 계산하지 않는다. 스폰 직후 위치를 바꾸는 액터, 플레이어가 집어서 옮기는 소품을 static으로 두면 옛 셀에 남아 끝까지 보이지 않는다. 포럼과 블로그에 "static 액터가 뭉텅이로 사라진다"는 보고가 반복되는 이유로 보인다. 옮기기 전에 `SetNetDormancy(DORM_Awake)`로 깨워 dynamic 액터로 만들어야 Grid가 다음 `PrepareForReplication`에서 새 셀에 넣는다. `FlushNetDormancy`는 연결별 dormancy 사본만 고치고 셀은 옮기지 않는다. 집어서 옮기는 소품이라면 `Spatialize_Dormancy`로 두고 집을 때 깨우고 놓을 때 다시 재운다.
 
 ![](./images/unreal-replication-graph/diagram-static-move.webp)
+
+<details>
+<summary>랩 재현</summary>
 
 랩에서 맵 반대편(2 km 밖)의 소품 5개를 플레이어 0의 Pawn에서 3~5 m 옆으로 옮기고 값을 하나 바꾼 뒤, 그 클라이언트가 10 m 안에서 보는 소품 수를 30초 동안 셌다.
 
@@ -350,22 +385,36 @@ close bunch가 200 ms 뒤에 도착하고 그 ack가 돌아올 때까지 채널�
 | 잠든 소품을 옮기고 `FlushNetDormancy` | 측정 안 함 | 0 | 측정 안 함 |
 | 잠든 소품을 `DORM_Awake`로 깨우고 옮김 | 측정 안 함 | 5 | 0 |
 
-static으로 넣은 소품은 깨어 있든 깨우든 옛 셀에 남아 끝까지 보이지 않는다. dormancy 경로도 잠든 채로 옮기면 같다. flush는 연결별 dormancy 사본에 액터를 다시 넣을 뿐 셀을 옮기지 않는다. 옮기기 전에 `SetNetDormancy(DORM_Awake)`로 깨워 dynamic 액터로 만들어야 Grid가 다음 `PrepareForReplication`에서 새 셀에 넣고, 그때부터 5개가 보였다. 집어서 옮기는 소품이라면 `Spatialize_Dormancy`로 두고 집을 때 깨우고 놓을 때 다시 재우는 순서가 필요하다. 4.24 포럼 보고에 있던 "`Spatialize_Static` 액터를 파괴하면 ensure가 난다"는 5.8.3에서 소품 10개를 측정 중에 `Destroy`해도 재현되지 않았다. 그 뒤 수정된 것으로 보인다.
+static으로 넣은 소품은 깨어 있든 깨우든 옛 셀에 남아 끝까지 보이지 않는다. dormancy 경로도 잠든 채로 옮기면 같다. flush는 연결별 dormancy 사본에 액터를 다시 넣을 뿐 셀을 옮기지 않는다. `DORM_Awake`로 깨워 옮긴 경우만 다음 `PrepareForReplication`부터 5개가 보였다. 4.24 포럼 보고에 있던 "`Spatialize_Static` 액터를 파괴하면 ensure가 난다"는 5.8.3에서 소품 10개를 측정 중에 `Destroy`해도 재현되지 않았다. 그 뒤 수정된 것으로 보인다.
+
+</details>
 
 ### bNetTemporary는 지원되지 않는다
 
-`UReplicationGraph::AddNetworkActor`는 `bNetTemporary` 액터에 대해 ensure를 낸다(5.4 릴리스 노트의 "Ensure when an actor is replicated with bNetTemporary set"). 랩의 발사체는 `bNetTemporary`에 `InitialLifeSpan` 1.5초이고, Uniform 5,000개 조건에서 초당 5개를 플레이어 주변에 스폰했다. 리플리케이션 그래프 서버 로그에는 ensure가 한 번 찍힌다.
+`UReplicationGraph::AddNetworkActor`는 `bNetTemporary` 액터에 대해 ensure를 내고(5.4 릴리스 노트의 "Ensure when an actor is replicated with bNetTemporary set"), 그 뒤에는 2019년 포럼의 관찰대로 `bNetTemporary`를 무시하고 수백 번 리플리케이션한다. `bNetTemporary` 액터의 첫 번치는 `bClose`가 켜져 있어 채널을 열면서 닫고, 기본 드라이버는 `SentTemporaries`로 그 액터를 다시 고려하지 않는다(`Engine/Private/DataChannel.cpp`, `NetDriver.cpp`). 리플리케이션 그래프는 이 목록을 보지 않으므로 닫힌 채널이 정리되면 다음 버킷 차례에 채널을 새로 열어 다시 보낸다. 발사체는 `bNetTemporary` 대신 짧은 수명의 dynamic 액터로 두고 셀 재구축 금지 목록에 넣는다.
+
+<details>
+<summary>랩 재현</summary>
+
+랩의 발사체는 `bNetTemporary`에 `InitialLifeSpan` 1.5초이고, Uniform 5,000개 조건에서 초당 5개를 플레이어 주변에 스폰했다. 리플리케이션 그래프 서버 로그에는 ensure가 한 번 찍힌다.
 
 ```
 Ensure condition failed: !Actor->bNetTemporary [File: ReplicationGraph.cpp] [Line: 790]
 ReplicationGraph does not support bNetTemporary. Actor: RepGraphLabProjectile_0 has bNetTemporary set.
 ```
 
-그 뒤의 동작은 2019년 포럼의 "그래프가 `bNetTemporary`를 무시하고 수백 번 리플리케이션한다"는 관찰과 같다. `bNetTemporary` 액터의 첫 번치는 `bClose`가 켜져 있어 채널을 열면서 닫고, 기본 드라이버는 `SentTemporaries`로 그 액터를 다시 고려하지 않는다(`Engine/Private/DataChannel.cpp`, `NetDriver.cpp`). 리플리케이션 그래프는 이 목록을 보지 않으므로 닫힌 채널이 정리되면 다음 버킷 차례에 채널을 새로 열어 다시 보낸다. 측정에서 프레임당 채널 열기가 0.02회에서 5.1회가 됐고 `ServerReplicateActors`는 0.35에서 0.59 ms로 늘었다. 살아 있는 발사체가 7개 안팎일 때의 값이다. 기본 드라이버는 같은 조건에서 2.51 ms로 발사체가 없을 때와 같다. 발사체는 `bNetTemporary` 대신 짧은 수명의 dynamic 액터로 두고 셀 재구축 금지 목록에 넣는다.
+측정에서 프레임당 채널 열기가 0.02회에서 5.1회가 됐고 `ServerReplicateActors`는 0.35에서 0.59 ms로 늘었다. 살아 있는 발사체가 7개 안팎일 때의 값이다. 기본 드라이버는 같은 조건에서 2.51 ms로 발사체가 없을 때와 같다.
+
+</details>
 
 ### 연결이 끊겨도 남는 dormancy 사본
 
-연결이 끊겨도 셀의 dormancy 노드는 그 연결의 사본을 가지고 있다. `Net.RepGraph.DormancyNodeObsoleteBehavior`를 1로 두고 `SetNumFramesUntilObsolete`를 설정해야 오래 gather되지 않은 사본을 지우며, 기본값이 0인 것은 add/remove 반복 비용 때문이다. 랩에서는 Uniform 5,000개 조건으로 클라이언트 2개를 붙인 뒤, 120초 동안 10초마다 두 번째 클라이언트를 죽이고 다시 띄우는 것을 8번 반복하면서 살아 있는 `UReplicationGraphNode_ConnectionDormancyNode` 수를 5초마다 셌다.
+연결이 끊겨도 셀의 dormancy 노드는 그 연결의 사본을 가지고 있다. `Net.RepGraph.DormancyNodeObsoleteBehavior`를 1로 두고 `SetNumFramesUntilObsolete`를 설정해야 오래 gather되지 않은 사본을 지우며, 기본값이 0인 것은 add/remove 반복 비용 때문이다. 정리를 켜도 즉시는 아니다. 떼어내는 코드는 `CallFunctionOnValidConnectionNodes` 안에만 있어 그 셀의 dormancy 노드에 액터가 추가·제거되거나 flush될 때만 돌고 gather 때는 돌지 않는다. 랩에서는 재접속 8번에 사본이 3개에서 17개로 늘었고, 정리를 켜면 6개까지 줄되 톱니 모양으로 오르내렸다. 접속·해제가 잦은 서버라면 두 설정을 같이 켜고, 셀마다 dormant 액터가 많다면 사본의 메모리까지 같이 본다.
+
+<details>
+<summary>랩 재현</summary>
+
+랩에서는 Uniform 5,000개 조건으로 클라이언트 2개를 붙인 뒤, 120초 동안 10초마다 두 번째 클라이언트를 죽이고 다시 띄우는 것을 8번 반복하면서 살아 있는 `UReplicationGraphNode_ConnectionDormancyNode` 수를 5초마다 셌다.
 
 | 설정 | 시작 | 8회 재접속 뒤 |
 | --- | --- | --- |
@@ -374,13 +423,15 @@ ReplicationGraph does not support bNetTemporary. Actor: RepGraphLabProjectile_0 
 
 ![](./images/unreal-replication-graph/chart-dormancy-nodes.webp)
 
-기본값에서는 재접속마다 2개씩 늘고 하나도 줄지 않는다. 정리 옵션을 켜면 줄긴 하지만 즉시는 아니다. 엔진은 오래 gather되지 않은 사본을 `CallFunctionOnValidConnectionNodes` 안에서만 떼어내는데, 이 함수는 그 셀의 dormancy 노드에 액터가 추가·제거되거나 flush될 때 불리고 gather 때는 불리지 않는다. 그래서 조용한 셀의 사본은 다음 액터 변화가 있을 때까지 남고, 측정에서 노드 수가 9에서 5로, 7에서 2로 떨어졌다가 다시 쌓이는 톱니 모양이 됐다. 접속·해제가 잦은 서버라면 두 설정을 같이 켜고, 셀마다 dormant 액터가 많다면 사본의 메모리까지 같이 본다.
+기본값에서는 재접속마다 2개씩 늘고 하나도 줄지 않는다. 정리 옵션을 켜면 조용한 셀의 사본이 다음 액터 변화가 있을 때까지 남아, 노드 수가 9에서 5로, 7에서 2로 떨어졌다가 다시 쌓이는 톱니 모양이 됐다.
+
+</details>
 
 ### Seamless Travel 중의 multicast
 
 owner RPC 경로는 채널을 열기 전에 `NetDriver->IsLevelInitializedForActor`를 확인하지만 multicast 경로는 확인하지 않아서, 클라이언트가 Seamless Travel을 끝내기 전에 서버가 Persistent Level 액터(GameState 등)에 reliable multicast를 보내면 클라이언트는 도착 후 그 액터를 파괴해 버린다. Epic이 알려진 문제(UE-361443)로 확인했고 2026년 7월 기준 미수정이다. 랩에서 재현하지는 않았고 소스로만 확인했다. 우회책은 `ProcessRemoteFunction`을 오버라이드해 multicast에서도 같은 검사를 넣는 것이다.
 
-## 디버깅: 끄고 비교하기, PrintAll
+## 부록 B. 디버깅: 끄고 비교하기, PrintAll
 
 리플리케이션 그래프 문제의 첫 단계는 그래프를 끄는 것이다. `Net.RepDriver.Enable 0`이나 커맨드라인 `-RepDriverDisable`로 리플리케이션 그래프를 두고도 기본 드라이버로 돌려 같은 현상이 나는지 본다. 이 비교는 두 드라이버의 차이도 드러낸다. 랩 액터 5,000개를 `SetHidden(true)`로 스폰하자 레거시 `AActor::IsNetRelevantFor`가 숨겨져 있고 충돌이 없는 액터를 관련 없음으로 판정해 기본 드라이버에서는 랩 액터가 하나도 리플리케이션되지 않았고, 이 함수를 부르지 않는 리플리케이션 그래프에서는 멀쩡했다. Uniform 조건에서 두 연결에 열린 액터 채널 수의 합이다.
 
@@ -390,6 +441,9 @@ owner RPC 경로는 채널을 열기 전에 `NetDriver->IsLevelInitializedForAct
 | `SetHidden(true)` | 28.0 (Pawn, PlayerState, 전역 액터뿐) | 78.7 |
 
 리플리케이션 그래프 문제로 좁혀지면 서버에서 `Net.RepGraph.PrintAll <프레임 수> <연결 인덱스>`를 찍는다. 노드 트리와 각 리스트의 액터, 그리고 연결 하나의 우선순위 결과가 나온다. 아래는 랩의 OpenWorld 그래프에서 Uniform 조건으로 찍은 출력을 줄인 것이다.
+
+<details>
+<summary>PrintAll 출력 예</summary>
 
 ```
 Replication Frame 897
@@ -441,36 +495,9 @@ RepGraphLabGlobal_0                      1.9500 (Dist: 77347.03 | 1.00) (FramesL
 PlayerState_0                            1.9500 (Dist: 77347.03 | 1.00) (FramesLastRep: 1 | 0.95)
 ```
 
+</details>
+
 한 액터가 여러 셀에 나오는 것이 정상이고, 셀의 dormancy 사본이 마스터와 같은 수라면 그 연결이 그 액터들을 아직 하나도 받지 못했다는 뜻이다. 우선순위 결과는 개발 빌드에서만 나오며, `[Skipped Actors]`에는 거리나 주기 같은 사유가 붙고 `[Passed Actors]`는 점수 오름차순이다. 본인 Pawn은 viewer 규칙으로 `-MAX_FLT`이고, 같은 Pawn이 여러 번 나오는 것은 Grid, Team Node, 연결 노드가 각각 돌려줬기 때문이다. Passed 목록이 기대한 액터로만 차 있는지 보는 것이 라우팅 검증이다. `Net.RepGraph.PrintAllActorInfo <문자열>`은 이름이 문자열을 포함하는 액터의 클래스·전역·연결 정보를 찍어 세 층이 어떻게 복사됐는지 보여 주고, `Net.RepGraph.StarvedList`는 주기를 넘긴 액터를 보여 주며, `Net.RepGraph.SetClassCullDistance`와 `SetPeriodFrame`은 세 층의 값을 함께 바꾼다. 플러그인의 CVar와 명령은 70개 가까이 되고 모두 `Net.RepGraph.` 접두사로 `ReplicationGraph.cpp`와 `ReplicationGraphDebugging.cpp` 위쪽에 모여 있다. 로그 카테고리는 `LogReplicationGraph`다.
-
-## 도입 기준, 그리고 Iris
-
-기준은 비율 하나다. 서버의 `ServerReplicateActors`에서 보낼지 말지를 정하는 비용이 실제로 보내는 비용보다 큰가. 기본 드라이버에서 `stat net`의 `Consider Actors Time`과 `Prioritize Actors Time`을 합친 값이 `Replicate Actor Time`보다 크면 리플리케이션 그래프가 그 몫을 줄인다. 둘이 비슷하거나 리플리케이션 쪽이 크면 리플리케이션 그래프는 액터당 0.5 µs쯤을 더 쓰는 쪽이다. 측정에서는 Insights의 consider list와 prioritize 타이머로 같은 비율을 봤다. 그 비율을 키우는 것은 리플리케이션 액터 수와 연결 수의 곱이다. 맵이 넓고 액터가 흩어져 있을수록, 연결이 많을수록 차이가 커진다. 반대로 액터 대부분이 모든 플레이어에게 관련 있는 게임(작은 아레나, 소규모 협동)에서는 리플리케이션 그래프가 줄일 검토가 없고, 보내는 양을 줄이려면 기본 드라이버의 `NetUpdateFrequency`를 서버 프레임 레이트보다 낮게 잡는 것으로 충분하다.
-
-도입하기로 했다면 순서는 다음과 같다.
-
-1. 리플리케이션 그래프 없이 `stat net`이나 Insights로 검토 비용과 리플리케이션 비용의 비율을 잰다. 이 수치가 없으면 도입 뒤에 무엇이 나아졌는지 말할 수 없다.
-2. `UBasicReplicationGraph`로 켜고 같은 조건을 다시 잰다.
-3. 커스텀 그래프는 클래스 라우팅 테이블부터 만든다. 앞의 범주 표대로 나누고, 모르는 클래스는 dynamic으로 둔다.
-4. 버킷 수와 `NetUpdateFrequency`로 보내는 횟수를 정하고, `Net.RepGraph.PrintAll`로 Passed 목록이 기대한 액터로만 차 있는지 확인한다. 셀 크기와 우선순위 스케일은 측정 없이 만지지 않는다.
-5. 앞 절의 버그를 피한다. dormant 직후의 reliable multicast, Seamless Travel 중의 multicast, 옮기는 static 액터, `bNetTemporary`, 끊긴 연결의 dormancy 사본이다.
-
-비용도 있다. 플러그인은 `IsBetaVersion: true`로 선언돼 있고 Iris와 양립하지 않으며, 클래스 라우팅은 액터 클래스가 늘 때마다 유지보수 대상이고 잘못 라우팅된 액터는 조용히 보이지 않는다. 그래서 2번에서 멈추는 것도 선택이다. Basic 그래프는 측정에서 커스텀 그래프와 같은 자릿수였고, Team Node와 owner 변경이 필요 없는 게임이라면 그것으로 충분하다.
-
-플러그인의 앞날은 "deprecated"라는 말이 블로그에 돌지만 Epic의 공개 발언은 그렇지 않다. 2026년 1월 포럼 글 "5.7 Iris Strategy"에서 Epic의 Alex Koumandarakis는 레거시 리플리케이션 시스템과 Replication Graph를 deprecate할 계획이 없고, 세 시스템이 나란히 지원되도록 계획돼 있다고 답했다. 다만 릴리스 노트의 리플리케이션 그래프 항목은 5.4의 수정과 5.5 업그레이드 노트의 `HandleDynamicActorRename` 권장이 마지막이고 5.6부터 5.8까지는 없으며, 5.8 노트는 "legacy" RepGraph라고 따옴표를 쳐서 부른다. 유지보수는 되고 개발은 멈춘 상태로 보인다.
-
-Iris와의 관계는 둘 중 하나다. 5.8 문서 "Migrate to Iris"는 Iris가 replication graph를 지원하지 않으며, Iris의 Filter와 Prioritizer가 리플리케이션 그래프 기능의 대체물이라고 적고 있다. 소스에서는 `SetReplicationDriver`가 NetDriver가 Iris를 쓰도록 설정돼 있으면 `checkf`로 멈추고, 5.5부터는 핸드셰이크에서 상대가 Iris를 쓰면 드라이버를 내려놓는다. Fortnite는 2024년 4월에 Iris로 전환했다고 Unreal Fest Orlando 2025에서 Petter Rangström이 말했다. 같은 강연에서 리플리케이션 그래프가 "Fortnite가 요구하는 액터·연결 수는 감당했지만 경쟁 게임 같은 고밀도 액션에서는 여전히 struggling"했다는 것이 Iris를 만든 동기로 나온다. 그 강연의 "Porting" 슬라이드(20분 30초)를 소스로 보강해 표로 옮기면 다음과 같다.
-
-| Replication Graph | Iris |
-| --- | --- |
-| `AlwaysRelevant` 노드, `NotRouted` | ini의 클래스별 always/never relevant 설정 |
-| `GridSpatialization2D` | `UNetObjectGridFilter`와 거리 기반 Prioritizer |
-| `AlwaysRelevant_ForConnection` | never relevant로 두고 inclusion group에 추가 |
-| frequency bucket, `DynamicSpatialFrequency`, `ReplicationPeriodFrame` | Prioritizer. 누적 priority가 1을 넘을 때 리플리케이션하고 1 미만의 priority로 빈도를 낮춘다 |
-| 연결별 Cull Distance override, dependent actor | `ReplicationSystemUtil` |
-| dormancy 노드, Fast Shared, TearOff 노드 | 강연에서 언급 없음 |
-
-`NetUpdateFrequency`의 의미가 바뀐다는 점이 가장 큰 차이다. Iris에서는 폴링 주기일 뿐이고 언제 보낼지는 누적 priority가 정한다. 리플리케이션 그래프의 `ReplicationPeriodFrame`을 그대로 옮길 자리는 없다. 5.8.3 기준으로 리플리케이션 그래프는 플러그인 하나와 C++ 약 1,200줄(측정에 쓴 리플리케이션 그래프의 헤더, 구현, 설정 합계)로 켜지고 Fortnite가 2024년까지 쓴 경로다. Iris는 직렬화 코드까지 이식해야 하고 리플레이가 아직 레거시 경로를 쓴다.
 
 ## 참고 자료
 

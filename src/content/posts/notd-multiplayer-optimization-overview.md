@@ -36,7 +36,7 @@ UE5로 이전하면서 Replication Graph를 Lyra 샘플의 구성에 맞춰 다�
 
 거리만으로 판단하면 안 되는 관계는 Dependent Actor로 묶었다. 장착 장비는 장비를 든 캐릭터에, 추종자는 고용한 플레이어에, 탑승물 위의 건물은 탑승물에 종속시켜 부모가 복제되는 연결에서 함께 검토되게 했다.
 
-Replication Graph의 동작 자체는 [Unreal Engine - Replication Graph: 분석과 실측](/posts/unreal-engine-replication-graph/)에 정리했다.
+Replication Graph의 동작 자체는 [Unreal Engine - Replication Graph](/posts/unreal-engine-replication-graph/)에 정리했다.
 
 ### Net Dormancy
 

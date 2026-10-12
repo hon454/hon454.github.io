@@ -340,6 +340,8 @@ close bunch가 200 ms 뒤에 도착하고 그 ack가 돌아올 때까지 채널�
 
 `AddActor_Static`은 추가 시점의 위치로 셀을 정하고 다시 계산하지 않는다. 스폰 직후 위치를 바꾸는 액터, 플레이어가 집어서 옮기는 소품을 static으로 두면 옛 셀에 남는다. 포럼과 블로그에 "static 액터가 뭉텅이로 사라진다"는 보고가 반복되는 이유로 보인다.
 
+![](./images/unreal-replication-graph/diagram-static-move.webp)
+
 랩에서 맵 반대편(2 km 밖)의 소품 5개를 플레이어 0의 Pawn에서 3~5 m 옆으로 옮기고 값을 하나 바꾼 뒤, 그 클라이언트가 10 m 안에서 보는 소품 수를 30초 동안 셌다.
 
 | 소품 상태와 조작 | 기본 드라이버 | Basic (dormancy 경로) | OpenWorld (static 라우팅) |
@@ -380,9 +382,66 @@ owner RPC 경로는 채널을 열기 전에 `NetDriver->IsLevelInitializedForAct
 
 ## 디버깅: 끄고 비교하기, PrintAll
 
-리플리케이션 그래프 문제의 첫 단계는 그래프를 끄는 것이다. `Net.RepDriver.Enable 0`이나 커맨드라인 `-RepDriverDisable`로 리플리케이션 그래프를 두고도 기본 드라이버로 돌려 같은 현상이 나는지 본다. 이 비교는 두 드라이버의 차이도 드러낸다. 랩에서 액터를 `SetHidden(true)`로 두자 레거시 `AActor::IsNetRelevantFor`가 숨겨져 있고 충돌이 없는 액터를 관련 없음으로 판정해 기본 드라이버에서는 액터가 하나도 리플리케이션되지 않았고, 이 함수를 부르지 않는 리플리케이션 그래프에서는 멀쩡했다.
+리플리케이션 그래프 문제의 첫 단계는 그래프를 끄는 것이다. `Net.RepDriver.Enable 0`이나 커맨드라인 `-RepDriverDisable`로 리플리케이션 그래프를 두고도 기본 드라이버로 돌려 같은 현상이 나는지 본다. 이 비교는 두 드라이버의 차이도 드러낸다. 랩 액터 5,000개를 `SetHidden(true)`로 스폰하자 레거시 `AActor::IsNetRelevantFor`가 숨겨져 있고 충돌이 없는 액터를 관련 없음으로 판정해 기본 드라이버에서는 랩 액터가 하나도 리플리케이션되지 않았고, 이 함수를 부르지 않는 리플리케이션 그래프에서는 멀쩡했다. Uniform 조건에서 두 연결에 열린 액터 채널 수의 합이다.
 
-리플리케이션 그래프 문제로 좁혀지면 서버에서 `Net.RepGraph.PrintAll <프레임 수> <연결 인덱스>`를 찍는다. 노드 트리와 각 리스트의 액터, 그리고 연결 하나의 우선순위 결과가 나온다. 한 액터가 여러 셀에 나오는 것이 정상이고, 셀의 dormancy 사본이 마스터와 같은 수라면 그 연결이 그 액터들을 아직 하나도 받지 못했다는 뜻이다. 우선순위 결과는 개발 빌드에서만 나오며, `[Skipped Actors]`에는 거리나 주기 같은 사유가 붙고 `[Passed Actors]`는 점수 오름차순이다. 본인 Pawn은 viewer 규칙으로 `-MAX_FLT`이고, 같은 Pawn이 여러 번 나오는 것은 Grid, Team Node, 연결 노드가 각각 돌려줬기 때문이다. Passed 목록이 기대한 액터로만 차 있는지 보는 것이 라우팅 검증이다. `Net.RepGraph.PrintAllActorInfo <문자열>`은 이름이 문자열을 포함하는 액터의 클래스·전역·연결 정보를 찍어 세 층이 어떻게 복사됐는지 보여 주고, `Net.RepGraph.StarvedList`는 주기를 넘긴 액터를 보여 주며, `Net.RepGraph.SetClassCullDistance`와 `SetPeriodFrame`은 세 층의 값을 함께 바꾼다. 플러그인의 CVar와 명령은 70개 가까이 되고 모두 `Net.RepGraph.` 접두사로 `ReplicationGraph.cpp`와 `ReplicationGraphDebugging.cpp` 위쪽에 모여 있다. 로그 카테고리는 `LogReplicationGraph`다.
+| 액터 상태 | 기본 드라이버 | OpenWorld 그래프 |
+| --- | --- | --- |
+| 보임 | 73.4 | 62.1 |
+| `SetHidden(true)` | 28.0 (Pawn, PlayerState, 전역 액터뿐) | 78.7 |
+
+리플리케이션 그래프 문제로 좁혀지면 서버에서 `Net.RepGraph.PrintAll <프레임 수> <연결 인덱스>`를 찍는다. 노드 트리와 각 리스트의 액터, 그리고 연결 하나의 우선순위 결과가 나온다. 아래는 랩의 OpenWorld 그래프에서 Uniform 조건으로 찍은 출력을 줄인 것이다.
+
+```
+Replication Frame 897
+ReplicationGraphNode_GridSpatialization2D_0
+  Tracking 1002 dynamic actors:
+  ReplicationGraphNode_GridCell_0
+    Static
+      World [17 Actors] RepGraphLabProp_219 RepGraphLabProp_357 RepGraphLabProp_449 ...
+    Dynamic
+      World Bucket 1 [13 Actors] RepGraphLabAI_6 RepGraphLabAI_238 RepGraphLabAI_365 ...
+      World Bucket 2 [13 Actors] RepGraphLabAI_428 RepGraphLabAI_481 RepGraphLabVehicle_20 ...
+      World Bucket 3 [13 Actors] RepGraphLabAI_21 RepGraphLabAI_183 RepGraphLabAI_332 ...
+    Dormant
+      World [158 Actors] RepGraphLabLoot_51 RepGraphLabLoot_63 RepGraphLabLoot_77 ...
+  ReplicationGraphNode_GridCell_1
+    ...
+  ReplicationGraphNode_GridCell_6
+    ...
+    Dormant
+      World [158 Actors] RepGraphLabLoot_4 RepGraphLabLoot_12 RepGraphLabLoot_51 ...
+        Child: ReplicationGraphNode_ConnectionDormancyNode_0
+          World [158 Actors] RepGraphLabLoot_4 RepGraphLabLoot_12 RepGraphLabLoot_51 ...
+ReplicationGraphNode_ActorList_0
+  World [5 Actors] WorldSettings GameStateBase_0 RepGraphLabGlobal_0 RepGraphLabGlobal_1 RepGraphLabGlobal_2
+OpenWorldReplicationGraphNode_PlayerStateFrequencyLimiter_0
+  Bucket[0] [2 Actors] PlayerState_0 PlayerState_1
+Connection: NULL
+  OpenWorldReplicationGraphNode_AlwaysRelevant_ForConnection_0
+    World [2 Actors] GameplayDebuggerCategoryReplicator_0 RepGraphLabInventory_0
+    Rebuilt [3 Actors] BP_ThirdPersonPlayerController_C_0 BP_ThirdPersonCharacter_C_0 PlayerState_0
+  Team0_0 (Team 0)
+    Members [2 Actors] BP_ThirdPersonCharacter_C_0 BP_ThirdPersonCharacter_C_1
+[18 Skipped Actors]
+RepGraphLabProp_624                      Dist Culled 18108.84
+RepGraphLabAI_108                        Dist Culled 17347.25
+WorldSettings                            Not ready (2 frames left)
+PlayerState_1                            Not ready (15 frames left)
+ Culled Classes: [RepGraphLabProp, 7] [RepGraphLabAI, 5] [RepGraphLabVehicle, 3]
+[23 Passed Actors]
+BP_ThirdPersonCharacter_C_0              -340282346638528859811704183484516925440.0000 (Dist: 399.78 | 0.00) (FramesLastRep: 1 | 0.95)
+BP_ThirdPersonCharacter_C_0              -340282346638528859811704183484516925440.0000 (Dist: 399.78 | 0.00) (FramesLastRep: 1 | 0.95)
+BP_ThirdPersonPlayerController_C_0       -340282346638528859811704183484516925440.0000 (Dist: 77347.03 | 1.00) (FramesLastRep: 1 | 0.95)
+BP_ThirdPersonCharacter_C_0              -340282346638528859811704183484516925440.0000 (Dist: 399.78 | 0.00) (FramesLastRep: 1 | 0.95)
+RepGraphLabAI_593                        0.8515 (Dist: 2309.59 | 0.00) (FramesLastRep: 3 | 0.85)
+RepGraphLabAI_685                        0.8697 (Dist: 8419.37 | 0.02) (FramesLastRep: 3 | 0.85)
+BP_ThirdPersonCharacter_C_1              0.9501 (Dist: 699.78 | 0.00) (FramesLastRep: 1 | 0.95)
+RepGraphLabProp_1923                     0.9762 (Dist: 9709.84 | 0.03) (FramesLastRep: 1 | 0.95)
+RepGraphLabGlobal_0                      1.9500 (Dist: 77347.03 | 1.00) (FramesLastRep: 1 | 0.95)
+PlayerState_0                            1.9500 (Dist: 77347.03 | 1.00) (FramesLastRep: 1 | 0.95)
+```
+
+한 액터가 여러 셀에 나오는 것이 정상이고, 셀의 dormancy 사본이 마스터와 같은 수라면 그 연결이 그 액터들을 아직 하나도 받지 못했다는 뜻이다. 우선순위 결과는 개발 빌드에서만 나오며, `[Skipped Actors]`에는 거리나 주기 같은 사유가 붙고 `[Passed Actors]`는 점수 오름차순이다. 본인 Pawn은 viewer 규칙으로 `-MAX_FLT`이고, 같은 Pawn이 여러 번 나오는 것은 Grid, Team Node, 연결 노드가 각각 돌려줬기 때문이다. Passed 목록이 기대한 액터로만 차 있는지 보는 것이 라우팅 검증이다. `Net.RepGraph.PrintAllActorInfo <문자열>`은 이름이 문자열을 포함하는 액터의 클래스·전역·연결 정보를 찍어 세 층이 어떻게 복사됐는지 보여 주고, `Net.RepGraph.StarvedList`는 주기를 넘긴 액터를 보여 주며, `Net.RepGraph.SetClassCullDistance`와 `SetPeriodFrame`은 세 층의 값을 함께 바꾼다. 플러그인의 CVar와 명령은 70개 가까이 되고 모두 `Net.RepGraph.` 접두사로 `ReplicationGraph.cpp`와 `ReplicationGraphDebugging.cpp` 위쪽에 모여 있다. 로그 카테고리는 `LogReplicationGraph`다.
 
 ## 도입 기준, 그리고 Iris
 

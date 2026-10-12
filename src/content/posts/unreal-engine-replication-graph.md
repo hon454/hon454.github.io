@@ -14,7 +14,7 @@ tags:
   - scalability
   - cpp
 category: Unreal Engine
-draft: true
+draft: false
 lang: ko
 ---
 
@@ -30,7 +30,7 @@ lang: ko
 
 ![](./images/unreal-replication-graph/diagram-notd-graph.webp)
 
-[Night of the Dead](/projects/night-of-the-dead/)는 밤마다 좀비가 몰려오는 오픈월드 생존 게임이고 Dedicated Server 멀티플레이를 지원한다. 2021년부터 2024년 6월까지 멀티플레이 동기화를 맡으면서 Replication Graph를 UE4에서 실험적으로 도입했고, UE5로 옮기면서 Lyra의 구성을 따라 위 그림처럼 개편했다. Iris를 공부하기 전에 이 Replication Graph가 실제로 무엇을 하는지 5.8.3 소스와 측정으로 확인했다.
+[Night of the Dead](/projects/night-of-the-dead/)는 밤마다 좀비가 몰려오는 오픈월드 생존 게임이고 Dedicated Server 멀티플레이를 지원한다. 2021년부터 2024년 6월까지 멀티플레이 동기화를 맡으면서 Replication Graph를 UE4에서 실험적으로 도입했고, UE5로 옮기면서 Lyra의 구성을 따라 위 그림처럼 개편했다. Iris를 공부하기 전에 Replication Graph를 최신 기준으로 더 완전히 이해하려고 5.8.3 소스와 측정으로 다시 확인했다.
 
 테스트 프로젝트에서 기본 드라이버, `UBasicReplicationGraph`, 커스텀 그래프를 같은 조건으로 측정했다. 소스 경로는 UE 5.8.3 기준이며, 엔진 파일은 `Engine/Source/Runtime/`을, 플러그인 파일은 `Engine/Plugins/Runtime/ReplicationGraph/Source/`를 생략했다.
 

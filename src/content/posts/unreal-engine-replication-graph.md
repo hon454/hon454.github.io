@@ -23,7 +23,7 @@ lang: ko
 - 액터 5,000개, 클라이언트 2개에서 프레임당 `ServerReplicateActors`는 맵 전체에 흩어진 조건에서 기본 2.54 ms, 리플리케이션 그래프 0.35 ms이고, 모두 한곳에 몰린 조건에서 8.09 ms와 4.48 ms다. 밀집에서의 차이는 frequency bucket이 dynamic 액터를 세 프레임에 한 번만 후보로 올려서 생긴 것이고, 보내는 횟수를 맞추면 리플리케이션 그래프가 22% 느리다. 기본 드라이버도 `NetUpdateFrequency`를 10 Hz로 낮추면 3.06 ms로 떨어진다.
 - 액터 수와 연결 수에 기본 드라이버는 선형(액터당 0.46 µs, 연결당 0.78 ms)이고 리플리케이션 그래프의 연결별 비용은 viewer 근처 액터 수를 따른다.
 - 기본 드라이버에서 잠든 액터가 consider list에서 빠지는 것은 모든 연결에서 잠든 뒤다. 넓은 맵에 흩어진 잠든 소품은 매 프레임 검토되고, 플레이어마다 자기 주변에만 액터가 있는 조건에서 밀집 조건에 가까운 6.47 ms가 나온다.
-- 설정값 중 측정에서 효과가 컸던 것은 버킷 수와 `NetUpdateFrequency`뿐이다. `DistancePriorityScale` 0은 거리 컬링을 끄고, `ActorChannelFrameTimeout` 0은 채널을 닫지 않는다. `NetUpdateFrequency`는 서버 프레임 레이트보다 낮을 때만 뜻이 있다.
+- 설정값 중 측정에서 효과가 컸던 것은 버킷 수와 `NetUpdateFrequency`뿐이다. `DistancePriorityScale` 0은 거리 컬링을 끄고, `ActorChannelFrameTimeout` 0은 채널을 닫지 않는다. 대역폭이 포화되면 `StarvationPriorityScale`이 공평성을 정한다. 0이면 가까운 액터만 갱신되고 접속 후 120초가 지나도 액터의 62%만 받는다. `NetUpdateFrequency`는 서버 프레임 레이트보다 낮을 때만 뜻이 있다.
 - 엔진에는 액터가 움직이는지 판별하는 코드가 없다. `UBasicReplicationGraph`는 모든 액터를 dormancy 경로로 넣고, 그래도 커스텀 그래프와 같은 자릿수(Uniform 0.40 ms, Cluster 3.44 ms)가 나온다. Team Node와 owner 변경이 필요 없으면 거기서 멈춰도 된다.
 - 5.8.3에서 재현한 것: 잠재운 직후의 reliable multicast가 지연이 있을 때 리플리케이션 그래프에서만 유실된다. static으로 넣은 액터는 옮겨도 옛 셀에 남는다. `bNetTemporary` 발사체는 ensure가 나고 매 버킷 차례마다 채널을 다시 연다. 끊긴 연결의 dormancy 사본은 기본 설정에서 지워지지 않는다. 멀어진 클라이언트가 가진 잠든 액터를 파괴하면 그 클라이언트가 돌아올 때까지 남는다.
 - 도입 기준은 비율 하나다. `stat game`에서 consider와 prioritize 시간이 `ReplicateActor` 시간보다 크면 리플리케이션 그래프가 그 몫을 줄인다. Iris와는 양자택일이고, Epic은 deprecate 계획이 없다고 하지만 릴리스 노트에 5.6 이후 항목이 없다.
@@ -333,9 +333,30 @@ gather가 끝나면 `ReplicateActorListsForConnections_Default`가 리스트를 
 
 `DistancePriorityScale`은 거리 점수의 가중치다. 거리 검사가 `if (DistancePriorityScale > 0)` 안에 있어 0이면 거리 컬링이 꺼지고, 측정에서 채널이 76에서 153으로, 호출이 34회로 늘었다. 거리 가중치만 끄려면 아주 작은 양수를 쓴다. 베이스 그래프가 `AInfo`와 `APlayerController`에 0을 두는 이유도 컬링 방지지만 Basic·Lyra식 초기화는 1로 덮어쓴다.
 
-`StarvationPriorityScale`은 오래 못 받은 액터를 앞으로 당기는 가중치다. 0으로 둬도 변화가 없었다. 포화가 없으면 순서가 결과를 바꾸지 않기 때문이고, 포화돼서 뒤의 액터가 밀릴 때만 뜻이 있다. `Net.RepGraph.StarvedList`(마지막 리플리케이션 이후 프레임 수 순)로 확인한다.
+`StarvationPriorityScale`은 오래 못 받은 액터를 앞으로 당기는 가중치다. 위 표에서 0으로 둬도 변화가 없었던 것은 포화가 없었기 때문이다. 포화돼서 뒤의 액터가 밀릴 때만 뜻이 있고, `Net.RepGraph.StarvedList`(마지막 리플리케이션 이후 프레임 수 순)로 확인한다. 포화 조건은 아래에서 따로 쟀다.
 
 `ActorChannelFrameTimeout`은 마지막 gather 뒤 채널을 닫기까지의 프레임이다. 전역 여유 2를 더해 기본 7프레임이고, 0은 relevancy로는 닫지 않는다는 뜻이다(dormancy·tear-off·파괴로는 닫힌다). 0에서 채널이 212개가 되고 AI가 Cull Distance 경계를 드나드는 동안 계속 는다. Cull Distance 경계에서 채널이 자주 열리고 닫히면 올린다. 열린 채널은 양쪽 메모리이고 클라이언트에 액터가 남는다.
+
+### 포화 조건
+
+위 측정은 클라이언트 rate 제한을 풀고 CPU만 쟀다. 포화가 나면 무엇이 달라지는지 보려고 AI와 탈것이 이동을 리플리케이션하게 해 Cluster에서 연결당 약 90 KB/s가 나가게 만들고, 클라이언트 rate를 30 KB/s로 제한했다(엔진 기본값은 100 KB/s). 각 3회다. "5초 안 갱신"은 클라이언트가 가진 AI 중 최근 5초 안에 갱신을 받은 비율이고, "전체 수신"은 접속 뒤 랩 액터 5,200개를 다 받기까지 걸린 시간이다.
+
+| 조건 | ms | 호출 | 송신 KB/s | 5초 안 갱신 | 전체 수신 |
+| --- | --- | --- | --- | --- | --- |
+| OpenWorld, 제한 없음 | 6.76 | 735 | 91.5 | 전부 | 1초 |
+| OpenWorld, 30 KB/s | 2.60 | 129 | 22.6 | 전부 | 12초 |
+| OpenWorld, 30 KB/s, `StarvationPriorityScale` 0 | 5.37 | 196 | 23.9 | 약 60% | 120초 뒤에도 62% |
+| OpenWorld, 30 KB/s, `ActorDiscoveryBudget` 10 KB/s | 2.53 | 129 | 22.6 | 전부 | 8초 |
+| 기본 드라이버, 제한 없음 | 12.22 | 1,492 | 266 | 전부 | 1초 |
+| 기본 드라이버, 30 KB/s | 4.44 | 125 | 21.9 | 전부 | 120초 뒤에도 79% |
+
+이동을 리플리케이션하면 호출당 비용이 늘어 제한 없는 조건도 앞 표의 4.48 ms가 아니라 6.76 ms다. 포화되면 서버는 오히려 덜 일한다. 연결이 포화되면 `ReplicateActorsForConnection`이 정렬된 리스트의 앞부분만 보내고 멈추므로 호출이 735회에서 129회로, 시간이 6.76 ms에서 2.60 ms로 줄었다. 문제는 클라이언트 쪽에 생긴다.
+
+`StarvationPriorityScale`을 0으로 두면 가까운 액터가 매 프레임 앞자리를 차지해 나머지는 영영 밀린다. 120초 뒤에도 클라이언트는 액터의 62%만 받았고, 받은 AI 중 5초 안에 갱신된 것은 60%였다. 1이면 12초 안에 전부 받고 모든 AI가 5초 안에 갱신된다. 포화가 있는 서버에서 이 값은 성능이 아니라 공평성을 정한다.
+
+`Net.RepGraph.ActorDiscoveryBudget <KB/s>`는 새 채널을 여는 데이터를 연결의 일반 예산과 따로 센다. 기본값 0은 예산 없음이다. 10 KB/s를 주자 접속 직후 전체 액터를 받기까지의 시간이 12초에서 8초로 줄었고 정상 상태는 같았다. 접속 직후나 핫드롭처럼 수천 채널이 한꺼번에 열릴 때 쓰는 값이다.
+
+기본 드라이버는 같은 제한에서 받은 AI는 거의 전부 갱신하지만 접속 뒤 120초가 지나도 액터의 79%만 받았다. 새 채널을 열어야 하는 액터가 뒤로 밀리는 것인데, 원인은 소스에서 따로 확인하지 않았다.
 
 ## 커스텀 그래프: 라우팅 테이블, Team Node, 걸리는 것
 

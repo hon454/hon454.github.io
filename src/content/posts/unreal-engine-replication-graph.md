@@ -395,9 +395,6 @@ static·dynamic을 가르는 것은 프로젝트의 클래스 라우팅 테이�
 
 위 라우팅과 노드 구성을 코드로 보면 다음과 같다. 공식 문서의 일반 예제를 5.8.3에서 컴파일되는 형태로 줄인 것이고, 측정용 그래프에서 스트리밍 레벨 리스트, Team Node, owner가 아직 없는 액터의 재시도 같은 게임 특화 부분을 뺐다.
 
-<details>
-<summary>일반 예제 그래프의 축약 소스</summary>
-
 ```cpp
 // ExampleReplicationGraph.h
 UENUM()
@@ -569,8 +566,6 @@ void UExampleNode_PlayerStateFrequencyLimiter::GatherActorListsForConnection(con
 	Params.OutGatheredReplicationLists.AddReplicationActorList(ReplicationActorLists[Params.ReplicationFrameNum % ReplicationActorLists.Num()]);
 }
 ```
-
-</details>
 
 `RouteAddNetworkActorToNodes`가 라우팅 표를 코드로 옮긴 자리이고, 노드 넷(Grid, AlwaysRelevant, 연결별 AlwaysRelevant, PlayerState 빈도 제한)이 글 첫머리 그림의 구성이다. 그래프는 `UReplicationDriver::CreateReplicationDriverDelegate`나 ini의 `ReplicationDriverClassName`으로 지정하고, 리플리케이션 그래프 노드는 `CreateNewNode`로만 만든다.
 

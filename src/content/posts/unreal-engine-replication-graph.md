@@ -39,9 +39,9 @@ lang: ko
 
 `UNetDriver::ServerReplicateActors`는 매 네트워크 틱마다 세 단계를 거친다(`Engine/Private/NetDriver.cpp`).
 
-1. consider list: `FNetworkObjectList`의 활성 액터를 순회해 `NetUpdateFrequency`로 계산한 갱신 시각이 지난 액터를 모은다. dormant 액터는 별도 목록에 있어 이 순회에서 빠진다.
-2. prioritize: 연결마다 consider list의 액터 하나하나에 `AActor::IsNetRelevantFor`와 `GetNetPriority`를 호출해 정렬한다.
-3. replicate: 정렬된 순서로 채널을 열어 `UActorChannel::ReplicateActor`를 호출한다.
+1. **Consider**: `FNetworkObjectList`의 활성 액터를 순회해 `NetUpdateFrequency`로 계산한 갱신 시각이 지난 액터를 모은다. dormant 액터는 별도 목록에 있어 이 순회에서 빠진다.
+2. **Prioritize**: 연결마다 consider list의 액터 하나하나에 `AActor::IsNetRelevantFor`와 `GetNetPriority`를 호출해 정렬한다.
+3. **Replicate**: 정렬된 순서로 채널을 열어 `UActorChannel::ReplicateActor`를 호출한다.
 
 비용은 두 번째 단계에 집중된다. `IsNetRelevantFor`와 `GetNetPriority`는 가상 함수라 엔진은 답이 언제 바뀌는지 알 수 없고, 매 프레임 모든 액터 × 모든 연결에 대해 다시 부른다. relevancy 검사를 통과한 액터만 세 번째 단계에 들어가므로, 넓은 맵에 액터가 흩어진 게임일수록 두 번째 단계의 비용이 실제 송신 작업보다 커진다. 액터가 모두 한곳에 몰려 모든 연결에 관련 있으면 두 번째 단계는 어차피 다 통과하고 세 번째 단계가 지배한다.
 

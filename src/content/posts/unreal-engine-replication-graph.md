@@ -61,31 +61,31 @@ Grid는 거리 검사를 대체하지 않는다. Grid 노드는 플레이어가 
 
 리플리케이션 그래프가 줄이는 것은 서버 CPU다. 어떤 액터를 어느 연결에 보낼지가 같다면 보내는 바이트도 같다. 다만 리플리케이션 그래프 쪽에는 기본 드라이버에 없는 송신 측 도구가 둘 있다. dynamic 액터를 `NumBuckets`개 버킷에 나눠 두고 `ReplicationFrameNum % NumBuckets`번 버킷만 돌려주는 frequency bucket 노드와, 이동 상태를 한 번 직렬화해 모든 연결에 재사용하는 Fast Shared Path다.
 
-Fast Shared Path는 액터 쪽에 `FastSharedReplicationFunc`로 등록할 unreliable multicast 함수를 써야 하고 그 프레임에는 일반 프로퍼티 리플리케이션이 생략되는 경로라, 측정에서는 켜지 않았다. 랩 액터에는 이동 상태가 없고, 효과가 Player Pawn 수 × 연결 수에서 나오므로 클라이언트 16개로는 보여 줄 폭이 작다.
+Fast Shared Path는 액터 쪽에 `FastSharedReplicationFunc`로 등록할 unreliable multicast 함수를 써야 하고 그 프레임에는 일반 프로퍼티 리플리케이션이 생략되는 경로라, 측정에서는 켜지 않았다. 테스트 액터에는 이동 상태가 없고, 효과가 Player Pawn 수 × 연결 수에서 나오므로 클라이언트 16개로는 보여 줄 폭이 작다.
 
 ## 측정: 액터 5,000개, 클라이언트 16개까지
 
 ### 실험 구성
 
-측정 환경은 [Push Model 포스트](/posts/unreal-engine-push-model-networking/)와 같은 테스트 프로젝트에 랩 모듈을 더한 것이다.
+측정 환경은 [Push Model 포스트](/posts/unreal-engine-push-model-networking/)와 같은 테스트 프로젝트에 측정 모듈을 더한 것이다.
 
-- 맵: 4 km × 4 km의 평평한 바닥에 PlayerStart 하나만 있는 랩 전용 레벨
+- 맵: 4 km × 4 km의 평평한 바닥에 PlayerStart 하나만 있는 측정 전용 레벨
 - 프로세스: 에디터 바이너리를 `-server`로 띄운 Dedicated Server와 `-game -nullrhi -nosound`로 띄운 헤드리스 클라이언트. 한 PC(Ryzen 9 5950X)에서 서버와 클라이언트를 서로 다른 CCD에 고정
 - 지표: 서버 프레임은 약 46 ms(초당 21 프레임)이고 그중 약 41 ms가 틱 레이트 대기라, 비교는 프레임당 `ServerReplicateActors` 배타 시간으로 한다
 - 엔진: `++UE5+Release-5.8-CL-58210709`
 
-랩 서브시스템은 커맨드라인으로 조건을 받아 다음 순서로 돈다.
+테스트 프로젝트의 서브시스템은 커맨드라인으로 조건을 받아 다음 순서로 돈다.
 
 1. 클라이언트 N개가 붙으면 Player Pawn을 배치하고 둘씩 같은 팀으로 묶는다. 플레이어마다 owner 전용 인벤토리 액터를 하나 스폰한다.
-2. 랩 액터 5,000개를 소품(노란 상자) 60%, 루트(loot, 초록 구) 20%, AI(빨간 기둥) 15%, 탈것(파란 상자) 5%로 나눠 스폰하고, 탈것마다 dependent actor인 무기(하늘색 원뿔)를 하나 더 붙인다. 전역 액터 3개가 추가된다. 무기와 Pawn, 인벤토리까지 합치면 리플리케이션 액터는 5,265개다. 모든 랩 액터는 16개의 리플리케이션 프로퍼티를 push 기반으로 등록한다.
+2. 테스트 액터 5,000개를 소품(노란 상자) 60%, 루트(loot, 초록 구) 20%, AI(빨간 기둥) 15%, 탈것(파란 상자) 5%로 나눠 스폰하고, 탈것마다 dependent actor인 무기(하늘색 원뿔)를 하나 더 붙인다. 전역 액터 3개가 추가된다. 무기와 Pawn, 인벤토리까지 합치면 리플리케이션 액터는 5,265개다. 모든 테스트 액터는 16개의 리플리케이션 프로퍼티를 push 기반으로 등록한다.
 3. 60초 warmup. 절반 지점에서 소품의 90%를 `DORM_DormantAll`로 보낸다. 루트는 처음부터 dormant다.
 4. 60초 측정. CSV 프로파일러 캡처와 Insights 트레이스 리전을 연다. 깨어 있는 액터의 1%가 초마다 프로퍼티 하나씩을 바꾸고, 루트의 0.1%가 초마다 flush 후 쓰기를 한다. AI는 초당 3 m로 직선 이동하며 영역 경계에서 튕긴다.
 
 ![](./images/unreal-replication-graph/lab-client-view.webp)
 
-클라이언트에서 본 랩 액터다. 색은 위의 종류 구분이고 마네킹이 Player Pawn이다.
+클라이언트에서 본 테스트 액터다. 색은 위의 종류 구분이고 마네킹이 Player Pawn이다.
 
-공간 분포는 세 가지다. Net Cull Distance는 모든 랩 클래스에서 150 m(`NetCullDistanceSquared` 기본값)다.
+공간 분포는 세 가지다. Net Cull Distance는 모든 테스트 클래스에서 150 m(`NetCullDistanceSquared` 기본값)다.
 
 | 분포 | 액터 위치 | 플레이어 위치 | 뜻 |
 | --- | --- | --- | --- |
@@ -178,7 +178,7 @@ NearPlayers는 둘의 중간이어야 하는데 기본 드라이버는 6.47 ms�
 
 ![](./images/unreal-replication-graph/diagram-legacy-dormancy.webp)
 
-원인은 dormancy의 집계 단위다. 랩은 소품의 90%와 루트 전부를 `DORM_DormantAll`로 두는데, `FNetworkObjectList`는 액터가 모든 연결에서 dormant가 됐을 때만 active 목록에서 뺀다(`Engine/Private/NetworkObjectList.cpp`, `MarkDormant`의 `DormantConnections.Num() == NumConnections`). Cluster에서는 두 클라이언트가 모든 액터를 받으므로 3,685개가 빠져 active가 1,580개이지만, 흩어진 분포에서는 각 소품을 한 클라이언트만 받으므로 영영 active에 남고 매 프레임 5,265개 전부가 consider list를 거친다. Uniform의 1.7 ms도 같은 원인이다.
+원인은 dormancy의 집계 단위다. 테스트 프로젝트는 소품의 90%와 루트 전부를 `DORM_DormantAll`로 두는데, `FNetworkObjectList`는 액터가 모든 연결에서 dormant가 됐을 때만 active 목록에서 뺀다(`Engine/Private/NetworkObjectList.cpp`, `MarkDormant`의 `DormantConnections.Num() == NumConnections`). Cluster에서는 두 클라이언트가 모든 액터를 받으므로 3,685개가 빠져 active가 1,580개이지만, 흩어진 분포에서는 각 소품을 한 클라이언트만 받으므로 영영 active에 남고 매 프레임 5,265개 전부가 consider list를 거친다. Uniform의 1.7 ms도 같은 원인이다.
 
 CSV의 `NumberOfFullyDormantActors`가 Cluster에서 3,685, NearPlayers에서 0, Uniform에서 60 남짓(두 플레이어가 3 m 거리라 같은 소품 일부를 본다)인 것이 그 흔적이다. 일부 연결에서만 dormant인 액터는 그 연결의 우선순위 계산만 건너뛰고 consider list 구성 비용은 그대로 내며, 모든 연결이 그 액터를 한 번씩 본 뒤에야 목록에서 빠진다. 넓은 맵에서는 그런 일이 잘 일어나지 않는다. 리플리케이션 그래프는 dormant 액터를 연결별 `bDormantOnConnection`으로 걸러서 이 문제가 없다.
 
@@ -339,7 +339,7 @@ Cell 크기, 버킷 수, 갱신 주기, 우선순위 스케일, 채널 타임아
 
 ### 포화 조건
 
-위 측정은 클라이언트 rate 제한을 풀고 CPU만 쟀다. 포화가 나면 무엇이 달라지는지 보려고 AI와 탈것이 이동을 리플리케이션하게 해 Cluster에서 연결당 약 90 KB/s가 나가게 만들고, 클라이언트 rate를 30 KB/s로 제한했다(엔진 기본값은 100 KB/s). 각 3회다. "5초 안 갱신"은 클라이언트가 가진 AI 중 최근 5초 안에 갱신을 받은 비율이고, "전체 수신"은 접속 뒤 랩 액터 5,200개를 다 받기까지 걸린 시간이다.
+위 측정은 클라이언트 rate 제한을 풀고 CPU만 쟀다. 포화가 나면 무엇이 달라지는지 보려고 AI와 탈것이 이동을 리플리케이션하게 해 Cluster에서 연결당 약 90 KB/s가 나가게 만들고, 클라이언트 rate를 30 KB/s로 제한했다(엔진 기본값은 100 KB/s). 각 3회다. "5초 안 갱신"은 클라이언트가 가진 AI 중 최근 5초 안에 갱신을 받은 비율이고, "전체 수신"은 접속 뒤 테스트 액터 5,200개를 다 받기까지 걸린 시간이다.
 
 | 조건 | ms | 호출 | 송신 KB/s | 5초 안 갱신 | 전체 수신 |
 | --- | --- | --- | --- | --- | --- |
@@ -372,7 +372,7 @@ static·dynamic을 가르는 것은 프로젝트의 클래스 라우팅 테이�
 
 ### 액터 범주와 라우팅
 
-리플리케이션 그래프를 어떻게 구성할지는 게임의 액터가 어떤 범주로 나뉘는지에 달려 있다. 아래 표는 공식 문서의 예시와 Lyra 5.8.3의 `ULyraReplicationGraph`, 2018년 라이브스트림의 Fortnite 그래프에서 오픈월드 멀티플레이어의 범주를 추린 것이고, 랩 액터 종류도 이 범주를 따른다.
+리플리케이션 그래프를 어떻게 구성할지는 게임의 액터가 어떤 범주로 나뉘는지에 달려 있다. 아래 표는 공식 문서의 예시와 Lyra 5.8.3의 `ULyraReplicationGraph`, 2018년 라이브스트림의 Fortnite 그래프에서 오픈월드 멀티플레이어의 범주를 추린 것이고, 테스트 액터 종류도 이 범주를 따른다.
 
 | 범주 | 예와 특성 | 리플리케이션 그래프에서 가는 곳 |
 | --- | --- | --- |
@@ -635,16 +635,16 @@ Fortnite는 2024년 4월에 Iris로 전환했다고 Unreal Fest Orlando 2025에�
 
 ## 부록 A. 5.8.3에서 재현한 버그와 함정
 
-커뮤니티에 보고된 것 중 5.8.3 소스에서 확인한 것들로, 다섯은 랩에서 재현했고 Seamless Travel 하나는 소스로만 확인했다. 버그마다 현상과 원인, 대처를 먼저 적고 소스 분석과 랩 재현은 접어 두었다.
+커뮤니티에 보고된 것 중 5.8.3 소스에서 확인한 것들로, 다섯은 테스트 프로젝트에서 재현했고 Seamless Travel 하나는 소스로만 확인했다. 버그마다 현상과 원인, 대처를 먼저 적고 소스 분석과 재현 절차는 접어 두었다.
 
 ### dormant 직후의 reliable multicast가 유실된다
 
-- 현상: 액터를 `DORM_DormantAll`로 보낸 직후 reliable multicast를 보내면 네트워크 지연이 있을 때 일부 클라이언트가 받지 못한다. Epic 포럼에 2026년 5월 올라온 보고(UE-378758)이고, Epic이 재현을 확인했으며 2026년 7월 기준 미수정이다. 랩에서는 `PktLag=200`에서 잠재운 지 4프레임 뒤에 보낸 reliable RPC 50개가 전부 사라졌고 기본 드라이버는 하나도 잃지 않았다.
+- 현상: 액터를 `DORM_DormantAll`로 보낸 직후 reliable multicast를 보내면 네트워크 지연이 있을 때 일부 클라이언트가 받지 못한다. Epic 포럼에 2026년 5월 올라온 보고(UE-378758)이고, Epic이 재현을 확인했으며 2026년 7월 기준 미수정이다. 테스트 프로젝트에서는 `PktLag=200`에서 잠재운 지 4프레임 뒤에 보낸 reliable RPC 50개가 전부 사라졌고 기본 드라이버는 하나도 잃지 않았다.
 - 원인: 잠재운 액터의 채널이 `Closing`인 동안 리플리케이션 그래프는 close bunch의 ack가 올 때까지 연결 정보의 채널을 비우지 않고, multicast 경로는 그 연결을 건너뛰며 새로 열지도 않는다.
 - 대처: reliable RPC를 먼저 보내고 잠재운다. 잠든 액터에 보내야 하면 그 연결의 채널이 정리된 뒤(`NotifyActorChannelCleanedUp`)로 미룬다.
 
 <details>
-<summary>소스 분석과 랩 재현</summary>
+<summary>소스 분석과 재현 절차</summary>
 
 닫힌 채널의 처리에서 기본 드라이버와 리플리케이션 그래프가 갈린다.
 
@@ -655,7 +655,7 @@ Fortnite는 2024년 4월에 Iris로 전환했다고 Unreal Fest Orlando 2025에�
 
 ![](./images/unreal-replication-graph/diagram-closing-window.webp)
 
-랩에서는 AI 50개를 같은 프레임에 `DORM_DormantAll`로 보내고 N프레임 뒤 액터마다 reliable multicast를 하나씩 보낸 뒤, 두 클라이언트가 받은 수를 셌다. Cluster 1,000개 조건이라 50개 모두 두 클라이언트의 Cull Distance 안이고(움직이다 벗어나는 한두 개는 제외), 서버 송신에 `PktLag=200`을 걸었다. 표는 두 클라이언트가 각각 받은 RPC 수다.
+AI 50개를 같은 프레임에 `DORM_DormantAll`로 보내고 N프레임 뒤 액터마다 reliable multicast를 하나씩 보낸 뒤, 두 클라이언트가 받은 수를 셌다. Cluster 1,000개 조건이라 50개 모두 두 클라이언트의 Cull Distance 안이고(움직이다 벗어나는 한두 개는 제외), 서버 송신에 `PktLag=200`을 걸었다. 표는 두 클라이언트가 각각 받은 RPC 수다.
 
 | RPC까지의 지연 | OpenWorld 그래프 | 기본 드라이버 |
 | --- | --- | --- |
@@ -673,7 +673,7 @@ Fortnite는 2024년 4월에 Iris로 전환했다고 Unreal Fest Orlando 2025에�
 
 ### Seamless Travel 중의 multicast
 
-- 현상: 클라이언트가 Seamless Travel을 끝내기 전에 서버가 Persistent Level 액터(GameState 등)에 reliable multicast를 보내면 클라이언트는 도착 후 그 액터를 파괴해 버린다. Epic이 알려진 문제(UE-361443)로 확인했고 2026년 7월 기준 미수정이다. 랩에서 재현하지는 않았고 소스로만 확인했다.
+- 현상: 클라이언트가 Seamless Travel을 끝내기 전에 서버가 Persistent Level 액터(GameState 등)에 reliable multicast를 보내면 클라이언트는 도착 후 그 액터를 파괴해 버린다. Epic이 알려진 문제(UE-361443)로 확인했고 2026년 7월 기준 미수정이다. 테스트 프로젝트에서 재현하지는 않았고 소스로만 확인했다.
 - 원인: owner RPC 경로는 채널을 열기 전에 `NetDriver->IsLevelInitializedForActor`를 확인하지만 multicast 경로는 확인하지 않는다.
 - 대처: `ProcessRemoteFunction`을 오버라이드해 multicast에서도 같은 검사를 넣는다.
 
@@ -686,9 +686,9 @@ Fortnite는 2024년 4월에 Iris로 전환했다고 Unreal Fest Orlando 2025에�
 ![](./images/unreal-replication-graph/diagram-static-move.webp)
 
 <details>
-<summary>랩 재현</summary>
+<summary>재현 절차</summary>
 
-랩에서 맵 반대편(2 km 밖)의 소품 5개를 플레이어 0의 Pawn에서 3–5 m 옆으로 옮기고 값을 하나 바꾼 뒤, 그 클라이언트가 10 m 안에서 보는 소품 수를 30초 동안 셌다.
+맵 반대편(2 km 밖)의 소품 5개를 플레이어 0의 Pawn에서 3–5 m 옆으로 옮기고 값을 하나 바꾼 뒤, 그 클라이언트가 10 m 안에서 보는 소품 수를 30초 동안 셌다.
 
 | 소품 상태와 조작 | 기본 드라이버 | Basic (dormancy 경로) | OpenWorld (static 라우팅) |
 | --- | --- | --- | --- |
@@ -709,9 +709,9 @@ static으로 넣은 소품은 깨어 있든 깨우든 옛 Cell에 남아 끝까�
 - 대처: 발사체는 `bNetTemporary` 대신 짧은 수명의 dynamic 액터로 두고 Cell 재구축 금지 목록에 넣는다.
 
 <details>
-<summary>랩 재현</summary>
+<summary>재현 절차</summary>
 
-랩의 발사체는 `bNetTemporary`에 `InitialLifeSpan` 1.5초이고, Uniform 5,000개 조건에서 초당 5개를 플레이어 주변에 스폰했다. 리플리케이션 그래프 서버 로그에는 ensure가 한 번 찍힌다.
+테스트 프로젝트의 발사체는 `bNetTemporary`에 `InitialLifeSpan` 1.5초이고, Uniform 5,000개 조건에서 초당 5개를 플레이어 주변에 스폰했다. 리플리케이션 그래프 서버 로그에는 ensure가 한 번 찍힌다.
 
 ```text
 Ensure condition failed: !Actor->bNetTemporary [File: ReplicationGraph.cpp] [Line: 790]
@@ -724,14 +724,14 @@ ReplicationGraph does not support bNetTemporary. Actor: RepGraphLabProjectile_0 
 
 ### 연결이 끊겨도 남는 dormancy 사본
 
-- 현상: 연결이 끊겨도 Cell의 dormancy 노드는 그 연결의 사본을 가지고 있다. 랩에서는 재접속 8번에 사본이 3개에서 17개로 늘었고, 정리를 켜면 6개까지 줄되 톱니 모양으로 오르내렸다.
+- 현상: 연결이 끊겨도 Cell의 dormancy 노드는 그 연결의 사본을 가지고 있다. 테스트 프로젝트에서는 재접속 8번에 사본이 3개에서 17개로 늘었고, 정리를 켜면 6개까지 줄되 톱니 모양으로 오르내렸다.
 - 원인: 기본값 `Net.RepGraph.DormancyNodeObsoleteBehavior` 0은 사본을 지우지 않는다. Epic 지원 포럼의 답변은 그 이유로 멀리 간 클라이언트의 add/remove 반복이 만드는 프레임 스파이크를 든다. 정리를 켜도 즉시는 아니다. 떼어내는 코드는 `CallFunctionOnValidConnectionNodes` 안에만 있어 그 Cell의 dormancy 노드에 액터가 추가·제거되거나 flush될 때만 돌고 gather 때는 돌지 않는다.
 - 대처: `DormancyNodeObsoleteBehavior`를 1로 두면 연결 객체가 사라진 사본을 지우고, `SetNumFramesUntilObsolete`를 양수로 두면 살아 있지만 오래 gather되지 않은 연결의 사본까지 지운다. 접속·해제가 잦은 서버라면 두 설정을 같이 켜고, Cell마다 dormant 액터가 많다면 사본의 메모리까지 같이 본다.
 
 <details>
-<summary>랩 재현</summary>
+<summary>재현 절차</summary>
 
-랩에서는 Uniform 5,000개 조건으로 클라이언트 2개를 붙인 뒤, 120초 동안 10초마다 두 번째 클라이언트를 죽이고 다시 띄우는 것을 8번 반복하면서 살아 있는 `UReplicationGraphNode_ConnectionDormancyNode` 수를 5초마다 셌다.
+Uniform 5,000개 조건으로 클라이언트 2개를 붙인 뒤, 120초 동안 10초마다 두 번째 클라이언트를 죽이고 다시 띄우는 것을 8번 반복하면서 살아 있는 `UReplicationGraphNode_ConnectionDormancyNode` 수를 5초마다 셌다.
 
 | 설정 | 시작 | 8회 재접속 뒤 |
 | --- | --- | --- |
@@ -746,12 +746,12 @@ ReplicationGraph does not support bNetTemporary. Actor: RepGraphLabProjectile_0 
 
 ### 멀어진 뒤 파괴된 dormant 액터가 클라이언트에 남는다
 
-- 현상: 클라이언트가 한 번 받은 뒤 잠든 액터(바닥 아이템)를 그 클라이언트가 멀리 간 뒤 서버가 파괴하면, 클라이언트에는 그 액터가 그대로 남는다. 랩에서 플레이어를 500 m 밖으로 옮기고 원래 자리의 잠든 loot 100개를 파괴하자 리플리케이션 그래프에서는 클라이언트의 loot가 500개 그대로였고 기본 드라이버에서는 400개가 됐다. Basic 그래프도 남는다.
+- 현상: 클라이언트가 한 번 받은 뒤 잠든 액터(바닥 아이템)를 그 클라이언트가 멀리 간 뒤 서버가 파괴하면, 클라이언트에는 그 액터가 그대로 남는다. 테스트 프로젝트에서 플레이어를 500 m 밖으로 옮기고 원래 자리의 잠든 loot 100개를 파괴하자 리플리케이션 그래프에서는 클라이언트의 loot가 500개 그대로였고 기본 드라이버에서는 400개가 됐다. Basic 그래프도 남는다.
 - 원인: 채널이 닫힐 때 relevancy 사유면 클라이언트가 액터를 지우지만 dormancy 사유면 남겨 두므로(`UActorChannel::CleanUp`), 잠든 액터는 채널 없이 클라이언트에 있다. 그 액터가 파괴되면 기본 드라이버는 그 연결에서 dormant였던 액터의 파괴 정보를 거리와 무관하게 보낸다(`NotifyActorDestroyed`의 `DormantConnections` 검사). 리플리케이션 그래프는 `DestructInfoMaxDistanceSquared`(기본 150 m, Lyra와 측정용 그래프는 300 m) 안의 viewer에게만 보내고, 밖이면 `OutOfRangeDestroyedActors`에 두었다가 viewer가 그만큼 가까워져야 보낸다.
-- 대처: 돌아오면 지워진다. 랩에서 플레이어를 되돌리자 100개가 사라졌다. 멀리서도 지워져야 하는 액터는 `DestructInfoMaxDist`를 늘리거나(측정용 그래프에서 1 km로 두자 바로 사라졌다) 클래스별로 `SetActorDestructionInfoToIgnoreDistanceCulling`을 건다. 잠든 채 Cell을 벗어나는 dynamic 액터의 정리는 다른 경로(`Net.RepGraph.DormantDynamicActorsDestruction`, 기본 0)라 따로 켜야 한다.
+- 대처: 돌아오면 지워진다. 플레이어를 되돌리자 100개가 사라졌다. 멀리서도 지워져야 하는 액터는 `DestructInfoMaxDist`를 늘리거나(측정용 그래프에서 1 km로 두자 바로 사라졌다) 클래스별로 `SetActorDestructionInfoToIgnoreDistanceCulling`을 건다. 잠든 채 Cell을 벗어나는 dynamic 액터의 정리는 다른 경로(`Net.RepGraph.DormantDynamicActorsDestruction`, 기본 0)라 따로 켜야 한다.
 
 <details>
-<summary>랩 재현</summary>
+<summary>재현 절차</summary>
 
 NearPlayers 분포, 플레이어 2명을 떨어뜨린 조건에서 플레이어 0의 Pawn을 측정 5초에 500 m 옮기고, 10초에 원래 자리 150 m 안의 잠든 loot 100개를 서버에서 파괴한 뒤, 그 클라이언트가 가진 loot 수를 2초마다 셌다. 각 2회.
 
@@ -769,14 +769,14 @@ NearPlayers 분포, 플레이어 2명을 떨어뜨린 조건에서 플레이어 
 
 리플리케이션 그래프 문제의 첫 단계는 그래프를 끄는 것이다. ini의 `ReplicationDriverClassName`으로 켠 경우 `Net.RepDriver.Enable 0`이나 커맨드라인 `-RepDriverDisable`로 설정을 두고도 기본 드라이버로 다시 시작해 같은 현상이 나는지 본다. 둘 다 드라이버 생성 시점에만 읽히고, Lyra처럼 `CreateReplicationDriverDelegate`로 만드는 프로젝트에서는 델리게이트가 먼저 반환하므로 그쪽의 끄기 설정(Lyra는 `bDisableReplicationGraph`)을 쓴다.
 
-이 비교는 두 드라이버의 차이도 드러낸다. 서버에서는 렌더링이 필요 없다는 이유로 랩 액터 5,000개를 `SetHidden(true)`로 스폰하자 레거시 `AActor::IsNetRelevantFor`가 숨겨져 있고 충돌이 없는 액터를 관련 없음으로 판정해 기본 드라이버에서는 랩 액터가 하나도 리플리케이션되지 않았고, 이 함수를 부르지 않는 리플리케이션 그래프에서는 멀쩡했다. 아래는 Uniform 조건의 런 하나에서 두 연결에 열린 액터 채널 수의 합이다.
+이 비교는 두 드라이버의 차이도 드러낸다. 서버에서는 렌더링이 필요 없다는 이유로 테스트 액터 5,000개를 `SetHidden(true)`로 스폰하자 레거시 `AActor::IsNetRelevantFor`가 숨겨져 있고 충돌이 없는 액터를 관련 없음으로 판정해 기본 드라이버에서는 테스트 액터가 하나도 리플리케이션되지 않았고, 이 함수를 부르지 않는 리플리케이션 그래프에서는 멀쩡했다. 아래는 Uniform 조건의 런 하나에서 두 연결에 열린 액터 채널 수의 합이다.
 
 | 액터 상태 | 기본 드라이버 | OpenWorld 그래프 |
 | --- | --- | --- |
 | 보임 | 73.4 | 62.1 |
 | `SetHidden(true)` | 28.0 (Pawn, PlayerState, 전역 액터뿐) | 78.7 |
 
-리플리케이션 그래프 문제로 좁혀지면 서버에서 `Net.RepGraph.PrintAll <프레임 수> <연결 인덱스>`를 찍는다. 노드 트리와 각 리스트의 액터, 그리고 연결 하나의 우선순위 결과가 나온다. 아래는 랩의 OpenWorld 그래프에서 Uniform 조건으로 찍은 출력을 줄인 것이다.
+리플리케이션 그래프 문제로 좁혀지면 서버에서 `Net.RepGraph.PrintAll <프레임 수> <연결 인덱스>`를 찍는다. 노드 트리와 각 리스트의 액터, 그리고 연결 하나의 우선순위 결과가 나온다. 아래는 테스트 프로젝트의 OpenWorld 그래프에서 Uniform 조건으로 찍은 출력을 줄인 것이다.
 
 <details>
 <summary>PrintAll 출력 예</summary>

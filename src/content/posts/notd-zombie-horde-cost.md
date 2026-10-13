@@ -118,7 +118,7 @@ int32 UZombieLODComponent::CalcSendRateGrade() const
 }
 ```
 
-소스의 등급별 기본 전송률은 초당 12, 8, 6, 4, 3회이고 Invisible은 1회다. LOD0~3은 등급 0~3에 대응하므로 이 경로에서 사용하는 기본 전송률은 12, 8, 6, 4회다. 배열의 3회 설정은 이 LOD 매핑으로 선택되지 않는다. 공격 중에는 등급을 2 이하로 제한하지만 Invisible은 그대로 1회다.
+소스의 등급별 기본 전송률은 초당 12, 8, 6, 4, 3회이고 Invisible은 1회다. LOD0–3은 등급 0–3에 대응하므로 이 경로에서 사용하는 기본 전송률은 12, 8, 6, 4회다. 배열의 3회 설정은 이 LOD 매핑으로 선택되지 않는다. 공격 중에는 등급을 2 이하로 제한하지만 Invisible은 그대로 1회다.
 
 ![](./images/notd-multiplayer-optimization/zombie-cost-routing.webp)
 

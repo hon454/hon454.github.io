@@ -15,7 +15,7 @@ tags:
 sourceLink: "https://velog.io/@hon454/ue4-서버-최적화-팁"
 ---
 
-> 이 글은 2021년 8~9월에 작성한 `NetDormancy 이해`와 `Networking in UE4: Server Optimizations` 메모를 **Unreal Engine 4.26~4.27** 기준으로 합쳐 옮긴 글이다. 당시 잘못 이해했던 `DORM_Initial`, `NetUpdateFrequency`, Multicast RPC 부분은 같은 시점의 엔진 소스와 문서에 맞춰 교정했다.
+> 이 글은 2021년 8–9월에 작성한 `NetDormancy 이해`와 `Networking in UE4: Server Optimizations` 메모를 **Unreal Engine 4.26–4.27** 기준으로 합쳐 옮긴 글이다. 당시 잘못 이해했던 `DORM_Initial`, `NetUpdateFrequency`, Multicast RPC 부분은 같은 시점의 엔진 소스와 문서에 맞춰 교정했다.
 
 UE4 서버 리플리케이션 최적화는 payload 몇 byte를 줄이기 전에 불필요한 Actor부터 복제 후보에서 빼야 한다. 당시 Epic 문서도 아래 순서로 최적화하길 권했다.
 

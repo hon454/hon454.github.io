@@ -1,7 +1,7 @@
 ---
 title: "Unreal Engine - Replication Graph"
 published: 2026-10-10
-updated: 2026-10-12
+updated: 2026-10-13
 author: Jihoon Jeon
 image: ../../assets/images/posts/unreal-engine-replication-graph-cover.webp
 description: "UE 5.8.3 소스와 테스트 프로젝트 실측으로 Replication Graph가 기본 드라이버의 무엇을 줄이고 무엇을 줄이지 않는지 확인한다. 액터 5,000개와 클라이언트 16개까지의 측정, 효과가 있는 설정값과 이름과 반대로 동작하는 설정값, 커스텀 그래프의 라우팅과 Team Node, 5.8.3에서 재현한 버그 네 가지, 도입 기준과 Iris와의 관계를 다룬다."
@@ -25,7 +25,7 @@ lang: ko
 - 기본 드라이버에서 잠든 액터가 consider list에서 빠지는 것은 모든 연결에서 잠든 뒤다. 넓은 맵에 흩어진 잠든 소품은 매 프레임 검토되고, 플레이어마다 자기 주변에만 액터가 있는 조건에서 밀집 조건에 가까운 6.47 ms가 나온다.
 - 설정값 중 측정에서 효과가 컸던 것은 버킷 수와 `NetUpdateFrequency`뿐이다. `DistancePriorityScale` 0은 거리 컬링을 끄고, `ActorChannelFrameTimeout` 0은 채널을 닫지 않는다. 대역폭이 포화되면 `StarvationPriorityScale`이 공평성을 정한다. 0이면 가까운 액터만 갱신되고 접속 후 120초가 지나도 액터의 62%만 받는다. `NetUpdateFrequency`는 서버 프레임 레이트보다 낮을 때만 뜻이 있다.
 - 엔진에는 액터가 움직이는지 판별하는 코드가 없다. `UBasicReplicationGraph`는 모든 액터를 dormancy 경로로 넣고, 그래도 커스텀 그래프와 같은 자릿수(Uniform 0.40 ms, Cluster 3.44 ms)가 나온다. Team Node와 owner 변경이 필요 없으면 거기서 멈춰도 된다.
-- 5.8.3에서 재현한 것: 잠재운 직후의 reliable multicast가 지연이 있을 때 리플리케이션 그래프에서만 유실된다. static으로 넣은 액터는 옮겨도 옛 셀에 남는다. `bNetTemporary` 발사체는 ensure가 나고 매 버킷 차례마다 채널을 다시 연다. 끊긴 연결의 dormancy 사본은 기본 설정에서 지워지지 않는다. 멀어진 클라이언트가 가진 잠든 액터를 파괴하면 그 클라이언트가 돌아올 때까지 남는다.
+- 5.8.3에서 재현한 것: 잠재운 직후의 reliable multicast가 지연이 있을 때 리플리케이션 그래프에서만 유실된다. static으로 넣은 액터는 옮겨도 옛 Cell에 남는다. `bNetTemporary` 발사체는 ensure가 나고 매 버킷 차례마다 채널을 다시 연다. 끊긴 연결의 dormancy 사본은 기본 설정에서 지워지지 않는다. 멀어진 클라이언트가 가진 잠든 액터를 파괴하면 그 클라이언트가 돌아올 때까지 남는다.
 - 도입 기준은 비율 하나다. `stat game`에서 consider와 prioritize 시간이 `ReplicateActor` 시간보다 크면 리플리케이션 그래프가 그 몫을 줄인다. Iris와는 양자택일이고, Epic은 deprecate 계획이 없다고 하지만 릴리스 노트에 5.6 이후 항목이 없다.
 :::
 
@@ -55,7 +55,7 @@ lang: ko
 
 ![](./images/unreal-replication-graph/diagram-frame.webp)
 
-Grid는 거리 검사를 대체하지 않는다. Grid 노드는 플레이어가 있는 셀의 리스트를 돌려줄 뿐이고, 셀에는 Cull Distance 범위가 셀과 겹치는 모든 액터가 들어 있으므로 반경 밖 액터도 섞여 있다. 실제 거리 검사는 2단계에서 연결별 `CullDistanceSquared`로 따로 한다. 라이브스트림의 표현으로는 Grid가 broad phase, 거리 검사가 narrow phase다.
+Grid는 거리 검사를 대체하지 않는다. Grid 노드는 플레이어가 있는 Cell의 리스트를 돌려줄 뿐이고, Cell에는 Net Cull Distance(액터의 `NetCullDistanceSquared`, 이하 Cull Distance) 범위가 Cell과 겹치는 모든 액터가 들어 있으므로 반경 밖 액터도 섞여 있다. 실제 거리 검사는 2단계에서 연결별 `CullDistanceSquared`로 따로 한다. 라이브스트림의 표현으로는 Grid가 broad phase, 거리 검사가 narrow phase다.
 
 노드도 매 틱 조건을 검사하지 않는다. 노드의 역할은 조건을 한 번 평가해 리스트에 넣어 두고 바뀔 때만 옮기는 것이며, 매 틱 돌아가는 액터별 검사는 2단계에 모여 있다.
 
@@ -85,7 +85,7 @@ Fast Shared Path는 액터 쪽에 `FastSharedReplicationFunc`로 등록할 unrel
 
 클라이언트에서 본 랩 액터다. 색은 위의 종류 구분이고 마네킹이 Player Pawn이다.
 
-공간 분포는 세 가지다. Cull Distance는 모든 랩 클래스에서 150 m(`NetCullDistanceSquared` 기본값)다.
+공간 분포는 세 가지다. Net Cull Distance는 모든 랩 클래스에서 150 m(`NetCullDistanceSquared` 기본값)다.
 
 | 분포 | 액터 위치 | 플레이어 위치 | 뜻 |
 | --- | --- | --- | --- |
@@ -107,7 +107,7 @@ Unreal Insights에는 리플리케이션 그래프 전용 트랙이 없지만 `-
 
 ![](./images/unreal-replication-graph/insights-frame-timeline.webp)
 
-① `UReplicationGraph_ServerReplicateActors` 4.56 ms 아래에 `NET_PrepareReplication`(Grid의 dynamic 액터 셀 갱신이 여기)이 한 번 오고, 그 뒤에 연결마다 `NET_ReplicateActors_GatherForConnection`과 `NET_ReplicateActors_ProcessGatheredLists`(안에 `PrioritizeForConnection`과 `ReplicateActorsForConnection`), `NET_ReplicateActors_LookForNonRelevantChannels`가 이어진다. ② ③은 두 연결의 `ProcessGatheredLists`로 2.69 ms와 1.61 ms다. 프레임의 나머지 약 41 ms는 틱 레이트 대기다.
+① `UReplicationGraph_ServerReplicateActors` 4.56 ms 아래에 `NET_PrepareReplication`(Grid의 dynamic 액터 Cell 갱신이 여기)이 한 번 오고, 그 뒤에 연결마다 `NET_ReplicateActors_GatherForConnection`과 `NET_ReplicateActors_ProcessGatheredLists`(안에 `PrioritizeForConnection`과 `ReplicateActorsForConnection`), `NET_ReplicateActors_LookForNonRelevantChannels`가 이어진다. ② ③은 두 연결의 `ProcessGatheredLists`로 2.69 ms와 1.61 ms다. 프레임의 나머지 약 41 ms는 틱 레이트 대기다.
 
 타이머의 호출 수도 읽을 거리다. `Prioritize_InnerLoop`의 호출 수가 검토한 액터 수이고 `Replicate Actor Time`의 호출 수가 보낸 액터 수다. `RG_QUICK_SCOPE_CYCLE_COUNTER`로 선언된 `Prioritize_InnerLoop*`, `ReplicateSingleActor` 등은 Test·Shipping에서 컴파일되지 않는다.
 
@@ -134,7 +134,7 @@ Uniform에서 리플리케이션 그래프는 기본 드라이버의 7분의 1�
 | 리플리케이션 | 0.2 (프레임당 67회) | 0.13 |
 | 합계 | 2.8 | 0.3 |
 
-기본 드라이버는 5,265개 중 연결당 31개쯤만 보내는데 비용의 90% 이상이 보낼지 말지를 정하는 데 든다. OpenWorld 그래프는 Grid가 viewer 셀의 리스트만 돌려주므로 나머지 5,100개는 검토 대상이 아니다.
+기본 드라이버는 5,265개 중 연결당 31개쯤만 보내는데 비용의 90% 이상이 보낼지 말지를 정하는 데 든다. OpenWorld 그래프는 Grid가 viewer Cell의 리스트만 돌려주므로 나머지 5,100개는 검토 대상이 아니다.
 
 모든 액터가 모든 연결에 관련 있는 Cluster에서도 OpenWorld 그래프가 기본 드라이버의 55%, Basic이 43%다. 다만 이것은 판별 비용의 차이가 아니라 보내는 횟수의 차이다.
 
@@ -196,7 +196,7 @@ OpenWorld 그래프는 0.18에서 0.82 ms로 4.5배 늘고, 그 증가분은 열
 
 ![](./images/unreal-replication-graph/chart-connections.webp)
 
-연결 수에서는 둘 다 선형이지만 기울기가 6배 다르다. 기본 드라이버는 연결당 0.78 ms, OpenWorld는 0.13 ms다. 16 연결에서 기본 드라이버의 13.0 ms 중 9.2 ms가 16번의 우선순위 계산이다. 액터 5,265개 × 연결 16개의 relevancy 검토가 이 숫자다. 리플리케이션 그래프의 2.14 ms는 리플리케이션 0.9 ms와 나머지 1.2 ms이고, 연결마다 자기 셀의 리스트만 본다.
+연결 수에서는 둘 다 선형이지만 기울기가 6배 다르다. 기본 드라이버는 연결당 0.78 ms, OpenWorld는 0.13 ms다. 16 연결에서 기본 드라이버의 13.0 ms 중 9.2 ms가 16번의 우선순위 계산이다. 액터 5,265개 × 연결 16개의 relevancy 검토가 이 숫자다. 리플리케이션 그래프의 2.14 ms는 리플리케이션 0.9 ms와 나머지 1.2 ms이고, 연결마다 자기 Cell의 리스트만 본다.
 
 ### dormant 비율과 Push Model
 
@@ -230,40 +230,40 @@ Push Model은 리플리케이션 그래프 위에서 그대로 동작하지만 �
 
 - 엔진의 `SetAllCullDistanceSettingsForActor`는 액터와 모든 연결 두 층만 쓰고 클래스는 둔다.
 - 디버그 명령 `Net.RepGraph.SetClassCullDistance`는 클래스와 액터, 그리고 명령을 보낸 연결 하나만 고친다.
-- 공간화된 액터는 거기에 더해 Grid의 `NotifyActorCullDistChange`로 셀 등록을 다시 해야 넓어진 반경의 연결에서 후보가 된다.
+- 공간화된 액터는 거기에 더해 Grid의 `NotifyActorCullDistChange`로 Cell 등록을 다시 해야 넓어진 반경의 연결에서 후보가 된다.
 
-뒤의 설정값 절에서 런타임 `SetNetUpdateFrequency`가 반영되지 않는 것도 같은 구조다. 거리 검사와 셀 계산은 액터 정보에 캐시된 `WorldLocation`을 쓴다.
+뒤의 설정값 절에서 런타임 `SetNetUpdateFrequency`가 반영되지 않는 것도 같은 구조다. 거리 검사와 Cell 계산은 액터 정보에 캐시된 `WorldLocation`을 쓴다.
 
-### Grid와 셀
+### Grid와 Cell
 
 `UReplicationGraphNode_GridSpatialization2D`가 거리 기반 relevancy를 맡는다. 설정은 `CellSize`, `SpatialBias`, `ConnectionMaxZ` 셋이고 모두 생성자에서 0 또는 월드 최대로 초기화되므로 프로젝트가 채워야 한다. 액터는 세 경로로 들어온다.
 
-| 경로 | 셀에 들어가는 때 | 위치 갱신 | 언제 쓰는가 |
+| 경로 | Cell에 들어가는 때 | 위치 갱신 | 언제 쓰는가 |
 | --- | --- | --- | --- |
 | `AddActor_Static` | 추가 시 한 번 | 없음 | 스폰 뒤 안 움직이는 액터 |
 | `AddActor_Dynamic` | 매 프레임 `PrepareForReplication`에서 | 매 프레임 `GetActorLocation` | 움직이는 액터 |
 | `AddActor_Dormancy` | `bWantsToBeDormant`면 static, 아니면 dynamic으로 넣고 dormancy 변경 이벤트를 구독 | dormant일 때 없음 | 잠들 때는 안 움직이고 깨면 움직이는 액터 |
 
-액터가 들어가는 셀은 하나가 아니다. `GetCellInfoForActor`는 위치를 중심으로 Cull Distance만큼의 정사각형을 만들어 그 사각형이 겹치는 모든 셀에 넣는다. Cull Distance 150 m에 셀 100 m면 끝 인덱스를 포함하므로 한 액터가 3×3 또는 4×4 셀에 들어간다.
+액터가 들어가는 Cell은 하나가 아니다. `GetCellInfoForActor`는 위치를 중심으로 Cull Distance만큼의 정사각형을 만들어 그 사각형이 겹치는 모든 Cell에 넣는다. Cull Distance 150 m에 Cell 100 m면 끝 인덱스를 포함하므로 한 액터가 3×3 또는 4×4 Cell에 들어간다.
 
-대신 gather는 viewer가 서 있는 셀 하나만 본다. 이웃 셀을 찾아다니는 대신 액터 쪽이 미리 퍼져 있는 구조다. 여기에 쓰이는 Cull Distance는 연결별 값이 아니라 액터 정보의 `Settings.GetCullDistance()`다.
+대신 gather는 viewer가 서 있는 Cell 하나만 본다. 이웃 Cell을 찾아다니는 대신 액터 쪽이 미리 퍼져 있는 구조다. 여기에 쓰이는 Cull Distance는 연결별 값이 아니라 액터 정보의 `Settings.GetCullDistance()`다.
 
 ![](./images/unreal-replication-graph/diagram-grid-cells.webp)
 
-static 액터는 추가될 때의 위치로 셀이 정해지고 다시 계산되지 않는다. dynamic 액터만 매 프레임 `PrepareForReplication`에서 위치를 읽어 셀을 옮긴다. `SetBiasAndGridBounds`로 경계를 정하지 않은 그래프에서는 `SpatialBias`보다 작은 좌표에 액터가 나타나면 Grid를 통째로 다시 만들므로, 맵 밖으로 날아가는 발사체 클래스는 `AddToClassRebuildDenyList`에 넣어 가장자리 셀로 클램프되게 한다. Lyra는 `Lyra.RepGraph.DisableSpatialRebuilds`(기본 1)로 `AActor` 자체를 목록에 넣어 재구축을 끈다.
+static 액터는 추가될 때의 위치로 Cell이 정해지고 다시 계산되지 않는다. dynamic 액터만 매 프레임 `PrepareForReplication`에서 위치를 읽어 Cell을 옮긴다. `SetBiasAndGridBounds`로 경계를 정하지 않은 그래프에서는 `SpatialBias`보다 작은 좌표에 액터가 나타나면 Grid를 통째로 다시 만들므로, 맵 밖으로 날아가는 발사체 클래스는 `AddToClassRebuildDenyList`에 넣어 가장자리 Cell로 클램프되게 한다. Lyra는 `Lyra.RepGraph.DisableSpatialRebuilds`(기본 1)로 `AActor` 자체를 목록에 넣어 재구축을 끈다.
 
-셀 노드는 자기 리스트가 곧 static 리스트이고, dynamic 액터는 frequency bucket 노드로, dormant 액터는 dormancy 노드로 간다.
+Cell 노드는 자기 리스트가 곧 static 리스트이고, dynamic 액터는 frequency bucket 노드로, dormant 액터는 dormancy 노드로 간다.
 
 ```text
 GridSpatialization2D
-└── GridCell (셀마다)
+└── GridCell (Cell마다)
     ├── static 리스트 (자기 ReplicationActorList)
     ├── DynamicNode: ActorListFrequencyBuckets 또는 DynamicSpatialFrequency
     └── DormancyNode
         └── ConnectionDormancyNode (연결마다, 마스터 리스트의 사본)
 ```
 
-static 액터가 잠들면 셀이 자기 리스트에서 빼서 dormancy 노드로 옮기고, 깨면 다시 돌려보낸다. `AddActor_Dormancy`로 들어온 액터는 깨어나면 dynamic 액터가 되어 위치가 갱신되고, `AddActor_Static`으로 들어온 액터는 깨어나도 원래 셀에 그대로 있다. Dormancy 노드는 연결마다 마스터 리스트의 사본을 두고 gather 때마다 `bDormantOnConnection`인 액터를 빼므로, 사본은 그 연결이 아직 받지 못한 dormant 액터 목록이다. 셀에 dormant 액터가 많으면 새 연결마다 그만큼 복사하고, 연결이 끊겨도 사본은 저절로 사라지지 않는다.
+static 액터가 잠들면 Cell이 자기 리스트에서 빼서 dormancy 노드로 옮기고, 깨면 다시 돌려보낸다. `AddActor_Dormancy`로 들어온 액터는 깨어나면 dynamic 액터가 되어 위치가 갱신되고, `AddActor_Static`으로 들어온 액터는 깨어나도 원래 Cell에 그대로 있다. Dormancy 노드는 연결마다 마스터 리스트의 사본을 두고 gather 때마다 `bDormantOnConnection`인 액터를 빼므로, 사본은 그 연결이 아직 받지 못한 dormant 액터 목록이다. Cell에 dormant 액터가 많으면 새 연결마다 그만큼 복사하고, 연결이 끊겨도 사본은 저절로 사라지지 않는다.
 
 ### 프레임당 검사와 점수
 
@@ -303,7 +303,7 @@ gather가 끝나면 `ReplicateActorListsForConnections_Default`가 리스트를 
 
 ## 설정값이 실제로 바꾸는 것
 
-셀 크기, 버킷 수, 갱신 주기, 우선순위 스케일, 채널 타임아웃이 각각 무엇을 바꾸는지 소스에서 확인하고, OpenWorld 그래프로 하나씩 바꿔 가며 쟀다. 조건은 Uniform 분포, 액터 5,000개, 클라이언트 2개이고 기준값은 셀 100 m, 버킷 3개, `NetUpdateFrequency` 100, `DistancePriorityScale` 1, `StarvationPriorityScale` 1, `ActorChannelFrameTimeout` 4다. 각 3회 평균이고 단위는 프레임당 `ServerReplicateActors` ms, 호출은 연결당 `ReplicateActor` 횟수, 검토는 `Prioritize_InnerLoop`가 프레임에 본 항목 수다.
+Cell 크기, 버킷 수, 갱신 주기, 우선순위 스케일, 채널 타임아웃이 각각 무엇을 바꾸는지 소스에서 확인하고, OpenWorld 그래프로 하나씩 바꿔 가며 쟀다. 조건은 Uniform 분포, 액터 5,000개, 클라이언트 2개이고 기준값은 Cell 100 m, 버킷 3개, `NetUpdateFrequency` 100, `DistancePriorityScale` 1, `StarvationPriorityScale` 1, `ActorChannelFrameTimeout` 4다. 각 3회 평균이고 단위는 프레임당 `ServerReplicateActors` ms, 호출은 연결당 `ReplicateActor` 횟수, 검토는 `Prioritize_InnerLoop`가 프레임에 본 항목 수다.
 
 | 설정 | 값 | ms | 호출 | 채널 | 검토 |
 | --- | --- | --- | --- | --- | --- |
@@ -323,9 +323,9 @@ gather가 끝나면 `ReplicateActorListsForConnections_Default`가 리스트를 
 
 설정마다 소스에서 하는 일, 측정에서 보인 것, 언제 만지는지를 적는다.
 
-`CellSize`는 액터 하나가 등록되는 셀 수(Cull Distance 150 m에 25 m 셀이면 12×12 또는 13×13), dynamic 액터의 셀 갱신 빈도, viewer 셀에 섞이는 Cull Distance 밖 액터 수를 정한다. 측정에서는 25 m와 400 m 모두 0.05 ms 안이고 400 m에서 검토 항목만 두 배다. Cull Distance와 같은 자릿수로 두고 `NET_PrepareReplication`과 검토 항목 수를 보며 조정한다.
+`CellSize`는 액터 하나가 등록되는 Cell 수(Cull Distance 150 m에 25 m Cell이면 12×12 또는 13×13), dynamic 액터의 Cell 갱신 빈도, viewer Cell에 섞이는 Cull Distance 밖 액터 수를 정한다. 측정에서는 25 m와 400 m 모두 0.05 ms 안이고 400 m에서 검토 항목만 두 배다. Cull Distance와 같은 자릿수로 두고 `NET_PrepareReplication`과 검토 항목 수를 보며 조정한다.
 
-버킷 수는 `ActorListFrequencyBuckets`가 셀의 dynamic 액터를 나눠 `ReplicationFrameNum % NumBuckets`번 버킷만 돌려주는 단위다. dynamic 액터 주기의 하한이고, `ReplicationPeriodFrame`과 겹치면 주기를 버킷 수의 배수로 올림한 값이 실제 간격이다(버킷 3에 주기 4면 6프레임). 1개면 호출 33회이고 Cluster에서는 4.48 ms와 9.89 ms를 가른다. Cull Distance 안에 dynamic 액터가 많을 때 가장 먼저 만지되, 30 Hz에 3개면 dynamic 액터가 10 Hz라 이동 보간이 감당하는지 클라이언트에서 확인한다.
+버킷 수는 `ActorListFrequencyBuckets`가 Cell의 dynamic 액터를 나눠 `ReplicationFrameNum % NumBuckets`번 버킷만 돌려주는 단위다. dynamic 액터 주기의 하한이고, `ReplicationPeriodFrame`과 겹치면 주기를 버킷 수의 배수로 올림한 값이 실제 간격이다(버킷 3에 주기 4면 6프레임). 1개면 호출 33회이고 Cluster에서는 4.48 ms와 9.89 ms를 가른다. Cull Distance 안에 dynamic 액터가 많을 때 가장 먼저 만지되, 30 Hz에 3개면 dynamic 액터가 10 Hz라 이동 보간이 감당하는지 클라이언트에서 확인한다.
 
 `NetUpdateFrequency`는 초기화 때 CDO 값으로 `RoundToInt(NetServerMaxTickRate / NetUpdateFrequency)`를 `ReplicationPeriodFrame`에 쓰고 그 뒤로는 프레임 수로만 센다. 런타임 `SetNetUpdateFrequency`는 반영되지 않고(`Net.RepGraph.SetPeriodFrame`은 클래스·액터와 명령을 보낸 연결의 값을 고친다) `MinNetUpdateFrequency`의 적응형 주기도 없다. 100·10·2에서 호출은 21·14·8회, 시간은 0.35·0.32·0.28 ms로 호출보다 완만하게 준다. 클래스별 송신 횟수를 정하는 값이고 서버 프레임 레이트보다 낮을 때만 뜻이 있다.
 
@@ -381,13 +381,13 @@ static·dynamic을 가르는 것은 프로젝트의 클래스 라우팅 테이�
 | Player Pawn | 100명. 계속 움직이고 매 프레임 바뀜 | Grid의 dynamic 리스트. 이동은 Fast Shared Path |
 | AI Pawn | 좀비, 야생동물. 수백 개, 움직임 | Grid의 dynamic 리스트. 거리별 빈도 조절 |
 | 탈것과 탑승물 | 탈것과 탈것의 무기 | 탈것은 dynamic, 무기는 dependent actor |
-| 발사체 | 총알, 수류탄. 짧게 살고 많이 생김 | dynamic 리스트, 셀 재구축 금지 목록 |
+| 발사체 | 총알, 수류탄. 짧게 살고 많이 생김 | dynamic 리스트, Cell 재구축 금지 목록 |
 | 전역 상태 | GameState, 안전지대. 모두에게 항상 필요 | AlwaysRelevant 노드 |
 | 스쿼드 | 4인 스쿼드. 거리와 무관하게 서로 보여야 함 | Team Node |
 | 본인 소유 | 인벤토리, PlayerController. owner에게만 | 연결별 AlwaysRelevant 노드 |
 | PlayerState | 100명분. 모두에게 필요하지만 느려도 됨 | 빈도 제한 노드 |
 
-측정에 쓴 `UOpenWorldReplicationGraph`는 Lyra 5.8.3의 구조를 바탕으로 이 표를 구현한 것이다. Lyra 자체는 `ULyraReplicationGraphSettings`의 `bDisableReplicationGraph`가 기본 true라 샘플을 켜도 리플리케이션 그래프는 꺼져 있고, 켜면 셀 100 m, 버킷 3개, 파괴 정보 거리 300 m, Fast Shared Path 켬(10 KB/s, Cull Distance의 80%)이 기본값이다. 클래스마다 `Spatialize_Static`, `Spatialize_Dynamic`, `Spatialize_Dormancy`, `RelevantAllConnections`, `RelevantOwnerConnection`, `NotRouted` 중 하나를 정하고, 레거시 플래그에서 기본값을 유도한 뒤 프로젝트 설정으로 덮어쓴다.
+측정에 쓴 `UOpenWorldReplicationGraph`는 Lyra 5.8.3의 구조를 바탕으로 이 표를 구현한 것이다. Lyra 자체는 `ULyraReplicationGraphSettings`의 `bDisableReplicationGraph`가 기본 true라 샘플을 켜도 리플리케이션 그래프는 꺼져 있고, 켜면 Cell 100 m, 버킷 3개, 파괴 정보 거리 300 m, Fast Shared Path 켬(10 KB/s, Cull Distance의 80%)이 기본값이다. 클래스마다 `Spatialize_Static`, `Spatialize_Dynamic`, `Spatialize_Dormancy`, `RelevantAllConnections`, `RelevantOwnerConnection`, `NotRouted` 중 하나를 정하고, 레거시 플래그에서 기본값을 유도한 뒤 프로젝트 설정으로 덮어쓴다.
 
 - `bAlwaysRelevant`면 `RelevantAllConnections`
 - Lyra는 `bOnlyRelevantToOwner`와 `bNetUseOwnerRelevancy` 클래스를 `NotRouted`로 두고, 연결별 노드가 PlayerController와 Pawn, PlayerState만 직접 끌어온다. 측정용 그래프는 그 대신 `RelevantOwnerConnection` 라우팅을 두었다
@@ -616,7 +616,7 @@ Team Node는 같은 팀의 연결들이 공유하는 노드라 전역 노드 목
 1. 리플리케이션 그래프 없이 `stat game`이나 Insights로 검토 비용과 리플리케이션 비용의 비율을 잰다. 이 수치가 없으면 도입 뒤에 무엇이 나아졌는지 말할 수 없다.
 2. `UBasicReplicationGraph`로 켜고 같은 조건을 다시 잰다.
 3. 커스텀 그래프는 클래스 라우팅 테이블부터 만든다. 앞의 범주 표대로 나누고, 모르는 클래스는 dynamic으로 둔다.
-4. 버킷 수와 `NetUpdateFrequency`로 보내는 횟수를 정하고, `Net.RepGraph.PrintAll`로 Passed 목록이 기대한 액터로만 차 있는지 확인한다. 셀 크기와 우선순위 스케일은 측정 없이 만지지 않는다.
+4. 버킷 수와 `NetUpdateFrequency`로 보내는 횟수를 정하고, `Net.RepGraph.PrintAll`로 Passed 목록이 기대한 액터로만 차 있는지 확인한다. Cell 크기와 우선순위 스케일은 측정 없이 만지지 않는다.
 5. 부록 A의 버그를 피한다. dormant 직후의 reliable multicast, Seamless Travel 중의 multicast, 옮기는 static 액터, `bNetTemporary`, 끊긴 연결의 dormancy 사본, 멀어진 뒤 파괴된 dormant 액터다.
 
 비용도 있다. 플러그인은 `IsBetaVersion: true`로 선언돼 있고 Iris와 양립하지 않으며, 클래스 라우팅은 액터 클래스가 늘 때마다 유지보수 대상이고 잘못 라우팅된 액터는 조용히 보이지 않는다. 그래서 2번에서 멈추는 것도 선택이다. Basic 그래프는 측정에서 커스텀 그래프와 같은 자릿수였고, Team Node와 owner 변경이 필요 없는 게임이라면 그것으로 충분하다.
@@ -684,8 +684,8 @@ Fortnite는 2024년 4월에 Iris로 전환했다고 Unreal Fest Orlando 2025에�
 
 ### static으로 넣은 액터를 옮기면 보이지 않는다
 
-- 현상: 스폰 직후 위치를 바꾸는 액터, 플레이어가 집어서 옮기는 소품을 static으로 두면 옛 셀에 남아 끝까지 보이지 않는다. 포럼과 블로그에 "static 액터가 뭉텅이로 사라진다"는 보고가 반복되는 이유로 보인다.
-- 원인: `AddActor_Static`은 추가 시점의 위치로 셀을 정하고 다시 계산하지 않는다. 깨워도 소용없다. Grid는 `AddActor_Dormancy`로 들어온 액터의 dormancy 변화만 구독하므로, `Spatialize_Dormancy`로 넣은 액터는 `SetNetDormancy(DORM_Awake)`로 깨우면 dynamic 리스트로 옮겨져 다음 `PrepareForReplication`에서 새 셀에 들어가지만 `Spatialize_Static`으로 넣은 액터는 깨워도 옛 셀에 남고, 액터 정보에 캐시된 `WorldLocation`도 갱신되지 않아 거리 검사까지 옛 위치로 한다. `FlushNetDormancy`는 연결별 dormancy 사본만 고치고 셀은 옮기지 않는다.
+- 현상: 스폰 직후 위치를 바꾸는 액터, 플레이어가 집어서 옮기는 소품을 static으로 두면 옛 Cell에 남아 끝까지 보이지 않는다. 포럼과 블로그에 "static 액터가 뭉텅이로 사라진다"는 보고가 반복되는 이유로 보인다.
+- 원인: `AddActor_Static`은 추가 시점의 위치로 Cell을 정하고 다시 계산하지 않는다. 깨워도 소용없다. Grid는 `AddActor_Dormancy`로 들어온 액터의 dormancy 변화만 구독하므로, `Spatialize_Dormancy`로 넣은 액터는 `SetNetDormancy(DORM_Awake)`로 깨우면 dynamic 리스트로 옮겨져 다음 `PrepareForReplication`에서 새 Cell에 들어가지만 `Spatialize_Static`으로 넣은 액터는 깨워도 옛 Cell에 남고, 액터 정보에 캐시된 `WorldLocation`도 갱신되지 않아 거리 검사까지 옛 위치로 한다. `FlushNetDormancy`는 연결별 dormancy 사본만 고치고 Cell은 옮기지 않는다.
 - 대처: 옮길 수 있는 소품은 `Spatialize_Dormancy`로 두고 집을 때 깨우고 놓을 때 다시 재운다. 이미 static으로 등록한 액터를 옮겨야 하면 노드에서 빼고 다시 넣는다.
 
 ![](./images/unreal-replication-graph/diagram-static-move.webp)
@@ -701,7 +701,7 @@ Fortnite는 2024년 4월에 Iris로 전환했다고 Unreal Fest Orlando 2025에�
 | 잠든 소품을 옮기고 `FlushNetDormancy` | 측정 안 함 | 0 | 측정 안 함 |
 | 잠든 소품을 `DORM_Awake`로 깨우고 옮김 | 측정 안 함 | 5 | 0 |
 
-static으로 넣은 소품은 깨어 있든 깨우든 옛 셀에 남아 끝까지 보이지 않는다. dormancy 경로도 잠든 채로 옮기면 같다. flush는 연결별 dormancy 사본에 액터를 다시 넣을 뿐 셀을 옮기지 않는다. `DORM_Awake`로 깨워 옮긴 경우만 다음 `PrepareForReplication`부터 5개가 보였다.
+static으로 넣은 소품은 깨어 있든 깨우든 옛 Cell에 남아 끝까지 보이지 않는다. dormancy 경로도 잠든 채로 옮기면 같다. flush는 연결별 dormancy 사본에 액터를 다시 넣을 뿐 Cell을 옮기지 않는다. `DORM_Awake`로 깨워 옮긴 경우만 다음 `PrepareForReplication`부터 5개가 보였다.
 
 4.24 포럼 보고에 있던 "`Spatialize_Static` 액터를 파괴하면 ensure가 난다"는 5.8.3에서 소품 10개를 측정 중에 `Destroy`해도 재현되지 않았다. 그 뒤 수정된 것으로 보인다.
 
@@ -711,7 +711,7 @@ static으로 넣은 소품은 깨어 있든 깨우든 옛 셀에 남아 끝까�
 
 - 현상: `UReplicationGraph::AddNetworkActor`는 `bNetTemporary` 액터에 대해 ensure를 내고(5.4 릴리스 노트의 "Ensure when an actor is replicated with bNetTemporary set"), 그 뒤에는 2019년 포럼의 관찰대로 `bNetTemporary`를 무시하고 수백 번 리플리케이션한다.
 - 원인: `bNetTemporary` 액터의 첫 번치는 `bClose`가 켜져 있어 채널을 열면서 닫고, 기본 드라이버는 `SentTemporaries`로 그 액터를 다시 고려하지 않는다(`Engine/Private/DataChannel.cpp`, `NetDriver.cpp`). 리플리케이션 그래프는 이 목록을 보지 않으므로 닫힌 채널이 정리되면 다음 버킷 차례에 채널을 새로 열어 다시 보낸다.
-- 대처: 발사체는 `bNetTemporary` 대신 짧은 수명의 dynamic 액터로 두고 셀 재구축 금지 목록에 넣는다.
+- 대처: 발사체는 `bNetTemporary` 대신 짧은 수명의 dynamic 액터로 두고 Cell 재구축 금지 목록에 넣는다.
 
 <details>
 <summary>랩 재현</summary>
@@ -729,9 +729,9 @@ ReplicationGraph does not support bNetTemporary. Actor: RepGraphLabProjectile_0 
 
 ### 연결이 끊겨도 남는 dormancy 사본
 
-- 현상: 연결이 끊겨도 셀의 dormancy 노드는 그 연결의 사본을 가지고 있다. 랩에서는 재접속 8번에 사본이 3개에서 17개로 늘었고, 정리를 켜면 6개까지 줄되 톱니 모양으로 오르내렸다.
-- 원인: 기본값 `Net.RepGraph.DormancyNodeObsoleteBehavior` 0은 사본을 지우지 않는다. Epic 지원 포럼의 답변은 그 이유로 멀리 간 클라이언트의 add/remove 반복이 만드는 프레임 스파이크를 든다. 정리를 켜도 즉시는 아니다. 떼어내는 코드는 `CallFunctionOnValidConnectionNodes` 안에만 있어 그 셀의 dormancy 노드에 액터가 추가·제거되거나 flush될 때만 돌고 gather 때는 돌지 않는다.
-- 대처: `DormancyNodeObsoleteBehavior`를 1로 두면 연결 객체가 사라진 사본을 지우고, `SetNumFramesUntilObsolete`를 양수로 두면 살아 있지만 오래 gather되지 않은 연결의 사본까지 지운다. 접속·해제가 잦은 서버라면 두 설정을 같이 켜고, 셀마다 dormant 액터가 많다면 사본의 메모리까지 같이 본다.
+- 현상: 연결이 끊겨도 Cell의 dormancy 노드는 그 연결의 사본을 가지고 있다. 랩에서는 재접속 8번에 사본이 3개에서 17개로 늘었고, 정리를 켜면 6개까지 줄되 톱니 모양으로 오르내렸다.
+- 원인: 기본값 `Net.RepGraph.DormancyNodeObsoleteBehavior` 0은 사본을 지우지 않는다. Epic 지원 포럼의 답변은 그 이유로 멀리 간 클라이언트의 add/remove 반복이 만드는 프레임 스파이크를 든다. 정리를 켜도 즉시는 아니다. 떼어내는 코드는 `CallFunctionOnValidConnectionNodes` 안에만 있어 그 Cell의 dormancy 노드에 액터가 추가·제거되거나 flush될 때만 돌고 gather 때는 돌지 않는다.
+- 대처: `DormancyNodeObsoleteBehavior`를 1로 두면 연결 객체가 사라진 사본을 지우고, `SetNumFramesUntilObsolete`를 양수로 두면 살아 있지만 오래 gather되지 않은 연결의 사본까지 지운다. 접속·해제가 잦은 서버라면 두 설정을 같이 켜고, Cell마다 dormant 액터가 많다면 사본의 메모리까지 같이 본다.
 
 <details>
 <summary>랩 재현</summary>
@@ -745,7 +745,7 @@ ReplicationGraph does not support bNetTemporary. Actor: RepGraphLabProjectile_0 
 
 ![](./images/unreal-replication-graph/chart-dormancy-nodes.webp)
 
-기본값에서는 재접속마다 2개씩 늘고 하나도 줄지 않는다. 정리 옵션을 켜면 조용한 셀의 사본이 다음 액터 변화가 있을 때까지 남아, 노드 수가 9에서 5로, 7에서 2로 떨어졌다가 다시 쌓이는 톱니 모양이 됐다.
+기본값에서는 재접속마다 2개씩 늘고 하나도 줄지 않는다. 정리 옵션을 켜면 조용한 Cell의 사본이 다음 액터 변화가 있을 때까지 남아, 노드 수가 9에서 5로, 7에서 2로 떨어졌다가 다시 쌓이는 톱니 모양이 됐다.
 
 </details>
 
@@ -753,7 +753,7 @@ ReplicationGraph does not support bNetTemporary. Actor: RepGraphLabProjectile_0 
 
 - 현상: 클라이언트가 한 번 받은 뒤 잠든 액터(바닥 아이템)를 그 클라이언트가 멀리 간 뒤 서버가 파괴하면, 클라이언트에는 그 액터가 그대로 남는다. 랩에서 플레이어를 500 m 밖으로 옮기고 원래 자리의 잠든 loot 100개를 파괴하자 리플리케이션 그래프에서는 클라이언트의 loot가 500개 그대로였고 기본 드라이버에서는 400개가 됐다. Basic 그래프도 남는다.
 - 원인: 채널이 닫힐 때 relevancy 사유면 클라이언트가 액터를 지우지만 dormancy 사유면 남겨 두므로(`UActorChannel::CleanUp`), 잠든 액터는 채널 없이 클라이언트에 있다. 그 액터가 파괴되면 기본 드라이버는 그 연결에서 dormant였던 액터의 파괴 정보를 거리와 무관하게 보낸다(`NotifyActorDestroyed`의 `DormantConnections` 검사). 리플리케이션 그래프는 `DestructInfoMaxDistanceSquared`(기본 150 m, Lyra와 측정용 그래프는 300 m) 안의 viewer에게만 보내고, 밖이면 `OutOfRangeDestroyedActors`에 두었다가 viewer가 그만큼 가까워져야 보낸다.
-- 대처: 돌아오면 지워진다. 랩에서 플레이어를 되돌리자 100개가 사라졌다. 멀리서도 지워져야 하는 액터는 `DestructInfoMaxDist`를 늘리거나(측정용 그래프에서 1 km로 두자 바로 사라졌다) 클래스별로 `SetActorDestructionInfoToIgnoreDistanceCulling`을 건다. 잠든 채 셀을 벗어나는 dynamic 액터의 정리는 다른 경로(`Net.RepGraph.DormantDynamicActorsDestruction`, 기본 0)라 따로 켜야 한다.
+- 대처: 돌아오면 지워진다. 랩에서 플레이어를 되돌리자 100개가 사라졌다. 멀리서도 지워져야 하는 액터는 `DestructInfoMaxDist`를 늘리거나(측정용 그래프에서 1 km로 두자 바로 사라졌다) 클래스별로 `SetActorDestructionInfoToIgnoreDistanceCulling`을 건다. 잠든 채 Cell을 벗어나는 dynamic 액터의 정리는 다른 경로(`Net.RepGraph.DormantDynamicActorsDestruction`, 기본 0)라 따로 켜야 한다.
 
 <details>
 <summary>랩 재현</summary>
@@ -840,8 +840,8 @@ PlayerState_0                            1.9500 (Dist: 77347.03 | 1.00) (FramesL
 
 읽는 법은 다음과 같다.
 
-- 한 액터가 여러 셀에 나오는 것이 정상이다.
-- 셀의 dormancy 사본이 마스터와 같은 수라면 그 사본에서 아직 빠진 액터가 없다는 뜻이다(새 연결, flush 직후, dormancy 완료 전).
+- 한 액터가 여러 Cell에 나오는 것이 정상이다.
+- Cell의 dormancy 사본이 마스터와 같은 수라면 그 사본에서 아직 빠진 액터가 없다는 뜻이다(새 연결, flush 직후, dormancy 완료 전).
 - `[Skipped Actors]`에는 거리나 주기 같은 사유가 붙고, 거리·프레임 상세는 개발 빌드에서만 나온다.
 - `[Passed Actors]`는 점수 오름차순이다. 본인 Pawn은 viewer 규칙으로 `-MAX_FLT`이고, 같은 Pawn이 여러 번 나오는 것은 Grid, Team Node, 연결 노드가 각각 돌려줬기 때문이다.
 - Passed 목록이 기대한 액터로만 차 있는지 보는 것이 라우팅 검증이다.

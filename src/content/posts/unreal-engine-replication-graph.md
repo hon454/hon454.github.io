@@ -4,7 +4,7 @@ published: 2026-10-10
 updated: 2026-10-13
 author: Jihoon Jeon
 image: ../../assets/images/posts/unreal-engine-replication-graph-cover.webp
-description: "UE 5.8.3 소스와 테스트 프로젝트 실측으로 Replication Graph가 기본 드라이버의 무엇을 줄이고 무엇을 줄이지 않는지 확인한다. 액터 5,000개와 클라이언트 16개까지의 측정, 효과가 있는 설정값과 이름과 반대로 동작하는 설정값, 커스텀 그래프의 라우팅과 Team Node, 5.8.3에서 재현한 버그 네 가지, 도입 기준과 Iris와의 관계를 다룬다."
+description: "UE 5.8.3 소스와 테스트 프로젝트 실측으로 Replication Graph가 기본 드라이버의 무엇을 줄이고 무엇을 줄이지 않는지 확인한다. 액터 5,000개와 클라이언트 16개까지의 측정, 효과가 있는 설정값과 이름과 반대로 동작하는 설정값, 커스텀 그래프의 라우팅과 Team Node, 5.8.3에서 재현한 버그 다섯 가지, 도입 기준과 Iris와의 관계를 다룬다."
 tags:
   - unreal-engine
   - networking
@@ -45,7 +45,7 @@ lang: ko
 
 비용은 두 번째 단계에 집중된다. `IsNetRelevantFor`와 `GetNetPriority`는 가상 함수라 엔진은 답이 언제 바뀌는지 알 수 없고, 매 프레임 모든 액터 × 모든 연결에 대해 다시 부른다. relevancy 검사를 통과한 액터만 세 번째 단계에 들어가므로, 넓은 맵에 액터가 흩어진 게임일수록 두 번째 단계의 비용이 실제 송신 작업보다 커진다. 액터가 모두 한곳에 몰려 모든 연결에 관련 있으면 두 번째 단계는 어차피 다 통과하고 세 번째 단계가 지배한다.
 
-리플리케이션 그래프는 `UReplicationDriver`를 구현한 `UReplicationGraph`다. 서버의 `UNetDriver`가 리플리케이션 드라이버를 가지고 있으면 `ServerReplicateActors`는 CSV 통계 범위만 열고 바로 `ReplicationDriver->ServerReplicateActors`로 넘긴다. consider list 구성과 우선순위 계산은 돌지 않고, 플러그인 안에서 `IsNetRelevantFor`를 부르는 곳은 디버그 액터의 오버라이드뿐이다. 프로퍼티 비교와 직렬화는 그대로 `UActorChannel::ReplicateActor`가 한다.
+리플리케이션 그래프는 `UReplicationDriver`를 구현한 `UReplicationGraph`다. 서버의 `UNetDriver`가 리플리케이션 드라이버를 가지고 있으면 `ServerReplicateActors`는 stat·CSV 범위를 열고 메트릭을 리셋한 뒤 바로 `ReplicationDriver->ServerReplicateActors`로 넘긴다. consider list 구성과 우선순위 계산은 돌지 않고, 플러그인 안에서 `IsNetRelevantFor`를 부르는 곳은 디버그 액터의 오버라이드뿐이다. 프로퍼티 비교와 직렬화는 그대로 `UActorChannel::ReplicateActor`가 한다.
 
 리플리케이션 그래프는 프레임을 세 단계로 처리한다.
 
@@ -109,7 +109,7 @@ Unreal Insights에는 리플리케이션 그래프 전용 트랙이 없지만 `-
 
 ① `UReplicationGraph_ServerReplicateActors` 4.56 ms 아래에 `NET_PrepareReplication`(Grid의 dynamic 액터 Cell 갱신이 여기)이 한 번 오고, 그 뒤에 연결마다 `NET_ReplicateActors_GatherForConnection`과 `NET_ReplicateActors_ProcessGatheredLists`(안에 `PrioritizeForConnection`과 `ReplicateActorsForConnection`), `NET_ReplicateActors_LookForNonRelevantChannels`가 이어진다. ② ③은 두 연결의 `ProcessGatheredLists`로 2.69 ms와 1.61 ms다. 프레임의 나머지 약 41 ms는 틱 레이트 대기다.
 
-타이머의 호출 수도 읽을 거리다. `Prioritize_InnerLoop`의 호출 수가 검토한 액터 수이고 `Replicate Actor Time`의 호출 수가 보낸 액터 수다. `RG_QUICK_SCOPE_CYCLE_COUNTER`로 선언된 `Prioritize_InnerLoop*`, `ReplicateSingleActor` 등은 Test·Shipping에서 컴파일되지 않는다.
+타이머의 호출 수도 읽을 거리다. `Prioritize_InnerLoop`의 호출 수가 검토한 액터 수이고 `Replicate Actor Time`의 호출 수가 보낸 액터 수다. `RG_QUICK_SCOPE_CYCLE_COUNTER`로 선언된 `Prioritize_InnerLoop*`, `NET_ReplicateActors_ReplicateSingleActor` 등은 Test·Shipping에서 컴파일되지 않는다.
 
 ### 드라이버와 분포
 
@@ -123,7 +123,7 @@ Unreal Insights에는 리플리케이션 그래프 전용 트랙이 없지만 `-
 | NearPlayers | 6.47 ± 0.47 | 2.25 ± 0.02 | 2.84 ± 0.02 |
 | Uniform | 2.54 ± 0.20 | 0.40 ± 0.01 | 0.35 ± 0.02 |
 
-기본 드라이버의 NearPlayers와 Uniform은 런마다 서버 프레임 시간이 41–47 ms로 흔들려 편차가 ±8%이고, 나머지 조건은 ±2% 안이다. 같은 기본 드라이버 Uniform 조건을 다른 측정 세트에서 다시 돌리면 2.05–2.23 ms가 나와, 표의 2.54는 가장 높은 세트의 값이다. 아래의 단계별 분해는 위의 Insights 타이머로 했고, 트레이스가 있는 첫 번째 런 하나의 값이라 표의 평균과 조금 다르다.
+기본 드라이버의 NearPlayers와 Uniform은 런마다 서버 프레임 시간이 41–47 ms로 흔들려 편차가 ±8%이고, 나머지 조건은 ±5% 안이다. 같은 기본 드라이버 Uniform 조건을 다른 측정 세트에서 다시 돌리면 2.05–2.23 ms가 나와, 표의 2.54는 가장 높은 세트의 값이다. 아래의 단계별 분해는 위의 Insights 타이머로 했고, 트레이스가 있는 첫 번째 런 하나의 값이라 표의 평균과 조금 다르다.
 
 Uniform에서 리플리케이션 그래프는 기본 드라이버의 7분의 1이다. 첫 런의 Insights 타이머로 나눈 프레임당 ms는 다음과 같다.
 
@@ -134,7 +134,7 @@ Uniform에서 리플리케이션 그래프는 기본 드라이버의 7분의 1�
 | 리플리케이션 | 0.2 (프레임당 67회) | 0.13 |
 | 합계 | 2.8 | 0.3 |
 
-기본 드라이버는 5,265개 중 연결당 31개쯤만 보내는데 비용의 90% 이상이 보낼지 말지를 정하는 데 든다. OpenWorld 그래프는 Grid가 viewer Cell의 리스트만 돌려주므로 나머지 5,100개는 검토 대상이 아니다.
+기본 드라이버는 5,265개 중 연결당 30개 남짓만 보내는데 비용의 90% 이상이 보낼지 말지를 정하는 데 든다. OpenWorld 그래프는 Grid가 viewer Cell의 리스트만 돌려주므로 나머지 5,100개는 검토 대상이 아니다.
 
 모든 액터가 모든 연결에 관련 있는 Cluster에서도 OpenWorld 그래프가 기본 드라이버의 55%, Basic이 43%다. 다만 이것은 판별 비용의 차이가 아니라 보내는 횟수의 차이다.
 
@@ -244,7 +244,7 @@ Push Model은 리플리케이션 그래프 위에서 그대로 동작하지만 �
 | `AddActor_Dynamic` | 매 프레임 `PrepareForReplication`에서 | 매 프레임 `GetActorLocation` | 움직이는 액터 |
 | `AddActor_Dormancy` | `bWantsToBeDormant`면 static, 아니면 dynamic으로 넣고 dormancy 변경 이벤트를 구독 | dormant일 때 없음 | 잠들 때는 안 움직이고 깨면 움직이는 액터 |
 
-액터가 들어가는 Cell은 하나가 아니다. `GetCellInfoForActor`는 위치를 중심으로 Cull Distance만큼의 정사각형을 만들어 그 사각형이 겹치는 모든 Cell에 넣는다. Cull Distance 150 m에 Cell 100 m면 끝 인덱스를 포함하므로 한 액터가 3×3 또는 4×4 Cell에 들어간다.
+액터가 들어가는 Cell은 하나가 아니다. `GetCellInfoForActor`는 위치를 중심으로 Cull Distance만큼의 정사각형을 만들어 그 사각형이 겹치는 모든 Cell에 넣는다. Cull Distance 150 m에 Cell 100 m면 사각형 한 변이 300 m라 한 액터가 4×4 Cell에 들어간다(Grid 가장자리에서만 줄어든다).
 
 대신 gather는 viewer가 서 있는 Cell 하나만 본다. 이웃 Cell을 찾아다니는 대신 액터 쪽이 미리 퍼져 있는 구조다. 여기에 쓰이는 Cull Distance는 연결별 값이 아니라 액터 정보의 `Settings.GetCullDistance()`다.
 
@@ -272,7 +272,7 @@ gather가 끝나면 `ReplicateActorListsForConnections_Default`가 리스트를 
 ![](./images/unreal-replication-graph/diagram-prioritize-checks.webp)
 
 - dormant 검사가 전역 정보 조회보다 앞에 있어서, 잠든 액터의 프레임당 비용은 맵 조회 하나다.
-- 거리 컬링은 `DistancePriorityScale > 0`인 클래스만 거친다. 베이스 그래프는 `AInfo`와 `APlayerController`를 0으로 두지만 Basic과 Lyra식 초기화가 모든 클래스를 1로 덮어쓰므로, 실제로 이 액터들을 지키는 것은 Cull Distance 0이다(0이면 검사를 건너뛴다). `bForceCullDistanceToZero`가 켜진 액터도 빠지지 않는다.
+- 거리 컬링은 `DistancePriorityScale > 0`인 클래스만 거친다. `UReplicationGraph` 기본 구현(이하 베이스 그래프)은 `AInfo`와 `APlayerController`를 0으로 두지만 Basic과 Lyra식 초기화가 모든 클래스를 1로 덮어쓰므로, 실제로 이 액터들을 지키는 것은 Cull Distance 0이다(0이면 검사를 건너뛴다). `bForceCullDistanceToZero`가 켜진 액터도 빠지지 않는다.
 - 채널 닫힘 프레임은 리플리케이션이 아니라 거리 검사를 통과한 시점에 갱신된다.
 
 점수는 낮을수록 먼저 리플리케이션된다. 정렬이 오름차순이고 중요도 보정이 모두 뺄셈이기 때문이다.
@@ -284,7 +284,7 @@ gather가 끝나면 `ReplicateActorListsForConnections_Default`가 리스트를 
 | starvation | `1 - Clamp((FrameNum - LastRepFrameNum) × StarvationPriorityScale / MaxFramesSinceLastRep, 0, 1)` | 0–1. `MaxFramesSinceLastRep`는 20. 오래 못 받을수록 0에 가까움 |
 | 잠들려는 액터 | `bWantsToBeDormant`이고 한 번 이상 리플리케이션됐으면 | −1.5 |
 | `ForceNetUpdate` | `ForceNetUpdateFrame > LastRepFrameNum` | −1 |
-| 본인 viewer·ViewTarget | `Net.ForceConnectionViewerPriority`(기본 1)면 | −MAX_FLT, 아니면 −10 |
+| 본인 viewer·ViewTarget | `Net.RepGraph.ForceConnectionViewerPriority`(기본 1)면 | −MAX_FLT, 아니면 −10 |
 
 - `AccumulatedNetPriorityBias`는 클수록 덜 중요하다. 이름만 보고 양수를 넣으면 반대로 동작한다.
 - 잠들려는 액터의 −1.5는 주석에 이유가 있다. dormancy는 마지막 리플리케이션이 ack돼야 완료되므로, 새로 스폰된 액터들에 계속 밀리면 영영 잠들지 못한다.
@@ -303,7 +303,7 @@ gather가 끝나면 `ReplicateActorListsForConnections_Default`가 리스트를 
 
 ## 설정값이 실제로 바꾸는 것
 
-Cell 크기, 버킷 수, 갱신 주기, 우선순위 스케일, 채널 타임아웃이 각각 무엇을 바꾸는지 소스에서 확인하고, OpenWorld 그래프로 하나씩 바꿔 가며 쟀다. 조건은 Uniform 분포, 액터 5,000개, 클라이언트 2개이고 기준값은 Cell 100 m, 버킷 3개, `NetUpdateFrequency` 100, `DistancePriorityScale` 1, `StarvationPriorityScale` 1, `ActorChannelFrameTimeout` 4다. 각 3회 평균이고 단위는 프레임당 `ServerReplicateActors` ms, 호출은 연결당 `ReplicateActor` 횟수, 검토는 `Prioritize_InnerLoop`가 프레임에 본 항목 수다.
+Cell 크기, 버킷 수, 갱신 주기, 우선순위 스케일, 채널 타임아웃이 각각 무엇을 바꾸는지 소스에서 확인하고, OpenWorld 그래프로 하나씩 바꿔 가며 쟀다. 조건은 Uniform 분포, 액터 5,000개, 클라이언트 2개이고 기준값은 Cell 100 m, 버킷 3개, `NetUpdateFrequency` 100, `DistancePriorityScale` 1, `StarvationPriorityScale` 1, `ActorChannelFrameTimeout` 4다. 각 3회 평균이고 단위는 프레임당 `ServerReplicateActors` ms, 호출은 연결당 `ReplicateActor` 횟수, 채널은 두 연결에 열린 채널 수의 합(`Replication/NumOpenChannels`, 프레임 평균), 검토는 `Prioritize_InnerLoop`가 프레임에 본 항목 수다.
 
 | 설정 | 값 | ms | 호출 | 채널 | 검토 |
 | --- | --- | --- | --- | --- | --- |
@@ -323,7 +323,7 @@ Cell 크기, 버킷 수, 갱신 주기, 우선순위 스케일, 채널 타임아
 
 설정마다 소스에서 하는 일, 측정에서 보인 것, 언제 만지는지를 적는다.
 
-`CellSize`는 액터 하나가 등록되는 Cell 수(Cull Distance 150 m에 25 m Cell이면 12×12 또는 13×13), dynamic 액터의 Cell 갱신 빈도, viewer Cell에 섞이는 Cull Distance 밖 액터 수를 정한다. 측정에서는 25 m와 400 m 모두 0.05 ms 안이고 400 m에서 검토 항목만 두 배다. Cull Distance와 같은 자릿수로 두고 `NET_PrepareReplication`과 검토 항목 수를 보며 조정한다.
+`CellSize`는 액터 하나가 등록되는 Cell 수(Cull Distance 150 m에 25 m Cell이면 13×13), dynamic 액터의 Cell 갱신 빈도, viewer Cell에 섞이는 Cull Distance 밖 액터 수를 정한다. 측정에서는 25 m와 400 m 모두 0.05 ms 안이고 400 m에서 검토 항목만 두 배다. Cull Distance와 같은 자릿수로 두고 `NET_PrepareReplication`과 검토 항목 수를 보며 조정한다.
 
 버킷 수는 `ActorListFrequencyBuckets`가 Cell의 dynamic 액터를 나눠 `ReplicationFrameNum % NumBuckets`번 버킷만 돌려주는 단위다. dynamic 액터 주기의 하한이고, `ReplicationPeriodFrame`과 겹치면 주기를 버킷 수의 배수로 올림한 값이 실제 간격이다(버킷 3에 주기 4면 6프레임). 1개면 호출 33회이고 Cluster에서는 4.48 ms와 9.89 ms를 가른다. Cull Distance 안에 dynamic 액터가 많을 때 가장 먼저 만지되, 30 Hz에 3개면 dynamic 액터가 10 Hz라 이동 보간이 감당하는지 클라이언트에서 확인한다.
 
@@ -331,7 +331,7 @@ Cell 크기, 버킷 수, 갱신 주기, 우선순위 스케일, 채널 타임아
 
 `DynamicSpatialFrequency`는 거리와 시야 방향 존마다 주기를 보간해 gather 안에서 직접 리플리케이션한다. prioritize 단계를 거치지 않아 `DistancePriorityScale`과 `StarvationPriorityScale`이 효과가 없다. 기본 존은 `constexpr` 30 Hz 가정이고 `Net.RepGraph.DyanmicSpatialization.Reinit`(오타가 실제 이름)도 같은 30 Hz 기본값을 다시 만들 뿐이라, 틱이 다르면 프로젝트가 존과 비트 예산을 직접 구성한다. 측정에서 호출은 16회로 줄지만 gather가 0.01에서 0.07 ms로 늘어 0.40 ms다. Cull Distance 안의 dynamic 액터가 수백 개일 때 송신량을 줄이는 용도이고 CPU는 늘어난다. 존 표의 함정은 커스텀 그래프 절에 있다.
 
-`DistancePriorityScale`은 거리 점수의 가중치다. 거리 검사가 `if (DistancePriorityScale > 0)` 안에 있어 0이면 거리 컬링이 꺼지고, 측정에서 채널이 76에서 153으로, 호출이 34회로 늘었다. 거리 가중치만 끄려면 아주 작은 양수를 쓴다. 베이스 그래프가 `AInfo`와 `APlayerController`에 0을 두는 이유도 컬링 방지지만 Basic·Lyra식 초기화는 1로 덮어쓴다.
+`DistancePriorityScale`은 거리 점수의 가중치다. 거리 검사가 `if (DistancePriorityScale > 0)` 안에 있어 0이면 거리 컬링이 꺼지고, 측정에서 채널이 76에서 153으로, 호출이 34회로 늘었다. 거리 가중치만 끄려면 아주 작은 양수를 쓴다.
 
 `StarvationPriorityScale`은 오래 못 받은 액터를 앞으로 당기는 가중치다. 위 표에서 0으로 둬도 변화가 없었던 것은 포화가 없었기 때문이다. 포화돼서 뒤의 액터가 밀릴 때만 뜻이 있고, `Net.RepGraph.StarvedList`(마지막 리플리케이션 이후 프레임 수 순)로 확인한다. 포화 조건은 아래에서 따로 쟀다.
 
@@ -339,24 +339,24 @@ Cell 크기, 버킷 수, 갱신 주기, 우선순위 스케일, 채널 타임아
 
 ### 포화 조건
 
-위 측정은 클라이언트 rate 제한을 풀고 CPU만 쟀다. 포화가 나면 무엇이 달라지는지 보려고 AI와 탈것이 이동을 리플리케이션하게 해 Cluster에서 연결당 약 90 KB/s가 나가게 만들고, 클라이언트 rate를 30 KB/s로 제한했다(엔진 기본값은 100 KB/s). 각 3회다. "5초 안 갱신"은 클라이언트가 가진 AI 중 최근 5초 안에 갱신을 받은 비율이고, "전체 수신"은 접속 뒤 테스트 액터 5,200개를 다 받기까지 걸린 시간이다.
+위 측정은 클라이언트 rate 제한을 풀고 CPU만 쟀다. 포화가 나면 무엇이 달라지는지 보려고 AI와 탈것이 이동을 리플리케이션하게 해 Cluster에서 연결당 약 90 KB/s가 나가게 만들고, 클라이언트 rate를 30 KB/s로 제한했다(엔진 기본값은 100 KB/s). 각 3회다. "5초 안 갱신"은 클라이언트가 가진 AI 중 최근 5초 안에 갱신을 받은 비율이고, "전체 수신"은 접속 뒤 액터를 다 받기까지(클라이언트가 세는 5,250여 개 중 5,200개 기준) 걸린 시간이다.
 
 | 조건 | ms | 호출 | 송신 KB/s | 5초 안 갱신 | 전체 수신 |
 | --- | --- | --- | --- | --- | --- |
 | OpenWorld, 제한 없음 | 6.76 | 735 | 91.5 | 전부 | 1초 |
 | OpenWorld, 30 KB/s | 2.60 | 129 | 22.6 | 전부 | 12초 |
-| OpenWorld, 30 KB/s, `StarvationPriorityScale` 0 | 5.37 | 196 | 23.9 | 약 60% | 120초 뒤에도 62% |
+| OpenWorld, 30 KB/s, `StarvationPriorityScale` 0 | 5.37 | 196 | 23.9 | 약 40% | 120초 뒤에도 62% |
 | OpenWorld, 30 KB/s, `ActorDiscoveryBudget` 10 KB/s | 2.53 | 129 | 22.6 | 전부 | 8초 |
 | 기본 드라이버, 제한 없음 | 12.22 | 1,492 | 266 | 전부 | 1초 |
-| 기본 드라이버, 30 KB/s | 4.44 | 125 | 21.9 | 전부 | 120초 뒤에도 79% |
+| 기본 드라이버, 30 KB/s | 4.44 | 125 | 21.9 | 전부 | 120초 뒤에도 약 80% |
 
 이동을 리플리케이션하면 호출당 비용이 늘어 제한 없는 조건도 앞 표의 4.48 ms가 아니라 6.76 ms다. 포화되면 서버는 오히려 덜 일한다. 연결이 포화되면 `ReplicateActorsForConnection`이 정렬된 리스트의 앞부분만 보내고 멈추므로 호출이 735회에서 129회로, 시간이 6.76 ms에서 2.60 ms로 줄었다. 문제는 클라이언트 쪽에 생긴다.
 
-`StarvationPriorityScale`을 0으로 두면 가까운 액터가 매 프레임 앞자리를 차지해 나머지는 영영 밀린다. 120초 뒤에도 클라이언트는 액터의 62%만 받았고, 받은 AI 중 5초 안에 갱신된 것은 60%였다. 1이면 12초 안에 전부 받고 모든 AI가 5초 안에 갱신된다. 포화가 있는 서버에서 이 값은 성능이 아니라 공평성을 정한다.
+`StarvationPriorityScale`을 0으로 두면 가까운 액터가 매 프레임 앞자리를 차지해 나머지는 영영 밀린다. 120초 뒤에도 클라이언트는 액터의 62%만 받았고, 받은 AI 중 5초 안에 갱신된 것은 약 40%였다. 1이면 12초 안에 전부 받고 모든 AI가 5초 안에 갱신된다. 포화가 있는 서버에서 이 값은 성능이 아니라 공평성을 정한다.
 
-`Net.RepGraph.ActorDiscoveryBudget <KB/s>`는 새 채널을 여는 데이터를 연결의 일반 예산과 따로 센다. 기본값 0은 예산 없음이다. 10 KB/s를 주자 접속 직후 전체 액터를 받기까지의 시간이 12초에서 8초로 줄었고 정상 상태는 같았다. 접속 직후나 핫드롭처럼 수천 채널이 한꺼번에 열릴 때 쓰는 값이다.
+`Net.RepGraph.ActorDiscoveryBudget <KB/s>`는 상한이 아니라 면제다. 클라이언트가 스폰을 ack하기 전인 채널의 트래픽을 프레임당 그 양까지 연결의 송신량에서 빼 주어 포화 판정에 잡히지 않게 하고, 넘치는 몫은 일반 트래픽으로 센다. 콘솔 명령이고 기본값 0은 끔이다. 10 KB/s를 주자 접속 직후 전체 액터를 받기까지의 시간이 12초에서 8초로 줄었고 정상 상태는 같았다. 접속 직후나 핫드롭처럼 수천 채널이 한꺼번에 열릴 때 쓰는 값이다.
 
-기본 드라이버는 같은 제한에서 받은 AI는 거의 전부 갱신하지만 접속 뒤 120초가 지나도 액터의 79%만 받았다. 새 채널을 열어야 하는 액터가 뒤로 밀리는 것인데, 원인은 소스에서 따로 확인하지 않았다.
+기본 드라이버는 같은 제한에서 받은 AI는 거의 전부 갱신하지만 접속 뒤 120초가 지나도 액터의 80%쯤만 받았다. 새 채널을 열어야 하는 액터가 뒤로 밀리는 것인데, 원인은 소스에서 따로 확인하지 않았다.
 
 ## 커스텀 그래프: 라우팅 테이블, Team Node, 걸리는 것
 
@@ -408,11 +408,14 @@ enum class EClassRepNodeMapping : uint8
 	Spatialize_Dormancy,
 };
 
+static bool IsSpatialized(EClassRepNodeMapping Mapping) { return Mapping >= EClassRepNodeMapping::Spatialize_Static; }
+
 UCLASS()
 class UExampleReplicationGraph : public UReplicationGraph
 {
 	GENERATED_BODY()
 
+public:
 	virtual void InitGlobalActorClassSettings() override;
 	virtual void InitGlobalGraphNodes() override;
 	virtual void InitConnectionGraphNodes(UNetReplicationGraphConnection* RepGraphConnection) override;
@@ -420,11 +423,32 @@ class UExampleReplicationGraph : public UReplicationGraph
 	virtual void RouteRemoveNetworkActorToNodes(const FNewReplicatedActorInfo& ActorInfo) override;
 
 	EClassRepNodeMapping GetClassNodeMapping(UClass* Class) const;
+	void InitClassReplicationInfo(FClassReplicationInfo& Info, UClass* Class, bool bSpatialize) const;
 
 	UPROPERTY() TObjectPtr<UReplicationGraphNode_GridSpatialization2D> GridNode;
 	UPROPERTY() TObjectPtr<UReplicationGraphNode_ActorList> AlwaysRelevantNode;
 	TClassMap<EClassRepNodeMapping> ClassRepNodePolicies;
 	TMap<TWeakObjectPtr<UNetConnection>, TObjectPtr<UReplicationGraphNode_AlwaysRelevant_ForConnection>> ConnectionNodes;
+};
+
+// 모든 PlayerState를 프레임당 TargetActorsPerFrame개씩 돌려 보내는 노드 (공식 문서의 PlayerStateFrequencyLimiter)
+UCLASS()
+class UExampleNode_PlayerStateFrequencyLimiter : public UReplicationGraphNode
+{
+	GENERATED_BODY()
+
+public:
+	// 이 플래그가 없으면 InitNode가 PrepareForReplication 목록에 넣지 않아 노드가 아무것도 돌려주지 않는다 (Team Node 절 참고)
+	UExampleNode_PlayerStateFrequencyLimiter() { bRequiresPrepareForReplicationCall = true; }
+
+	virtual void NotifyAddNetworkActor(const FNewReplicatedActorInfo& Actor) override {}
+	virtual bool NotifyRemoveNetworkActor(const FNewReplicatedActorInfo& Actor, bool bWarnIfNotFound = true) override { return false; }
+	virtual bool NotifyActorRenamed(const FRenamedReplicatedActorInfo& Actor, bool bWarnIfNotFound = true) override { return false; }
+	virtual void PrepareForReplication() override;
+	virtual void GatherActorListsForConnection(const FConnectionGatherActorListParameters& Params) override;
+
+	int32 TargetActorsPerFrame = 2;
+	TArray<FActorRepListRefView> ReplicationActorLists;
 };
 ```
 
@@ -432,31 +456,61 @@ class UExampleReplicationGraph : public UReplicationGraph
 // ExampleReplicationGraph.cpp
 EClassRepNodeMapping UExampleReplicationGraph::GetClassNodeMapping(UClass* Class) const
 {
-	// 레거시 플래그에서 기본값을 유도한다. 프로젝트 설정으로 덮어쓰는 부분은 생략
-	const AActor* CDO = Class->GetDefaultObject<AActor>();
+	if (!Class) return EClassRepNodeMapping::NotRouted;
+
+	// 명시적으로 정한 클래스는 그대로
+	if (const EClassRepNodeMapping* Explicit = ClassRepNodePolicies.FindWithoutClassRecursion(Class)) return *Explicit;
+
+	const AActor* CDO = Cast<AActor>(Class->GetDefaultObject());
 	if (!CDO || !CDO->GetIsReplicated()) return EClassRepNodeMapping::NotRouted;
+
+	// 부모와 플래그가 같으면 부모의 매핑을 따른다. NotRouted로 둔 PlayerState의 서브클래스도 여기로 온다
+	if (const AActor* SuperCDO = Cast<AActor>(Class->GetSuperClass()->GetDefaultObject()))
+	{
+		if (SuperCDO->GetIsReplicated() == CDO->GetIsReplicated()
+			&& SuperCDO->bAlwaysRelevant == CDO->bAlwaysRelevant
+			&& SuperCDO->bOnlyRelevantToOwner == CDO->bOnlyRelevantToOwner
+			&& SuperCDO->bNetUseOwnerRelevancy == CDO->bNetUseOwnerRelevancy)
+		{
+			return GetClassNodeMapping(Class->GetSuperClass());
+		}
+	}
+
+	// 레거시 플래그에서 기본값을 유도한다. 프로젝트 설정으로 덮어쓰는 부분은 생략
 	if (CDO->bAlwaysRelevant && !CDO->bOnlyRelevantToOwner) return EClassRepNodeMapping::RelevantAllConnections;
 	if (CDO->bOnlyRelevantToOwner) return EClassRepNodeMapping::RelevantOwnerConnection;
 	return EClassRepNodeMapping::Spatialize_Dynamic;
+}
+
+void UExampleReplicationGraph::InitClassReplicationInfo(FClassReplicationInfo& Info, UClass* Class, bool bSpatialize) const
+{
+	const AActor* CDO = Class->GetDefaultObject<AActor>();
+	Info.ReplicationPeriodFrame = GetReplicationPeriodFrameForFrequency(CDO->GetNetUpdateFrequency());
+	// Cull Distance는 Grid에 들어가는 클래스에만 준다. AlwaysRelevant·owner 전용 액터는 WorldLocation이 원점에 고정이라
+	// Cull Distance가 있으면 viewer가 원점에서 그만큼 멀어지는 순간 거리 컬링에 걸린다
+	if (bSpatialize) Info.SetCullDistanceSquared(CDO->GetNetCullDistanceSquared());
 }
 
 void UExampleReplicationGraph::InitGlobalActorClassSettings()
 {
 	Super::InitGlobalActorClassSettings();
 
-	// 초기화 뒤에 로드되는 Blueprint 서브클래스는 첫 조회 때 여기로 온다
-	GlobalActorReplicationInfoMap.SetInitClassInfoFunc([this](UClass* Class, FClassReplicationInfo& Info)
-	{
-		ClassRepNodePolicies.Set(Class, GetClassNodeMapping(Class));
-		Info.ReplicationPeriodFrame = GetReplicationPeriodFrameForFrequency(Class->GetDefaultObject<AActor>()->GetNetUpdateFrequency());
-		Info.SetCullDistanceSquared(Class->GetDefaultObject<AActor>()->GetNetCullDistanceSquared());
-		return true;
-	});
-
 	// 전용 노드가 있는 엔진 클래스는 라우팅하지 않는다
 	ClassRepNodePolicies.Set(APlayerState::StaticClass(), EClassRepNodeMapping::NotRouted);
 	ClassRepNodePolicies.Set(ALevelScriptActor::StaticClass(), EClassRepNodeMapping::NotRouted);
 	ClassRepNodePolicies.Set(AReplicationGraphDebugActor::StaticClass(), EClassRepNodeMapping::NotRouted);
+
+	// 초기화 뒤에 로드되는 Blueprint 서브클래스는 첫 조회 때 이 두 람다로 온다
+	ClassRepNodePolicies.InitNewElement = [this](UClass* Class, EClassRepNodeMapping& Mapping)
+	{
+		Mapping = GetClassNodeMapping(Class);
+		return true;
+	};
+	GlobalActorReplicationInfoMap.SetInitClassInfoFunc([this](UClass* Class, FClassReplicationInfo& Info)
+	{
+		InitClassReplicationInfo(Info, Class, IsSpatialized(ClassRepNodePolicies.GetChecked(Class)));
+		return true;
+	});
 
 	for (TObjectIterator<UClass> It; It; ++It)
 	{
@@ -464,19 +518,18 @@ void UExampleReplicationGraph::InitGlobalActorClassSettings()
 		const AActor* CDO = Cast<AActor>(Class->GetDefaultObject());
 		if (!CDO || !CDO->GetIsReplicated()) continue;
 		if (Class->GetName().StartsWith(TEXT("SKEL_")) || Class->GetName().StartsWith(TEXT("REINST_"))) continue;
-		if (!ClassRepNodePolicies.Get(Class)) ClassRepNodePolicies.Set(Class, GetClassNodeMapping(Class));
+
+		// TClassMap::Get은 부모 값을 자식 키로 복사해 돌려주므로 "없을 때만 Set"이라는 가드를 쓰면 자식이 부모 라우팅을 물려받는다. 무조건 쓴다
+		const EClassRepNodeMapping Mapping = GetClassNodeMapping(Class);
+		ClassRepNodePolicies.Set(Class, Mapping);
 
 		FClassReplicationInfo Info;
-		Info.ReplicationPeriodFrame = GetReplicationPeriodFrameForFrequency(CDO->GetNetUpdateFrequency());
-		Info.SetCullDistanceSquared(CDO->GetNetCullDistanceSquared());
+		InitClassReplicationInfo(Info, Class, IsSpatialized(Mapping));
 		GlobalActorReplicationInfoMap.SetClassInfo(Class, Info);
 	}
 
 	UReplicationGraphNode_ActorListFrequencyBuckets::DefaultSettings.NumBuckets = 3;
 	UReplicationGraphNode_ActorListFrequencyBuckets::DefaultSettings.BucketThresholds.Reset();
-
-	RPC_Multicast_OpenChannelForClass.Set(AActor::StaticClass(), true);
-	RPC_Multicast_OpenChannelForClass.Set(AController::StaticClass(), false);
 }
 
 void UExampleReplicationGraph::InitGlobalGraphNodes()
@@ -490,14 +543,13 @@ void UExampleReplicationGraph::InitGlobalGraphNodes()
 	AlwaysRelevantNode = CreateNewNode<UReplicationGraphNode_ActorList>();
 	AddGlobalGraphNode(AlwaysRelevantNode);
 
-	// 모든 PlayerState를 프레임당 N개씩 돌려 보내는 노드 (공식 문서의 PlayerStateFrequencyLimiter)
 	AddGlobalGraphNode(CreateNewNode<UExampleNode_PlayerStateFrequencyLimiter>());
 }
 
 void UExampleReplicationGraph::InitConnectionGraphNodes(UNetReplicationGraphConnection* RepGraphConnection)
 {
 	Super::InitConnectionGraphNodes(RepGraphConnection);
-	// PlayerController, Pawn, ViewTarget을 매 프레임 다시 모으는 엔진 노드. owner 전용 액터도 여기에 넣는다
+	// viewer(PlayerController)와 ViewTarget을 매 프레임 다시 모으는 엔진 노드. owner 전용 액터도 여기에 넣는다
 	UReplicationGraphNode_AlwaysRelevant_ForConnection* Node = CreateNewNode<UReplicationGraphNode_AlwaysRelevant_ForConnection>();
 	AddConnectionGraphNode(Node, RepGraphConnection);
 	ConnectionNodes.Add(RepGraphConnection->NetConnection, Node);
@@ -567,7 +619,7 @@ void UExampleNode_PlayerStateFrequencyLimiter::GatherActorListsForConnection(con
 }
 ```
 
-`RouteAddNetworkActorToNodes`가 라우팅 표를 코드로 옮긴 자리이고, 노드 넷(Grid, AlwaysRelevant, 연결별 AlwaysRelevant, PlayerState 빈도 제한)이 글 첫머리 그림의 구성이다. 그래프는 `UReplicationDriver::CreateReplicationDriverDelegate`나 ini의 `ReplicationDriverClassName`으로 지정하고, 리플리케이션 그래프 노드는 `CreateNewNode`로만 만든다.
+`RouteAddNetworkActorToNodes`가 라우팅 표를 코드로 옮긴 자리이고, 노드 넷(Grid, AlwaysRelevant, 연결별 AlwaysRelevant, PlayerState 빈도 제한)이 글 첫머리 그림의 구성이다. 그래프는 `UReplicationDriver::CreateReplicationDriverDelegate`나 ini의 `ReplicationDriverClassName`으로 지정하고, 노드는 전역·연결 노드면 `CreateNewNode`, 노드의 자식이면 `CreateChildNode`로만 만든다.
 
 dynamic이 기본값인 이유는 그것이 항상 맞는 쪽이기 때문이다. static으로 잘못 넣으면 움직이는 액터가 보이지 않고, dynamic으로 넣으면 비용만 든다. static과 dormancy는 클래스를 알 때만 명시한다.
 
@@ -596,7 +648,7 @@ Team Node는 같은 팀의 연결들이 공유하는 노드라 전역 노드 목
 - **Blueprint 서브클래스의 설정.** `InitGlobalActorClassSettings`에서 `TObjectIterator<UClass>`로 클래스를 돌 때 `SKEL_`, `REINST_`로 시작하는 컴파일 중간 클래스는 건너뛰어야 하고, `GlobalActorReplicationInfoMap.SetInitClassInfoFunc`로 lazy init을 걸어야 한다. 리플리케이션 그래프는 `BeginPlay` 전에 초기화되므로 그 시점에 로드되지 않은 Blueprint 서브클래스는 순회에 나오지 않고, lazy init이 없으면 부모 클래스 값이 복사돼 동작은 하지만 그 서브클래스에 설정을 줄 길이 없어진다.
 - **설정은 엔진 초기화 전에.** 같은 이유로 클래스 설정은 CDO에서만 읽을 수 있고, 게임 코드에서 CVar를 바꾸는 것도 맵 로드 뒤에 실행되는 `-ExecCmds`도 늦다. `UDeveloperSettingsBackedByCVars`로 둔 값은 `-dpcvars="OpenWorld.RepGraph.DynamicActorFrequencyBuckets=1"` 형식으로 줘야 초기화 때 읽힌다. 설정값 절의 측정은 이 방식으로 조건을 바꿨다.
 - **드라이버 지정.** ini의 `ReplicationDriverClassName`과 `UReplicationDriver::CreateReplicationDriverDelegate` 둘 다 공식 문서에 있다. 델리게이트가 ini보다 우선하고 `nullptr`를 돌려주면 기본 드라이버로 가며, 어느 쪽이든 `NetDriverName`이 `NAME_GameNetDriver`인지 확인해야 한다. `InitBase`를 지나는 서버 드라이버가 모두 같은 델리게이트를 부르므로 DemoNetDriver(리플레이)와 BeaconNetDriver도 해당된다.
-- **`DynamicSpatialFrequency` 존 표.** 헤더의 `MinDotProduct` 주석은 이 값 이상이어야 그 존이라고 적고 있지만, `CalcFrequencyForActor`는 `DotP <= MinDotProduct`인 첫 존을 고른다. 주석대로 `{0.8 앞쪽}, {-1.0 나머지}` 순으로 적으면 정면의 액터가 어느 존에도 들어가지 않아 리플리케이션에서 빠지고, 액터마다 프레임마다 "was not placed in any valid zone" 경고가 찍혀 측정 60초에 약 12,900줄, 프레임당 1.1 ms의 로그 비용이 Insights 측정값에 들어갔다. 존은 오름차순으로 적고 마지막을 1.0으로 끝낸다.
+- **`DynamicSpatialFrequency` 존 표.** 헤더의 `MinDotProduct` 주석은 이 값 이상이어야 그 존이라고 적고 있지만, `CalcFrequencyForActor`는 `DotP <= MinDotProduct`인 첫 존을 고른다. 주석대로 `{0.8 앞쪽}, {-1.0 나머지}` 순으로 적으면 정면의 액터가 어느 존에도 들어가지 않아 리플리케이션에서 빠지고, 액터마다 프레임마다 "was not placed in any valid zone" 경고가 찍혀 측정 60초에 약 12,900줄, 프레임당 1.1 ms의 로그 비용이 Insights 측정값에 들어갔다. 설정값 절의 0.40 ms는 존을 고친 뒤 다시 잰 값이다. 존은 오름차순으로 적고 마지막을 1.0으로 끝낸다.
 - **스트리밍 레벨.** 노드의 리스트는 레벨별로 나뉘어 있고, gather는 클라이언트가 그 레벨을 로드했을 때만(`ClientVisibleLevelNamesRef`) 돌려준다. 로드하지 않은 레벨의 액터는 `LogReplicationGraph` Verbose에 "Level Not Loaded"로 남는다. 스트리밍 레벨의 `bAlwaysRelevant` 액터는 전역 노드가 아니라 Lyra의 `AlwaysRelevantStreamingLevelActors`처럼 레벨별 리스트에 두고, 액터의 outer가 바뀌는 프로젝트는 5.5 업그레이드 노트대로 `Net.RepGraph.HandleDynamicActorRename`(기본 0)을 켠다.
 - **viewer는 카메라다.** 리플리케이션 그래프의 viewer는 Pawn이 아니라 `GetPlayerViewPoint`가 돌려주는 위치다. 거리 검사도 이 위치 기준이라 Cull Distance 150 m보다 높이 띄운 관전 카메라는 바닥의 액터를 하나도 받지 못한다. 관전 카메라가 있는 게임은 viewer가 어디인지부터 확인한다.
 
@@ -618,7 +670,7 @@ Team Node는 같은 팀의 연결들이 공유하는 노드라 전역 노드 목
 
 플러그인의 앞날은 "deprecated"라는 말이 커뮤니티에 돌지만 Epic의 공개 발언은 그렇지 않다. 2026년 1월 포럼 글 "5.7 Iris Strategy"에서 Epic의 Alex Koumandarakis는 레거시 리플리케이션 시스템과 리플리케이션 그래프를 deprecate할 계획이 없고, 세 시스템이 나란히 지원되도록 계획돼 있다고 답했다. 다만 릴리스 노트의 리플리케이션 그래프 항목은 5.4의 수정과 5.5 업그레이드 노트의 `HandleDynamicActorRename` 권장이 마지막이고 5.6부터 5.8까지는 없다. 유지보수는 되고 개발은 멈춘 상태로 보인다.
 
-Iris와는 양자택일이다. 5.8 문서 "Migrate to Iris"는 Iris가 replication graph를 지원하지 않으며, Iris의 Filter와 Prioritizer가 리플리케이션 그래프 기능의 대체물이라고 적고 있다. 소스에서는 `SetReplicationDriver`가 NetDriver가 Iris를 쓰도록 설정돼 있으면 `checkf`로 멈추고, 핸드셰이크에서 상대가 Iris를 쓰면 드라이버를 내려놓는다.
+Iris와는 양자택일이다. 5.8 문서 "Migrate to Iris"는 Iris가 replication graph를 지원하지 않으며, Iris의 Filter와 Prioritizer가 리플리케이션 그래프 기능의 대체물이라고 적고 있다. 소스에서는 Iris를 쓰도록 설정된 NetDriver에 `SetReplicationDriver`로 리플리케이션 드라이버를 붙이려 하면 `checkf`로 멈춘다.
 
 Fortnite는 2024년 4월에 Iris로 전환했다고 Unreal Fest Orlando 2025에서 Petter Rangström이 말했다. 같은 강연에서 리플리케이션 그래프가 "Fortnite가 요구하는 액터·연결 수는 감당했지만 경쟁 게임 같은 고밀도 액션에서는 여전히 버거웠다"는 것이 Iris를 만든 동기로 나온다. 그 강연의 "Porting" 슬라이드(20분 30초)를 소스로 보강해 표로 옮기면 다음과 같다.
 
@@ -718,7 +770,7 @@ Ensure condition failed: !Actor->bNetTemporary [File: ReplicationGraph.cpp] [Lin
 ReplicationGraph does not support bNetTemporary. Actor: RepGraphLabProjectile_0 has bNetTemporary set.
 ```
 
-측정에서 프레임당 채널 열기가 0.02회에서 5.1회가 됐고 `ServerReplicateActors`는 0.35에서 0.59 ms로 늘었다. 살아 있는 발사체가 7개 안팎일 때의 값이다. 기본 드라이버는 같은 조건에서 2.51 ms로 발사체가 없을 때와 같다.
+측정에서 프레임당 채널 열기가 0.02회에서 5.1회가 됐고 `ServerReplicateActors`는 0.35에서 0.59 ms로 늘었다. 계산상 살아 있는 발사체가 7개 안팎(초당 5개 × 1.5초)일 때의 값이다. 기본 드라이버는 같은 조건에서 2.51 ms로 발사체가 없을 때와 같다.
 
 </details>
 
@@ -747,8 +799,8 @@ Uniform 5,000개 조건으로 클라이언트 2개를 붙인 뒤, 120초 동안 
 ### 멀어진 뒤 파괴된 dormant 액터가 클라이언트에 남는다
 
 - 현상: 클라이언트가 한 번 받은 뒤 잠든 액터(바닥 아이템)를 그 클라이언트가 멀리 간 뒤 서버가 파괴하면, 클라이언트에는 그 액터가 그대로 남는다. 테스트 프로젝트에서 플레이어를 500 m 밖으로 옮기고 원래 자리의 잠든 loot 100개를 파괴하자 리플리케이션 그래프에서는 클라이언트의 loot가 500개 그대로였고 기본 드라이버에서는 400개가 됐다. Basic 그래프도 남는다.
-- 원인: 채널이 닫힐 때 relevancy 사유면 클라이언트가 액터를 지우지만 dormancy 사유면 남겨 두므로(`UActorChannel::CleanUp`), 잠든 액터는 채널 없이 클라이언트에 있다. 그 액터가 파괴되면 기본 드라이버는 그 연결에서 dormant였던 액터의 파괴 정보를 거리와 무관하게 보낸다(`NotifyActorDestroyed`의 `DormantConnections` 검사). 리플리케이션 그래프는 `DestructInfoMaxDistanceSquared`(기본 150 m, Lyra와 측정용 그래프는 300 m) 안의 viewer에게만 보내고, 밖이면 `OutOfRangeDestroyedActors`에 두었다가 viewer가 그만큼 가까워져야 보낸다.
-- 대처: 돌아오면 지워진다. 플레이어를 되돌리자 100개가 사라졌다. 멀리서도 지워져야 하는 액터는 `DestructInfoMaxDist`를 늘리거나(측정용 그래프에서 1 km로 두자 바로 사라졌다) 클래스별로 `SetActorDestructionInfoToIgnoreDistanceCulling`을 건다. 잠든 채 Cell을 벗어나는 dynamic 액터의 정리는 다른 경로(`Net.RepGraph.DormantDynamicActorsDestruction`, 기본 0)라 따로 켜야 한다.
+- 원인: 채널이 닫힐 때 relevancy 사유면 클라이언트가 액터를 지우지만 dormancy 사유면 남겨 두므로(`UActorChannel::CleanUp`), 잠든 액터는 채널 없이 클라이언트에 있다. 그 액터가 파괴되면 기본 드라이버는 그 연결에서 dormant였던 액터의 파괴 정보를 거리와 무관하게 보낸다(`NotifyActorDestroyed`의 `DormantConnections` 검사). 리플리케이션 그래프는 `DestructInfoMaxDistanceSquared`(기본 150 m, Lyra와 OpenWorld 그래프는 300 m, 높이를 뺀 2D 거리) 안의 viewer에게만 보내고, 밖이면 `OutOfRangeDestroyedActors`에 두었다가 viewer가 충분히 움직인 뒤 다시 검사해 범위 안이면 보낸다.
+- 대처: 돌아오면 지워진다. 플레이어를 되돌리자 100개가 사라졌다. 멀리서도 지워져야 하는 액터는 `DestructInfoMaxDistanceSquared`를 늘리거나(OpenWorld 그래프의 `OpenWorld.RepGraph.DestructInfo.MaxDist`를 1 km로 두자 바로 사라졌다) 액터마다 `SetActorDestructionInfoToIgnoreDistanceCulling`을 건다. 잠든 채 Cell을 벗어나는 dynamic 액터의 정리는 다른 경로(`Net.RepGraph.DormantDynamicActorsDestruction`, 기본 0)라 따로 켜야 한다.
 
 <details>
 <summary>재현 절차</summary>
@@ -761,7 +813,7 @@ NearPlayers 분포, 플레이어 2명을 떨어뜨린 조건에서 플레이어 
 | Basic 그래프 (기본 150 m) | 500 | 500 |
 | 기본 드라이버 | 500 | 400 |
 | OpenWorld, 15초에 플레이어를 되돌림 | 500 | 돌아온 뒤 400 |
-| OpenWorld, `DestructInfo.MaxDist` 1 km | 500 | 400 |
+| OpenWorld, `OpenWorld.RepGraph.DestructInfo.MaxDist` 1 km | 500 | 400 |
 
 </details>
 
@@ -847,7 +899,7 @@ PlayerState_0                            1.9500 (Dist: 77347.03 | 1.00) (FramesL
 - `Net.RepGraph.StarvedList`: 연결의 모든 액터를 마지막 리플리케이션 이후 프레임 수로 정렬해 HUD에 띄운다.
 - `Net.RepGraph.SetClassCullDistance`, `Net.RepGraph.SetPeriodFrame`: 클래스·액터와 명령을 보낸 연결의 값을 바꾼다.
 
-플러그인의 CVar와 명령은 65개쯤 되고 모두 `Net.RepGraph.` 접두사로 `ReplicationGraph.cpp`와 `ReplicationGraphDebugging.cpp`에 흩어져 있다. 로그 카테고리는 `LogReplicationGraph`다.
+플러그인의 CVar와 명령은 50–60개로 `Net.RepGraph.` 접두사를 쓰고 대부분 `ReplicationGraph.cpp`와 `ReplicationGraphDebugging.cpp`에 있다. 로그 카테고리는 `LogReplicationGraph`다.
 
 ## 참고 자료
 

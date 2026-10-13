@@ -25,7 +25,7 @@ lang: ko
 - 기본 드라이버에서 잠든 액터가 consider list에서 빠지는 것은 모든 연결에서 잠든 뒤다. 넓은 맵에 흩어진 잠든 소품은 매 프레임 검토되고, 플레이어마다 자기 주변에만 액터가 있는 조건에서 밀집 조건에 가까운 6.47 ms가 나온다.
 - 설정값 중 측정에서 효과가 컸던 것은 버킷 수와 `NetUpdateFrequency`뿐이다. `DistancePriorityScale` 0은 거리 컬링을 끄고, `ActorChannelFrameTimeout` 0은 채널을 닫지 않는다. `NetUpdateFrequency`는 서버 프레임 레이트보다 낮을 때만 뜻이 있다.
 - 엔진에는 액터가 움직이는지 판별하는 코드가 없다. `UBasicReplicationGraph`는 모든 액터를 dormancy 경로로 넣고, 그래도 커스텀 그래프와 같은 자릿수(Uniform 0.40 ms, Cluster 3.44 ms)가 나온다. Team Node와 owner 변경이 필요 없으면 거기서 멈춰도 된다.
-- 5.8.3에서 재현한 것: 잠재운 직후의 reliable multicast가 지연이 있을 때 리플리케이션 그래프에서만 유실된다. static으로 넣은 액터는 옮겨도 옛 셀에 남는다. `bNetTemporary` 발사체는 ensure가 나고 매 버킷 차례마다 채널을 다시 연다. 끊긴 연결의 dormancy 사본은 기본 설정에서 지워지지 않는다.
+- 5.8.3에서 재현한 것: 잠재운 직후의 reliable multicast가 지연이 있을 때 리플리케이션 그래프에서만 유실된다. static으로 넣은 액터는 옮겨도 옛 셀에 남는다. `bNetTemporary` 발사체는 ensure가 나고 매 버킷 차례마다 채널을 다시 연다. 끊긴 연결의 dormancy 사본은 기본 설정에서 지워지지 않는다. 멀어진 클라이언트가 가진 잠든 액터를 파괴하면 그 클라이언트가 돌아올 때까지 남는다.
 - 도입 기준은 비율 하나다. `stat game`에서 consider와 prioritize 시간이 `ReplicateActor` 시간보다 크면 리플리케이션 그래프가 그 몫을 줄인다. Iris와는 양자택일이고, Epic은 deprecate 계획이 없다고 하지만 릴리스 노트에 5.6 이후 항목이 없다.
 :::
 
@@ -356,7 +356,7 @@ static·dynamic을 가르는 것은 프로젝트의 클래스 라우팅 테이�
 | 범주 | 예와 특성 | 리플리케이션 그래프에서 가는 곳 |
 | --- | --- | --- |
 | 월드 소품 | 건물 조각, 나무. 수만 개, 스폰 후 안 움직임 | Grid의 static 리스트. 피해를 받을 때만 깨어남 |
-| 루트·픽업 | 바닥의 무기, 상자. 수천 개, 집히기 전까지 안 변함 | Grid의 dormancy 리스트. 집히면 파괴 정보 전송 |
+| 루트·픽업 | 바닥의 무기, 상자. 수천 개, 집히기 전까지 안 변함 | Grid의 dormancy 리스트. 집히면 거리 안의 연결에만 파괴 정보 전송(부록 A) |
 | Player Pawn | 100명. 계속 움직이고 매 프레임 바뀜 | Grid의 dynamic 리스트. 이동은 Fast Shared Path |
 | AI Pawn | 좀비, 야생동물. 수백 개, 움직임 | Grid의 dynamic 리스트. 거리별 빈도 조절 |
 | 탈것과 탑승물 | 탈것과 탈것의 무기 | 탈것은 dynamic, 무기는 dependent actor |
@@ -415,7 +415,7 @@ Team Node는 같은 팀의 연결들이 공유하는 노드라 전역 노드 목
 2. `UBasicReplicationGraph`로 켜고 같은 조건을 다시 잰다.
 3. 커스텀 그래프는 클래스 라우팅 테이블부터 만든다. 앞의 범주 표대로 나누고, 모르는 클래스는 dynamic으로 둔다.
 4. 버킷 수와 `NetUpdateFrequency`로 보내는 횟수를 정하고, `Net.RepGraph.PrintAll`로 Passed 목록이 기대한 액터로만 차 있는지 확인한다. 셀 크기와 우선순위 스케일은 측정 없이 만지지 않는다.
-5. 부록 A의 버그를 피한다. dormant 직후의 reliable multicast, Seamless Travel 중의 multicast, 옮기는 static 액터, `bNetTemporary`, 끊긴 연결의 dormancy 사본이다.
+5. 부록 A의 버그를 피한다. dormant 직후의 reliable multicast, Seamless Travel 중의 multicast, 옮기는 static 액터, `bNetTemporary`, 끊긴 연결의 dormancy 사본, 멀어진 뒤 파괴된 dormant 액터다.
 
 비용도 있다. 플러그인은 `IsBetaVersion: true`로 선언돼 있고 Iris와 양립하지 않으며, 클래스 라우팅은 액터 클래스가 늘 때마다 유지보수 대상이고 잘못 라우팅된 액터는 조용히 보이지 않는다. 그래서 2번에서 멈추는 것도 선택이다. Basic 그래프는 측정에서 커스텀 그래프와 같은 자릿수였고, Team Node와 owner 변경이 필요 없는 게임이라면 그것으로 충분하다.
 
@@ -438,7 +438,7 @@ Fortnite는 2024년 4월에 Iris로 전환했다고 Unreal Fest Orlando 2025에�
 
 ## 부록 A. 5.8.3에서 재현한 버그와 함정
 
-커뮤니티에 보고된 것 중 5.8.3 소스에서 확인한 것들로, 넷은 랩에서 재현했고 Seamless Travel 하나는 소스로만 확인했다. 버그마다 현상과 원인, 대처를 먼저 적고 소스 분석과 랩 재현은 접어 두었다.
+커뮤니티에 보고된 것 중 5.8.3 소스에서 확인한 것들로, 다섯은 랩에서 재현했고 Seamless Travel 하나는 소스로만 확인했다. 버그마다 현상과 원인, 대처를 먼저 적고 소스 분석과 랩 재현은 접어 두었다.
 
 ### dormant 직후의 reliable multicast가 유실된다
 
@@ -544,6 +544,27 @@ ReplicationGraph does not support bNetTemporary. Actor: RepGraphLabProjectile_0 
 ![](./images/unreal-replication-graph/chart-dormancy-nodes.webp)
 
 기본값에서는 재접속마다 2개씩 늘고 하나도 줄지 않는다. 정리 옵션을 켜면 조용한 셀의 사본이 다음 액터 변화가 있을 때까지 남아, 노드 수가 9에서 5로, 7에서 2로 떨어졌다가 다시 쌓이는 톱니 모양이 됐다.
+
+</details>
+
+### 멀어진 뒤 파괴된 dormant 액터가 클라이언트에 남는다
+
+- 현상: 클라이언트가 한 번 받은 뒤 잠든 액터(바닥 아이템)를 그 클라이언트가 멀리 간 뒤 서버가 파괴하면, 클라이언트에는 그 액터가 그대로 남는다. 랩에서 플레이어를 500 m 밖으로 옮기고 원래 자리의 잠든 loot 100개를 파괴하자 리플리케이션 그래프에서는 클라이언트의 loot가 500개 그대로였고 기본 드라이버에서는 400개가 됐다. Basic 그래프도 남는다.
+- 원인: 채널이 닫힐 때 relevancy 사유면 클라이언트가 액터를 지우지만 dormancy 사유면 남겨 두므로(`UActorChannel::CleanUp`), 잠든 액터는 채널 없이 클라이언트에 있다. 그 액터가 파괴되면 기본 드라이버는 그 연결에서 dormant였던 액터의 파괴 정보를 거리와 무관하게 보낸다(`NotifyActorDestroyed`의 `DormantConnections` 검사). 리플리케이션 그래프는 `DestructInfoMaxDistanceSquared`(기본 150 m, Lyra와 측정용 그래프는 300 m) 안의 viewer에게만 보내고, 밖이면 `OutOfRangeDestroyedActors`에 두었다가 viewer가 그만큼 가까워져야 보낸다.
+- 대처: 돌아오면 지워진다. 랩에서 플레이어를 되돌리자 100개가 사라졌다. 멀리서도 지워져야 하는 액터는 `DestructInfoMaxDist`를 늘리거나(측정용 그래프에서 1 km로 두자 바로 사라졌다) 클래스별로 `SetActorDestructionInfoToIgnoreDistanceCulling`을 건다. 잠든 채 셀을 벗어나는 dynamic 액터의 정리는 다른 경로(`Net.RepGraph.DormantDynamicActorsDestruction`, 기본 0)라 따로 켜야 한다.
+
+<details>
+<summary>랩 재현</summary>
+
+NearPlayers 분포, 플레이어 2명을 떨어뜨린 조건에서 플레이어 0의 Pawn을 측정 5초에 500 m 옮기고, 10초에 원래 자리 150 m 안의 잠든 loot 100개를 서버에서 파괴한 뒤, 그 클라이언트가 가진 loot 수를 2초마다 셌다. 각 2회.
+
+| 조건 | 파괴 전 | 파괴 뒤 |
+| --- | --- | --- |
+| OpenWorld 그래프 (파괴 정보 거리 300 m) | 500 | 500 |
+| Basic 그래프 (기본 150 m) | 500 | 500 |
+| 기본 드라이버 | 500 | 400 |
+| OpenWorld, 15초에 플레이어를 되돌림 | 500 | 돌아온 뒤 400 |
+| OpenWorld, `DestructInfo.MaxDist` 1 km | 500 | 400 |
 
 </details>
 

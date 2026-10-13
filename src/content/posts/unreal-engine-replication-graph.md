@@ -372,6 +372,187 @@ static·dynamic을 가르는 것은 프로젝트의 클래스 라우팅 테이�
 - Lyra는 `bOnlyRelevantToOwner`와 `bNetUseOwnerRelevancy` 클래스를 `NotRouted`로 두고, 연결별 노드가 PlayerController와 Pawn, PlayerState만 직접 끌어온다. 측정용 그래프는 그 대신 `RelevantOwnerConnection` 라우팅을 두었다
 - 나머지 리플리케이션 액터는 `Spatialize_Dynamic`
 
+위 라우팅과 노드 구성을 코드로 보면 다음과 같다. 공식 문서의 일반 예제를 5.8.3에서 컴파일되는 형태로 줄인 것이고, 측정용 그래프에서 스트리밍 레벨 리스트, Team Node, owner가 아직 없는 액터의 재시도 같은 게임 특화 부분을 뺐다.
+
+<details>
+<summary>일반 예제 그래프의 축약 소스</summary>
+
+```cpp
+// ExampleReplicationGraph.h
+UENUM()
+enum class EClassRepNodeMapping : uint8
+{
+	NotRouted,
+	RelevantAllConnections,
+	RelevantOwnerConnection,
+	Spatialize_Static,
+	Spatialize_Dynamic,
+	Spatialize_Dormancy,
+};
+
+UCLASS()
+class UExampleReplicationGraph : public UReplicationGraph
+{
+	GENERATED_BODY()
+
+	virtual void InitGlobalActorClassSettings() override;
+	virtual void InitGlobalGraphNodes() override;
+	virtual void InitConnectionGraphNodes(UNetReplicationGraphConnection* RepGraphConnection) override;
+	virtual void RouteAddNetworkActorToNodes(const FNewReplicatedActorInfo& ActorInfo, FGlobalActorReplicationInfo& GlobalInfo) override;
+	virtual void RouteRemoveNetworkActorToNodes(const FNewReplicatedActorInfo& ActorInfo) override;
+
+	EClassRepNodeMapping GetClassNodeMapping(UClass* Class) const;
+
+	UPROPERTY() TObjectPtr<UReplicationGraphNode_GridSpatialization2D> GridNode;
+	UPROPERTY() TObjectPtr<UReplicationGraphNode_ActorList> AlwaysRelevantNode;
+	TClassMap<EClassRepNodeMapping> ClassRepNodePolicies;
+	TMap<TWeakObjectPtr<UNetConnection>, TObjectPtr<UReplicationGraphNode_AlwaysRelevant_ForConnection>> ConnectionNodes;
+};
+```
+
+```cpp
+// ExampleReplicationGraph.cpp
+EClassRepNodeMapping UExampleReplicationGraph::GetClassNodeMapping(UClass* Class) const
+{
+	// 레거시 플래그에서 기본값을 유도한다. 프로젝트 설정으로 덮어쓰는 부분은 생략
+	const AActor* CDO = Class->GetDefaultObject<AActor>();
+	if (!CDO || !CDO->GetIsReplicated()) return EClassRepNodeMapping::NotRouted;
+	if (CDO->bAlwaysRelevant && !CDO->bOnlyRelevantToOwner) return EClassRepNodeMapping::RelevantAllConnections;
+	if (CDO->bOnlyRelevantToOwner) return EClassRepNodeMapping::RelevantOwnerConnection;
+	return EClassRepNodeMapping::Spatialize_Dynamic;
+}
+
+void UExampleReplicationGraph::InitGlobalActorClassSettings()
+{
+	Super::InitGlobalActorClassSettings();
+
+	// 초기화 뒤에 로드되는 Blueprint 서브클래스는 첫 조회 때 여기로 온다
+	GlobalActorReplicationInfoMap.SetInitClassInfoFunc([this](UClass* Class, FClassReplicationInfo& Info)
+	{
+		ClassRepNodePolicies.Set(Class, GetClassNodeMapping(Class));
+		Info.ReplicationPeriodFrame = GetReplicationPeriodFrameForFrequency(Class->GetDefaultObject<AActor>()->GetNetUpdateFrequency());
+		Info.SetCullDistanceSquared(Class->GetDefaultObject<AActor>()->GetNetCullDistanceSquared());
+		return true;
+	});
+
+	// 전용 노드가 있는 엔진 클래스는 라우팅하지 않는다
+	ClassRepNodePolicies.Set(APlayerState::StaticClass(), EClassRepNodeMapping::NotRouted);
+	ClassRepNodePolicies.Set(ALevelScriptActor::StaticClass(), EClassRepNodeMapping::NotRouted);
+	ClassRepNodePolicies.Set(AReplicationGraphDebugActor::StaticClass(), EClassRepNodeMapping::NotRouted);
+
+	for (TObjectIterator<UClass> It; It; ++It)
+	{
+		UClass* Class = *It;
+		const AActor* CDO = Cast<AActor>(Class->GetDefaultObject());
+		if (!CDO || !CDO->GetIsReplicated()) continue;
+		if (Class->GetName().StartsWith(TEXT("SKEL_")) || Class->GetName().StartsWith(TEXT("REINST_"))) continue;
+		if (!ClassRepNodePolicies.Get(Class)) ClassRepNodePolicies.Set(Class, GetClassNodeMapping(Class));
+
+		FClassReplicationInfo Info;
+		Info.ReplicationPeriodFrame = GetReplicationPeriodFrameForFrequency(CDO->GetNetUpdateFrequency());
+		Info.SetCullDistanceSquared(CDO->GetNetCullDistanceSquared());
+		GlobalActorReplicationInfoMap.SetClassInfo(Class, Info);
+	}
+
+	UReplicationGraphNode_ActorListFrequencyBuckets::DefaultSettings.NumBuckets = 3;
+	UReplicationGraphNode_ActorListFrequencyBuckets::DefaultSettings.BucketThresholds.Reset();
+
+	RPC_Multicast_OpenChannelForClass.Set(AActor::StaticClass(), true);
+	RPC_Multicast_OpenChannelForClass.Set(AController::StaticClass(), false);
+}
+
+void UExampleReplicationGraph::InitGlobalGraphNodes()
+{
+	GridNode = CreateNewNode<UReplicationGraphNode_GridSpatialization2D>();
+	GridNode->CellSize = 10000.f;                           // 100 m
+	GridNode->SpatialBias = FVector2D(-150000.f, -200000.f); // 맵의 최소 좌표
+	GridNode->AddToClassRebuildDenyList(AActor::StaticClass());
+	AddGlobalGraphNode(GridNode);
+
+	AlwaysRelevantNode = CreateNewNode<UReplicationGraphNode_ActorList>();
+	AddGlobalGraphNode(AlwaysRelevantNode);
+
+	// 모든 PlayerState를 프레임당 N개씩 돌려 보내는 노드 (공식 문서의 PlayerStateFrequencyLimiter)
+	AddGlobalGraphNode(CreateNewNode<UExampleNode_PlayerStateFrequencyLimiter>());
+}
+
+void UExampleReplicationGraph::InitConnectionGraphNodes(UNetReplicationGraphConnection* RepGraphConnection)
+{
+	Super::InitConnectionGraphNodes(RepGraphConnection);
+	// PlayerController, Pawn, ViewTarget을 매 프레임 다시 모으는 엔진 노드. owner 전용 액터도 여기에 넣는다
+	UReplicationGraphNode_AlwaysRelevant_ForConnection* Node = CreateNewNode<UReplicationGraphNode_AlwaysRelevant_ForConnection>();
+	AddConnectionGraphNode(Node, RepGraphConnection);
+	ConnectionNodes.Add(RepGraphConnection->NetConnection, Node);
+}
+
+void UExampleReplicationGraph::RouteAddNetworkActorToNodes(const FNewReplicatedActorInfo& ActorInfo, FGlobalActorReplicationInfo& GlobalInfo)
+{
+	switch (ClassRepNodePolicies.GetChecked(ActorInfo.Class))
+	{
+	case EClassRepNodeMapping::NotRouted:              break;
+	case EClassRepNodeMapping::RelevantAllConnections: AlwaysRelevantNode->NotifyAddNetworkActor(ActorInfo); break;
+	case EClassRepNodeMapping::RelevantOwnerConnection:
+		if (UNetConnection* Connection = ActorInfo.Actor->GetNetConnection())
+		{
+			if (TObjectPtr<UReplicationGraphNode_AlwaysRelevant_ForConnection>* Node = ConnectionNodes.Find(Connection))
+			{
+				(*Node)->NotifyAddNetworkActor(ActorInfo);
+			}
+		}
+		break; // owner가 아직 없으면 다음 프레임에 다시 시도하는 목록이 따로 필요하다
+	case EClassRepNodeMapping::Spatialize_Static:      GridNode->AddActor_Static(ActorInfo, GlobalInfo);   break;
+	case EClassRepNodeMapping::Spatialize_Dynamic:     GridNode->AddActor_Dynamic(ActorInfo, GlobalInfo);  break;
+	case EClassRepNodeMapping::Spatialize_Dormancy:    GridNode->AddActor_Dormancy(ActorInfo, GlobalInfo); break;
+	}
+}
+
+void UExampleReplicationGraph::RouteRemoveNetworkActorToNodes(const FNewReplicatedActorInfo& ActorInfo)
+{
+	switch (ClassRepNodePolicies.GetChecked(ActorInfo.Class))
+	{
+	case EClassRepNodeMapping::NotRouted:              break;
+	case EClassRepNodeMapping::RelevantAllConnections: AlwaysRelevantNode->NotifyRemoveNetworkActor(ActorInfo); break;
+	case EClassRepNodeMapping::RelevantOwnerConnection:
+		if (UNetConnection* Connection = ActorInfo.Actor->GetNetConnection())
+		{
+			if (TObjectPtr<UReplicationGraphNode_AlwaysRelevant_ForConnection>* Node = ConnectionNodes.Find(Connection))
+			{
+				(*Node)->NotifyRemoveNetworkActor(ActorInfo, false);
+			}
+		}
+		break;
+	case EClassRepNodeMapping::Spatialize_Static:      GridNode->RemoveActor_Static(ActorInfo);   break;
+	case EClassRepNodeMapping::Spatialize_Dynamic:     GridNode->RemoveActor_Dynamic(ActorInfo);  break;
+	case EClassRepNodeMapping::Spatialize_Dormancy:    GridNode->RemoveActor_Dormancy(ActorInfo); break;
+	}
+}
+```
+
+```cpp
+// PlayerState를 프레임당 TargetActorsPerFrame개씩 나눠 돌려 보낸다
+void UExampleNode_PlayerStateFrequencyLimiter::PrepareForReplication()
+{
+	ReplicationActorLists.Reset();
+	ReplicationActorLists.AddDefaulted();
+	for (TActorIterator<APlayerState> It(GetWorld()); It; ++It)
+	{
+		if (!IsActorValidForReplicationGather(*It)) continue;
+		if (ReplicationActorLists.Last().Num() >= TargetActorsPerFrame) ReplicationActorLists.AddDefaulted();
+		ReplicationActorLists.Last().Add(*It);
+	}
+}
+
+void UExampleNode_PlayerStateFrequencyLimiter::GatherActorListsForConnection(const FConnectionGatherActorListParameters& Params)
+{
+	if (ReplicationActorLists.Num() == 0) return;
+	Params.OutGatheredReplicationLists.AddReplicationActorList(ReplicationActorLists[Params.ReplicationFrameNum % ReplicationActorLists.Num()]);
+}
+```
+
+</details>
+
+`RouteAddNetworkActorToNodes`가 라우팅 표를 코드로 옮긴 자리이고, 노드 넷(Grid, AlwaysRelevant, 연결별 AlwaysRelevant, PlayerState 빈도 제한)이 글 첫머리 그림의 구성이다. 그래프는 `UReplicationDriver::CreateReplicationDriverDelegate`나 ini의 `ReplicationDriverClassName`으로 지정하고, 리플리케이션 그래프 노드는 `CreateNewNode`로만 만든다.
+
 dynamic이 기본값인 이유는 그것이 항상 맞는 쪽이기 때문이다. static으로 잘못 넣으면 움직이는 액터가 보이지 않고, dynamic으로 넣으면 비용만 든다. static과 dormancy는 클래스를 알 때만 명시한다.
 
 탈것의 무기처럼 부모가 리플리케이션될 때만 함께 가면 되는 액터는 노드에 넣지 않고 `AddDependentActor`로 부모에 묶는다. 기본 드라이버에서 `bNetUseOwnerRelevancy`로 owner를 따라가던 장비·무기 클래스가 여기 해당한다. Lyra 규칙으로는 `NotRouted`가 되어 그래프로 옮기면 조용히 보이지 않게 되므로, 부모에 묶거나 dynamic으로 명시해야 한다.

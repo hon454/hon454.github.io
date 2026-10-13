@@ -103,7 +103,9 @@ Unreal Insights에는 리플리케이션 그래프 전용 트랙이 없지만 `-
 
 ![](./images/unreal-replication-graph/insights-frame-timeline.webp)
 
-① `UReplicationGraph_ServerReplicateActors` 4.56 ms 아래에 `NET_PrepareReplication`(Grid의 dynamic 액터 셀 갱신이 여기)이 한 번 오고, 그 뒤에 연결마다 `NET_ReplicateActors_GatherForConnection`과 `NET_ReplicateActors_ProcessGatheredLists`(안에 `PrioritizeForConnection`과 `ReplicateActorsForConnection`), `NET_ReplicateActors_LookForNonRelevantChannels`가 이어진다. ② ③은 두 연결의 `ProcessGatheredLists`로 2.69 ms와 1.61 ms다. 프레임의 나머지 약 41 ms는 틱 레이트 대기다. `Prioritize_InnerLoop`의 호출 수가 검토한 액터 수이고 `Replicate Actor Time`의 호출 수가 보낸 액터 수다. `RG_QUICK_SCOPE_CYCLE_COUNTER`로 선언된 `Prioritize_InnerLoop*`, `ReplicateSingleActor` 등은 Test·Shipping에서 컴파일되지 않는다.
+① `UReplicationGraph_ServerReplicateActors` 4.56 ms 아래에 `NET_PrepareReplication`(Grid의 dynamic 액터 셀 갱신이 여기)이 한 번 오고, 그 뒤에 연결마다 `NET_ReplicateActors_GatherForConnection`과 `NET_ReplicateActors_ProcessGatheredLists`(안에 `PrioritizeForConnection`과 `ReplicateActorsForConnection`), `NET_ReplicateActors_LookForNonRelevantChannels`가 이어진다. ② ③은 두 연결의 `ProcessGatheredLists`로 2.69 ms와 1.61 ms다. 프레임의 나머지 약 41 ms는 틱 레이트 대기다.
+
+타이머의 호출 수도 읽을 거리다. `Prioritize_InnerLoop`의 호출 수가 검토한 액터 수이고 `Replicate Actor Time`의 호출 수가 보낸 액터 수다. `RG_QUICK_SCOPE_CYCLE_COUNTER`로 선언된 `Prioritize_InnerLoop*`, `ReplicateSingleActor` 등은 Test·Shipping에서 컴파일되지 않는다.
 
 ### 드라이버와 분포
 

@@ -49,7 +49,7 @@ lang: ko
 
 리플리케이션 그래프는 프레임을 세 단계로 처리한다.
 
-1. **Gather**: 연결마다 전역 노드와 그 연결의 노드에 `GatherActorListsForConnection`을 호출해 후보 리스트를 모은다. 노드는 대부분 프레임을 넘어 유지되는 리스트를 돌려주므로 어떤 액터를 고려할지를 다시 계산하지 않는다.
+1. **Gather**: 연결마다 전역 노드와 그 연결의 노드에 `GatherActorListsForConnection`을 호출해 후보 리스트를 모은다. 노드는 대부분 프레임을 넘어 유지되는 리스트를 돌려주므로 어떤 액터를 고려할지를 다시 계산하지 않는다. 기본 드라이버의 consider list 구성에 해당하는 단계다.
 2. **Prioritize**: 모은 리스트의 액터마다 dormancy, 리플리케이션 주기, 거리 컬링을 적용하고 우선순위 점수를 매겨 정렬한다.
 3. **Replicate**: 정렬된 순서로 `ReplicateSingleActor`를 호출하고, 연결이 포화되면 멈춘다.
 

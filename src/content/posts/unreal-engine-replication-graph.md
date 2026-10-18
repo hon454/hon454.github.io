@@ -155,11 +155,11 @@ Uniform에서 리플리케이션 그래프는 기본 드라이버의 7분의 1�
 
 네 조건의 호출당 비용은 2.6–3.2 µs로 같은 자릿수다. 밀집 조건의 비용은 보내는 횟수가 정하고 그 횟수는 어느 드라이버든 설정으로 바꿀 수 있다.
 
-아래 두 그림은 측정 구간 60초의 Callees 트리를 기본 드라이버와 버킷 1개 리플리케이션 그래프에서 펼친 것이다.
+아래 두 그림은 Cluster 조건에서 측정 구간 60초의 Callees 트리를 펼친 것이다.
 
-![](./images/unreal-replication-graph/insights-callees-default.webp)
+![Callees 트리: 기본 드라이버](./images/unreal-replication-graph/insights-callees-default.webp)
 
-![](./images/unreal-replication-graph/insights-callees-buckets1.webp)
+![Callees 트리: 리플리케이션 그래프, 버킷 1개](./images/unreal-replication-graph/insights-callees-buckets1.webp)
 
 ① `UActorChannel::ReplicateActor` 안의 시간은 7.51 s와 7.22 s, 프레임당 5.80 ms와 5.55 ms로 같고 호출당 약 1.8 µs다. 후보를 고르는 단계도 비슷하다. 첫 번째 그림의 기본 드라이버는 ② 두 연결의 우선순위 1.04 s와 ③ consider list 894.94 ms(프레임당 0.69 ms)를 합쳐 프레임당 1.49 ms다. 두 번째 그림의 리플리케이션 그래프는 prepare와 gather 0.16 ms에 ③ 우선순위 계산 1.68 s를 합쳐 1.45 ms다.
 

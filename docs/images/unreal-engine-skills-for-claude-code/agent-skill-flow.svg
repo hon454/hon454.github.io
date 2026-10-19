@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="820" viewBox="0 0 1600 820" font-family="Noto Sans KR, Malgun Gothic, sans-serif">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#e9eef3" stroke-width="1"/>
+    </pattern>
+    <marker id="arrow-gray" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto">
+      <path d="M0 0L12 6L0 12z" fill="#8a9ab0"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto">
+      <path d="M0 0L12 6L0 12z" fill="#0b8a5f"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="820" fill="#f8fafc"/>
+  <rect width="1600" height="820" fill="url(#grid)"/>
+
+  <rect x="140" y="70" width="420" height="120" rx="20" fill="#e6f7fb" stroke="#0e9fbf" stroke-width="3"/>
+  <text x="350" y="123" text-anchor="middle" font-size="32" font-weight="700" fill="#111827">에이전트</text>
+  <text x="350" y="162" text-anchor="middle" font-size="25" fill="#4b5563">Claude Code 등 MCP 클라이언트</text>
+
+  <rect x="1040" y="70" width="420" height="120" rx="20" fill="#fff5ec" stroke="#e8641b" stroke-width="3"/>
+  <text x="1250" y="123" text-anchor="middle" font-size="32" font-weight="700" fill="#111827">에디터</text>
+  <text x="1250" y="162" text-anchor="middle" font-size="25" fill="#4b5563">AgentSkillToolset</text>
+
+  <path d="M350 215V760" stroke="#9aa8b8" stroke-width="2" stroke-dasharray="6 8"/>
+  <path d="M1250 215V760" stroke="#9aa8b8" stroke-width="2" stroke-dasharray="6 8"/>
+
+  <!-- 1 -->
+  <text x="800" y="268" text-anchor="middle" font-size="30" font-weight="700" fill="#374151">call_tool: ListSkills</text>
+  <path d="M362 290H1236" stroke="#8a9ab0" stroke-width="3" marker-end="url(#arrow-gray)"/>
+  <text x="380" y="326" font-size="25" fill="#4b5563">어떤 스킬이 있는지 묻는다</text>
+
+  <!-- 2 -->
+  <text x="800" y="378" text-anchor="middle" font-size="30" font-weight="700" fill="#0b8a5f">{ 스킬 경로: Description }</text>
+  <path d="M1238 400H364" stroke="#0b8a5f" stroke-width="3" stroke-dasharray="14 8" marker-end="url(#arrow-green)"/>
+  <text x="1220" y="436" text-anchor="end" font-size="25" fill="#4b5563">UAgentSkill 파생 클래스를 찾아 설명만 돌려준다</text>
+
+  <!-- 3 -->
+  <text x="800" y="518" text-anchor="middle" font-size="30" font-weight="700" fill="#374151">call_tool: GetSkills([스킬 경로])</text>
+  <path d="M362 540H1236" stroke="#8a9ab0" stroke-width="3" marker-end="url(#arrow-gray)"/>
+  <text x="380" y="576" font-size="25" fill="#4b5563">관련 있는 스킬만 골라 본문을 요청한다</text>
+
+  <!-- 4 -->
+  <text x="800" y="628" text-anchor="middle" font-size="30" font-weight="700" fill="#0b8a5f">Instructions</text>
+  <path d="M1238 650H364" stroke="#0b8a5f" stroke-width="3" stroke-dasharray="14 8" marker-end="url(#arrow-green)"/>
+  <text x="1220" y="686" text-anchor="end" font-size="25" fill="#4b5563">GeneratePrompt 결과. 에디터에서 조회한 값이 들어갈 수 있다</text>
+</svg>

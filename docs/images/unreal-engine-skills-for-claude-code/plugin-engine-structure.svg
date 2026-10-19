@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="900" viewBox="0 0 1700 900" font-family="Noto Sans KR, Malgun Gothic, sans-serif">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#e9eef3" stroke-width="1"/>
+    </pattern>
+    <marker id="arrow-gray" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto">
+      <path d="M0 0L12 6L0 12z" fill="#8a9ab0"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto">
+      <path d="M0 0L12 6L0 12z" fill="#0b8a5f"/>
+    </marker>
+  </defs>
+  <rect width="1700" height="900" fill="#f8fafc"/>
+  <rect width="1700" height="900" fill="url(#grid)"/>
+
+  <!-- Claude Code -->
+  <rect x="60" y="250" width="440" height="430" rx="24" fill="#e6f7fb" stroke="#0e9fbf" stroke-width="3"/>
+  <text x="280" y="310" text-anchor="middle" font-size="34" font-weight="700" fill="#111827">Claude Code</text>
+  <rect x="100" y="345" width="360" height="125" rx="16" fill="#ffffff" stroke="#0e9fbf" stroke-width="2"/>
+  <text x="280" y="397" text-anchor="middle" font-size="31" font-weight="700" fill="#111827">이 플러그인</text>
+  <text x="280" y="438" text-anchor="middle" font-size="26" fill="#4b5563">스킬 3개 + SessionStart 훅</text>
+  <rect x="100" y="500" width="360" height="125" rx="16" fill="#ffffff" stroke="#0e9fbf" stroke-width="2"/>
+  <text x="280" y="552" text-anchor="middle" font-size="31" font-weight="700" fill="#111827">.mcp.json</text>
+  <text x="280" y="593" text-anchor="middle" font-size="26" fill="#4b5563">에디터 명령으로 생성</text>
+
+  <!-- Unreal Editor -->
+  <g transform="translate(100,0)">
+  <rect x="700" y="90" width="840" height="740" rx="24" fill="#fff5ec" stroke="#e8641b" stroke-width="3" fill-opacity="0.85"/>
+  <text x="1120" y="148" text-anchor="middle" font-size="34" font-weight="700" fill="#111827">Unreal Editor</text>
+  <text x="1120" y="184" text-anchor="middle" font-size="26" fill="#4b5563">Experimental 플러그인</text>
+
+  <rect x="910" y="220" width="420" height="110" rx="16" fill="#ffffff" stroke="#e8641b" stroke-width="2"/>
+  <text x="1120" y="268" text-anchor="middle" font-size="31" font-weight="700" fill="#111827">ModelContextProtocol</text>
+  <text x="1120" y="305" text-anchor="middle" font-size="26" fill="#4b5563">에디터 안의 MCP 서버</text>
+
+  <path d="M1120 330V392" fill="none" stroke="#8a9ab0" stroke-width="3" marker-end="url(#arrow-gray)"/>
+
+  <rect x="910" y="400" width="420" height="90" rx="16" fill="#ffffff" stroke="#e8641b" stroke-width="2"/>
+  <text x="1120" y="456" text-anchor="middle" font-size="31" font-weight="700" fill="#111827">ToolsetRegistry</text>
+
+  <path d="M1120 490V540H925V582" fill="none" stroke="#8a9ab0" stroke-width="3" marker-end="url(#arrow-gray)"/>
+  <path d="M1120 540H1315V582" fill="none" stroke="#8a9ab0" stroke-width="3" marker-end="url(#arrow-gray)"/>
+
+  <rect x="740" y="590" width="370" height="130" rx="16" fill="#e2f6ec" stroke="#0b8a5f" stroke-width="2"/>
+  <text x="925" y="645" text-anchor="middle" font-size="31" font-weight="700" fill="#111827">Toolsets</text>
+  <text x="925" y="686" text-anchor="middle" font-size="26" fill="#4b5563">AllToolsets로 일괄 활성화</text>
+
+  <rect x="1130" y="590" width="370" height="130" rx="16" fill="#e2f6ec" stroke="#0b8a5f" stroke-width="2"/>
+  <text x="1315" y="645" text-anchor="middle" font-size="31" font-weight="700" fill="#111827">AgentSkillToolset</text>
+  <text x="1315" y="686" text-anchor="middle" font-size="26" fill="#4b5563">UAgentSkill 클래스</text>
+
+  <text x="925" y="778" text-anchor="middle" font-size="24" fill="#6b7280">AI가 호출하는 도구</text>
+  <text x="1315" y="778" text-anchor="middle" font-size="24" fill="#6b7280">AI에게 주는 지시문</text>
+  </g>
+
+  <!-- connection -->
+  <path d="M460 562H600V275H1000" fill="none" stroke="#0b8a5f" stroke-width="4" marker-end="url(#arrow-green)"/>
+  <text x="696" y="252" text-anchor="middle" font-size="22" font-weight="700" fill="#0b8a5f">MCP over HTTP</text>
+  <text x="696" y="306" text-anchor="middle" font-size="18" fill="#4b5563">127.0.0.1:8000/mcp</text>
+
+</svg>

@@ -20,13 +20,6 @@ Epic Games의 Claude Code용 플러그인 [Unreal Engine Skills for Claude Code]
 
 설정 방법은 이전 글과 [공식 문서](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-mcp-in-unreal-editor)로 넘기고 이 글은 스킬 자체를 다룬다.
 
-:::note[읽은 기준]
-- 레포: 플러그인 버전 3.1.1
-- 엔진 소스: UE 5.8.3 (`Engine/Plugins/Experimental/` 아래 `ModelContextProtocol`, `ToolsetRegistry`, `Toolsets`)
-- 스타, 설치 수 같은 수치는 2026-10-19 기준
-- 에디터에 붙여 실행해 보지는 않았다. 레포와 엔진 소스를 읽은 결과다.
-:::
-
 ## 한눈에 보기
 
 ![GitHub의 EpicGames/unreal-engine-skills-for-claude-code-plugin 레포 화면](./images/unreal-engine-skills-for-claude-code/github-repo.webp)
@@ -46,28 +39,11 @@ Epic Games의 Claude Code용 플러그인 [Unreal Engine Skills for Claude Code]
 - 스킬을 크게 고친 커밋 여러 개에 `Co-Authored-By: Claude` 트레일러가 붙어 있다. 스킬을 Claude와 함께 다듬어 왔다.
 - Anthropic 공식 마켓플레이스 `claude-plugins-official`에 등록돼 있다. 마켓플레이스에서는 `Unreal Engine MCP`라는 이름으로 보인다.
 
-![Claude 마켓플레이스의 Unreal Engine MCP 페이지. 개발자 Epic Games, 설치 수 871](./images/unreal-engine-skills-for-claude-code/claude-marketplace.webp)
+![Claude 마켓플레이스의 Unreal Engine MCP 페이지](./images/unreal-engine-skills-for-claude-code/claude-marketplace.webp)
 
 실제 기능은 엔진에 있다. 레포는 Claude가 그 기능을 쓰는 방법을 적은 문서 묶음에 가깝다.
 
-```mermaid
-flowchart TD
-    accTitle: 플러그인과 엔진의 관계
-    accDescr: Claude Code는 플러그인에서 스킬과 훅을 읽고, 별도로 생성한 .mcp.json으로 에디터 안의 MCP 서버에 HTTP로 연결한다. MCP 서버는 ToolsetRegistry를 거쳐 툴셋과 Agent Skill을 노출한다.
-    subgraph CC["Claude Code"]
-        P["이 플러그인<br/>스킬 3개 + SessionStart 훅"]
-    end
-    subgraph UE["Unreal Editor (Experimental 플러그인)"]
-        M["ModelContextProtocol<br/>MCP 서버"]
-        R["ToolsetRegistry"]
-        T["Toolsets<br/>(AllToolsets로 일괄 활성화)"]
-        S["AgentSkillToolset<br/>UAgentSkill 클래스"]
-    end
-    CC -- "MCP over HTTP" --> M
-    M --> R
-    R --> T
-    R --> S
-```
+![Claude Code 플러그인과 Unreal Editor 안의 MCP 구성 요소](./images/unreal-engine-skills-for-claude-code/plugin-engine-structure.webp)
 
 - 연결 주소는 기본값 `http://127.0.0.1:8000/mcp`다.
 - 플러그인은 `.mcp.json`을 포함하지 않는다. 에디터 콘솔에서 `ModelContextProtocol.GenerateClientConfig ClaudeCode`로 만든다.
@@ -148,7 +124,7 @@ description은 처음부터 이렇지는 않았다.
 - v3.0.0 이전에는 `load_toolset`으로 툴셋을 네이티브 도구로 등록했고, v3.0.0에서 지금의 `call_tool` 방식으로 바꿨다.
 
 :::note[내 생각]
-Unreal MCP의 일부 도구가 굉장히 무거워서 이런 방식을 택한 것으로 알고 있다. `call_tool` 하나로 인터페이스를 획일화하는 편이 더 직관적인 설계라고 판단한 것 같다.
+Unreal MCP의 일부 툴셋은 설명만 읽어도 토큰이 굉장히 많이 들어서 이런 방식을 택한 것으로 알고 있다. `call_tool` 하나로 인터페이스를 획일화하는 편이 더 직관적인 설계라고 판단한 것 같다.
 :::
 
 [이전 글](/posts/unreal-engine-5-8-mcp-and-agentic-game-development/)에서 정리한 Epic 세션에서도 툴셋 설명을 읽어 오는 데만 머티리얼은 약 2만 6천 토큰, 나이아가라는 25만 토큰 가까이 든다고 했다. 모든 스키마를 처음부터 실으면 그만큼 컨텍스트가 찬다.
@@ -236,7 +212,7 @@ LLM의 과잉 문서화와 과한 텍스트는 AI 산출물의 가장 큰 문제
 - 같은 클래스의 `UpdateSkill`은 성공하면 `true`를 반환한다. 이 부분은 규칙과 다르다. `CreateSkill`이 내부에서 이 반환값을 쓰고 있어서 생긴 형태로 보인다.
 
 :::note[내 생각]
-실수로 보인다. 앞으로 코드를 지침에 맞추거나 지침을 고치거나 둘 중 하나가 될 것 같다. 해당 코드는 플러그인 레포가 아니라 엔진(`ToolsetRegistry`)에 있으니, 고친다면 엔진 쪽에 PR을 올려 볼 만하다.
+실수일 수도 있다. 앞으로 코드를 지침에 맞추거나 지침을 고치거나 둘 중 하나가 될 것 같다. 해당 코드는 플러그인 레포가 아니라 엔진(`ToolsetRegistry`)에 있으니, 고친다면 엔진 쪽에 PR을 올려 볼 만하다.
 :::
 
 ## `unreal-skill`: 스킬을 만드는 스킬
@@ -255,17 +231,7 @@ LLM의 과잉 문서화와 과한 텍스트는 AI 산출물의 가장 큰 문제
 
 Agent Skill은 플러그인의 C++/Python 클래스로 정의하거나 프로젝트 Content에 블루프린트 클래스 에셋으로 만든다. 어느 쪽이든 에디터가 로드한 클래스를 MCP 도구가 텍스트로 돌려준다.
 
-```mermaid
-sequenceDiagram
-    accTitle: Agent Skill을 불러오는 순서
-    accDescr: 에이전트가 call_tool로 ListSkills를 호출하면 에디터가 UAgentSkill 파생 클래스의 경로와 설명을 돌려준다. 관련 있는 스킬은 GetSkills로 지시문 본문을 받는다.
-    participant A as 에이전트
-    participant E as 에디터 (AgentSkillToolset)
-    A->>E: call_tool: ListSkills
-    E-->>A: { 스킬 경로: Description, ... }
-    A->>E: call_tool: GetSkills([스킬 경로])
-    E-->>A: Instructions (GeneratePrompt 결과)
-```
+![에이전트가 ListSkills와 GetSkills로 Agent Skill을 불러오는 순서](./images/unreal-engine-skills-for-claude-code/agent-skill-flow.webp)
 
 - `ListSkills`는 `UAgentSkill`의 파생 클래스를 모두 찾아 경로와 Description을 돌려준다. 프로젝트 설정의 허용/차단 정규식(`AgentSkillAllowedNames`, `AgentSkillBlockedNames`)으로 노출할 스킬을 거른다.
 - 자동 호출이 없기 때문에 `unreal-mcp` 스킬이 "낯선 작업을 시작할 때마다 `ListSkills`를 확인하라"고 지시한다. Claude Code에서는 하네스가 하는 일을 여기서는 지시문이 대신한다.
@@ -325,7 +291,7 @@ Agnostic이 눈에 띈다. Claude Code용 플러그인이 엔진 Agent Skill에�
 Durable은 레포 스스로도 적용했다. `unreal-mcp`의 `## Workflows` 절을 "names that drift"라는 이유로 지웠다. 정확한 `Toolset.tool` 이름에 묶인 절차였다.
 
 :::note[내 생각]
-UAgentSkill 에셋을 만든다는 점이 굉장히 독특하다. 완전히 새로운 언리얼 개발 기법 같다.
+AI 지시문을 블루프린트 에셋으로 관리한다는 점이 굉장히 독특하다. 기법 자체는 익숙한데 쓰임새가 새롭다.
 
 팀의 프로젝트 노하우는 Claude Code 스킬 쪽에 둘 것 같다. 언리얼 Agent Skill은 에디터 기능을 활용한 특정 프로세스를 구축할 때 쓰는 편이 맞아 보인다.
 :::
@@ -358,7 +324,7 @@ is_project_root() {
 - bash 스크립트라서 Windows에서는 Git Bash나 WSL이 필요하다. 없으면 훅만 빠지고 MCP 도구는 동작한다. README에도 "There is no separate PowerShell companion script today"라고 적혀 있다.
 
 :::note[내 생각]
-Git Bash 정도는 어차피 깔려 있으니 상관없을 것 같다. 언리얼이 멀티 플랫폼을 지향하는 엔진이기도 하니, 괜히 플랫폼별로 나누면 코드만 늘어서 이렇게 한 것 같다.
+Git을 쓰는 개발 환경이라면 Git Bash는 대개 깔려 있으니 크게 문제없을 것 같다. 언리얼이 멀티 플랫폼을 지향하는 엔진이기도 하니, 괜히 플랫폼별로 나누면 코드만 늘어서 이렇게 한 것 같다.
 :::
 
 ## 보안: 경고는 글로, 강제는 어디서
@@ -411,7 +377,7 @@ MCP 서버도 연결 직후(initialize 응답)에 `instructions` 문자열로 �
 MCP는 연결된 뒤에만 말할 수 있고 스킬은 연결되기 전에도 말할 수 있다. 대신 스킬은 Claude Code에서만 동작하고 앞의 동시 호출 항목처럼 문서나 서버와 따로 바뀔 수 있다.
 
 :::note[내 생각]
-이 레포는 말 그대로 Unreal MCP 공식 문서를 스킬로 만들어, Unreal MCP를 적극적으로 활용할 수 있게 해 주는 역할이 크다고 생각한다.
+이 레포는 Unreal MCP 공식 문서 내용에 운영 지식을 더해 스킬로 만들어, Unreal MCP를 적극적으로 활용할 수 있게 해 주는 역할이 크다고 생각한다.
 
 다만 MCP 자체로도 작동할 텐데 이런 트리거용 스킬을 함께 쓰는 것이 패턴으로서 더 우월한지는 궁금하다. 이런 패턴을 몇 번 본 것 같기는 하다.
 :::

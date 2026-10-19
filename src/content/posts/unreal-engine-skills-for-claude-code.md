@@ -355,7 +355,7 @@ README의 Security 절은 네 가지를 경고한다.
 - `execute_tool_script`는 `PreToolUse` 훅이 `call_tool`의 `toolset_name`과 `tool_name`을 보고 확인을 요구하거나 거부할 수 있다.
 - 에디터의 미저장 에셋은 셸 훅이 볼 수 없다. 커밋 안 된 변경을 알려 주는 정도만 가능하다.
 
-남는 것은 두 번째 하나다. 도구 검색 모드에서는 모든 호출이 `call_tool` 하나로 들어오므로, 도구 이름 기반 권한 규칙으로는 읽기 도구와 Python 실행을 나눠 허용할 수 없다. 훅이라면 나눌 수 있다. 다만 훅에 `ProgrammaticToolset.execute_tool_script`라는 이름을 넣으면 레포가 지키려는 Durable 원칙과 부딪힌다. 이 레포의 위험은 대부분 엔진 서버와 사용자의 운영 습관 쪽에 있어서 플러그인이 할 수 있는 일은 원래 좁다.
+결국 훅으로 다룰 수 있는 경고는 `execute_tool_script` 하나다. 도구 검색 모드에서는 모든 호출이 `call_tool` 하나로 들어오므로, 도구 이름 기반 권한 규칙으로는 읽기 도구와 Python 실행을 나눠 허용할 수 없다. 훅이라면 나눌 수 있다. 다만 훅에 `ProgrammaticToolset.execute_tool_script`라는 이름을 넣으면 레포가 지키려는 Durable 원칙과 부딪힌다. 이 레포의 위험은 대부분 엔진 서버와 사용자의 운영 습관 쪽에 있어서 플러그인이 할 수 있는 일은 원래 좁다.
 
 ## MCP만으로는 안 되나
 

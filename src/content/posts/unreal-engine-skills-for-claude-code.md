@@ -1,6 +1,6 @@
 ---
 title: Unreal Engine Skills for Claude Code 리딩 노트
-published: 2026-10-19
+published: 2026-10-20
 author: Jihoon Jeon
 description: Epic Games가 공개한 Claude Code 플러그인 Unreal Engine Skills for Claude Code의 스킬 3개와 SessionStart 훅을 읽고, 스킬의 트리거 설계와 문서화 규칙, 엔진 쪽 Agent Skill, 보안 경고의 범위, MCP와 스킬의 역할 분담, Claude Code용만 나온 점에 대한 생각을 정리한다.
 category: Unreal Engine
@@ -10,7 +10,7 @@ tags:
   - claude-code
   - agent-skill
   - ai-agent
-draft: true
+draft: false
 lang: ko
 ---
 

@@ -2,7 +2,7 @@
 title: Unreal Engine Skills for Claude Code 리딩 노트
 published: 2026-10-19
 author: Jihoon Jeon
-description: Epic Games가 공개한 Claude Code 플러그인 Unreal Engine Skills for Claude Code의 스킬 3개와 SessionStart 훅을 읽고, 스킬의 트리거 설계와 문서화 규칙, 엔진 쪽 Agent Skill, 보안 경고의 범위, MCP와 스킬의 역할 분담에 대한 생각을 정리한다.
+description: Epic Games가 공개한 Claude Code 플러그인 Unreal Engine Skills for Claude Code의 스킬 3개와 SessionStart 훅을 읽고, 스킬의 트리거 설계와 문서화 규칙, 엔진 쪽 Agent Skill, 보안 경고의 범위, MCP와 스킬의 역할 분담, Claude Code용만 나온 점에 대한 생각을 정리한다.
 category: Unreal Engine
 tags:
   - unreal-engine
@@ -380,6 +380,17 @@ MCP는 연결된 뒤에만 말할 수 있고 스킬은 연결되기 전에도 �
 이 레포는 Unreal MCP 공식 문서 내용에 운영 지식을 더해 스킬로 만들어, Unreal MCP를 적극적으로 활용할 수 있게 해 주는 역할이 크다고 생각한다.
 
 다만 MCP 자체로도 작동할 텐데 이런 트리거용 스킬을 함께 쓰는 것이 패턴으로서 더 우월한지는 궁금하다. 이런 패턴을 몇 번 본 것 같기는 하다.
+:::
+
+## Claude Code용만 있다
+
+- 엔진의 Unreal MCP 서버는 특정 클라이언트에 묶여 있지 않다. `ModelContextProtocol.GenerateClientConfig`는 Claude Code, Cursor, VS Code, Gemini CLI, Codex CLI 다섯 가지 설정 파일을 만든다.
+- 그런데 Epic이 함께 내놓은 스킬과 훅은 Claude Code 플러그인 하나뿐이다. EpicGames GitHub 조직에 공개된 AI 클라이언트용 플러그인은 이 레포뿐이고, 공식 문서도 이 플러그인만 언급한다.
+- 설정 파일도 대우가 조금 다르다. Claude Code용 `.mcp.json`은 다시 생성하면 기존 내용에 병합되지만, Codex용 `.codex/config.toml`은 이미 있으면 덮어쓰지 않아서 손으로 고쳐야 한다.
+- Codex 같은 다른 클라이언트도 MCP 도구와 엔진 쪽 Agent Skill은 그대로 쓸 수 있다. 빠지는 것은 이 레포의 스킬이 주는 트리거, 안전 수칙, 설치·복구 안내와 툴셋 작성 가이드다.
+
+:::note[내 생각]
+요즘 다음 결제를 Codex로 할지 Claude로 할지 고민하고 있다. 이 플러그인이 공개된 지 4개월이 넘었는데도 여전히 Claude Code용만 있는 것을 보면, 언리얼도 기본적으로는 Claude를 우선 지원하는 방향으로 가는 것 같다. 그래서 Claude를 계속 쓰는 쪽으로 생각이 더 기운다.
 :::
 
 ## 참고 자료

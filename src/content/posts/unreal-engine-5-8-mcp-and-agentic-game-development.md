@@ -1,8 +1,9 @@
 ---
 title: 언리얼 엔진 5.8 MCP로 본 게임 개발과 에이전틱 코딩의 거리
 published: 2026-10-06T17:30:43+09:00
+updated: 2026-10-19
 author: Jihoon Jeon
-description: 언리얼 엔진 5.8 MCP를 Claude Code와 Codex로 써 보고 Epic 세션을 보며, 공식 문서에 빠진 Editor Toolset, 일괄 작업과 비용, 에디터 의존성, 프로젝트 구조 지식의 필요성에 대해 생각한 점을 정리한다.
+description: 언리얼 엔진 5.8 MCP를 Claude Code와 Codex로 써 보고 Epic 세션을 보며, All Toolsets에 이미 포함된 Editor Toolset, 일괄 작업과 비용, 에디터 의존성, 프로젝트 구조 지식의 필요성에 대해 생각한 점을 정리한다.
 image: ./images/unreal-engine-5-8-mcp/cover.webp
 category: Unreal Engine
 tags:
@@ -17,19 +18,29 @@ draft: false
 
 Epic 에듀케이션 오피스 아워 세션을 한국어 자막으로 올린 [언리얼 엔진 5.8 MCP 시작하기](https://www.youtube.com/watch?v=-Bol0qjz3rw)를 보고, 삼인칭 템플릿에서 Claude Code와 Codex로 프로퍼티 일괄 수정을 시켜 봤다. 여러 프로퍼티를 자연어로 한 번에 다룰 수 있다는 점은 고무적이었다. 동시에 언리얼 개발이 에디터에 묶여 있다는 사실이 에이전틱 개발에서 어떤 제약이 되는지도 다시 보게 됐다.
 
-## 공식 문서에 없는 `Editor Toolset`
+## `All Toolsets`에 포함된 `Editor Toolset`
 
-공식 문서는 `Unreal MCP`와 `All Toolsets` 두 플러그인을 켜라고 안내한다. 영상에서는 `Editor Toolset`까지 세 개를 켜야 한다고 한다. `Editor Toolset`이 꺼져 있으면 에이전트가 서버에 연결은 되지만 사용할 툴이 없어서 에디터를 조작하지 못한다.
+공식 문서는 `Unreal MCP`와 `All Toolsets` 두 플러그인을 켜라고 안내한다. 영상에서는 `Editor Toolset`까지 세 개를 켜야 하고, 온라인 가이드에는 `EditorToolset`이 빠져 있다고 정정한다. `Editor Toolset`이 꺼져 있으면 에이전트가 서버에 연결은 되지만 사용할 툴이 없어서 에디터를 조작하지 못한다는 설명이다.
 
-영상의 설정 슬라이드는 공식 문서에 실린 설정 다이어그램과 같은 그림이다. 차이는 아래에 붙은 한 줄뿐이다. 1단계는 플러그인 두 개가 아니라 세 개이고, 온라인 가이드에는 `EditorToolset`이 빠져 있다는 정정이다. 2026년 10월 6일 기준으로 공식 문서에는 아직 반영되지 않았다.
+![영상의 설정 슬라이드. 1단계 아래에 EditorToolset 정정이 붙어 있다](./images/unreal-engine-5-8-mcp/setup-steps.webp)
 
-![영상 찍을 시간에 공식 문서나 업데이트해 주지…](./images/unreal-engine-5-8-mcp/setup-steps.webp)
+처음 이 글을 쓸 때는 영상의 설명을 따라 이 플러그인을 따로 켜야 한다고 적었다. 그런데 엔진 소스를 보면 `All Toolsets`가 이미 `EditorToolset`에 의존한다. `All Toolsets`는 툴세트 플러그인을 묶는 집계 플러그인이고, 의존 플러그인 목록에 `EditorToolset`이 들어 있다.
 
-영상을 보기 전에는 이 플러그인이 필요하다는 사실을 몰랐다. 공식 문서만 따라 설정했다면 주요 에디터 기능이 왜 동작하지 않는지부터 헤맸을 것이다.
+```jsonc title="Engine/Plugins/Experimental/Toolsets/AllToolsets/AllToolsets.uplugin (발췌)"
+"FriendlyName": "All Toolsets",
+"Description": "Aggregator plugin that depends on all Toolsets plugins.",
+// ...
+"Plugins": [
+	// ...
+	{
+		"Name": "EditorToolset",
+		"Enabled": true
+	},
+```
 
-![EditorToolset은 Built-In > Other 범주에 있다](./images/unreal-engine-5-8-mcp/editor-toolset.webp)
+`5.8.0-release`, `5.8.1-release`, `5.8.2-release`, `5.8.3-release` 태그 모두 같다. 그래서 공식 문서대로 `All Toolsets`를 켜면 `Editor Toolset`도 의존 플러그인으로 함께 켜진다. 에디터에서 플러그인을 켜 보며 확인한 것이 아니라 소스에서 확인한 내용이다.
 
-나머지 설정은 [공식 문서](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-mcp-in-unreal-editor)를 따르면 된다.
+설정은 [공식 문서](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-mcp-in-unreal-editor)를 그대로 따르면 된다.
 
 ## 일괄 작업에는 맞고, 단일 수정에는 맞지 않는다
 

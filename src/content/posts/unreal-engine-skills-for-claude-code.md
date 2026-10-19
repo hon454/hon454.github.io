@@ -339,7 +339,7 @@ README의 Security 절은 네 가지를 경고한다.
 스킬과 도구 설명도 같은 내용을 모델에게 말한다. 엔진의 `CreateSkill`/`UpdateSkill` 설명에는 "This should ONLY be called after getting explicit direction or permission from the user."라고 적혀 있다. 사람이 읽는 README의 경고를 모델 쪽에서는 스킬과 도구 설명이 맡는다.
 
 :::note[내 생각]
-경고를 글로만 두지 말고 훅으로 막으면 좋겠다는 생각도 들었다. 그런데 README가 말하는 네 가지가 애초에 훅으로 막을 수 있는 종류인지부터 의아했다.
+경고를 글로만 두지 말고 훅으로 막으면 좋겠다는 생각도 들었다. 그런데 README의 네 가지 경고 중에는 훅으로 막을 수 없어 보이는 것도 있었다.
 :::
 
 그렇다면 플러그인이 훅으로 강제할 수 있었을까. 네 가지를 하나씩 보면 대부분 Claude Code 훅의 범위 밖이다.

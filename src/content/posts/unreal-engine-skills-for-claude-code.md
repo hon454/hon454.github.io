@@ -203,14 +203,21 @@ description에 이렇게 많은 신호를 넣는 것이 과해 보일 수도 있
 LLM의 과잉 문서화와 과한 텍스트는 AI 산출물의 가장 큰 문제라고 생각한다. 툴셋이나 스킬에서 가장 중요한 것은 간단명료함인데, LLM으로 만들 때 한 번에 그것을 지켜서 잘 만들어지는 경우는 거의 본 적이 없다.
 :::
 
-### 엔진 코드가 규칙에서 벗어난 한 곳
+### 반환값 규칙과 엔진 코드가 어긋난다
 
-- 공통 규약은 "Return values carry data, not status"이고 "Never return a boolean"이라고 한다.
+- 공통 규약의 제목은 "Return values carry data, not status"다. 이어지는 문장은 "Never return a boolean, error string, or result wrapper to communicate an error"라고 한다.
+- 두 문장이 막는 범위가 다르다. 제목대로면 상태를 알리는 반환값은 모두 안 되고, 본문대로면 에러를 알리는 `bool`만 안 된다. 실패하면 에러를 올리고 성공하면 `true`를 돌려주는 도구는 그 사이에 걸린다.
 - 엔진의 `UAgentSkillToolset::CreateSkill`은 실패하면 `RaiseScriptError`로 에러를 올린 뒤 빈 문자열을 반환한다. C++ 에러 처리 절이 시키는 방식 그대로다.
-- 같은 클래스의 `UpdateSkill`은 성공하면 `true`를 반환한다. 이 부분은 규칙과 다르다. `CreateSkill`이 내부에서 이 반환값을 쓰고 있어서 생긴 형태로 보인다.
+- 같은 클래스의 `UpdateSkill`은 실패하면 에러를 올리고 `false`를, 성공하면 `true`를 반환한다. `CreateSkill`은 이 반환값을 받아 실패하면 방금 만든 에셋을 지운다.
+- AI는 이 `false`를 받지 않는다. 에러가 올라오면 툴셋 레지스트리가 반환값을 버리고 에러 메시지만 넘긴다(`FunctionLibraryToolset.cpp:177-183`). 성공하면 `{"returnValue":true}`가 간다.
+- `UpdateSkill`만 이런 것도 아니다. 5.8.3의 `Engine/Plugins`에서 `AICallable` 함수 중 `bool`을 반환하는 것은 40개가 넘고, `IsPIERunning`처럼 질문에 답하는 것을 빼도 30개 넘게 같은 모양이다. 이름이 같은 도구도 갈린다. PCG의 `UpdateNode`는 `bool`, Dataflow의 `UpdateNode`는 `void`를 반환한다.
+- `ConfigSettingsToolset::SaveSection`은 마지막에 `return Section->Save();`를 한다. 저장이 실패해도 에러 없이 `false`가 정상 응답으로 간다. 규칙이 막으려는 경우가 이쪽이다.
+- 도구를 쓰는 쪽 스킬은 반대 전제를 둔다. `unreal-mcp`는 많은 도구가 예외 없이 성공과 실패 상태를 돌려준다며 응답을 꼭 확인하라고 한다.
 
 :::note[내 생각]
-`UpdateSkill`의 `bool` 반환은 실수일 수도 있다. 앞으로 코드를 지침에 맞추거나 지침을 고치거나 둘 중 하나가 될 것 같다. 해당 코드는 플러그인 레포가 아니라 엔진(`ToolsetRegistry`)에 있으니, 고친다면 엔진 쪽에 PR을 올려 볼 만하다.
+처음에는 `UpdateSkill`의 `bool` 반환을 실수로 보고 엔진에 PR을 올려 볼 생각이었다. 다시 확인해 보니 한 함수의 실수가 아니라 엔진 전반의 관례였고, `void`로 바꿔도 AI가 받는 응답은 `true`가 `null`로 바뀌는 것뿐이었다.
+
+그래서 엔진 PR 대신 규칙 문장이 두 가지로 읽힌다는 점을 플러그인 레포에 [이슈](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin/issues/11)로 남겼다. 동작만 하는 도구는 `void`를 반환하고 `bool`은 질문에 답할 때만 쓰라는 대체 문장도 함께 제안했다. 엔진 PR은 Epic이 그 방향을 원하면 보낼 생각이다.
 :::
 
 ## `unreal-skill`: 스킬을 만드는 스킬
@@ -396,6 +403,7 @@ MCP는 연결된 뒤에만 말할 수 있고 스킬은 연결되기 전에도 �
 ## 참고 자료
 
 - [EpicGames/unreal-engine-skills-for-claude-code-plugin](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)
+- [create-toolset 반환값 규칙에 관한 이슈 #11](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin/issues/11)
 - [Epic Games: Unreal MCP in Unreal Editor](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-mcp-in-unreal-editor)
 - [Claude 마켓플레이스: Unreal Engine MCP](https://claude.com/plugins/unreal-engine-skills-for-claude-code)
 - [언리얼 엔진 5.8 MCP로 본 게임 개발과 에이전틱 코딩의 거리](/posts/unreal-engine-5-8-mcp-and-agentic-game-development/)

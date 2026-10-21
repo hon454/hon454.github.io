@@ -192,7 +192,7 @@ Night of the Dead는 밤마다 몰려오는 좀비에 대비해 방어 시설을
 - Nginx와 Certbot으로 회사 서버에 공개 도메인을 부여하고 인증서를 관리했다.
 - Epic Online Services 세션을 멀티플레이 개설과 접속 과정에 연결하고 Steamworks 업적을 연동했다.
 
-2023년 11월 전후 EOS가 Steam 외부 인증을 Web API 티켓(`GetAuthTicketForWebApi`)으로 바꾸도록 요구하고 기존 세션 티켓을 거부하는 기한을 뒀다. 이 함수는 Steamworks SDK 1.57 이상에만 있다. 그래서 UE 4.27이 포함한 SDK를 엔진 수정으로 올리는 방안 대신 SDK 1.57 이상을 포함한 UE5로 이전했고, 이전 결과는 [개발 업데이트 #15](https://store.steampowered.com/news/app/1377380/view/3888357282609115394?l=koreana)에 반영했다. 인증 과정에서 겪은 문제는 [Steam 인증 티켓과 EOS Private Sandbox 권한 확인](/posts/steam-eos-private-sandbox-web-api-auth-ticket/)에 정리했다.
+2023년 11월 전후 EOS가 Steam 외부 인증을 Web API 티켓(`GetAuthTicketForWebApi`)으로 바꾸도록 요구하고 기존 세션 티켓을 거부하는 기한을 뒀다. 이 함수는 Steamworks SDK 1.57 이상에만 있다. UE 4.27이 포함한 SDK를 엔진 수정으로 올릴 수도 있었지만, 수정한 소스 엔진을 계속 관리하는 위험이 커서 피하고 싶었다. 대신 SDK 1.57 이상을 포함하고 엔진 전반의 최적화와 에디터 신기능도 들어오는 UE5로 이전했고, 이전 결과는 [개발 업데이트 #15](https://store.steampowered.com/news/app/1377380/view/3888357282609115394?l=koreana)에 반영했다. 인증 과정에서 겪은 문제는 [Steam 인증 티켓과 EOS Private Sandbox 권한 확인](/posts/steam-eos-private-sandbox-web-api-auth-ticket/)에 정리했다.
 
 ## 기술별 담당 내용
 

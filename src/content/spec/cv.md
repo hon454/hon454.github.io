@@ -194,7 +194,7 @@ Unreal Engine 4/5, C++, Windows Server, Unreal Insights, EOS, Steamworks, TeamCi
 #### UE5 엔진 이전
 
 - **과제:** 2023년 11월 전후 EOS가 Steam 외부 인증을 Web API 티켓(`GetAuthTicketForWebApi`, identity `epiconlineservices`)으로 바꾸도록 요구하고 기존 세션 티켓을 거부하는 기한을 둔 상황. 이 함수는 Steamworks SDK 1.57 이상에만 있으나 UE 4.27은 그보다 낮은 SDK를 포함
-- **판단:** UE 4.27의 Steamworks SDK를 엔진 수정으로 올리는 방안 대신 SDK 1.57 이상을 포함한 UE5로 이전
+- **판단:** UE 4.27의 Steamworks SDK를 엔진 수정으로 올리면 수정한 소스 엔진을 계속 관리해야 하는 위험이 커서 이 방안을 피하고, SDK 1.57 이상을 포함하며 엔진 전반의 최적화와 에디터 신기능도 함께 얻을 수 있는 UE5로 이전
 - **수행:**
   - UE4에서 UE5로의 이전 주도
   - Replication Graph를 Lyra 샘플의 구성에 맞춰 재작성

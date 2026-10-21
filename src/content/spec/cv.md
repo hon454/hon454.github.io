@@ -205,7 +205,7 @@ Unreal Engine 4/5, C++, Windows Server, Unreal Insights, EOS, Steamworks, TeamCi
 #### 커스텀 Destructible
 
 - **과제:** UE4의 PhysX 기반 APEX Destruction에서 원인을 알 수 없는 에러가 잦던 상황
-- **판단:** 직접 제어할 수 있는 최소 기능의 커스텀 Destructible 시스템으로 교체
+- **판단:** 소스 엔진으로 PhysX 연동 코드까지 디버깅했으나 남은 분석이 PhysX 바이너리 내부 디버깅이라 드는 시간이 과도하다고 보고, 원인 추적 대신 직접 제어할 수 있는 최소 기능의 커스텀 Destructible 시스템으로 교체
 - **수행:** Blender에서 미리 나눈 조각 StaticMesh를 파괴 시점에 만들고 일정 시간 뒤 제거하는 구조 구현
 - **결과:** 교체 후 파괴할 때의 프레임 저하 감소 확인
 

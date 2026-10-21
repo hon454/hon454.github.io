@@ -71,7 +71,7 @@ Night of the Dead는 밤마다 몰려오는 좀비에 대비해 방어 시설을
 
 [개발 업데이트 #15](https://store.steampowered.com/news/app/1377380/view/3888357282609115394?l=koreana)
 
-- 프로젝트 Unreal Engine 5 이전 주도
+- Steam Web API 인증 티켓 대응을 위한 Unreal Engine 5 이전 주도
 - Replication Graph 개편
 
 ![](./images/night-of-the-dead/image-07.webp)
@@ -192,6 +192,8 @@ Night of the Dead는 밤마다 몰려오는 좀비에 대비해 방어 시설을
 - Nginx와 Certbot으로 회사 서버에 공개 도메인을 부여하고 인증서를 관리했다.
 - Epic Online Services 세션을 멀티플레이 개설과 접속 과정에 연결하고 Steamworks 업적을 연동했다.
 
+2023년 11월 전후 EOS가 Steam 외부 인증을 Web API 티켓(`GetAuthTicketForWebApi`)으로 바꾸도록 요구하고 기존 세션 티켓을 거부하는 기한을 뒀다. 이 함수는 Steamworks SDK 1.57 이상에만 있어, UE 4.27이 포함한 SDK를 엔진 수정으로 올리는 방안 대신 SDK 1.57 이상을 포함한 UE5로 이전하고 2023년 11월 [개발 업데이트 #15](https://store.steampowered.com/news/app/1377380/view/3888357282609115394?l=koreana)에 반영했다. 인증 과정에서 겪은 문제는 [Steam 인증 티켓과 EOS Private Sandbox 권한 확인](/posts/steam-eos-private-sandbox-web-api-auth-ticket/)에 정리했다.
+
 ## 기술별 담당 내용
 
 <a id="network-sync"></a>
@@ -208,7 +210,7 @@ Replication Graph에서 공간과 거리로 연결별 후보를 수집하고, �
 
 ### 물리와 파괴 오브젝트
 
-UE4의 PhysX 기반 Destructible 오브젝트를 구현하고 최적화했다. APEX Destruction에서 원인을 알 수 없는 에러가 잦아, 직접 제어할 수 있도록 최소 기능의 커스텀 Destructible 시스템으로 교체했다. Blender에서 미리 나눈 조각 StaticMesh를 파괴 시점에 만들어 물리 시뮬레이션하고 일정 시간 뒤 제거하는 구조이며, 교체 후 파괴할 때의 프레임 저하가 크게 줄었다. UE5 이전에서 Chaos Physics로 전환할 때는 당시 다루기 어렵고 성능 문제가 있던 Chaos Destruction 대신 이 시스템을 유지했다. 환경 오브젝트 상호작용의 물리 기반 반응도 함께 다뤘다. 구조와 엔진 Destructible과의 비교는 [엔진 Destructible 대신 조각 메시로 파괴 오브젝트 처리하기](/posts/notd-custom-destructible/)에 정리했다.
+UE4의 PhysX 기반 Destructible 오브젝트를 구현하고 최적화했다. APEX Destruction에서 원인을 알 수 없는 에러가 잦아, 직접 제어할 수 있도록 최소 기능의 커스텀 Destructible 시스템으로 교체했다. Blender에서 미리 나눈 조각 StaticMesh를 파괴 시점에 만들어 물리 시뮬레이션하고 일정 시간 뒤 제거하는 구조이며, 교체 후 파괴할 때의 프레임 저하가 크게 줄었다. 환경 오브젝트 상호작용의 물리 기반 반응도 함께 다뤘다. 구조와 엔진 Destructible과의 비교는 [엔진 Destructible 대신 조각 메시로 파괴 오브젝트 처리하기](/posts/notd-custom-destructible/)에 정리했다.
 
 ### 애니메이션
 

@@ -1,6 +1,7 @@
 ---
 title: "휴면 액터 깨우기: FlushNetDormancy, ForceNetUpdate, SetNetDormancy"
 published: 2026-10-22
+image: ../../assets/images/posts/unreal-engine-waking-dormant-actors-cover.webp
 description: "UE 5.8.3 엔진 소스 기준으로 FlushNetDormancy, ForceNetUpdate, SetNetDormancy가 각각 무엇을 바꾸는지 비교한다. 휴면 정책과 휴면 상태의 차이, ForceNetUpdate가 덤으로 하는 flush가 빠지는 조건, 값을 바꾼 뒤 깨우면 FastArray 변경이 사라지는 문제, 이를 막는 setter 패턴과 Push Model을 함께 쓸 때의 주의점을 정리한다."
 tags:
   - unreal-engine

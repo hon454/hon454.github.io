@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-22",
+  "post": "src/content/posts/unreal-engine-play-anim-montage-return-value.md",
+  "scope": "cover",
+  "tool": "chatgpt-web",
+  "asset": "src/assets/images/posts/unreal-engine-play-anim-montage-return-value-cover.webp",
+  "dimensions": {
+    "width": 1600,
+    "height": 900
+  },
+  "references": [
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+  ],
+  "concept": "Steady Spiral 달팽이가 필름 전체 길이에 맞춘 줄자를 들고 있고, 2x 버튼 옆에서 필름의 절반 지점에 실제 재생 종료 표시가 빛난다. 반환값(원본 몽타주 길이)과 Play Rate가 반영된 실제 재생 시간의 차이만 표현하며, Section 이동이나 blend out 같은 다른 종료 조건은 다루지 않는다.",
+  "candidates": [
+    {
+      "tool": "chatgpt-web",
+      "size": "1672×941",
+      "selected": true
+    },
+    {
+      "tool": "gemini-web",
+      "size": "1376×768",
+      "selected": false,
+      "review": "구도와 비유는 비슷하게 나왔으나 사용자가 ChatGPT 후보를 선택했다. 오른쪽 아래 Gemini 워터마크가 돌 소품과 겹쳤다."
+    }
+  ],
+  "prompt": "Generate an image. Create a 16:9 cover illustration for a blog post explaining that Unreal Engine's ACharacter::PlayAnimMontage returns the original montage length, not the actual playback time after the play rate is applied. Reference image 1 is the Steady Spiral snail character. Keep its identity exactly: dark green body, lime-green spiral shell, two round antennae, ivory eyes, small smile, chunky rounded proportions. Reference image 2 defines only the rendering style: soft clay-like 3D, warm ivory background, soft lighting, grounded shadows, simple rounded props. Do not copy its envelopes, numbers, paths or question mark. Scene: in the center, the snail holds up a long clay measuring tape that stretches the full length of a clay film strip lying in front of it. Next to the film strip, a small round play button marked \"2x\" shows the clip running fast, and a glowing marker on the film strip shows playback actually ending at the halfway point. The snail looks mildly puzzled, glancing from the full-length tape to the halfway marker. Composition: group the snail, film strip, tape, button and marker tightly in the center with generous padding on all sides; only plain ivory background and a few small rounded props toward the edges, so a centered crop still works. No title, no text, no logos, no watermark; the only characters allowed are \"2x\" on the button.",
+  "iterations": 1,
+  "export": "ChatGPT 웹 원본 1672×941 PNG를 cwebp -q 85 -resize 1600 900으로 변환했다. 재생성이나 수정 요청 없이 첫 결과를 사용했다.",
+  "validation": {
+    "commands": {
+      "pnpm check": "PASS: 0 errors, 0 warnings, 0 hints",
+      "pnpm type-check": "PASS",
+      "pnpm build": "PASS"
+    },
+    "visualReview": "pnpm dev 기준 데스크톱 목록형(1440px)에서 얼굴, 필름, 가운데 표시가 보이고 2x 버튼은 일부만 보인다. 그리드형과 모바일(375px)에서는 장면 전체가 보인다."
+  }
+}

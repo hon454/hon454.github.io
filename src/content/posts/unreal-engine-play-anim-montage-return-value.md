@@ -1,5 +1,6 @@
 ---
 published: 2021-05-18
+image: ../../assets/images/posts/unreal-engine-play-anim-montage-return-value-cover.webp
 updated: 2026-08-24
 author: Jihoon Jeon
 title: 'UE4 ACharacter::PlayAnimMontage 반환값이 실제 재생시간과 다른 이유'

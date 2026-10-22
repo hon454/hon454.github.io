@@ -142,7 +142,7 @@ void AChestActor::AddItem(const FChestItem& NewItem)
 
 이 뒤에 `ForceNetUpdate`를 더해도 변경은 그대로 전달된다.
 
-## 베스트 프랙티스
+## 실수를 막는 방법
 
 ### Setter 패턴
 

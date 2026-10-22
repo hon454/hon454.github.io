@@ -22,10 +22,11 @@ lang: ko
 
 | | `FlushNetDormancy` | `ForceNetUpdate` | `SetNetDormancy` |
 | --- | --- | --- | --- |
-| 바꾸는 것 | 연결별 휴면 상태 | 다음 복제 검토 시점 | 액터의 휴면 정책(`NetDormancy`) |
-| 호출 뒤 `NetDormancy` | 유지. 한 번 더 복제한 뒤 다시 휴면 | 유지 | 지정한 값 |
+| 바꾸는 것 | 연결별 휴면 상태(잠깐 깨운다) | 다음 복제 검토 시점 | 액터의 휴면 정책(`NetDormancy`) |
+| 호출 뒤 `NetDormancy` | 휴면 정책 유지 | 유지 | 지정한 값 |
+| 다시 휴면하는 때 | 보낸 변경이 ack된 뒤 | 휴면을 풀었다면 보낸 변경이 ack된 뒤 | 휴면 정책으로 되돌린 뒤 |
 | `DORM_Initial` 액터 | `DORM_DormantAll`로 바뀐다 | 게임 NetDriver가 있을 때만 바뀐다 | 지정한 값 |
-| 복제 시점 | 앞당기지 않는다 | 다음 복제 검토에 바로 넣는다 | 앞당기지 않는다 |
+| 복제 시점 | 앞당기지 않는다(Iris 제외) | 다음 복제 검토에 바로 넣는다 | 앞당기지 않는다 |
 | 휴면 해제 | 항상 | 조건부로 `FlushNetDormancy` 호출 | `DORM_Awake` 이하로 바꿀 때 |
 | 클라이언트에서 호출 | 무시 | 게임 NetDriver에는 무시 | 무시 |
 | Blueprint | `BlueprintAuthorityOnly` | `BlueprintCallable` | `BlueprintAuthorityOnly` |
@@ -34,9 +35,19 @@ lang: ko
 
 ### `FlushNetDormancy`
 
-클라이언트이거나, `NetDormancy`가 `DORM_Awake` 이하이거나, 파괴 대기 중이면 바로 반환한다(`Engine/Private/Actor.cpp`). 통과하면 `DORM_Initial`을 `DORM_DormantAll`로 바꾸고 활성화된 모든 NetDriver의 휴면을 푼다. 게임 NetDriver가 없어도 `NetDormancy`는 바뀐다.
+휴면 정책(`NetDormancy`)은 그대로 두고, 지금 휴면 중인 연결만 잠깐 깨운다. 정책이 여전히 휴면이므로 깨어난 액터는 변경을 보낸 뒤 스스로 다시 휴면한다. 계속 깨워 두려면 정책 자체를 바꾸는 `SetNetDormancy`를 쓴다.
 
-레거시 복제는 연결마다 액터를 dormant 목록에서 빼고, 액터와 서브오브젝트의 replicator를 현재 상태로 다시 만든다(`Engine/Private/NetConnection.cpp`). 레거시 복제, Replication Graph, Iris 모두 휴면만 풀 뿐 복제 시점은 건드리지 않는다. 휴면 정책도 그대로라 한 번 복제한 뒤 다시 휴면하므로, 계속 깨워 두려면 `SetNetDormancy`를 쓴다.
+클라이언트이거나, `NetDormancy`가 `DORM_Awake` 이하이거나, 파괴 대기 중이면 바로 반환한다(`Engine/Private/Actor.cpp`). 정책을 바꾸는 경우는 `DORM_Initial` 하나다. `DORM_DormantAll`로 바꾸는데, 둘 다 휴면 정책이라 휴면은 이어진다. 이 변경은 게임 NetDriver가 없어도 일어난다. 그다음 활성화된 모든 NetDriver에서 휴면을 푼다.
+
+레거시 복제는 연결마다 액터를 dormant 목록에서 빼고, 액터와 서브오브젝트의 replicator를 현재 상태로 다시 만든다(`Engine/Private/NetConnection.cpp`).
+
+레거시 복제와 Replication Graph는 복제 시점은 건드리지 않고, 연결마다 다음 과정을 거쳐 다시 휴면한다.
+
+1. 다음 복제 검토에서 Actor channel을 다시 열고 flush 뒤에 바뀐 값을 보낸다.
+2. 그다음 검토에서 휴면 준비를 시작하고 다시 비교한다. 바뀐 값이 없으면 보낼 것도 없다.
+3. 1에서 보낸 것이 ack되면 channel을 닫고 휴면한다.
+
+데이터가 나가는 것은 보통 한 번이다. 다시 휴면하는 시점은 두 번째 검토와 ack 중 늦은 쪽이다. 그 사이 값이 또 바뀌면 검토마다 보내고 다시 기다린다. Iris는 channel을 닫지 않는다. flush하면 다음 업데이트에 한 번 폴링한 뒤 바로 폴링 대상에서 빠진다.
 
 ### `ForceNetUpdate`
 
@@ -46,7 +57,7 @@ lang: ko
 
 ### `SetNetDormancy`
 
-클라이언트이거나 파괴 대기 중이면 반환한다. `DORM_Awake` 이하로 바꿀 때는 액터를 네트워크 액터 목록에 넣고 각 NetDriver의 휴면을 푼다. 휴면 해제까지 함께 하므로 따로 `FlushNetDormancy`를 부를 필요는 없다.
+클라이언트이거나 파괴 대기 중이면 반환한다. `DORM_Awake` 이하로 바꿀 때는 액터를 네트워크 액터 목록에 넣고 각 NetDriver의 휴면을 푼다. 휴면 해제까지 함께 하므로 따로 `FlushNetDormancy`를 부를 필요는 없다. `DORM_DormantAll`로 되돌리면 다음 복제 검토에서 휴면 준비를 시작하고, 보낸 것이 모두 ack됐고 바뀐 값이 없으면 그 검토 직후 휴면한다.
 
 ## 언제 무엇을 부르나
 

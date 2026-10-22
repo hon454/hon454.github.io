@@ -45,5 +45,9 @@ package/
 
 # vibe coding
 .codex*
-.claude
+.claude/*
+!.claude/skills/
 .mimocode
+
+# post cover candidates
+.cache/

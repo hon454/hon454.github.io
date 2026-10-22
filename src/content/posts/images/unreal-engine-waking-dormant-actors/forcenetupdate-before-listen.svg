@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" width="960" height="620" role="img" lang="ko" aria-labelledby="t d">
+<title id="t">Listen 전에 ForceNetUpdate로 연 문은 친구에게 닫혀 보인다</title>
+<desc id="d">혼자 플레이하는 동안에는 게임 NetDriver가 없고 Listen을 호출한 뒤에 유효해진다. Listen 전에 ForceNetUpdate로 문을 열면 문은 DORM_Initial로 남아 친구에게 닫힌 문으로 보인다. FlushNetDormancy로 열면 DORM_DormantAll로 바뀌어 친구가 접속할 때 열린 상태로 복제된다.</desc>
+<defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
+<style>
+text{font-family:Pretendard,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;fill:#1f2937}
+.title{font-size:24px;font-weight:700}
+.sub{font-size:16px;fill:#64748b}
+.col{font-size:17px;font-weight:700;fill:#334155}
+.row{font-size:17px;font-weight:700}
+.rowsub{font-size:15px;fill:#64748b}
+.mono{font-family:"JetBrains Mono",Consolas,"SFMono-Regular",Menlo,monospace}
+.code{font-size:16px;fill:#1f2937}
+.bar{font-size:15px;text-anchor:middle}
+.bad{font-size:15px;font-weight:700;fill:#b91c1c}
+.good{font-size:15px;font-weight:700;fill:#15803d}
+.state{font-size:15px;fill:#374151}
+.big-bad{font-size:18px;font-weight:700;fill:#b91c1c}
+.big-good{font-size:18px;font-weight:700;fill:#15803d}
+.note{font-size:14px;fill:#64748b}
+.marker{font-size:14px;font-weight:700;fill:#15803d;text-anchor:middle}
+</style>
+</defs>
+<rect width="960" height="620" fill="#f8fafc"/>
+<rect width="960" height="620" fill="url(#grid)"/>
+
+<text x="40" y="52" class="title">Listen 전에 연 문은 친구에게 닫혀 보인다</text>
+<text x="40" y="80" class="sub">맵에 배치된 문(DORM_Initial)을 혼자 플레이 중에 열고, 맵을 다시 열지 않고 Listen한 경우</text>
+
+<!-- time axis -->
+<line x1="240" y1="132" x2="920" y2="132" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="920" y="120" class="note" text-anchor="end">시간</text>
+<circle cx="520" cy="132" r="6" fill="#16a34a"/>
+<text x="520" y="118" class="marker">게임 NetDriver 유효</text>
+
+<text x="250" y="164" class="col">1 혼자 플레이 중 문을 연다</text>
+<text x="534" y="164" class="col">2 Listen</text>
+<text x="680" y="164" class="col">3 친구 접속</text>
+
+<!-- row: game NetDriver -->
+<rect x="30" y="180" width="900" height="68" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+<text x="50" y="220" class="row">게임 NetDriver</text>
+<rect x="250" y="198" width="256" height="32" rx="16" fill="#f1f5f9" stroke="#94a3b8" stroke-dasharray="5 4"/>
+<text x="378" y="219" class="bar">없음 <tspan class="mono">(nullptr)</tspan></text>
+<rect x="534" y="198" width="376" height="32" rx="16" fill="#dcfce7" stroke="#16a34a"/>
+<text x="722" y="219" class="bar">Listen이 만든 서버 NetDriver</text>
+
+<!-- row: ForceNetUpdate -->
+<rect x="30" y="262" width="900" height="160" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+<text x="50" y="302" class="row mono">ForceNetUpdate</text>
+<text x="50" y="324" class="rowsub">로 열었을 때</text>
+<text x="250" y="300" class="mono code">ForceNetUpdate();</text>
+<text x="250" y="324" class="mono code">bOpen = true;</text>
+<text x="250" y="352" class="bad">NetDriver가 없어 효과 없음</text>
+<text x="680" y="300" class="state">호스트의 문: 열림</text>
+<text x="680" y="328" class="big-bad">친구의 문: 닫힘</text>
+<text x="680" y="352" class="note">레벨에 저장된 기본값</text>
+
+<!-- row: FlushNetDormancy -->
+<rect x="30" y="436" width="900" height="160" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+<!-- Listen moment: drawn above the row panels, below the content -->
+<line x1="520" y1="140" x2="520" y2="600" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 5"/>
+<rect x="250" y="372" width="660" height="32" rx="16" fill="#ffedd5" stroke="#ea580c"/>
+<text x="580" y="393" class="bar"><tspan class="mono">DORM_Initial</tspan> 유지 · 복제 검토 대상에서 빠진다</text>
+<text x="50" y="476" class="row mono">FlushNetDormancy</text>
+<text x="50" y="498" class="rowsub">로 열었을 때</text>
+<text x="250" y="474" class="mono code">FlushNetDormancy();</text>
+<text x="250" y="498" class="mono code">bOpen = true;</text>
+<text x="250" y="526" class="good">NetDriver 없이도 정책이 바뀜</text>
+<text x="680" y="474" class="state">호스트의 문: 열림</text>
+<text x="680" y="502" class="big-good">친구의 문: 열림</text>
+<text x="680" y="526" class="note">접속할 때 현재 상태로 복제</text>
+<rect x="250" y="546" width="660" height="32" rx="16" fill="#dcfce7" stroke="#16a34a"/>
+<text x="580" y="567" class="bar"><tspan class="mono">DORM_DormantAll</tspan> · 접속한 연결에 한 번 복제한 뒤 다시 휴면</text>
+
+</svg>

@@ -1,7 +1,7 @@
 ---
 title: "Night of the Dead 멀티플레이 최적화 돌아보기"
 published: 2026-09-25
-description: "Night of the Dead의 Dedicated Server 멀티플레이에서 담당한 네트워크와 실행 비용 최적화를 복제 대상, 전송 데이터, 전송 경로, 다수 개체 처리로 나눠 정리하고 각 주제의 상세 글로 연결한다."
+description: "Night of the Dead의 Dedicated Server 멀티플레이에 적용한 네트워크와 실행 비용 최적화를 복제 대상, 전송 데이터, 전송 경로, 다수 개체 처리로 나눠 정리하고 각 주제의 상세 글로 연결한다."
 image: ./images/notd-multiplayer-optimization/notd-multiplayer-optimization-overview-cover.webp
 tags:
   - unreal-engine
@@ -19,7 +19,7 @@ lang: ko
 
 ![](./images/notd-multiplayer-optimization/wave-giants-night.avif)
 
-같은 데이터를 더 빨리 보내기 전에 어느 연결에 어떤 상태가 필요한지부터 구분했다. 서버가 유지할 상태, 클라이언트에서 복원할 데이터와 가까운 개체에 배정할 계산을 나누는 것이 공통 방향이었다. 이 프로젝트에서 담당한 멀티플레이 최적화를 네 갈래로 나눠 정리했다. 각 항목의 자세한 내용은 연결된 글에 있다.
+같은 데이터를 더 빨리 보내기 전에 어느 연결에 어떤 상태가 필요한지부터 구분했다. 서버가 유지할 상태, 클라이언트에서 복원할 데이터와 가까운 개체에 배정할 계산을 나누는 것이 공통 방향이었다. 이 프로젝트의 멀티플레이 최적화를 네 갈래로 나눠 정리했다. 각 항목의 자세한 내용은 연결된 글에 있다.
 
 | 갈래 | 질문 | 적용한 것 |
 | --- | --- | --- |

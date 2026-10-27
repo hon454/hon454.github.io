@@ -48,8 +48,9 @@
 **Night of the Dead** / Unreal Engine 4/5, C++, Unreal Insights, EOS, Steamworks, TeamCity
 
 - 전투와 장비, 보스 및 일반 좀비 AI, 월드 상호작용을 개발하고 2024년 5월 1.0 정식 출시까지 참여했습니다.
-- Windows Server 기반 Dedicated Server에서 Replication Graph와 Net Dormancy로 연결별 복제 대상을 고르고, ID 기반 복제용 구조체와 커스텀 NetSerialize로 전송 데이터를 줄였습니다.
-- 다수 좀비의 이동, 동기화, 애니메이션, 길찾기 비용을 거리 LOD와 순위 기준으로 조절하고, ACL로 애니메이션 데이터를 압축했습니다.
+- Windows Server 기반 Dedicated Server에서 Replication Graph와 Net Dormancy로 연결별 복제 대상을 고르고, 접속 시 보내는 레벨 스트리밍 상태에 커스텀 NetSerialize를 붙여 코드와 비트 플래그로 압축했습니다.
+- 접속 시 한꺼번에 보내야 하는 기록 데이터는 Reliable 버퍼의 여유를 보고 레코드 단위로 나눠 보내는 RPC 스트리밍 라우터를 만들어 전송했습니다.
+- 다수 좀비의 애니메이션 갱신을 Significance Manager와 Animation Budget Allocator로 조절하고, 서버의 포즈 갱신을 전투 중으로 한정했으며 ACL로 애니메이션 데이터를 압축했습니다.
 - EOS가 Steam 외부 인증을 Web API 티켓으로 바꾸도록 요구하자, 이를 지원하는 Steamworks SDK 1.57 이상을 포함한 UE5로의 엔진 이전을 주도했습니다.
 - 원인을 알 수 없는 에러가 잦던 APEX Destruction을 커스텀 Destructible 시스템으로 교체해 파괴할 때의 프레임 저하를 줄였습니다.
 - JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드 자동화를 운영했습니다.

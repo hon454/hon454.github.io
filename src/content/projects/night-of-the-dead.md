@@ -189,7 +189,7 @@ Night of the Dead는 밤마다 몰려오는 좀비에 대비해 방어 시설을
 - Jira, Confluence, Slack을 대체하기 위해 JetBrains Space On-Premise 서버를 구축하고 운영했다.
 - TeamCity On-Premise로 빌드와 패키징 자동화를 구성하고 Shared DDC를 운영했다.
 - Nginx와 Certbot으로 회사 서버에 공개 도메인을 부여하고 인증서를 관리했다.
-- 초기 Epic Online Services 연동은 다른 프로그래머가 했고, 나는 UE5 이전 후 세션의 개설과 접속 흐름을 다시 구성하고 Easy Anti-Cheat 보호 세션의 접속 처리를 구현했다. Steamworks 업적도 연동했다.
+- UE5 이전 후 Epic Online Services 세션의 개설과 접속 흐름을 다시 구성하고 Easy Anti-Cheat 보호 세션의 접속 처리를 구현했다. Steamworks 업적도 연동했다.
 
 2023년 11월 전후 EOS가 Steam 외부 인증을 Web API 티켓(`GetAuthTicketForWebApi`)으로 바꾸도록 요구하고 기존 세션 티켓을 거부하는 기한을 뒀다. 이 함수는 Steamworks SDK 1.57 이상에만 있다. UE 4.27이 포함한 SDK를 엔진 수정으로 올릴 수도 있었지만, 수정한 소스 엔진을 계속 관리하는 위험이 커서 피하고 싶었다. 대신 SDK 1.57 이상을 포함하고 엔진 전반의 최적화와 에디터 신기능도 들어오는 UE5로 이전했고, 이전 결과는 [개발 업데이트 #15](https://store.steampowered.com/news/app/1377380/view/3888357282609115394?l=koreana)에 반영했다. 인증 과정에서 겪은 문제는 [Steam 인증 티켓과 EOS Private Sandbox 권한 확인](/posts/steam-eos-private-sandbox-web-api-auth-ticket/)에 정리했다.
 
@@ -203,9 +203,9 @@ Windows Server 기반 Dedicated Server를 Unreal Insights로 분석하며 복제
 
 Replication Graph에서 공간과 거리로 연결별 후보를 수집하고, 오너와 팀, 그룹에 종속된 액터는 해당 연결에 거리와 무관하게 포함했다. 장착 장비와 무기 부속품, 고용한 NPC, 탑승물과 그 위의 건물은 Dependent Actor로 묶어 부모 액터가 복제될 때 함께 검토하도록 구성했다. 전역 매니저는 Always Relevant 노드에, 휴면 액터는 별도 노드에 두어 상태에 맞게 처리했다. 상태가 드물게 바뀌는 아이템, 문, 풀링 좀비는 Net Dormancy로 휴면시켰다. 구성 방식은 [멀티플레이 최적화 돌아보기의 복제 대상](/posts/notd-multiplayer-optimization-overview/#복제-대상)에 정리했다.
 
-접속 시 보내는 레벨 스트리밍 상태는 전송용 구조체에 커스텀 NetSerialize를 붙여 패키지 경로를 `int16` 코드와 비트 플래그로 압축했다([접속 시 레벨 스트리밍 상태 RPC 줄이기](/posts/notd-level-streaming-status-rpc/)). 1.0 출시 직전에는 장비 이름 대신 ID를 복제하고 게임 시각은 분이 바뀔 때만 복제하는 식으로 장비 상태, 게임 시각, 웨이브 진행도의 복제를 줄였고, 설정 위치가 잘못돼 적용되지 않던 Adaptive NetUpdateFrequency를 바로잡았다. 퀘스트와 마커처럼 데이터 테이블 값을 ID로 보내는 복제용 구조체와 커스텀 NetSerialize는 다른 팀원이 구현했다.
+접속 시 보내는 레벨 스트리밍 상태는 전송용 구조체에 커스텀 NetSerialize를 붙여 패키지 경로를 `int16` 코드와 비트 플래그로 압축했다([접속 시 레벨 스트리밍 상태 RPC 줄이기](/posts/notd-level-streaming-status-rpc/)). 1.0 출시 직전에는 장비 이름 대신 ID를 복제하고 게임 시각은 분이 바뀔 때만 복제하는 식으로 장비 상태, 게임 시각, 웨이브 진행도의 복제를 줄였고, 설정 위치가 잘못돼 적용되지 않던 Adaptive NetUpdateFrequency를 바로잡았다.
 
-접속 시 한꺼번에 보내야 하는 데이터를 위해 Reliable 버퍼의 여유를 보고 레코드 단위로 나눠 보내는 스트리밍 라우터를 만들고, 지도 안개 동기화를 Fast Array에서 이 경로로 옮겼다. 퀘스트 진행도와 지도 마커는 다른 팀원이 같은 경로에 연결했다([Reliable 버퍼 상태를 보고 대용량 데이터 나눠 보내기](/posts/notd-reliable-rpc-data-streaming/)).
+접속 시 한꺼번에 보내야 하는 데이터를 위해 Reliable 버퍼의 여유를 보고 레코드 단위로 나눠 보내는 스트리밍 라우터를 만들고, 지도 안개 동기화를 Fast Array에서 이 경로로 옮겼다([Reliable 버퍼 상태를 보고 대용량 데이터 나눠 보내기](/posts/notd-reliable-rpc-data-streaming/)).
 
 ### 물리와 파괴 오브젝트
 
@@ -213,7 +213,7 @@ UE4의 PhysX 기반 Destructible 오브젝트를 구현하고 최적화했다. A
 
 ### 애니메이션
 
-다수 좀비의 애니메이션 부하를 줄이기 위해 Significance Manager로 계산한 중요도를 Animation Budget Allocator에 전달해 캐릭터의 애니메이션 갱신을 예산 안에서 조절하고, ACL로 애니메이션 데이터를 압축했다. 수족관 물고기와 캐릭터 전시물처럼 여럿 배치되는 장식 개체에는 평균 프레임률이 기준보다 낮을 때만 엔진의 Update Rate Optimization을 켜는 컴포넌트를 따로 만들어 붙였다. 서버에서는 근접 판정에 본 위치가 필요한 전투 중에만 포즈를 갱신하도록 했다. 좀비의 이동, 동기화와 길찾기 비용까지 포함한 전체 구조는 [다수 좀비의 서버 비용과 전송량 줄이기](/posts/notd-zombie-horde-cost/)에 정리했다. 그중 거리 LOD와 거리 순위에 따른 이동 조절은 다른 팀원이 구현했다. 캐릭터와 좀비 모션의 품질을 개선하는 과정에서 IK를 활용했다.
+다수 좀비의 애니메이션 부하를 줄이기 위해 Significance Manager로 계산한 중요도를 Animation Budget Allocator에 전달해 캐릭터의 애니메이션 갱신을 예산 안에서 조절하고, ACL로 애니메이션 데이터를 압축했다. 수족관 물고기와 캐릭터 전시물처럼 여럿 배치되는 장식 개체에는 평균 프레임률이 기준보다 낮을 때만 엔진의 Update Rate Optimization을 켜는 컴포넌트를 따로 만들어 붙였다. 서버에서는 근접 판정에 본 위치가 필요한 전투 중에만 포즈를 갱신하도록 했다. 좀비의 이동, 동기화와 길찾기 비용까지 포함한 전체 구조는 [다수 좀비의 서버 비용과 전송량 줄이기](/posts/notd-zombie-horde-cost/)에 정리했다. 캐릭터와 좀비 모션의 품질을 개선하는 과정에서 IK를 활용했다.
 
 ### 능력치와 전투 판정
 

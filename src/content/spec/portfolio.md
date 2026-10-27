@@ -99,7 +99,7 @@
 | --- | --- |
 | 소개 | 좀비의 습격에 대비해 방어 시설을 만들고 생존하는 오픈월드 멀티플레이 게임 |
 | 참여 기간 | 2021.01 - 2024.06 |
-| 팀 규모 | 약 10명, 프로그래머 3명 |
+| 팀 규모 | 약 10명, 프로그래머 2~3명 |
 | 주요 기술 | Unreal Engine 4/5, C++, Unreal Insights, EOS, Steamworks |
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/VVwmqfkluGw" title="Night of The Dead v1.0 Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>

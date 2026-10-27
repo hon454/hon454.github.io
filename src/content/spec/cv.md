@@ -160,7 +160,7 @@ Unreal Engine, C++
 
 Unreal Engine 4/5, C++, Windows Server, Unreal Insights, EOS, Steamworks, TeamCity
 
-- **개요:** 밤마다 몰려오는 좀비에 대비해 방어 시설을 짓고 생존하는 오픈월드 멀티플레이 게임. Windows Server 기반 Dedicated Server 지원, 프로그래머 3명을 포함한 약 10명 규모 팀
+- **개요:** 밤마다 몰려오는 좀비에 대비해 방어 시설을 짓고 생존하는 오픈월드 멀티플레이 게임. Windows Server 기반 Dedicated Server 지원, 프로그래머 2~3명을 포함한 약 10명 규모 팀
 - **담당 범위:** 전투, 장비, 좀비 AI와 멀티플레이 동기화, 런타임 최적화, 엔진 이전과 개발 인프라. 얼리 액세스 업데이트부터 2024년 5월 1.0 정식 출시까지 참여
 
 #### 멀티플레이 동기화 최적화

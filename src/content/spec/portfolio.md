@@ -104,8 +104,8 @@
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/VVwmqfkluGw" title="Night of The Dead v1.0 Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-- **Dedicated Server 동기화:** Unreal Insights 분석을 바탕으로 Replication Graph가 거리와 소유 관계에 따라 연결별 복제 대상을 고르게 했습니다. 상태가 드물게 바뀌는 액터는 Net Dormancy로 휴면시키고, 데이터 테이블 기반 구조체는 ID와 수량만 보내 전송 데이터를 줄였습니다.
-- **다수 좀비의 실행 비용:** 거리 LOD에 거리 순위를 더해 고품질 대상 수를 고정하고, 이 기준으로 이동 시뮬레이션과 동기화 전송률을 조절했습니다. Significance Manager로 계산한 중요도를 Animation Budget Allocator에 전달해 예산 안에서 애니메이션 갱신 빈도를 조절하고, ACL로 애니메이션 데이터를 압축했습니다.
+- **Dedicated Server 동기화:** Unreal Insights 분석을 바탕으로 Replication Graph가 거리와 소유 관계에 따라 연결별 복제 대상을 고르게 했습니다. 상태가 드물게 바뀌는 액터는 Net Dormancy로 휴면시키고, 접속 시 보내는 레벨 스트리밍 상태에는 커스텀 NetSerialize를 붙여 코드와 비트 플래그로 압축했습니다.
+- **다수 좀비의 실행 비용:** 서버의 포즈 갱신은 근접 판정이 필요한 전투 중에만 켰습니다. Significance Manager로 계산한 중요도를 Animation Budget Allocator에 전달해 예산 안에서 애니메이션 갱신 빈도를 조절하고, ACL로 애니메이션 데이터를 압축했습니다.
 - **게임플레이 구현:** 전투, 장비의 티어와 내구도, 파츠 개조, 보스 및 일반 좀비 AI를 구현했습니다.
 - **UE5 엔진 이전:** EOS가 Steam 외부 인증을 Web API 티켓으로 바꾸도록 요구하자, 이를 지원하는 Steamworks SDK 1.57 이상을 포함한 UE5로의 이전을 주도했습니다.
 - **파괴 연출:** 원인을 알 수 없는 에러가 잦던 APEX Destruction을 직접 제어할 수 있는 커스텀 Destructible 시스템으로 교체해 파괴할 때의 프레임 저하를 줄였습니다.

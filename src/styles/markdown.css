@@ -29,6 +29,65 @@
   }
 }
 
+/* At-a-glance metric tiles placed near the top of measurement posts. */
+.custom-md .at-a-glance {
+  margin-block: 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--line-color);
+  border-radius: 0.75rem;
+  background: var(--btn-regular-bg);
+
+  p {
+    margin: 0;
+  }
+
+  .at-a-glance-title {
+    margin-bottom: 0.75rem;
+    color: var(--btn-content);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .at-a-glance-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .at-a-glance-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+    padding: 0.75rem 0.875rem;
+    border-radius: 0.5rem;
+    background: var(--card-bg);
+  }
+
+  .at-a-glance-value {
+    color: var(--primary);
+    font-size: 1.625rem;
+    font-weight: 700;
+    line-height: 1.25;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .at-a-glance-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .at-a-glance-detail,
+  .at-a-glance-note {
+    font-size: 0.8125rem;
+    opacity: 0.7;
+  }
+
+  .at-a-glance-note {
+    margin-top: 0.75rem;
+  }
+}
+
 .custom-md {
   overflow-wrap: break-word;
 

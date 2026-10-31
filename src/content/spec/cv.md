@@ -203,12 +203,19 @@ Unreal Engine 4/5, C++, Windows Server, Unreal Insights, EOS, Steamworks, TeamCi
 
 #### 커스텀 Destructible
 
-- **과제:** UE4의 PhysX 기반 APEX Destruction에서 원인을 알 수 없는 에러가 잦던 상황
-- **판단:** 소스 엔진으로 PhysX 연동 코드까지 디버깅했으나 남은 분석이 PhysX 바이너리 내부 디버깅이라 드는 시간이 과도하다고 보고, 원인 추적 대신 직접 제어할 수 있는 최소 기능의 커스텀 Destructible 시스템으로 교체
-- **수행:** Blender에서 미리 나눈 조각 StaticMesh를 파괴 시점에 만들고 일정 시간 뒤 제거하는 구조 구현
-- **결과:** 교체 후 파괴할 때의 프레임 저하 감소 확인
+- **과제:** UE4의 PhysX 기반 APEX Destruction에서 원인을 알 수 없는 에러가 잦아 크래시로 이어지던 상황. 교체하더라도 파괴 시점에 Destructible 컴포넌트를 만들던 기존 구성(교체형 APEX)의 시각 효과와 성능을 유지해야 함
+- **판단:** 소스 엔진으로 PhysX 연동 코드까지 디버깅했으나 남은 분석이 PhysX 바이너리 내부 디버깅이라 드는 시간이 과도하다고 보고, 원인 추적 대신 직접 제어할 수 있는 최소 기능의 커스텀 Destructible 시스템으로 교체. 시각 효과와 성능은 거의 같을 것으로 예상
+- **수행:**
+  - Blender에서 미리 나눈 조각 StaticMesh를 파괴 시점에 만들고 일정 시간 뒤 제거하는 구조 구현
+  - 피해를 입은 건물과 문은 HP 70% 이하에서 조각 메시를 미리 로드하고, 프레임이 15fps 이하이거나 웨이브가 큰 상황에서는 연출용 파편 생성을 생략
+  - 2026년 11월, 당시 환경을 별도 실험 프로젝트에 재현해 교체형 APEX(UE 4.27), Chaos Geometry Collection(UE 5.3)과 같은 조각, 같은 충격 조건에서 조합별 3회 측정
+  - 동시 파괴 부하 시험의 병목을 Unreal Insights로 조각별 컴포넌트 등록(100개 파괴 시 2,400회)으로 특정하고, 한 프레임에 만드는 조각 컴포넌트 수를 240개로 제한하는 개선안 구현
+- **결과:**
+  - 재현 환경에서 겉모습을 유지하면서 단일 파괴 스파이크가 교체형 APEX보다 27% 낮음(UE 4.27, 3.68ms → 2.67ms)
+  - 50개 순차 파괴의 p95 5.24ms로 60fps 예산 안
+  - 개선안으로 100개 동시 파괴 스파이크를 138ms에서 25ms로 82% 낮춰 교체형 APEX(32ms)보다 낮춤
 
-[커스텀 Destructible 구조와 코드](/posts/notd-custom-destructible/)
+[커스텀 Destructible 구조와 코드](/posts/notd-custom-destructible/) / [재현 환경에서의 측정](/posts/notd-custom-destructible/#재현-환경에서-측정하기)
 
 #### 게임플레이와 개발 인프라
 

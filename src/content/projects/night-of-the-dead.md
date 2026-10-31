@@ -209,7 +209,20 @@ Replication Graph에서 공간과 거리로 연결별 후보를 수집하고, �
 
 ### 물리와 파괴 오브젝트
 
-UE4의 PhysX 기반 Destructible 오브젝트를 구현하고 최적화했다. APEX Destruction에서 원인을 알 수 없는 에러가 잦아 소스 엔진으로 PhysX 연동 코드까지 디버깅했지만, 남은 분석은 PhysX 바이너리 내부를 디버깅하는 일이라 감당하기 어려웠고 시간도 너무 많이 들었다. 그래서 원인 추적을 멈추고, 직접 제어할 수 있도록 최소 기능의 커스텀 Destructible 시스템으로 교체했다. Blender에서 미리 나눈 조각 StaticMesh를 파괴 시점에 만들어 물리 시뮬레이션하고 일정 시간 뒤 제거하는 구조이며, 교체 후 파괴할 때의 프레임 저하가 크게 줄었다. 환경 오브젝트 상호작용의 물리 기반 반응도 함께 다뤘다. 구조와 엔진 Destructible과의 비교는 [엔진 Destructible 대신 조각 메시로 파괴 오브젝트 처리하기](/posts/notd-custom-destructible/)에 정리했다.
+UE4의 PhysX 기반 Destructible 오브젝트를 구현하고 최적화했다. APEX Destruction에서 원인을 알 수 없는 에러가 잦아 소스 엔진으로 PhysX 연동 코드까지 디버깅했지만, 남은 분석은 PhysX 바이너리 내부를 디버깅하는 일이라 감당하기 어려웠고 시간도 너무 많이 들었다. 그래서 원인 추적을 멈추고, 직접 제어할 수 있도록 최소 기능의 커스텀 Destructible 시스템으로 교체했다. Blender에서 미리 나눈 조각 StaticMesh를 파괴 시점에 만들어 물리 시뮬레이션하고 일정 시간 뒤 제거하는 구조다. 환경 오브젝트 상호작용의 물리 기반 반응도 함께 다뤘다. 구조와 엔진 Destructible과의 비교는 [엔진 Destructible 대신 조각 메시로 파괴 오브젝트 처리하기](/posts/notd-custom-destructible/)에 정리했다.
+
+건물과 문은 HP가 70% 이하로 떨어지면 클라이언트들이 조각 메시를 미리 로드하게 했고, 프레임이 15fps 이하로 떨어지거나 웨이브가 큰 상황에서는 연출용 파편을 만들지 않게 했다.
+
+교체할 때는 시각 효과와 성능이 APEX와 거의 같을 거라고 보고 판단했다. 2026년 11월에 당시 환경을 별도 실험 프로젝트에 재현해, 커스텀 도입 전에 쓰던 교체형 APEX(평소 통짜 StaticMesh, 파괴 시 Destructible 컴포넌트 생성)와 같은 조각, 같은 충격 조건에서 비교했다. 회사 에셋 대신 Starter Content 재질을 썼고, 수치는 조합별 3회 중앙값이다.
+
+![UE 4.27에서 같은 장면을 커스텀 방식과 교체형 APEX로 부순 화면](./images/night-of-the-dead/destruction-custom-vs-apexswap.webp)
+
+- 겉모습은 거의 같았고, 오브젝트 하나를 부순 프레임의 스파이크는 UE 4.27에서 커스텀 2.67ms로 교체형 APEX(3.68ms)보다 27% 낮았다.
+- 50개를 0.2초 간격으로 부수는 순차 파괴에서 커스텀의 p95는 5.24ms로 60fps 예산 안이었다.
+- 부서지기 전에는 일반 StaticMesh라서, 2,000개를 세워 둔 대기 상태의 프레임 시간이 처음부터 Destructible을 배치하는 방식의 1/10.8이었다.
+- 100개를 한 프레임에 부수는 부하 시험에서 Unreal Insights로 병목(조각 컴포넌트 등록 2,400회)을 찾고, 한 프레임에 만들 조각 컴포넌트 수에 예산(240개)을 두어 스파이크를 138ms에서 25ms로 82% 낮췄다. 교체형 APEX(32ms)보다 낮은 값이다.
+
+측정 조건과 UE 5.3 Chaos Geometry Collection과의 비교는 [재현 환경에서 측정하기](/posts/notd-custom-destructible/#재현-환경에서-측정하기)에 정리했다.
 
 ### 애니메이션
 

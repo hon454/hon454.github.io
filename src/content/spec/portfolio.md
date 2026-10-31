@@ -108,10 +108,12 @@
 - **다수 좀비의 실행 비용:** 서버의 포즈 갱신은 근접 판정이 필요한 전투 중에만 켰습니다. Significance Manager로 계산한 중요도를 Animation Budget Allocator에 전달해 예산 안에서 애니메이션 갱신 빈도를 조절하고, ACL로 애니메이션 데이터를 압축했습니다.
 - **게임플레이 구현:** 전투, 장비의 티어와 내구도, 파츠 개조, 보스 및 일반 좀비 AI를 구현했습니다.
 - **UE5 엔진 이전:** EOS가 Steam 외부 인증을 Web API 티켓으로 바꾸도록 요구하자, 이를 지원하는 Steamworks SDK 1.57 이상을 포함한 UE5로의 이전을 주도했습니다.
-- **파괴 연출:** 원인을 알 수 없는 에러가 잦던 APEX Destruction을 직접 제어할 수 있는 커스텀 Destructible 시스템으로 교체해 파괴할 때의 프레임 저하를 줄였습니다.
+- **파괴 연출:** 원인을 알 수 없는 에러가 잦던 APEX Destruction을 직접 제어할 수 있는 커스텀 Destructible 시스템으로 교체했습니다. 당시 환경을 재현해 교체 전 구성과 비교한 결과 단일 파괴 스파이크가 27% 낮았고, 동시 파괴 부하 시험에서 찾은 병목을 프레임당 조각 컴포넌트 예산으로 해소해 100개 동시 파괴 스파이크를 교체 전 구성보다 낮췄습니다(UE 4.27, 138ms → 25ms, 교체 전 32ms).
 - **개발 인프라:** JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드, 패키징 자동화를 운영했습니다.
 
-[장비와 전투 업데이트](/projects/night-of-the-dead/#equipment-update) / [멀티플레이 동기화](/projects/night-of-the-dead/#network-sync) / [멀티플레이 최적화 시리즈](/posts/notd-multiplayer-optimization-overview/) / [다수 좀비 최적화](/posts/notd-zombie-horde-cost/) / [커스텀 Destructible](/posts/notd-custom-destructible/) / [Steam 출시 페이지](https://store.steampowered.com/app/1377380/Night_of_the_Dead/)
+![UE 4.27에서 같은 장면을 커스텀 Destructible 시스템과 교체형 APEX로 부순 화면](../projects/images/night-of-the-dead/destruction-custom-vs-apexswap.webp)
+
+[장비와 전투 업데이트](/projects/night-of-the-dead/#equipment-update) / [멀티플레이 동기화](/projects/night-of-the-dead/#network-sync) / [멀티플레이 최적화 시리즈](/posts/notd-multiplayer-optimization-overview/) / [다수 좀비 최적화](/posts/notd-zombie-horde-cost/) / [커스텀 Destructible](/posts/notd-custom-destructible/) / [재현 환경에서의 측정](/posts/notd-custom-destructible/#재현-환경에서-측정하기) / [Steam 출시 페이지](https://store.steampowered.com/app/1377380/Night_of_the_Dead/)
 
 ### 삐요 스튜디오
 

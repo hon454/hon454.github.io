@@ -2,7 +2,7 @@
 title: "엔진 Destructible 대신 조각 메시로 파괴 오브젝트 처리하기"
 published: 2023-05-08
 updated: 2026-11-01
-description: "Night of the Dead에서 APEX Destruction 대신 Blender에서 미리 나눈 조각 StaticMesh로 파괴 오브젝트를 처리한 구조를 정리하고, 당시 환경을 재현한 실험 프로젝트에서 교체 전 구성(교체형 APEX)과 성능을 비교한 결과와 동시 파괴 스파이크를 교체 전 구성보다 낮춘 프레임당 조각 예산을 정리한다."
+description: "Night of the Dead에서 APEX Destruction 대신 Blender에서 미리 나눈 조각 StaticMesh로 파괴 오브젝트를 처리한 구조를 정리한다. 당시 환경을 재현한 실험 프로젝트에서 교체 전 구성(교체형 APEX)과 성능을 비교하고, 동시 파괴 스파이크를 프레임당 조각 예산으로 낮춘 결과를 다룬다."
 image: ./images/notd-custom-destructible/notd-custom-destructible-cover.webp
 tags:
   - unreal-engine
@@ -21,15 +21,15 @@ UE4에서는 PhysX 기반의 APEX Destruction으로 이 오브젝트들을 처�
 
 이후 [개발 업데이트 #15](https://store.steampowered.com/news/app/1377380/view/3888357282609115394)에서 UE5로 이전하면서 물리 엔진이 PhysX에서 Chaos로 바뀌었다. UE5에는 PhysX와 함께 APEX Destruction도 빠졌고, 엔진의 파괴 기능은 Chaos Destruction이 맡는다. 하지만 당시 Chaos Destruction은 다루기 어려웠고 성능 문제도 있었다. 그래서 Chaos Destruction으로 옮기지 않고 UE4에서 만든 시스템을 그대로 가져갔다. 이 시스템의 조각은 일반 `UStaticMeshComponent`이고 코드가 APEX나 PhysX API를 직접 호출하지 않아서, 물리 엔진이 바뀌어도 파괴 로직을 다시 짤 필요가 없었다.
 
-이 글은 엔진 Destructible과 커스텀 시스템의 구조를 일반화해 비교하고, 당시 환경을 재현한 실험 프로젝트에서 교체 전 구성과 성능을 측정한 결과를 정리한다. 겉모습과 오브젝트 하나를 부술 때의 비용은 교체 전 구성과 같거나 나았다. 여러 오브젝트를 한 프레임에 부수는 부하 시험에서 병목을 찾았고, 프레임당 조각 예산으로 그 스파이크를 교체 전 구성보다 낮췄다.
+이 글은 엔진 Destructible과 커스텀 시스템의 구조를 일반화해 비교하고, 당시 환경을 재현한 실험 프로젝트에서 교체 전 구성과 성능을 비교한 결과를 정리한다. 겉모습은 교체 전 구성과 거의 같았고, 오브젝트 하나를 부순 프레임의 스파이크는 27% 낮았다. 여러 오브젝트를 한 프레임에 부수는 부하 시험에서는 병목을 찾았고, 재현 환경에서 프레임당 조각 예산을 시험해 100개 동시 파괴의 스파이크를 교체 전 구성보다 낮췄다.
 
 <div class="at-a-glance">
-<p class="at-a-glance-title">한눈에 보기: 교체 전 구성(교체형 APEX)과 비교, UE 4.27 재현 환경</p>
+<p class="at-a-glance-title">한눈에 보기: UE 4.27 재현 환경</p>
 <div class="at-a-glance-grid">
-<div class="at-a-glance-item"><p class="at-a-glance-value">−27%</p><p class="at-a-glance-label">단일 파괴 스파이크</p><p class="at-a-glance-detail">3.68ms → 2.67ms</p></div>
+<div class="at-a-glance-item"><p class="at-a-glance-value">−27%</p><p class="at-a-glance-label">단일 파괴 스파이크</p><p class="at-a-glance-detail">교체형 APEX 3.68ms → 커스텀 2.67ms</p></div>
 <div class="at-a-glance-item"><p class="at-a-glance-value">5.24ms</p><p class="at-a-glance-label">순차 파괴 p95</p><p class="at-a-glance-detail">50개, 60fps 예산 16.7ms 안</p></div>
-<div class="at-a-glance-item"><p class="at-a-glance-value">1/10.8</p><p class="at-a-glance-label">대기 프레임 시간</p><p class="at-a-glance-detail">2,000개, 상주형 APEX 대비</p></div>
-<div class="at-a-glance-item"><p class="at-a-glance-value">−82%</p><p class="at-a-glance-label">동시 파괴 스파이크</p><p class="at-a-glance-detail">100개, 138ms → 25ms (교체형 32ms)</p></div>
+<div class="at-a-glance-item"><p class="at-a-glance-value">1/10.8</p><p class="at-a-glance-label">대기 프레임 시간</p><p class="at-a-glance-detail">2,000개, 상주형 APEX 대비. 교체형과 같은 구조</p></div>
+<div class="at-a-glance-item"><p class="at-a-glance-value">−82%</p><p class="at-a-glance-label">동시 파괴 스파이크</p><p class="at-a-glance-detail">100개, 예산 전 138ms → 25ms (교체형 32ms)</p></div>
 </div>
 <p class="at-a-glance-note">조합별 3회 실행의 중앙값이다. 동시 파괴는 프레임당 조각 예산을 적용한 결과다. 측정 조건은 <a href="#재현-환경에서-측정하기">재현 환경에서 측정하기</a>에 있다.</p>
 </div>
@@ -211,9 +211,9 @@ NOTD가 커스텀 시스템 전에 쓴 APEX는 처음부터 Destructible 컴포�
 | UE 5.3.2 (Chaos) | ChaosSwap | 통짜 StaticMesh, 파괴 시 `UGeometryCollectionComponent` 생성 |
 | 두 엔진 | Apex, Chaos (상주형) | 처음부터 전용 컴포넌트. 참고값 |
 
-- 조각은 세 방식이 같다. 100×100×200cm 기둥을 보로노이 셀 24개로 나눴고, 겉면과 단면 재질 슬롯을 따로 뒀다.
+- 조각은 모든 방식이 같다. 100×100×200cm 기둥을 보로노이 셀 24개로 나눴고, 겉면과 단면 재질 슬롯을 따로 뒀다.
 - NOTD처럼 조각 메시와 Destructible 에셋은 미리 로드한 상태에서 쟀다. 파괴 순간의 비용에 에셋 로딩은 들어가지 않는다.
-- 충격은 세 방식 모두 속도 변화 600cm/s, 반경 300cm, 선형 감소로 줬다. NOTD 원본은 `bVelChange=false`였지만, 5.3의 `UGeometryCollectionComponent::AddRadialImpulse`는 이 값에서 강체에 효과가 없어서 속도 변화로 맞췄다.
+- 충격은 모든 방식에 속도 변화 600cm/s, 반경 300cm, 선형 감소로 줬다. NOTD 원본은 `bVelChange=false`였지만, 5.3의 `UGeometryCollectionComponent::AddRadialImpulse`는 이 값에서 강체에 효과가 없어서 속도 변화로 맞췄다.
 - 에디터 빌드를 쿠킹 없이 `-game -benchmark -fps=60`으로 실행했다. 1280×720 창, VSync 끔. 조합마다 3회 실행해 중앙값을 썼다.
 - 측정 PC는 Ryzen 9 5950X, RTX 4090, 메모리 64GB다.
 - 렌더러와 엔진 버전이 달라서 ms는 같은 엔진 안에서만 비교한다.
@@ -226,6 +226,8 @@ NOTD가 커스텀 시스템 전에 쓴 APEX는 처음부터 Destructible 컴포�
 
 ![UE 5.3의 커스텀 방식과 Chaos Geometry Collection, UE 4.27의 커스텀 방식과 APEX로 같은 장면을 부순 2×2 비교](./images/notd-custom-destructible/four-methods-2x2.webp)
 
+UE 5.3에서도 커스텀 방식과 Chaos Geometry Collection의 깨지는 모양은 비슷했다.
+
 ### 부수기 전: 대기 비용
 
 | 엔진 | 오브젝트 수 | Custom | 상주형 |
@@ -235,7 +237,7 @@ NOTD가 커스텀 시스템 전에 쓴 APEX는 처음부터 Destructible 컴포�
 | UE 5.3 | 1,000 | 2.87ms, 11MB | Chaos 6.26ms, 76MB |
 | UE 5.3 | 2,000 | 3.22ms, 14MB | Chaos 11.43ms, 144MB |
 
-부서지지 않은 오브젝트를 세워 두기만 했을 때의 프레임 시간과 스폰 메모리다. 2,000개에서 커스텀은 상주형보다 프레임 시간이 UE4에서 1/10.8, UE5에서 1/3.6이었고 메모리도 크게 적었다. 교체형은 대기 상태가 커스텀과 같은 통짜 StaticMesh라서 따로 재지 않았다. 파괴 오브젝트가 월드에 많이 놓이는 게임에서는 부서지기 전까지 일반 StaticMesh로 두는 구조가 대기 비용을 좌우한다.
+부서지지 않은 오브젝트를 세워 두기만 했을 때의 프레임 시간과 스폰 메모리다. 2,000개에서 커스텀은 상주형보다 프레임 시간이 UE4에서 1/10.8, UE5에서 1/3.6이었고 메모리도 크게 적었다. 교체형은 대기 상태가 커스텀과 같은 통짜 StaticMesh라서 따로 재지 않았다. NOTD처럼 파괴 오브젝트를 월드에 많이 두는 게임에서는 부서지기 전까지 일반 StaticMesh로 두는 쪽이 대기 비용에서 유리하다.
 
 ### 하나씩 부술 때
 
@@ -263,18 +265,18 @@ NOTD가 커스텀 시스템 전에 쓴 APEX는 처음부터 Destructible 컴포�
 | 50 | 67.82ms | 15.75ms | 106.34ms | 24.46ms |
 | 100 | 138.12ms | 31.83ms | 191.23ms | 43.67ms |
 
-동시에 부수는 수가 10개를 넘으면 커스텀의 스파이크가 교체형보다 빠르게 커진다. 100개에서는 UE4 138ms, UE5 191ms로 교체형의 4배를 넘었고, 조각을 64개로 늘린 세트에서는 차이가 더 벌어졌다. 여기가 이 구조의 한계 지점이다.
+동시에 부수는 수가 늘수록 커스텀의 스파이크가 교체형보다 빠르게 커졌다. 100개에서는 UE4 138ms, UE5 191ms였고(교체형 32ms, 44ms), 조각을 64개로 늘린 세트에서는 차이가 더 벌어졌다. 이 구간이 개선할 지점이었다.
 
 100개 동시 파괴를 Unreal Insights로 따로 기록해 파괴 프레임을 나눠 봤다. 트레이스 실행은 위 표의 수치와 별도다.
 
-| 엔진 | 방식 | 파괴 처리 | 컴포넌트 등록 (`FScene_AddPrimitive`) |
+| 엔진 | 방식 | 파괴 처리 | 렌더 씬 추가 (`FScene_AddPrimitive`) |
 | --- | --- | ---: | --- |
 | UE 4.27 | Custom | 107.9ms | 2,400회, 23.4ms |
 | UE 4.27 | ApexSwap | 18.3ms | 100회, 0.8ms |
 | UE 5.3 | Custom | 142.7ms | 2,400회, 33.7ms |
 | UE 5.3 | ChaosSwap | 12.2ms | 100회, 0.3ms |
 
-교체형은 오브젝트 하나에 컴포넌트 하나를 만들고 조각은 그 안에서 처리한다. 커스텀은 조각마다 `UStaticMeshComponent`를 만들어 등록하므로 100개 × 24조각 = 2,400개의 컴포넌트가 한 프레임에 생긴다. UE5에서는 물리 씬에 바디를 넣는 `FChaosScene::AddActorsToScene_AssumesLocked`도 2,400회(7.9ms) 불렸다. UE4 트레이스에는 이보다 잘게 나눈 스코프가 없어 나머지 시간의 내역은 확인하지 못했다.
+교체형은 오브젝트 하나에 컴포넌트 하나를 만들고 조각은 그 안에서 처리한다. 커스텀은 조각마다 `UStaticMeshComponent`를 만들어 등록하므로 100개 × 24조각 = 2,400개의 컴포넌트가 한 프레임에 생긴다. UE5에서는 물리 씬에 바디를 넣는 `FChaosScene::AddActorsToScene_AssumesLocked`도 2,400회(7.9ms) 불렸다. UE4 트레이스에는 렌더 씬 추가를 뺀 나머지 시간(약 84ms)을 나눈 스코프가 없어 그 내역은 확인하지 못했다.
 
 NOTD는 이런 상황에 대비해 연출 전용 파편에 프레임이 15fps 이하로 떨어지거나 웨이브가 크면 조각을 만들지 않는 조건을 두었다. 측정으로 비용이 어디서 나오는지 확인했으니, 조각을 생략하지 않고 비용을 여러 프레임에 나누는 방법을 시험했다.
 
@@ -328,16 +330,16 @@ void UFragmentBudgetSubsystem::Tick(float DeltaTime)
 
 | 엔진 | N | Custom | 예산 적용 | 교체형 | 다 부서지기까지 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| UE 4.27 | 50 | 67.82ms | 17.90ms | 15.75ms | 0.07초 |
-| UE 4.27 | 100 | 138.12ms | 25.22ms | 31.83ms | 0.15초 |
-| UE 5.3 | 50 | 106.34ms | 28.60ms | 24.46ms | 0.07초 |
-| UE 5.3 | 100 | 191.23ms | 37.31ms | 43.67ms | 0.15초 |
+| UE 4.27 | 50 | 67.82ms | 17.90ms | 15.75ms | 5프레임 |
+| UE 4.27 | 100 | 138.12ms | 25.22ms | 31.83ms | 10프레임 |
+| UE 5.3 | 50 | 106.34ms | 28.60ms | 24.46ms | 5프레임 |
+| UE 5.3 | 100 | 191.23ms | 37.31ms | 43.67ms | 10프레임 |
 
-100개 동시 파괴의 스파이크가 UE4에서 138ms에서 25ms로(82% 감소), UE5에서 191ms에서 37ms로(80% 감소) 내려가 교체형보다 낮아졌다. 조각 64개 세트의 50개 동시 파괴도 UE4에서 192.78ms에서 28.11ms가 됐다. 100개가 다 부서지기까지는 0.15초가 걸리고, 그동안 차례를 기다리는 오브젝트는 통짜 메시로 서 있다. 10개 이하는 예산 안이라 결과가 달라지지 않는다.
+100개 동시 파괴의 스파이크가 UE4에서 138ms에서 25ms로(82% 감소), UE5에서 191ms에서 37ms로(80% 감소) 내려가 교체형보다 낮아졌다. 조각 64개 세트의 50개 동시 파괴도 UE4에서 192.78ms에서 28.11ms가 됐다. 100개가 다 부서지기까지는 10프레임이 걸리고(이 측정의 실제 경과 시간은 UE4 약 0.19초, UE5 약 0.28초), 그동안 차례를 기다리는 오브젝트는 통짜 메시로 서 있다. 10개 이하는 예산 안이라 모두 같은 프레임에 부서진다.
 
-## 다음 단계
+## 남은 비용과 측정 범위
 
-예산은 파괴 순간의 비용을 나눈다. 조각이 움직이는 동안의 비용은 조각마다 컴포넌트와 강체를 갱신하는 데서 나오는 것으로 보이며, 100개 동시 파괴에서 UE4 평균 11.29ms로 교체형(2.66ms)보다 높다. 다음 단계는 멈춘 조각을 Instanced Static Mesh로 옮기는 식으로 조각별 컴포넌트 수 자체를 줄이는 것이다.
+예산은 파괴 순간의 비용을 나눈다. 조각이 움직이는 동안의 비용은 조각마다 컴포넌트와 강체를 갱신하는 데서 나오는 것으로 보이며, 100개 동시 파괴에서 UE4 평균 11.29ms로 교체형(2.66ms)보다 높다. 더 줄이려면 멈춘 조각을 Instanced Static Mesh로 옮기는 식으로 조각별 컴포넌트 수 자체를 줄여야 한다.
 
 측정 범위는 다음과 같다.
 

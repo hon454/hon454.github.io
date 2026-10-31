@@ -276,7 +276,15 @@ UE 5.3에서도 커스텀 방식과 Chaos Geometry Collection의 깨지는 모�
 | UE 5.3 | Custom | 142.7ms | 2,400회, 33.7ms |
 | UE 5.3 | ChaosSwap | 12.2ms | 100회, 0.3ms |
 
-교체형은 오브젝트 하나에 컴포넌트 하나를 만들고 조각은 그 안에서 처리한다. 커스텀은 조각마다 `UStaticMeshComponent`를 만들어 등록하므로 100개 × 24조각 = 2,400개의 컴포넌트가 한 프레임에 생긴다. UE5에서는 물리 씬에 바디를 넣는 `FChaosScene::AddActorsToScene_AssumesLocked`도 2,400회(7.9ms) 불렸다. UE4 트레이스에는 렌더 씬 추가를 뺀 나머지 시간(약 84ms)을 나눈 스코프가 없어 그 내역은 확인하지 못했다.
+![UE 4.27 100개 동시 파괴의 GameThread 타임라인: 커스텀 방식과 교체형 APEX](./images/notd-custom-destructible/insights-ue4-destruct-timeline.webp)
+
+UE4 트레이스의 GameThread를 같은 시간 폭으로 잘라 위에 커스텀 방식, 아래에 교체형 APEX를 놓았다. ① 커스텀의 `Bench_DestructAll`은 107.9ms, ② 교체형은 18.3ms다. 그 뒤로는 커스텀의 바로 다음 프레임이 49.1ms, 교체형에서 충격을 주는 2프레임 뒤의 프레임이 34.7ms다.
+
+![UE 4.27 100개 동시 파괴의 Callees 트리: 커스텀 방식과 교체형 APEX](./images/notd-custom-destructible/insights-ue4-destruct-callees.webp)
+
+같은 구간에서 `Bench_DestructAll` 아래의 호출이다. ① 커스텀은 `Bench_CustomDestruct`가 100회 불렸고 자체 시간이 84.2ms다. ② 그 안의 `FScene_AddPrimitive`는 2,400회, 23.4ms다. ③ 교체형의 `FScene_AddPrimitive`는 100회, 836.7µs다.
+
+교체형은 오브젝트 하나에 컴포넌트 하나를 만들고 조각은 그 안에서 처리한다. 커스텀은 조각마다 `UStaticMeshComponent`를 만들어 등록하므로 100개 × 24조각 = 2,400개의 컴포넌트가 한 프레임에 생긴다. UE5에서는 물리 씬에 바디를 넣는 `FChaosScene::AddActorsToScene_AssumesLocked`도 2,400회(7.9ms) 불렸다. UE4 트레이스에는 ①의 자체 시간을 나눈 스코프가 없어 그 내역은 확인하지 못했다.
 
 NOTD는 이런 상황에 대비해 연출 전용 파편에 프레임이 15fps 이하로 떨어지거나 웨이브가 크면 조각을 만들지 않는 조건을 두었다. 측정으로 비용이 어디서 나오는지 확인했으니, 조각을 생략하지 않고 비용을 여러 프레임에 나누는 방법을 시험했다.
 

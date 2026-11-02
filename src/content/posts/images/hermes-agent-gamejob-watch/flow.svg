@@ -1,0 +1,58 @@
+<svg viewBox="0 0 960 440" width="960" height="440" role="img" lang="ko" xmlns="http://www.w3.org/2000/svg">
+<title>게임잡 공고 확인 자동화의 전체 흐름</title>
+<desc>크론이 매일 09:00에 래퍼 스크립트를 실행하고, 스크립트가 공고를 수집해 직무·경력 필터와 엔진 판정을 거친 뒤 Slack job-board 채널로 보낸다. 조건은 config.json, 본 공고 기록과 상세 페이지 캐시는 seen.json에 둔다.</desc>
+<defs><marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#94a3b8"/></marker><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="0.5"/></pattern></defs>
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<rect width="100%" height="100%" fill="url(#g)"/>
+<rect x="30" y="30" width="900" height="110" rx="10" fill="none" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="44" y="52" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace, Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="600" fill="#64748b">01 / 스케줄</text>
+<rect x="60" y="60" width="240" height="62" rx="9" fill="#dcf6ec" stroke="#059669" stroke-width="1.6"/>
+<text x="180.0" y="87.75" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">gamejob-watch-daily</text>
+<text x="180.0" y="104.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">매일 09:00 KST · no_agent</text>
+<rect x="360" y="60" width="240" height="62" rx="9" fill="#dcf6ec" stroke="#059669" stroke-width="1.6"/>
+<text x="480.0" y="87.75" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace" font-size="14" font-weight="700" fill="#0f172a">gamejob_watch.sh</text>
+<text x="480.0" y="104.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">python3 -I 로 실행하는 래퍼</text>
+<rect x="660" y="60" width="240" height="62" rx="9" fill="#dcf6ec" stroke="#059669" stroke-width="1.6"/>
+<text x="780.0" y="87.75" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace" font-size="14" font-weight="700" fill="#0f172a">gamejob_watch.py</text>
+<text x="780.0" y="104.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">표준 라이브러리만 사용</text>
+<path d="M 300 91 L 360 91" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<path d="M 600 91 L 660 91" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<path d="M 780 122 L 780 175" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<rect x="30" y="175" width="900" height="130" rx="10" fill="none" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="44" y="197" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace, Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="600" fill="#64748b">02 / gamejob_watch.py 내부 (LLM 호출 없음)</text>
+<rect x="53" y="212" width="150" height="74" rx="9" fill="#dcf6ec" stroke="#059669" stroke-width="1.6"/>
+<text x="128.0" y="237.5" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">수집</text>
+<text x="128.0" y="254.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">서울·경기 전체 공고</text>
+<text x="128.0" y="270.5" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">1,322건</text>
+<rect x="236" y="212" width="150" height="74" rx="9" fill="#dcf6ec" stroke="#059669" stroke-width="1.6"/>
+<text x="311.0" y="237.5" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">직무·경력 필터</text>
+<text x="311.0" y="254.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">포함 조건에 맞는 공고</text>
+<text x="311.0" y="270.5" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">136건</text>
+<rect x="419" y="212" width="150" height="74" rx="9" fill="#dcf6ec" stroke="#059669" stroke-width="1.6"/>
+<text x="494.0" y="237.5" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">엔진 판정</text>
+<text x="494.0" y="254.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">본문·이미지(OCR) 읽기</text>
+<text x="494.0" y="270.5" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">47건</text>
+<rect x="602" y="212" width="150" height="74" rx="9" fill="#dcf6ec" stroke="#059669" stroke-width="1.6"/>
+<text x="677.0" y="245.75" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">신규·마감 표시</text>
+<text x="677.0" y="262.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">직전 기록과 비교</text>
+<rect x="785" y="212" width="125" height="74" rx="9" fill="#dcf6ec" stroke="#059669" stroke-width="1.6"/>
+<text x="847.5" y="245.75" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">Slack</text>
+<text x="847.5" y="262.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">#job-board</text>
+<path d="M 203 249 L 236 249" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<path d="M 386 249 L 419 249" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<path d="M 569 249 L 602 249" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<path d="M 752 249 L 785 249" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<text x="768" y="238" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569" stroke="#f8fafc" stroke-width="4" paint-order="stroke">stdout</text>
+<rect x="30" y="335" width="900" height="85" rx="10" fill="none" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="44" y="357" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace, Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="600" fill="#64748b">03 / 파일</text>
+<rect x="150" y="362" width="280" height="44" rx="9" fill="#eef2ff" stroke="#6366f1" stroke-width="1.6"/>
+<text x="290.0" y="380.75" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace" font-size="14" font-weight="700" fill="#0f172a">config.json</text>
+<text x="290.0" y="397.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">조건: 지역·직무·경력·엔진</text>
+<rect x="530" y="362" width="280" height="44" rx="9" fill="#eef2ff" stroke="#6366f1" stroke-width="1.6"/>
+<text x="670.0" y="380.75" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace" font-size="14" font-weight="700" fill="#0f172a">seen.json</text>
+<text x="670.0" y="397.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">본 공고 기록·상세 페이지 캐시</text>
+<path d="M 290 362 L 290 306" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="345" y="326" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569" stroke="#f8fafc" stroke-width="4" paint-order="stroke">조건 읽기</text>
+<path d="M 670 362 L 670 306" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="745" y="326" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569" stroke="#f8fafc" stroke-width="4" paint-order="stroke">기록 읽기·쓰기</text>
+</svg>

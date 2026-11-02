@@ -1,0 +1,43 @@
+<svg viewBox="0 0 960 500" width="960" height="500" role="img" lang="ko" xmlns="http://www.w3.org/2000/svg">
+<title>공고 하나가 언리얼, C++ 후보, 제외로 나뉘는 판정 흐름</title>
+<desc>필터를 통과한 공고의 본문과 이미지 텍스트에서 엔진 단서를 찾는다. 언리얼 단서가 다른 엔진 언급보다 많으면 언리얼 구간이다. 엔진 언급이 전혀 없고 C++ 언급과 클라이언트·엔진 계열 직무 조건을 만족하면 C++ 구간이다. 나머지는 제외한다.</desc>
+<defs><marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#94a3b8"/></marker><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="0.5"/></pattern></defs>
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<rect width="100%" height="100%" fill="url(#g)"/>
+<rect x="230" y="30" width="500" height="80" rx="9" fill="#dcf6ec" stroke="#059669" stroke-width="1.6"/>
+<text x="480.0" y="58.5" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">엔진 단서 찾기</text>
+<text x="480.0" y="75.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">지역·직무·경력 필터를 통과한 공고의 제목·키워드·본문·이미지(OCR)에서</text>
+<text x="480.0" y="91.5" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">Unreal·UE4/5와 GAS·블루프린트·Dedicated Server 같은 간접 단서를 찾는다</text>
+<rect x="330" y="150" width="300" height="64" rx="9" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+<text x="480.0" y="178.75" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">언리얼 단서가 있는가</text>
+<text x="480.0" y="195.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">다른 엔진(유니티 등) 언급보다 많을 때만 인정</text>
+<rect x="330" y="270" width="300" height="64" rx="9" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+<text x="480.0" y="298.75" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">엔진 언급이 전혀 없는가</text>
+<text x="480.0" y="315.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">언리얼 단서도 다른 엔진 언급도 없음</text>
+<rect x="330" y="390" width="300" height="64" rx="9" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+<text x="480.0" y="418.75" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">C++ 언급이 있는가</text>
+<text x="480.0" y="435.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">직무가 클라이언트·엔진 계열일 때</text>
+<rect x="30" y="150" width="240" height="64" rx="9" fill="#dcf6ec" stroke="#059669" stroke-width="1.6"/>
+<text x="150.0" y="178.75" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">언리얼 구간</text>
+<text x="150.0" y="195.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">엔진 명시 공고</text>
+<rect x="30" y="390" width="240" height="64" rx="9" fill="#fff4dc" stroke="#d97706" stroke-width="1.6"/>
+<text x="150.0" y="418.75" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">C++ 구간</text>
+<text x="150.0" y="435.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">엔진 미명시 후보</text>
+<rect x="690" y="290" width="240" height="150" rx="9" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.6"/>
+<text x="810.0" y="353.5" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">제외</text>
+<text x="810.0" y="370.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">다른 엔진 언급이 있거나</text>
+<text x="810.0" y="386.5" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">C++ 조건에 맞지 않음</text>
+<path d="M 480 110 L 480 150" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<path d="M 330 182 L 270 182" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<text x="300" y="174" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569" stroke="#f8fafc" stroke-width="4" paint-order="stroke">예</text>
+<path d="M 480 214 L 480 270" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<text x="508" y="246" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569" stroke="#f8fafc" stroke-width="4" paint-order="stroke">아니오</text>
+<path d="M 630 302 L 690 302" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<text x="660" y="294" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569" stroke="#f8fafc" stroke-width="4" paint-order="stroke">아니오</text>
+<path d="M 480 334 L 480 390" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<text x="496" y="366" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569" stroke="#f8fafc" stroke-width="4" paint-order="stroke">예</text>
+<path d="M 330 422 L 270 422" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<text x="300" y="414" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569" stroke="#f8fafc" stroke-width="4" paint-order="stroke">예</text>
+<path d="M 630 422 L 690 422" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<text x="660" y="414" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569" stroke="#f8fafc" stroke-width="4" paint-order="stroke">아니오</text>
+</svg>

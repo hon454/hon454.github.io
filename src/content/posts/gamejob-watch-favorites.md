@@ -12,7 +12,7 @@ tags:
 category: 개발 이야기
 series: Hermes Agent로 구직 자동화
 seriesOrder: 2
-draft: true
+draft: false
 lang: ko
 ---
 

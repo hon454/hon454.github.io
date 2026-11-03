@@ -1,6 +1,7 @@
 ---
 title: Hermes Agent로 게임잡 공고 확인 자동화하기
 published: 2026-11-02
+image: ../../assets/images/posts/hermes-agent-gamejob-watch-cover.webp
 author: Jihoon Jeon
 description: 서울·경기 언리얼 경력 공고를 매일 Slack으로 받기 위해 Hermes Agent와 함께 게임잡 확인을 스크립트와 크론으로 옮긴 과정이다. no_agent 크론 구조, 오분류를 잡아 가며 고친 엔진 판정 기준, Slack 출력 수정과 최종 설정을 정리하고 이어서 하려는 작업을 적는다.
 tags:

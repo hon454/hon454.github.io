@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-03",
+  "post": "src/content/posts/gamejob-watch-favorites.md",
+  "scope": "cover",
+  "tool": "chatgpt-web",
+  "branch": "docs/gamejob-watch-favorites-post",
+  "asset": "src/assets/images/posts/gamejob-watch-favorites-cover.webp",
+  "dimensions": {
+    "width": 1600,
+    "height": 900
+  },
+  "references": [
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+  ],
+  "userDirection": "ChatGPT 웹 결과만 사용한다(Gemini 후보는 만들지 않음).",
+  "concept": "Steady Spiral 달팽이가 작업대의 공고 카드 한 장에 별 스티커를 붙이고, 옆 별 상자에 별 붙은 카드를 모아 둔다. 상자 뒤쪽의 회색 카드는 게시가 끝나도 남겨 두는 즐겨찾기를, 왼쪽 위 말풍선(낙서 선과 카드 윤곽)은 대충 던진 요청을, 오른쪽 화살표와 말풍선은 채널로 다시 보내는 재전송을 뜻한다. 이전 글 커버와 같은 작업대·말풍선 소품으로 시리즈 연속성을 둔다. 문자와 숫자는 넣지 않았다.",
+  "candidates": [
+    {
+      "tool": "chatgpt-web",
+      "size": "1672×941",
+      "selected": true,
+      "review": "캐릭터 색과 비율이 기준과 같다. 문자·숫자 없이 별 기호만 있고, 오른쪽 아래는 비어 있다. 회색 별 카드가 상자 안에 있어 게시 종료 공고 보존이 드러난다. 오른쪽 말풍선이 투입구라기보다 카드가 든 말풍선으로 그려졌지만 전송 의미는 유지된다."
+    },
+    {
+      "tool": "gemini-web",
+      "selected": false,
+      "review": "사용자 지시로 생성하지 않았다."
+    }
+  ],
+  "prompt": "Generate an image. Create a 16:9 cover illustration for a blog post about adding a \"favorites\" feature to a daily job-posting list that arrives in a chat channel: the user casually asks for a few postings, they get starred and kept in a separate box (even after a posting ends), and the list is sent to the channel again. The attached image of a single green snail with a lime spiral shell is the character reference: keep its identity exactly, with a dark green body, lime-green spiral shell, two round antennae, ivory eyes, a small smile, and chunky rounded proportions. The attached clay scene with envelopes defines only the rendering style: soft clay-like 3D, warm ivory background, soft lighting, grounded shadows, simple rounded props. Do not copy its envelopes, numbers, paths or question mark. Scene: in the center, the snail stands at a small clay desk with a short neat row of small clay job-posting cards. The snail is pressing a round yellow clay star sticker onto one of the cards, smiling. Right next to it on the desk sits a small open clay keepsake box with a yellow star on its front, holding three starred cards standing upright; the card at the back of the box is a faded gray color but still kept. From the upper left, a small rounded speech bubble floats in toward the snail; inside it are only a few loose wavy scribble lines and a tiny card outline, no readable writing. To the right of the desk, a short curved arrow carries a small bundle of cards into a rounded speech-bubble-shaped slot. No robot, no computer screen, no brain or spark symbols. Composition: group the snail, desk, cards, star box, floating speech bubble and slot tightly in the center with generous padding on all sides; only plain ivory background toward the edges so a centered crop still works. Keep the bottom-right corner plain ivory background. No title, no sentences, no letters, no numbers, no logos, no watermark; star shapes are the only symbols allowed.",
+  "iterations": 1,
+  "export": "ego-browser로 ChatGPT 웹에 기준 이미지 두 장과 프롬프트를 보내 첫 결과를 받았다. 원본 1672×941 PNG를 페이지 안 fetch로 받아 저장하고, cwebp가 없어 sharp로 중앙 16:9 크롭 후 1600×900 quality 85 webp로 변환했다(41KB)."
+}

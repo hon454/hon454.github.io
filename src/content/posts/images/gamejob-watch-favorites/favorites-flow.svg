@@ -1,0 +1,55 @@
+<svg viewBox="0 0 960 480" width="960" height="480" role="img" lang="ko" xmlns="http://www.w3.org/2000/svg">
+<title>즐겨찾기 등록과 재전송 흐름</title>
+<desc>Slack 요청을 에이전트가 공고 번호로 매칭해 --fav-add로 favorites.json에 저장한다. 일일 크론과 일시정지된 재전송 크론은 같은 스크립트를 실행하고 출력을 Slack으로 보낸다. 두 실행 모두 favorites.json을 읽고 게시 중인 공고의 스냅샷을 갱신하지만 신규 판정 기준(본 공고 기록과 직전 실행 목록)은 일일 크론만 갱신하고 재전송은 바꾸지 않는다.</desc>
+<defs><marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#94a3b8"/></marker><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="0.5"/></pattern></defs>
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<rect width="100%" height="100%" fill="url(#g)"/>
+<rect x="30" y="30" width="900" height="110" rx="10" fill="none" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="44" y="52" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace, Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="600" fill="#64748b">01 / 등록: 매칭은 에이전트가</text>
+<rect x="60" y="62" width="190" height="62" rx="9" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+<text x="155.0" y="89.75" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">Slack 요청</text>
+<text x="155.0" y="106.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">회사명·제목 일부·링크</text>
+<rect x="300" y="62" width="170" height="62" rx="9" fill="#fdecec" stroke="#dc2626" stroke-width="1.6"/>
+<text x="385.0" y="89.75" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">에이전트 (LLM)</text>
+<text x="385.0" y="106.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">공고 번호(GI_No)로 매칭</text>
+<rect x="510" y="62" width="180" height="62" rx="9" fill="#dcf6ec" stroke="#059669" stroke-width="1.6"/>
+<text x="600.0" y="89.75" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace" font-size="14" font-weight="700" fill="#0f172a">--fav-add</text>
+<text x="600.0" y="106.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">정확한 번호만 받음</text>
+<path d="M 250 93 L 300 93" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<path d="M 470 93 L 510 93" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<text x="720" y="88" text-anchor="start" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#b91c1c">모델은 이 단계에서만</text>
+<text x="720" y="106" text-anchor="start" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12.5" font-weight="400" fill="#b91c1c">쓰인다</text>
+<rect x="30" y="165" width="900" height="95" rx="10" fill="none" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="44" y="187" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace, Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="600" fill="#64748b">02 / 파일</text>
+<rect x="180" y="198" width="240" height="44" rx="9" fill="#eef2ff" stroke="#6366f1" stroke-width="1.6"/>
+<text x="300.0" y="216.75" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace" font-size="14" font-weight="700" fill="#0f172a">seen.json</text>
+<text x="300.0" y="233.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">본 공고 기록·직전 실행 목록</text>
+<rect x="470" y="198" width="260" height="44" rx="9" fill="#eef2ff" stroke="#6366f1" stroke-width="1.6"/>
+<text x="600.0" y="216.75" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace" font-size="14" font-weight="700" fill="#0f172a">favorites.json</text>
+<text x="600.0" y="233.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">즐겨찾기 스냅샷</text>
+<path d="M 600 124 L 600 198" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<text x="625" y="166" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569" stroke="#f8fafc" stroke-width="4" paint-order="stroke">쓰기</text>
+<rect x="30" y="285" width="900" height="175" rx="10" fill="none" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="44" y="307" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace, Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="600" fill="#64748b">03 / 전송: 같은 스크립트, LLM 호출 없음</text>
+<rect x="60" y="312" width="250" height="58" rx="9" fill="#dcf6ec" stroke="#059669" stroke-width="1.6"/>
+<text x="185.0" y="337.75" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">gamejob-watch-daily</text>
+<text x="185.0" y="354.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">매일 09:00 · 정식 실행</text>
+<rect x="60" y="388" width="250" height="58" rx="9" fill="#fff4dc" stroke="#d97706" stroke-width="1.6"/>
+<text x="185.0" y="413.75" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">gamejob-watch-resend</text>
+<text x="185.0" y="430.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">평소 일시정지 · 재개→실행→일시정지</text>
+<rect x="390" y="330" width="230" height="96" rx="9" fill="#dcf6ec" stroke="#059669" stroke-width="1.6"/>
+<text x="505.0" y="366.5" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace" font-size="14" font-weight="700" fill="#0f172a">gamejob_watch.py</text>
+<text x="505.0" y="383.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">daily: 상태 갱신</text>
+<text x="505.0" y="399.5" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">resend: --resend, 상태 그대로</text>
+<rect x="710" y="350" width="170" height="56" rx="9" fill="#dcf6ec" stroke="#059669" stroke-width="1.6"/>
+<text x="795.0" y="374.75" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">Slack</text>
+<text x="795.0" y="391.25" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">#job-board</text>
+<path d="M 310 341 L 390 360" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<path d="M 310 417 L 390 398" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<path d="M 620 378 L 710 378" fill="none" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#ah)"/>
+<text x="665" y="368" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569" stroke="#f8fafc" stroke-width="4" paint-order="stroke">stdout</text>
+<path d="M 580 330 L 580 242" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="640" y="292" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569" stroke="#f8fafc" stroke-width="4" paint-order="stroke">읽기·스냅샷 갱신</text>
+<path d="M 410 330 L 410 242" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="482" y="292" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569" stroke="#f8fafc" stroke-width="4" paint-order="stroke">신규 기준은 daily만 갱신</text>
+</svg>

@@ -10,13 +10,15 @@ tags:
   - automation
   - cron
 category: 개발 이야기
+series: Hermes Agent로 구직 자동화
+seriesOrder: 1
 draft: false
 lang: ko
 ---
 
 언리얼 클라이언트 개발 공고를 게임잡에서 매일 직접 찾아보는 일을 Hermes Agent에 맡겼다. 지금은 서울·경기 언리얼 경력 공고가 매일 오전 9시(KST)에 Slack `#job-board` 채널로 도착하고, 이 크론은 실행할 때 LLM을 호출하지 않는다.
 
-![크론이 래퍼 스크립트를 거쳐 gamejob_watch.py를 실행하고, 스크립트가 수집, 직무·경력 필터, 엔진 판정, 신규·마감 표시를 거쳐 Slack으로 출력하는 흐름. config.json과 seen.json을 읽고 쓴다](./images/hermes-agent-gamejob-watch/flow.svg)
+![게임잡 공고 알림의 전체 흐름](./images/hermes-agent-gamejob-watch/flow.svg)
 
 ## 에이전트가 아니라 스크립트로 돌린다
 
@@ -24,7 +26,7 @@ lang: ko
 
 실행 방식으로는 두 가지를 비교했다. 에이전트가 매번 수집하고 비교하고 포맷하는 방식과, 이 단계를 스크립트로 고정하고 크론이 스크립트만 실행하는 방식이다. 이 작업은 요청, 파싱, 목록 비교, 포맷팅이 대부분이라 높은 추론이 필요하지 않다. 스크립트는 결과가 매일 같은 규칙으로 나오고 비용이 거의 없다. 대신 사이트 구조가 바뀌거나 차단되면 스크립트가 실패하고, 실패하면 알림이 간다. 스크립트 방식으로 정했다.
 
-![크론에서 에이전트(LLM)를 거쳐 Slack으로 가는 구조와 크론에서 스크립트를 거쳐 Slack으로 가는 구조의 비교. 스크립트 쪽은 실행당 LLM 호출이 0회다](./images/hermes-agent-gamejob-watch/structures.svg)
+![에이전트 실행과 스크립트 실행 구조 비교](./images/hermes-agent-gamejob-watch/structures.svg)
 
 크론은 `no_agent` 모드로 등록했다. 이 모드에서는 스케줄러가 스크립트를 실행하고 stdout을 그대로 채널에 보낸다. 수동으로 실행한 결과에도 `API calls: 0`과 `Mode: no_agent (script)`가 찍혔다.
 
@@ -42,9 +44,9 @@ lang: ko
 
 첫째는 엔진이 적히지 않은 후보를 기기 종류로 좁히려던 시도다. 새 필터로 처음 보낸 전송은 전체 78건 가운데 엔진 미명시 후보가 45건이었고, 개발 PM과 유니티 프로젝트가 섞여 있었다. 금지 목록을 늘리지 않고 들어오는 조건을 좁히기로 했다. 직무 포함 목록에서 PM 관련 단어를 빼고, 엔진 미명시 후보는 게임잡에 PC·콘솔 대상으로 등록된 공고만 받았다. 모바일 프로젝트는 대개 유니티라는 가정이었다. 후보는 23건, 전체는 55건이 됐다.
 
-![18:58 전송의 엔진 미명시 후보 구간. 후보가 45건이다](./images/hermes-agent-gamejob-watch/slack-engine-section-first.webp)
+![18:58 전송의 엔진 미명시 후보 45건](./images/hermes-agent-gamejob-watch/slack-engine-section-first.webp)
 
-![19:27 전송의 같은 구간. PC·콘솔 대상으로 좁혀 후보가 23건으로 줄었다](./images/hermes-agent-gamejob-watch/slack-engine-section-second.webp)
+![19:27 전송, PC·콘솔로 좁혀 23건](./images/hermes-agent-gamejob-watch/slack-engine-section-second.webp)
 
 그런데 유니티 공고인 니케 공고가 여전히 후보에 있었다. 본문에 엔진 이름이 없었고 등록된 디바이스는 `모바일게임, 멀티플랫폼게임`이었다. 후보 조건이 PC·콘솔·멀티플랫폼 중 하나만 있어도 통과였는데, 이 공고처럼 `멀티플랫폼게임`이 모바일 위주 게임에도 붙기 때문에 걸러지지 않았다. 디바이스가 전부 PC나 콘솔일 때만 통과시키자 후보가 17건에서 9건으로 줄었다. 하지만 모바일과 멀티플랫폼 공고도 받아야 하는데, 기기 종류로 유니티를 가려내는 방식은 근거가 약하다고 보고 접었다.
 
@@ -54,7 +56,7 @@ lang: ko
 
 셋째는 본문이 이미지 한 장인 공고다. 언리얼 공고인데 빠져 있던 공고([GI_No=285987](https://www.gamejob.co.kr/Recruit/GI_Read/View?GI_No=285987))는 `Tong_....png` 한 장이 본문이었다. 이미지 안에는 Unreal Engine, GAS, Unreal Editor가 적혀 있었지만 텍스트로는 한 글자도 읽을 수 없었다.
 
-![본문이 이미지 한 장인 공고의 모집분야 표. 담당업무에 Unreal Engine과 GAS(Gameplay Ability System), 우대사항에 Unreal Engine과 Unreal Editor가 적혀 있다](./images/hermes-agent-gamejob-watch/image-only-posting-crop.webp)
+![이미지 본문 공고의 모집분야 표 (일부)](./images/hermes-agent-gamejob-watch/image-only-posting-crop.webp)
 
 위 이미지는 공고 이미지에서 이 표만 잘라 낸 것이다.
 
@@ -66,7 +68,7 @@ lang: ko
 
 최종 기준은 두 구간이다. 언리얼 구간은 본문이나 이미지에 Unreal, UE4/5나 간접 단서가 있고, 그 언급이 다른 엔진보다 많은 공고다. C++ 구간은 엔진 언급이 전혀 없고 C++가 언급되며 직무가 클라이언트·엔진 계열인 공고다. 다른 엔진 언급이 더 많거나 후보 조건에 맞지 않는 공고는 어느 구간에도 들어가지 않는다.
 
-![지역·직무·경력 필터를 통과한 공고에서 엔진 단서를 찾고, 언리얼 단서가 다른 엔진 언급보다 많으면 언리얼 구간, 엔진 언급이 전혀 없고 C++ 언급이 있으면 C++ 구간, 나머지는 제외하는 판정 순서도](./images/hermes-agent-gamejob-watch/judgement.svg)
+![엔진 판정 순서](./images/hermes-agent-gamejob-watch/judgement.svg)
 
 간접 단서도 함께 정했다. 처음 필터 안내에는 `Unreal·UE4/5·GAS·블루프린트`만 적혀 있었는데, 목록을 넓혔다. 이제 GAS, 블루프린트, UMG, Dedicated Server, Niagara, Nanite, `UCLASS`와 `UPROPERTY` 같은 매크로, Gameplay Ability System, World Partition, Enhanced Input, Control Rig, MetaSound를 쓴다. Slate, Sequencer, Chaos, Lumen, Mass, PCG, Epic Games, Lyra는 너무 일반적이라 넣지 않았다. Dedicated Server는 유니티 프로젝트에서도 쓰는 말이지만, 언리얼보다 유니티 언급이 많은 공고는 언리얼 구간에 넣지 않는 규칙이 이를 걸러 준다. 이 단서들을 추가했을 때 기존 캐시에서 판정이 바뀐 공고는 없었다.
 
@@ -76,13 +78,13 @@ lang: ko
 
 첫 전송 결과에서 바로 고칠 것이 나왔다. 가장 먼저 필터 내용을 항상 최상단에 두기로 했다. 제목도 `게임잡 언리얼 개발 공고`에서 `게임잡 공고`로 바꿨다. 조건이 바뀔 때마다 제목이 어긋나므로 제목에는 조건을 넣지 않고 필터 블록에 적는다. 한 줄로 길게 이어지던 필터는 항목별 목록으로 나눴다.
 
-![최종 전송의 상단. 필터가 항목별 목록으로 맨 위에 있고 그 아래에 총 건수와 언리얼 구간이 이어진다](./images/hermes-agent-gamejob-watch/slack-final-header.webp)
+![최종 전송의 상단](./images/hermes-agent-gamejob-watch/slack-final-header.webp)
 
 들여쓰기는 여러 번 고쳤다. 같은 회사의 공고가 여러 개면 회사명 아래에 하위 항목으로 묶어 보여 주는데, 처음에는 한 회사에서 회사명 줄의 글머리 기호가 사라졌다. 여러 공고가 있는 회사의 이름 앞에 `•`를 붙이고 아래 항목을 들여써서 고쳤다.
 
 다음 문제는 메시지가 길어서 나뉘는 지점에서 하위 항목의 들여쓰기가 사라지는 것이었다.
 
-![메시지가 나뉘는 지점에서 하위 공고가 부모 회사 줄 없이 들여쓰기도 잃은 채 시작된다](./images/hermes-agent-gamejob-watch/slack-split-indent-break.webp)
+![나뉜 지점에서 들여쓰기를 잃은 하위 공고](./images/hermes-agent-gamejob-watch/slack-split-indent-break.webp)
 
 소스를 확인해 보니 Slack 어댑터가 긴 메시지를 나눈 뒤 다음 조각을 `lstrip()`한다. 새 조각의 첫 줄 앞 공백이 지워지는 이유다. 처음에는 일반 공백 대신 공백으로 취급되지 않는 점자 빈 칸(U+2800)으로 들여써서 막았다. 하지만 회사명 줄과 하위 공고가 서로 다른 조각으로 갈라지는 문제는 그대로였다. 그래서 나뉠 것 같으면 다음 블록에서 시작하게 바꿨다. 회사 묶음은 쪼개지 않고, 블록이 2,400자 가까이 되면 다음 묶음부터 새 블록에서 시작한다. 이렇게 하면 블록이 하위 항목으로 시작하는 일이 없다. 이때 점자 빈 칸은 걷어 내고 일반 공백 들여쓰기로 되돌렸다.
 
@@ -92,7 +94,7 @@ lang: ko
 
 마지막으로 메시지 맨 아래에 실행 정보를 붙였다. 소요 시간, 수집에서 최종까지의 건수, 직전 실행 대비 신규와 사라진 공고 수, OCR 처리 현황을 보여 준다. 소요 시간은 스크립트 실행 시간만 잰다.
 
-![최종 전송의 하단. 소요 22초, 수집 1,322건에서 직무·경력 통과 136건을 거쳐 최종 47건이 되었다는 실행 정보가 있다](./images/hermes-agent-gamejob-watch/slack-final-footer.webp)
+![최종 전송 하단의 실행 정보](./images/hermes-agent-gamejob-watch/slack-final-footer.webp)
 
 ## 최종 구성
 

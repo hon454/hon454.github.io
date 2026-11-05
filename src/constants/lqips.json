@@ -274,7 +274,6 @@
   "src:content/posts/images/hermes-agent-gamejob-watch/slack-engine-section-first.webp": "eaeef0f0f4f7eef1f6",
   "src:content/posts/images/hermes-agent-gamejob-watch/image-only-posting-crop.webp": "c1c1c1cfcfcfe5e5e5",
   "src:assets/images/posts/hermes-agent-gamejob-watch-cover.webp": "dce1c4efebd7e8dbc4",
-  "src:assets/images/posts/gamejob-watch-favorites-cover.webp": "e1e2c8f1e8d0e9d7b5",
   "src:content/posts/images/gamejob-watch-favorites/slack-favorites-empty.webp": "f2f1f1fffffff3f3f3",
   "src:content/posts/images/gamejob-watch-favorites/slack-favorites-8.webp": "ebedeff8fafcf3f6f8",
   "src:content/posts/images/hermes-merchant-secondhand/slack-self-correct.webp": "e5e5e5f3f3f3ececec",
@@ -284,5 +283,6 @@
   "src:content/posts/images/hermes-merchant-secondhand/photo-prep.webp": "45739b949fa86f808c",
   "src:content/posts/images/hermes-merchant-secondhand/joongna-listing.webp": "929292f0f0f0f2f4f4",
   "src:content/posts/images/hermes-merchant-secondhand/bunjang-listing.webp": "a2a2a1f1f1f1f3f3f2",
-  "src:assets/images/posts/hermes-agent-secondhand-listing-cover.webp": "dde0caf2efddeaddc5"
+  "src:assets/images/posts/hermes-agent-secondhand-listing-cover.webp": "dde0caf2efddeaddc5",
+  "src:assets/images/posts/gamejob-watch-favorites-cover.webp": "eee8d4f5edd3e1dfc2"
 }

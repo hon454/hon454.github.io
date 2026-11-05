@@ -27,6 +27,8 @@ lang: ko
 
 면접관의 첫 질문은 Relevancy가 무엇이냐였다. 레벨에는 액터가 많지만 한 플레이어에게 영향을 주는 것은 일부다. 서버는 연결(connection)마다 그 클라이언트에 의미 있는 액터 집합을 정하고 그 집합의 액터만 복제한다. 이 집합에 드는 액터가 그 연결에 Relevant하다. 판정 단위는 액터가 아니라 액터와 연결의 쌍이라서, 같은 액터가 A 클라이언트에는 연관 있고 B 클라이언트에는 연관 없을 수 있다.
 
+![연결마다 다른 Relevant 판정](./images/unreal-engine-net-relevancy/relevancy-per-connection.svg)
+
 서버에서 Relevancy는 Actor channel을 열고 닫는 기준이다.
 
 - 채널이 없는 액터는 연관 없으면 보내지 않는다. 연관 있으면 채널을 열고 처음 복제한다.

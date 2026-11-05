@@ -1,7 +1,7 @@
 ---
-title: "면접 복기: 놓친 기본 개념, Net Relevancy"
+title: "면접 복기: 말하지 못한 주요 개념, Net Relevancy"
 published: 2026-11-05
-description: "대형 게임사 자회사 1차 면접에서 답하지 못한 Net Relevancy를 다시 정리한다. AActor::IsNetRelevantFor의 판정 순서와 문서와 다른 부분, Owner가 판정을 바꾸는 방식, 연관성을 잃고 되찾을 때 RelevantTimeout과 액터 파괴, BeginPlay, OnRep, RPC에 생기는 일, ForceNetRelevant와 Replication Graph, Iris에서의 주의점, Dormancy, Priority와의 차이를 다룬다."
+description: "면접에서 제대로 답하지 못한 Net Relevancy를 다시 정리한다. AActor::IsNetRelevantFor의 판정 순서와 문서와 다른 부분, Owner가 판정을 바꾸는 방식, 연관성을 잃고 되찾을 때 RelevantTimeout과 액터 파괴, BeginPlay, OnRep, RPC에 생기는 일, ForceNetRelevant와 Replication Graph, Iris에서의 주의점, Dormancy, Priority와의 차이를 다룬다."
 tags:
   - unreal-engine
   - networking
@@ -27,7 +27,7 @@ lang: ko
 
 면접관의 첫 질문은 Relevancy가 무엇이냐였다. 레벨에는 액터가 많지만 한 플레이어에게 영향을 주는 것은 일부다. 서버는 연결(connection)마다 그 클라이언트에 의미 있는 액터 집합을 정하고 그 집합의 액터만 복제한다. 이 집합에 드는 액터가 그 연결에 Relevant하다. 판정 단위는 액터가 아니라 액터와 연결의 쌍이라서, 같은 액터가 A 클라이언트에는 연관 있고 B 클라이언트에는 연관 없을 수 있다.
 
-![연결마다 다른 Relevant 판정](./images/unreal-engine-net-relevancy/relevancy-per-connection.svg)
+![연결마다 다른 Relevant 판정](./images/interview-review-net-relevancy/relevancy-per-connection.svg)
 
 서버에서 Relevancy는 Actor channel을 열고 닫는 기준이다.
 
@@ -39,7 +39,7 @@ Relevancy가 RPC에 관여하는 것은 이 세 번째 항목 정도다. 꼬리 
 
 ## `IsNetRelevantFor`의 판정 순서
 
-![IsNetRelevantFor의 판정 순서](./images/unreal-engine-net-relevancy/is-net-relevant-for-order.svg)
+![IsNetRelevantFor의 판정 순서](./images/interview-review-net-relevancy/is-net-relevant-for-order.svg)
 
 `AActor`의 기본 구현이다. 위에서부터 검사해 처음 걸린 조건으로 끝난다.
 
@@ -167,7 +167,7 @@ GetWorld()->SpawnActor<AMyWeapon>(WeaponClass, SpawnTransform, Params);
 
 여기부터는 면접에서 이어서 받을 만한 질문을 정리했다. 먼저 "연관성을 잃었다가 되찾으면 클라이언트에서는 무슨 일이 생기나요?"다.
 
-![연관성을 잃고 되찾는 동안의 변화](./images/unreal-engine-net-relevancy/relevancy-lost-and-regained.svg)
+![연관성을 잃고 되찾는 동안의 변화](./images/interview-review-net-relevancy/relevancy-lost-and-regained.svg)
 
 - 연관성을 잃어도 바로 끊지 않는다. 마지막으로 Relevant했던 때부터 `RelevantTimeout`(기본 5초)이 지날 때까지는 계속 복제한다. 경계를 오가는 액터가 생겼다 사라지기를 반복하지 않게 하는 장치로 보인다.
 - 유예가 끝나면 동적으로 스폰한 액터는 채널이 닫혀 클라이언트에서 파괴되고 `EndPlay`가 불린다. 맵에 배치한 액터는 채널이 남아 사라지지 않고 복제만 멈춘다.

@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-06",
+  "post": "src/content/posts/interview-review-net-relevancy.md",
+  "scope": "cover",
+  "tool": "chatgpt-web",
+  "branch": "docs/net-relevancy-cover",
+  "asset": "src/assets/images/posts/interview-review-net-relevancy-cover.webp",
+  "dimensions": {
+    "width": 1600,
+    "height": 900
+  },
+  "references": [
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+  ],
+  "userDirection": "글에 커버 이미지를 만들어 달라는 요청. 이미지 제작 범위는 커버 한 장.",
+  "concept": "낮은 카메라에서 본 와이드 장면. 바닥 중앙의 등불 하나(같은 액터)를 두고, 왼쪽 달팽이는 라임색 구역(연관 있음) 안에서 등불이 보여 웃고, 오른쪽 달팽이는 복숭아색 구역이 등불에 닿지 않아(연관 없음) 빈 바닥을 보며 갸웃한다. 연결마다 Relevant 판정이 다르다는 점을 표현한다. 문자와 기호는 넣지 않았다. 최근 커버(작업대·말풍선·아이소메트릭 타일)와 달리 낮은 시점, 작은 캐릭터, 바닥 구역 두 개로 구도를 달리했다.",
+  "candidates": [
+    {
+      "tool": "chatgpt-web",
+      "size": "1672×941",
+      "selected": true,
+      "review": "캐릭터 색과 비율이 기준과 같다. 라임 구역이 등불에 닿고 복숭아 구역은 닿지 않아 본문 개념과 맞는다. 문자·기호가 없고 오른쪽 아래는 비어 있으며 중앙 크롭에도 안전하다."
+    }
+  ],
+  "prompt": "Generate an image. Create a 16:9 cover illustration for a blog post about Unreal Engine Net Relevancy: the server decides per client connection whether one and the same actor is relevant, so a single actor can be relevant to one client and not relevant to another. The attached image of a single green snail with a lime spiral shell is the character reference: keep its identity exactly, with a dark green body, lime-green spiral shell, two round antennae, ivory eyes, a small smile, and chunky rounded proportions. The attached clay scene with envelopes defines only the rendering style: soft clay-like 3D, warm ivory background, soft lighting, grounded shadows, simple rounded props. Do not copy its envelopes, numbers, paths or question mark. Scene, seen from a low, near-ground camera angle with a wide lens: two small identical snails sit far apart on a flat ivory clay floor, one on the left and one on the right, both facing the center. In the exact center of the floor stands one single glowing round yellow clay lantern on a tiny base. Around the left snail lies a flat, wide, soft lime-green glowing circular zone on the floor that clearly reaches the lantern, and the left snail looks up at the lantern with a happy smile and raised antennae. Around the right snail lies a separate flat, soft peach-orange circular zone on the floor that stops well short of the lantern, leaving a gap of plain floor, and the right snail tilts its head with a calm, slightly puzzled look at the empty floor in front of it, as if it cannot see the lantern. The lantern's light falls only inside the green zone. No speech bubbles, no arrows, no desk, no robot, no screen. Props: only the lantern and the two floor zones. Composition: the three groups form a compact horizontal arrangement in the center with generous padding on all sides; only plain ivory background toward the edges so a centered crop still works. Keep the bottom-right corner plain ivory background. No title, no sentences, no letters, no numbers, no logos, no watermark, no symbols.",
+  "iterations": 1,
+  "export": "ego-browser로 ChatGPT 웹에 기준 이미지 두 장과 프롬프트를 보내 첫 결과를 받았다. 원본 1672×941 PNG를 페이지 안 fetch로 받아 저장하고, sharp로 1600×900 quality 85 webp로 변환했다(20KB)."
+}

@@ -1,0 +1,45 @@
+<svg viewBox="0 0 960 400" width="960" height="400" role="img" lang="ko" xmlns="http://www.w3.org/2000/svg">
+<title>PS4 Pro 판매가가 바뀐 순서</title>
+<desc>첫 초안은 희망가 24만원(빠른 판매가 21만원)이었고, 사용 10회 미만을 반영해 25만원(빠른 판매가 22만원)으로 올렸다. 사용자가 빠른 판매가 22만원으로 중고나라에 등록했고, 펌웨어 8.50을 확인한 뒤 26만원을 제안해 승인받았다. 이후 초기화 문구를 넣으면서 24만원으로 내렸고 번개장터에도 같은 가격으로 올렸다.</desc>
+<defs><marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#94a3b8"/></marker><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="0.5"/></pattern></defs>
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<rect width="100%" height="100%" fill="url(#g)"/>
+<line x1="56" y1="215" x2="920" y2="215" stroke="#e2e8f0" stroke-width="1"/>
+<text x="48" y="219" text-anchor="end" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#64748b">20만</text>
+<line x1="56" y1="159" x2="920" y2="159" stroke="#e2e8f0" stroke-width="1"/>
+<text x="48" y="163" text-anchor="end" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#64748b">22만</text>
+<line x1="56" y1="103" x2="920" y2="103" stroke="#e2e8f0" stroke-width="1"/>
+<text x="48" y="107" text-anchor="end" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#64748b">24만</text>
+<line x1="56" y1="47" x2="920" y2="47" stroke="#e2e8f0" stroke-width="1"/>
+<text x="48" y="51" text-anchor="end" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#64748b">26만</text>
+<polyline points="120,103 300,75 480,159 660,47 840,103" fill="none" stroke="#94a3b8" stroke-width="2"/>
+<circle cx="120" cy="103" r="9" fill="#fdecec" stroke="#dc2626" stroke-width="2.2"/>
+<text x="120" y="85" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">24만원</text>
+<text x="120" y="262" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#0f172a">초안</text>
+<text x="120" y="282" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">중앙값 23만에 1만 얹음</text>
+<text x="120" y="298" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">빠른 판매가는 21만</text>
+<circle cx="300" cy="75" r="9" fill="#fdecec" stroke="#dc2626" stroke-width="2.2"/>
+<text x="300" y="57" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">25만원</text>
+<text x="300" y="262" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#0f172a">사용 10회 미만 반영</text>
+<text x="300" y="282" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">빠른 판매가 22만</text>
+<text x="300" y="298" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">함께 제시</text>
+<circle cx="480" cy="159" r="9" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.2"/>
+<text x="480" y="141" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">22만원</text>
+<text x="480" y="262" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#0f172a">중고나라 등록</text>
+<text x="480" y="282" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">사용자가 빠른</text>
+<text x="480" y="298" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">판매가를 선택</text>
+<circle cx="660" cy="47" r="9" fill="#fdecec" stroke="#dc2626" stroke-width="2.2"/>
+<text x="660" y="29" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">26만원</text>
+<text x="660" y="262" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#0f172a">펌웨어 8.50 반영</text>
+<text x="660" y="282" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">사진으로 확인한 뒤</text>
+<text x="660" y="298" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">제안, 사용자 승인</text>
+<circle cx="840" cy="103" r="9" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.2"/>
+<text x="840" y="85" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">24만원</text>
+<text x="840" y="262" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#0f172a">사용자가 내림</text>
+<text x="840" y="282" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">초기화 문구 추가</text>
+<text x="840" y="298" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#475569">번개장터도 같은 가격</text>
+<rect x="40" y="362" width="14" height="14" rx="3" fill="#fdecec" stroke="#dc2626" stroke-width="1.4"/>
+<text x="61" y="373" text-anchor="start" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="400" fill="#475569">에이전트가 제안</text>
+<rect x="193" y="362" width="14" height="14" rx="3" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.4"/>
+<text x="214" y="373" text-anchor="start" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="400" fill="#475569">사용자가 결정</text>
+</svg>

@@ -1,0 +1,52 @@
+<svg viewBox="0 0 960 430" width="960" height="430" role="img" lang="ko" xmlns="http://www.w3.org/2000/svg">
+<title>판매글 한 건이 올라가기까지의 흐름</title>
+<desc>사용자가 Slack 스레드에 사진과 요청을 올리면 Merchant가 사진을 보고 부족한 항목만 한 번에 묻는다. 답을 받으면 중고나라와 당근의 공개 검색 결과로 시세를 조사하고, 제목·가격·본문·출처를 스레드에 초안으로 올린다. 사용자가 정확한 내용을 승인한 뒤에만 브라우저로 폼을 채워 등록하고, 공개 페이지를 다시 읽어 확인한 내용만 URL과 함께 보고한다. 수정 요청이 오면 바뀐 부분만 반영해 초안으로 돌아간다.</desc>
+<defs><marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#94a3b8"/></marker><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="0.5"/></pattern></defs>
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<rect width="100%" height="100%" fill="url(#g)"/>
+<rect x="10" y="24" width="940" height="120" rx="10" fill="none" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="24" y="46" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace, Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="600" fill="#64748b">01 / 정보 모으기</text>
+<rect x="20" y="56" width="200" height="74" rx="9" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.6"/>
+<text x="120.0" y="90.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">사진 + 요청</text>
+<text x="120.0" y="107.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">스레드에 올림</text>
+<rect x="260" y="56" width="200" height="74" rx="9" fill="#fdecec" stroke="#dc2626" stroke-width="1.6"/>
+<text x="360.0" y="90.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">사진 확인</text>
+<text x="360.0" y="107.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">부족한 항목만 한 번에 질문</text>
+<rect x="500" y="56" width="200" height="74" rx="9" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.6"/>
+<text x="600.0" y="90.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">답변</text>
+<text x="600.0" y="107.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">하자 · 구성품 · 거래 방법</text>
+<rect x="740" y="56" width="200" height="74" rx="9" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.6"/>
+<text x="840.0" y="90.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">시세 조사</text>
+<text x="840.0" y="107.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">중고나라 · 당근 공개 검색</text>
+<polyline points="223,93 256,93" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<polyline points="463,93 496,93" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<polyline points="703,93 736,93" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<rect x="10" y="184" width="940" height="200" rx="10" fill="none" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="24" y="206" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace, Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="600" fill="#64748b">02 / 올리기</text>
+<rect x="20" y="216" width="200" height="74" rx="9" fill="#fdecec" stroke="#dc2626" stroke-width="1.6"/>
+<text x="120.0" y="250.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">초안</text>
+<text x="120.0" y="267.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">제목 · 가격 · 본문 · 출처</text>
+<rect x="260" y="216" width="200" height="74" rx="9" fill="#fef3c7" stroke="#d97706" stroke-width="1.6"/>
+<text x="360.0" y="250.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">승인</text>
+<text x="360.0" y="267.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">정확한 내용에 OK한 뒤에만</text>
+<rect x="500" y="216" width="200" height="74" rx="9" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.6"/>
+<text x="600.0" y="250.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">폼 입력 · 등록</text>
+<text x="600.0" y="267.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">ego-browser로 판매하기</text>
+<rect x="740" y="216" width="200" height="74" rx="9" fill="#fdecec" stroke="#dc2626" stroke-width="1.6"/>
+<text x="840.0" y="250.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">공개 페이지 대조</text>
+<text x="840.0" y="267.8" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">확인한 것만 URL과 보고</text>
+<polyline points="223,253 256,253" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<polyline points="463,253 496,253" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<polyline points="703,253 736,253" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<polyline points="840.0,133 840.0,164 120.0,164 120.0,212" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<polyline points="360.0,293 360.0,340 120.0,340 120.0,295" fill="none" stroke="#d97706" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="240.0" y="332" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" font-weight="400" fill="#b45309">수정 요청: 바뀐 부분만 반영해 다시 확인</text>
+<rect x="40" y="404" width="14" height="14" rx="3" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.4"/>
+<text x="61" y="415" text-anchor="start" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="400" fill="#475569">사용자</text>
+<rect x="128" y="404" width="14" height="14" rx="3" fill="#fdecec" stroke="#dc2626" stroke-width="1.4"/>
+<text x="149" y="415" text-anchor="start" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="400" fill="#475569">에이전트</text>
+<rect x="229" y="404" width="14" height="14" rx="3" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.4"/>
+<text x="250" y="415" text-anchor="start" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="400" fill="#475569">스크립트 · 도구</text>
+<rect x="395" y="404" width="14" height="14" rx="3" fill="#fef3c7" stroke="#d97706" stroke-width="1.4"/>
+<text x="416" y="415" text-anchor="start" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="400" fill="#475569">승인 게이트</text>
+</svg>

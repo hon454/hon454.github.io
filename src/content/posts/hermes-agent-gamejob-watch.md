@@ -10,7 +10,7 @@ tags:
   - automation
   - cron
 category: 개발 이야기
-series: Hermes Agent로 구직 자동화
+series: Hermes Agent 자동화
 seriesOrder: 1
 draft: false
 lang: ko

@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-06",
+  "post": "src/content/posts/hermes-agent-secondhand-listing.md",
+  "scope": "cover",
+  "tool": "chatgpt-web",
+  "branch": "docs/hermes-merchant-secondhand-post",
+  "asset": "src/assets/images/posts/hermes-agent-secondhand-listing-cover.webp",
+  "dimensions": {
+    "width": 1600,
+    "height": 900
+  },
+  "references": [
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+  ],
+  "userDirection": "ChatGPT 웹 결과만 사용한다(Gemini 후보는 만들지 않음).",
+  "concept": "Steady Spiral 달팽이가 작업대에서 로고 없는 검은 게임기와 컨트롤러 두 개, 사진 세 장을 두고, 원화 기호 가격표가 달린 판매글 카드를 들고 있다. 카드 위 초록 체크 도장은 승인 게이트를, 왼쪽 위 말풍선(사진 한 장과 낙서 선)은 스레드에 올린 사진과 한 줄 요청을, 오른쪽 화살표와 간판 두 개는 승인 뒤 두 중고 플랫폼에 올리는 등록을 뜻한다. 이전 시리즈 커버와 같은 작업대·말풍선 소품으로 연속성을 둔다. 원화 기호와 체크 표시 외 문자는 없다.",
+  "candidates": [
+    {
+      "tool": "chatgpt-web",
+      "size": "1672×941",
+      "selected": true,
+      "review": "캐릭터 색과 비율이 기준과 같다. 문자·로고 없이 원화 기호와 체크만 있다. 게임기는 로고 없는 일반 형태로 나왔다. 장면이 중앙에 모여 있고 오른쪽 아래는 작은 풀 외에 비어 있다."
+    },
+    {
+      "tool": "gemini-web",
+      "selected": false,
+      "review": "사용자 지시로 생성하지 않았다."
+    }
+  ],
+  "prompt": "Generate an image. Create a 16:9 cover illustration for a blog post about an AI agent that turns a few photos and a one-line request in a chat thread into a secondhand sale listing: it reads the photos, checks market prices, drafts the listing, waits for the owner's approval, and only then posts it to two secondhand marketplaces. The attached image of a single green snail with a lime spiral shell is the character reference: keep its identity exactly, with a dark green body, lime-green spiral shell, two round antennae, ivory eyes, a small smile, and chunky rounded proportions. The attached clay scene with envelopes defines only the rendering style: soft clay-like 3D, warm ivory background, soft lighting, grounded shadows, simple rounded props. Do not copy its envelopes, numbers, paths or question mark. Scene: in the center, the snail stands at a small clay desk. On the desk sits a plain black clay game console box with two small game controllers next to it (generic shapes, no logos), and a short fan of three small instant photos of that console. The snail holds up a clay listing card with a small hanging price tag that shows only a won sign. Next to the snail, a small round clay stamp with a green check mark rests on the card corner, meaning the listing waits for approval. From the upper left, a small rounded speech bubble floats in toward the snail, holding one tiny photo and a few loose wavy scribble lines, no readable writing. To the right of the desk, a short curved arrow carries the approved card to two small clay market-stall signboards standing side by side, each with a simple awning and no text. No robot, no computer screen, no brain or spark symbols. Composition: group the snail, desk, console, photos, card, stamp, speech bubble and stalls tightly in the center with generous padding on all sides; only plain ivory background toward the edges so a centered crop still works. Keep the bottom-right corner plain ivory background. No title, no sentences, no letters, no numbers, no logos, no watermark; the won sign on the tag and the check mark are the only symbols allowed.",
+  "iterations": 1,
+  "export": "ego-browser로 ChatGPT 웹에 기준 이미지 두 장과 프롬프트를 보내 첫 결과를 받았다. 원본 1672×941 PNG를 페이지 안 fetch로 받아 저장하고, sharp로 중앙 16:9 크롭 후 1600×900 quality 85 webp로 변환했다(45KB)."
+}

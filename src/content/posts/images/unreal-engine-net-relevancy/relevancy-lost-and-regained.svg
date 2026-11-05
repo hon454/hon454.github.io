@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="1000" height="620" role="img" lang="ko" aria-labelledby="t d">
+<title id="t">연관성을 잃고 되찾을 때 클라이언트가 받는 것</title>
+<desc id="d">플레이어가 액터의 컬 거리 밖으로 나갔다가 돌아오는 동안의 변화. 연관 있는 동안에는 프로퍼티와 모든 Multicast RPC가 간다. 범위를 벗어나도 RelevantTimeout(기본 5초) 동안은 채널이 열려 있어 프로퍼티가 계속 가고 Multicast는 Reliable만 간다. 유예가 끝나면 동적 스폰 액터는 채널이 닫혀 클라이언트에서 파괴되고 EndPlay가 불린다. 레벨 배치 액터는 채널이 유지되어 사라지지 않지만 프로퍼티 복제가 멈추고 Reliable Multicast만 도착한다. 다시 범위 안으로 들어오면 동적 액터는 새로 스폰되어 BeginPlay와 OnRep이 다시 불리고, 레벨 배치 액터는 프로퍼티 복제가 재개되어 OnRep이 불린다. 그 사이 놓친 RPC는 다시 오지 않는다.</desc>
+<defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
+<marker id="arrg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+<style>
+text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;fill:#1f2937}
+.title{font-size:24px;font-weight:700}
+.sub{font-size:15px;fill:#64748b}
+.q{font-size:16px;font-weight:700;fill:#0f172a}
+.qs{font-size:13.5px;fill:#475569}
+.mono{font-family:'JetBrains Mono',Consolas,'SFMono-Regular',Menlo,monospace}
+.yes{font-size:15px;font-weight:700;fill:#15803d}
+.no{font-size:15px;font-weight:700;fill:#b91c1c}
+.lbl{font-size:13px;font-weight:700;fill:#64748b}
+.out{font-size:14.5px;font-weight:700;text-anchor:middle}
+.col{font-size:15px;font-weight:700;fill:#334155;text-anchor:middle}
+.row{font-size:16px;font-weight:700}
+.rowsub{font-size:13px;fill:#64748b}
+.cell{font-size:13.5px;fill:#1f2937;text-anchor:middle}
+.cellb{font-size:13.5px;font-weight:700;text-anchor:middle}
+.note{font-size:13px;fill:#64748b}
+</style>
+</defs>
+<rect width="1000" height="620" fill="#f8fafc"/>
+<rect width="1000" height="620" fill="url(#grid)"/>
+<text x="40" y="50" class="title">연관성을 잃고 되찾는 동안 클라이언트가 받는 것</text>
+<text x="40" y="76" class="sub">플레이어가 액터의 NetCullDistance 밖으로 나갔다가 다시 들어온 경우. 기본 NetDriver(레거시 복제) 기준</text>
+<line x1="220" y1="112" x2="976" y2="112" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="976" y="102" class="note" text-anchor="end">시간</text>
+<line x1="220" y1="106" x2="220" y2="118" stroke="#94a3b8" stroke-width="2"/>
+<text x="310.0" y="142" class="col">연관 있음</text>
+<text x="310.0" y="161" class="note" text-anchor="middle">범위 안</text>
+<line x1="410" y1="106" x2="410" y2="118" stroke="#94a3b8" stroke-width="2"/>
+<text x="505.0" y="142" class="col">범위 밖, 유예 중</text>
+<text x="505.0" y="161" class="note" text-anchor="middle">RelevantTimeout 5초</text>
+<line x1="610" y1="106" x2="610" y2="118" stroke="#94a3b8" stroke-width="2"/>
+<text x="705.0" y="142" class="col">유예 끝</text>
+<text x="705.0" y="161" class="note" text-anchor="middle">다음 검토에서 처리</text>
+<line x1="810" y1="106" x2="810" y2="118" stroke="#94a3b8" stroke-width="2"/>
+<text x="895.0" y="142" class="col">다시 범위 안</text>
+<rect x="30" y="182" width="950" height="64" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+<text x="48" y="210.0" class="row">서버 판정</text>
+<text x="48" y="230.0" class="rowsub mono">IsNetRelevantFor</text>
+<rect x="266.0" y="199.0" width="88" height="30" rx="15" fill="#dcfce7" stroke="#16a34a"/>
+<text x="310.0" y="219.0" class="cellb mono" style="fill:#15803d">true</text>
+<rect x="461.0" y="199.0" width="88" height="30" rx="15" fill="#fee2e2" stroke="#dc2626"/>
+<text x="505.0" y="219.0" class="cellb mono" style="fill:#b91c1c">false</text>
+<rect x="661.0" y="199.0" width="88" height="30" rx="15" fill="#fee2e2" stroke="#dc2626"/>
+<text x="705.0" y="219.0" class="cellb mono" style="fill:#b91c1c">false</text>
+<rect x="851.0" y="199.0" width="88" height="30" rx="15" fill="#dcfce7" stroke="#16a34a"/>
+<text x="895.0" y="219.0" class="cellb mono" style="fill:#15803d">true</text>
+<rect x="30" y="260" width="950" height="150" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+<text x="48" y="331.0" class="row">동적 스폰 액터</text>
+<text x="48" y="351.0" class="rowsub">SpawnActor로 만든 액터</text>
+<text x="310.0" y="329.0" class="cell" style="fill:#1f2937">프로퍼티 복제</text>
+<text x="310.0" y="351.0" class="cell" style="fill:#1f2937">Multicast 전부</text>
+<text x="505.0" y="318.0" class="cell" style="fill:#1f2937">프로퍼티 계속 복제</text>
+<text x="505.0" y="340.0" class="cellb" style="fill:#b45309">Reliable Multicast만</text>
+<text x="505.0" y="362.0" class="cellb" style="fill:#b91c1c">Unreliable은 버려짐</text>
+<text x="705.0" y="318.0" class="cellb" style="fill:#b91c1c">채널 닫힘</text>
+<text x="705.0" y="340.0" class="cellb" style="fill:#b91c1c">클라이언트에서 파괴</text>
+<text x="705.0" y="362.0" class="cell" style="fill:#1f2937">EndPlay</text>
+<text x="895.0" y="307.0" class="cellb" style="fill:#15803d">새 채널로 다시 스폰</text>
+<text x="895.0" y="329.0" class="cell" style="fill:#1f2937">BeginPlay 다시 호출</text>
+<text x="895.0" y="351.0" class="cell" style="fill:#1f2937">기본값과 다른 값만 OnRep</text>
+<text x="895.0" y="373.0" class="cellb" style="fill:#b91c1c">놓친 RPC는 안 옴</text>
+<rect x="30" y="424" width="950" height="150" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+<text x="48" y="495.0" class="row">맵 배치 액터</text>
+<text x="48" y="515.0" class="rowsub">레벨에 배치한 액터</text>
+<text x="310.0" y="493.0" class="cell" style="fill:#1f2937">프로퍼티 복제</text>
+<text x="310.0" y="515.0" class="cell" style="fill:#1f2937">Multicast 전부</text>
+<text x="505.0" y="482.0" class="cell" style="fill:#1f2937">프로퍼티 계속 복제</text>
+<text x="505.0" y="504.0" class="cellb" style="fill:#b45309">Reliable Multicast만</text>
+<text x="505.0" y="526.0" class="cellb" style="fill:#b91c1c">Unreliable은 버려짐</text>
+<text x="705.0" y="482.0" class="cellb" style="fill:#15803d">채널 유지, 사라지지 않음</text>
+<text x="705.0" y="504.0" class="cellb" style="fill:#b91c1c">프로퍼티 복제 멈춤</text>
+<text x="705.0" y="526.0" class="cellb" style="fill:#b45309">Reliable Multicast만</text>
+<text x="895.0" y="471.0" class="cellb" style="fill:#15803d">프로퍼티 복제 재개</text>
+<text x="895.0" y="493.0" class="cell" style="fill:#1f2937">바뀐 값은 OnRep</text>
+<text x="895.0" y="515.0" class="cell" style="fill:#1f2937">BeginPlay 없음</text>
+<text x="895.0" y="537.0" class="cellb" style="fill:#b91c1c">놓친 Unreliable은 안 옴</text>
+<text x="30" y="602" class="note">Reliable Multicast가 연관 없는 연결에도 가는 것은 채널이 열려 있을 때뿐이다.</text>
+</svg>

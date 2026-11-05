@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="1000" height="600" role="img" lang="ko" aria-labelledby="t d">
+<title id="t">같은 액터, 연결마다 다른 Relevant 판정</title>
+<desc id="d">탑다운 맵에 액터 하나와 두 클라이언트 연결이 있다. 판정 기준은 각 연결의 시점 위치에서 NetCullDistanceSquared 반경이다. 액터는 클라이언트 A의 반경 안에 있어 IsNetRelevantFor가 true이고 Actor channel이 열려 복제된다. 같은 액터가 클라이언트 B의 반경 밖에 있어 IsNetRelevantFor가 false이고 B에는 채널이 없어 보내지 않는다. 판정은 액터와 연결의 쌍마다 따로 내려진다.</desc>
+<defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
+<style>
+text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;fill:#1f2937}
+.title{font-size:24px;font-weight:700}
+.sub{font-size:15px;fill:#64748b}
+.mono{font-family:'JetBrains Mono',Consolas,'SFMono-Regular',Menlo,monospace}
+.lbl{font-size:14px;font-weight:700}
+.note{font-size:13px;fill:#64748b}
+.card{font-size:17px;font-weight:700}
+.row{font-size:14.5px}
+.rowb{font-size:14.5px;font-weight:700}
+.pawn{font-size:16px;font-weight:700;fill:#ffffff;text-anchor:middle}
+</style>
+</defs>
+<rect width="1000" height="600" fill="#f8fafc"/>
+<rect width="1000" height="600" fill="url(#grid)"/>
+<text x="40" y="50" class="title">같은 액터, 연결마다 다른 Relevant 판정</text>
+<text x="40" y="76" class="sub">서버가 액터와 연결의 쌍마다 판정한다. 거리 기준(기본 판정)으로 본 예시</text>
+
+<rect x="30" y="100" width="610" height="470" rx="14" fill="#ffffff" stroke="#e2e8f0"/>
+<text x="48" y="126" class="note">탑다운 맵. 원은 각 연결 시점 위치의 NetCullDistance 반경</text>
+
+<circle cx="210" cy="285" r="130" fill="#dcfce7" fill-opacity="0.55" stroke="#16a34a" stroke-width="2" stroke-dasharray="7 5"/>
+<circle cx="500" cy="425" r="130" fill="#fef3c7" fill-opacity="0.55" stroke="#d97706" stroke-width="2" stroke-dasharray="7 5"/>
+
+<line x1="210" y1="285" x2="300" y2="320" stroke="#16a34a" stroke-width="2"/>
+<line x1="500" y1="425" x2="300" y2="320" stroke="#d97706" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>
+<text x="215" y="340" class="lbl" style="fill:#15803d">A 반경 안</text>
+<text x="418" y="378" class="lbl" style="fill:#b45309">B 반경 밖</text>
+
+<rect x="274" y="294" width="52" height="52" rx="10" fill="#e0e7ff" stroke="#4f46e5" stroke-width="2.5"/>
+<text x="300" y="326" class="lbl" text-anchor="middle" style="fill:#3730a3">액터</text>
+
+<circle cx="210" cy="285" r="20" fill="#16a34a"/>
+<text x="210" y="291" class="pawn">A</text>
+<text x="210" y="255" class="lbl" text-anchor="middle" style="fill:#15803d">클라이언트 A 시점</text>
+<circle cx="500" cy="425" r="20" fill="#d97706"/>
+<text x="500" y="431" class="pawn">B</text>
+<text x="500" y="469" class="lbl" text-anchor="middle" style="fill:#b45309">클라이언트 B 시점</text>
+
+<rect x="665" y="100" width="305" height="220" rx="14" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+<text x="685" y="134" class="card" style="fill:#15803d">연결 A</text>
+<text x="685" y="166" class="row mono" style="fill:#475569">IsNetRelevantFor</text>
+<rect x="685" y="178" width="88" height="30" rx="15" fill="#dcfce7" stroke="#16a34a"/>
+<text x="729" y="198" class="rowb mono" text-anchor="middle" style="fill:#15803d">true</text>
+<text x="685" y="248" class="rowb">Actor channel 열림</text>
+<text x="685" y="274" class="row">처음 복제하고 이후 계속 복제</text>
+<text x="685" y="298" class="row">Multicast RPC도 전달</text>
+
+<rect x="665" y="350" width="305" height="220" rx="14" fill="#ffffff" stroke="#d97706" stroke-width="2"/>
+<text x="685" y="384" class="card" style="fill:#b45309">연결 B</text>
+<text x="685" y="416" class="row mono" style="fill:#475569">IsNetRelevantFor</text>
+<rect x="685" y="428" width="88" height="30" rx="15" fill="#fee2e2" stroke="#dc2626"/>
+<text x="729" y="448" class="rowb mono" text-anchor="middle" style="fill:#b91c1c">false</text>
+<text x="685" y="498" class="rowb">채널 없음</text>
+<text x="685" y="524" class="row">이 연결에는 보내지 않음</text>
+<text x="685" y="548" class="row">Multicast RPC도 가지 않음</text>
+</svg>

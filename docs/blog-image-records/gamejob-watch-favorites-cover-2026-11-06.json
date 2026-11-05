@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-06",
+  "post": "src/content/posts/gamejob-watch-favorites.md",
+  "scope": "cover (refresh)",
+  "tool": "chatgpt-web",
+  "branch": "docs/gamejob-watch-favorites-cover-refresh",
+  "asset": "src/assets/images/posts/gamejob-watch-favorites-cover.webp",
+  "dimensions": {
+    "width": 1600,
+    "height": 900
+  },
+  "references": [
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+  ],
+  "userDirection": "Hermes 자동화 시리즈 커버 세 장이 '작업대 앞 달팽이 + 왼쪽 말풍선 + 오른쪽 화살표'로 너무 비슷해서, 새 '커버 간 차별화' 규칙으로 이 글의 커버를 갱신한다. ChatGPT 웹 결과만 사용한다.",
+  "replaces": "gamejob-watch-favorites-cover-2026-11-03.json (작업대·별 상자·말풍선·화살표 장면)",
+  "differentiation": {
+    "comparedWith": [
+      "hermes-agent-gamejob-watch-cover.webp",
+      "hermes-agent-secondhand-listing-cover.webp",
+      "gamejob-watch-favorites-cover.webp (이전)",
+      "unreal-engine-push-model-networking-cover.webp",
+      "unreal-engine-play-anim-montage-return-value-cover.webp"
+    ],
+    "changedAxes": [
+      "카메라: 눈높이 정면 → 위에서 내려다보는 시점",
+      "캐릭터 자세: 작업대 앞에서 물건을 드는 자세 → 바닥에 웅크리고 껍질에 카드를 품은 자세",
+      "배치: 좌→우 흐름 → 달팽이를 중심으로 한 원형 배치"
+    ],
+    "removedProps": [
+      "작업대",
+      "말풍선",
+      "곡선 화살표",
+      "별 상자"
+    ]
+  },
+  "concept": "달팽이가 별 스티커를 붙인 공고 카드 세 장을 껍질 나선에 끼워 품고 있고, 그중 한 장은 회색이지만 남아 있다(게시가 끝나도 유지되는 즐겨찾기). 주변을 둘러싼 별 없는 카드들은 바깥쪽으로 갈수록 흐려진다(매일 지나가는 일반 공고). 재전송과 요청 흐름은 그리지 않고 '골라서 남긴다'는 순간 하나만 담았다.",
+  "candidates": [
+    {
+      "tool": "chatgpt-web",
+      "size": "1672×941",
+      "selected": true,
+      "review": "캐릭터 색과 비율이 기준과 같다. 별 외 문자·숫자 없음. 완전한 수직 부감보다는 높은 3/4 시점으로 나왔지만 기존 커버들과 썸네일로 나란히 놓았을 때 구도·배경 구성이 확실히 구별된다. 오른쪽 아래는 흐린 카드와 아이보리 바닥뿐이다."
+    }
+  ],
+  "prompt": "Generate an image. Create a 16:9 cover illustration for a blog post about adding \"favorites\" to a daily job-posting list: the owner marks a few postings with a star, and starred postings are kept even after the posting itself has closed.\n\nCharacter and style (fixed): The attached image of a single green snail with a lime spiral shell is the character reference: keep its identity exactly, with a dark green body, lime-green spiral shell, two round antennae, ivory eyes, a small smile, and chunky rounded proportions. The attached clay scene with envelopes defines only the rendering style: soft clay-like 3D, warm ivory background, soft lighting, grounded shadows, simple rounded props. Do not copy its envelopes, numbers, paths or question mark.\n\nScene (new for this cover): Camera looks straight down from directly above, a top-down flat-lay view, not eye level. No desk and no table: everything lies on a plain warm ivory floor. The snail is seen from above in the center, curled comfortably, with its lime spiral shell facing the camera. Three small clay job-posting cards, each with one round yellow clay star sticker, are tucked upright into the coil of its shell like keepsakes; one of these three cards is faded gray but still kept safely. Around the snail, a loose ring of many plain clay cards without stars lies scattered on the floor, and the cards farther from the snail become paler and partly sink into the floor as if fading away. Only three key elements: the snail, the starred cards in the shell, the ring of plain cards. No speech bubbles, no arrows, no boxes, no robot, no computer screen, no brain or spark symbols.\n\nOutput rules (fixed): Keep the snail and the starred cards inside the central area with generous padding so a centered crop still works; the outer edges show only the pale fading cards and plain ivory floor. Keep the bottom-right corner plain ivory. No title, no sentences, no letters, no numbers, no logos, no watermark; star shapes are the only symbols allowed.",
+  "iterations": 1,
+  "export": "ego-browser로 ChatGPT 웹에 기준 이미지 두 장과 프롬프트를 보내 첫 결과를 받았다. 원본 1672×941 PNG를 sharp로 중앙 16:9 크롭 후 1600×900 quality 85 webp로 변환했다. 파일 경로는 그대로 두고 덮어써서 프런트매터는 바꾸지 않았다."
+}

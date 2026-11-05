@@ -1,6 +1,7 @@
 ---
 title: "면접 복기: 말하지 못한 주요 개념, Net Relevancy"
 published: 2026-11-05
+image: ../../assets/images/posts/interview-review-net-relevancy-cover.webp
 description: "면접에서 제대로 답하지 못한 Net Relevancy를 다시 정리한다. AActor::IsNetRelevantFor의 판정 순서와 문서와 다른 부분, Owner가 판정을 바꾸는 방식, 연관성을 잃고 되찾을 때 RelevantTimeout과 액터 파괴, BeginPlay, OnRep, RPC에 생기는 일, ForceNetRelevant와 Replication Graph, Iris에서의 주의점, Dormancy, Priority와의 차이를 다룬다."
 tags:
   - unreal-engine

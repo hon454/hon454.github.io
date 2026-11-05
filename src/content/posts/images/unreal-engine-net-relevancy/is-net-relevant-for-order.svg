@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 930" width="960" height="930" role="img" lang="ko" aria-labelledby="t d">
+<title id="t">AActor::IsNetRelevantFor의 판정 순서</title>
+<desc id="d">위에서부터 차례로 검사해 처음 걸린 조건으로 결과가 정해진다. 1 항상 연관, 내 연결이 소유, 내 ViewTarget 자신, ViewTarget이 Instigator면 연관 있음. 2 bNetUseOwnerRelevancy이고 Owner가 있으면 Owner의 판정을 따른다. 3 bOnlyRelevantToOwner면 연관 없음. 4 루트가 다른 액터의 SkeletalMeshComponent나 같은 Owner를 둔 액터에 붙어 있으면 부모 액터의 판정을 따른다. 5 숨김이고 루트가 없거나 충돌이 꺼져 있으면 연관 없음. 6 루트 컴포넌트가 없으면 경고 로그를 남기고 연관 없음. 7 거리 기반 판정이 꺼져 있으면 연관 있음, 켜져 있으면 시점 위치와의 거리 제곱이 NetCullDistanceSquared보다 작을 때 연관 있음.</desc>
+<defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
+<marker id="arrg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a"/></marker>
+<style>
+text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;fill:#1f2937}
+.title{font-size:24px;font-weight:700}
+.sub{font-size:15px;fill:#64748b}
+.q{font-size:16px;font-weight:700;fill:#0f172a}
+.qs{font-size:13.5px;fill:#475569}
+.mono{font-family:'JetBrains Mono',Consolas,'SFMono-Regular',Menlo,monospace}
+.yes{font-size:15px;font-weight:700;fill:#15803d}
+.no{font-size:15px;font-weight:700;fill:#b91c1c}
+.lbl{font-size:13px;font-weight:700;fill:#64748b}
+.out{font-size:14.5px;font-weight:700;text-anchor:middle}
+.col{font-size:15px;font-weight:700;fill:#334155;text-anchor:middle}
+.row{font-size:16px;font-weight:700}
+.rowsub{font-size:13px;fill:#64748b}
+.cell{font-size:13.5px;fill:#1f2937;text-anchor:middle}
+.cellb{font-size:13.5px;font-weight:700;text-anchor:middle}
+.note{font-size:13px;fill:#64748b}
+</style>
+</defs>
+<rect width="960" height="930" fill="#f8fafc"/>
+<rect width="960" height="930" fill="url(#grid)"/>
+<text x="40" y="50" class="title">IsNetRelevantFor는 위에서부터 처음 걸린 조건으로 끝난다</text>
+<text x="40" y="76" class="sub">AActor의 기본 구현. APawn과 APlayerController는 따로 오버라이드한다</text>
+<rect x="60" y="104" width="520" height="84" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<circle cx="88" cy="134" r="14" fill="#e0e7ff" stroke="#6366f1"/>
+<text x="88" y="139" class="q" text-anchor="middle">1</text>
+<text x="114" y="139" class="q">항상 연관이거나 이 연결의 것인가</text>
+<text x="114" y="162" class="qs">bAlwaysRelevant, IsOwnedBy(ViewTarget 또는 RealViewer),</text>
+<text x="114" y="180" class="qs">this == ViewTarget, ViewTarget == GetInstigator()</text>
+<line x1="580" y1="146.0" x2="672" y2="146.0" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="628.0" y="138.0" class="lbl" text-anchor="middle">예</text>
+<rect x="676" y="126.0" width="260" height="40" rx="20" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="806.0" y="151.0" class="out" style="fill:#15803d">연관 있음</text>
+<line x1="320.0" y1="188" x2="320.0" y2="211" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="330.0" y="206.0" class="lbl">아니오</text>
+<rect x="60" y="214" width="520" height="84" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<circle cx="88" cy="244" r="14" fill="#e0e7ff" stroke="#6366f1"/>
+<text x="88" y="249" class="q" text-anchor="middle">2</text>
+<text x="114" y="249" class="q">Owner의 판정을 빌려 쓰는가</text>
+<text x="114" y="272" class="qs">bNetUseOwnerRelevancy &amp;&amp; Owner</text>
+<line x1="580" y1="256.0" x2="672" y2="256.0" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="628.0" y="248.0" class="lbl" text-anchor="middle">예</text>
+<rect x="676" y="236.0" width="260" height="40" rx="20" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+<text x="806.0" y="261.0" class="out mono" style="fill:#92400e;font-size:13px">Owner-&gt;IsNetRelevantFor()</text>
+<line x1="320.0" y1="298" x2="320.0" y2="321" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="330.0" y="316.0" class="lbl">아니오</text>
+<rect x="60" y="324" width="520" height="84" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<circle cx="88" cy="354" r="14" fill="#e0e7ff" stroke="#6366f1"/>
+<text x="88" y="359" class="q" text-anchor="middle">3</text>
+<text x="114" y="359" class="q">소유자에게만 보이는 액터인가</text>
+<text x="114" y="382" class="qs">bOnlyRelevantToOwner (1번에서 소유자는 이미 통과)</text>
+<line x1="580" y1="366.0" x2="672" y2="366.0" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="628.0" y="358.0" class="lbl" text-anchor="middle">예</text>
+<rect x="676" y="346.0" width="260" height="40" rx="20" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+<text x="806.0" y="371.0" class="out" style="fill:#b91c1c">연관 없음</text>
+<line x1="320.0" y1="408" x2="320.0" y2="431" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="330.0" y="426.0" class="lbl">아니오</text>
+<rect x="60" y="434" width="520" height="84" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<circle cx="88" cy="464" r="14" fill="#e0e7ff" stroke="#6366f1"/>
+<text x="88" y="469" class="q" text-anchor="middle">4</text>
+<text x="114" y="469" class="q">다른 액터에 붙어 있는가</text>
+<text x="114" y="492" class="qs">부모가 SkeletalMeshComponent이거나</text>
+<text x="114" y="510" class="qs">부모 액터의 Owner == 내 Owner</text>
+<line x1="580" y1="476.0" x2="672" y2="476.0" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="628.0" y="468.0" class="lbl" text-anchor="middle">예</text>
+<rect x="676" y="456.0" width="260" height="40" rx="20" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+<text x="806.0" y="481.0" class="out" style="fill:#92400e">부모 액터의 판정</text>
+<line x1="320.0" y1="518" x2="320.0" y2="541" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="330.0" y="536.0" class="lbl">아니오</text>
+<rect x="60" y="544" width="520" height="84" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<circle cx="88" cy="574" r="14" fill="#e0e7ff" stroke="#6366f1"/>
+<text x="88" y="579" class="q" text-anchor="middle">5</text>
+<text x="114" y="579" class="q">숨겨져 있고 충돌도 없는가</text>
+<text x="114" y="602" class="qs">IsHidden() &amp;&amp; (루트 없음 || 루트 충돌 꺼짐)</text>
+<line x1="580" y1="586.0" x2="672" y2="586.0" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="628.0" y="578.0" class="lbl" text-anchor="middle">예</text>
+<rect x="676" y="566.0" width="260" height="40" rx="20" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+<text x="806.0" y="591.0" class="out" style="fill:#b91c1c">연관 없음</text>
+<line x1="320.0" y1="628" x2="320.0" y2="651" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="330.0" y="646.0" class="lbl">아니오</text>
+<rect x="60" y="654" width="520" height="84" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<circle cx="88" cy="684" r="14" fill="#e0e7ff" stroke="#6366f1"/>
+<text x="88" y="689" class="q" text-anchor="middle">6</text>
+<text x="114" y="689" class="q">루트 컴포넌트가 없는가</text>
+<text x="114" y="712" class="qs">경고 로그: Make bAlwaysRelevant=true?</text>
+<line x1="580" y1="696.0" x2="672" y2="696.0" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="628.0" y="688.0" class="lbl" text-anchor="middle">예</text>
+<rect x="676" y="676.0" width="260" height="40" rx="20" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+<text x="806.0" y="701.0" class="out" style="fill:#b91c1c">연관 없음</text>
+<line x1="320.0" y1="738" x2="320.0" y2="761" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="330.0" y="756.0" class="lbl">아니오</text>
+<rect x="60" y="764" width="520" height="112" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<circle cx="88" cy="794" r="14" fill="#e0e7ff" stroke="#6366f1"/>
+<text x="88" y="799" class="q" text-anchor="middle">7</text>
+<text x="114" y="799" class="q">거리 판정</text>
+<text x="114" y="822" class="qs">bUseDistanceBasedRelevancy(기본 true)가 꺼져 있으면 연관 있음</text>
+<text x="114" y="842" class="qs">켜져 있으면 DistSquared(SrcLocation, 액터 위치) &lt; NetCullDistanceSquared</text>
+<text x="114" y="862" class="qs">기본값 225,000,000 = 150 m. SrcLocation은 카메라 시점 위치</text>
+<line x1="580" y1="798" x2="672" y2="798" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="628.0" y="790" class="lbl" text-anchor="middle">범위 안</text>
+<rect x="676" y="778" width="260" height="40" rx="20" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="806.0" y="803" class="out" style="fill:#15803d">연관 있음</text>
+<line x1="580" y1="846" x2="672" y2="846" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr)"/>
+<text x="628.0" y="838" class="lbl" text-anchor="middle">범위 밖</text>
+<rect x="676" y="826" width="260" height="40" rx="20" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+<text x="806.0" y="851" class="out" style="fill:#b91c1c">연관 없음</text>
+<text x="60" y="910" class="note">주황색은 다른 액터의 IsNetRelevantFor를 다시 호출해 그 결과를 그대로 쓴다는 뜻이다.</text>
+</svg>

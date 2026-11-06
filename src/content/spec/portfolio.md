@@ -2,9 +2,9 @@
 
 - **기술 검증:** [UE5 Dedicated Server 최적화 실험실](#ue-dedicated-server-optimization-lab)의 리플리케이션 비용 측정과 단계별 최적화 비교
 - **3D 제작 도구:** [Shotloom](#shotloom)의 편집과 저장 구조, [CINEVStudio](#cinevstudio)의 액션 데이터와 편집 UI 설계
-- **게임 개발과 출시:** [Night of the Dead](#night-of-the-dead)의 Dedicated Server 동기화, 다수 좀비 처리와 게임플레이 구현, [길고양이 이야기 2](#길고양이-이야기-2)의 PC 출시 전담
+- **게임 개발과 출시:** [Night of the Dead](#night-of-the-dead)의 전투와 무기 시스템, Dedicated Server 동기화, 다수 좀비 처리, [길고양이 이야기 2](#길고양이-이야기-2)의 PC 출시 전담
 - **VR 장치 연동:** [CircleVR](#circlevr)의 좌표계 보정과 다중 사용자 전시, [Space Walker](#space-walker)의 실시간 모션 연동
-- **개발 도구와 오픈소스:** [Grimoire](#grimoire)의 AI 에이전트 작업 흐름, [IDE 플러그인](#copy-selection-context)과 [브라우저 확장](#github-pulls-show-reviewers) 배포, [Firefly](#firefly)와 [bevy_vrm1](#bevy_vrm1) 기여
+- **개발 도구와 오픈소스:** [IDE 플러그인](#copy-selection-context)과 [브라우저 확장](#github-pulls-show-reviewers) 배포, [Firefly](#firefly)와 [bevy_vrm1](#bevy_vrm1) 기여
 
 [hon454@gmail.com](mailto:hon454@gmail.com) / [이력서](/resume/) / [경력기술서](/cv/) / [전체 프로젝트](/projects/)
 
@@ -34,7 +34,7 @@
 
 | 항목 | 내용 |
 | --- | --- |
-| 소속 기간 | 2024.06 - 2026.08 |
+| 소속 기간 | 2024.06 - 2026.09 |
 | 참여 형태 | 정규직 |
 | 담당 직무 | 클라이언트 프로그래머 |
 
@@ -43,8 +43,9 @@
 | 항목 | 내용 |
 | --- | --- |
 | 소개 | 캐릭터 동작과 카메라를 편집하고 영상 생성 서비스와 연결하는 브라우저 3D 편집기 |
-| 참여 기간 | 2026.04 - 2026.08 |
-| 주요 기술 | Rust, Bevy, WebAssembly, WebGPU, React, TypeScript, Tauri |
+| 참여 기간 | 2026.04 - 2026.09 |
+| 팀 규모 | 클라이언트 4명 중 캐릭터·카메라 편집, 문서 모델, 저장·복원, 생성 서비스 연동 담당 |
+| 주요 기술 | Rust, Bevy, WebAssembly, WebGPU, React, TypeScript |
 
 ![Shotloom 편집기에서 0프레임과 60프레임 사이의 카메라를 30프레임에서 평가한 화면](../projects/images/shotloom/local-09-camera-keyframe-midpoint.webp)
 
@@ -53,8 +54,9 @@
 - **편집 명령과 Undo/Redo:** React UI, Rust 문서 모델과 Bevy 런타임을 잇는 브리지 계약에 트랜잭션 수명주기와 Undo/Redo 명령을 추가하고, 이 경로 위에 Undo/Redo와 저장, 복원을 구현했습니다.
 - **편집 트랜잭션과 롤백:** 드래그 시작부터 확정까지를 하나의 트랜잭션으로 기록하고, 명령이 거절되거나 시간이 초과되면 롤백해 UI와 런타임, 저장 상태를 일치시켰습니다.
 - **캐릭터와 카메라 저작:** 캐릭터 배치와 포즈 후보 적용, 속성별 카메라 키프레임을 편집 UI부터 타임라인 평가와 저장 형식까지 연결했습니다. 브라우저와 CLI가 같은 Rust 코어와 번들 형식을 사용하도록 구성했습니다.
-- **생성 서비스 통합:** 영상 제작 서비스 CineV의 샷을 편집 가능한 3D 장면으로 열고, 생성 영상의 마지막 프레임 이미지를 스토리보드로 돌려주도록 구현했습니다. 생성과 결과 저장을 분리해 저장에 실패하면 같은 결과를 다시 전송할 수 있게 했습니다.
-- **CI 캐시 개선:** Rust Engine CI의 캐시를 target 아카이브에서 sccache로 바꿔 캐시 크기를 약 1.8GB에서 684MB로 약 62% 줄였습니다. warm CI에서 컴파일 374건이 모두 캐시에 적중했습니다.
+- **생성 서비스 통합:** AI 애니메이션 제작 서비스 CineV의 샷을 편집 가능한 3D 장면으로 열고, 생성 영상의 마지막 프레임 이미지를 스토리보드로 돌려주도록 구현했습니다. 생성과 결과 저장을 분리해 저장에 실패하면 같은 결과를 다시 전송할 수 있게 했습니다.
+- **카메라 출력:** 같은 장면 스냅샷에서 WebM 영상과 첫·마지막 프레임 PNG를 만드는 출력을 구현했고, PR 시점 Chromium 자동 테스트로 출력과 디코딩을 검증했습니다.
+- **CI 캐시 개선:** Rust 엔진 CI의 캐시를 target 아카이브에서 sccache로 바꿔 캐시 크기를 약 1.8GB에서 684MB로 약 62% 줄였습니다. warm CI에서 컴파일 374건이 모두 캐시에 적중했습니다.
 
 [포즈와 카메라 편집 영상](/projects/shotloom/#editing-workflow) / [저장 구조와 복원 화면](/projects/shotloom/#edit-persistence) / [서비스 통합과 검증 범위](/projects/shotloom/#service-integration)
 
@@ -64,6 +66,7 @@
 | --- | --- |
 | 소개 | AI가 구성한 3D 장면을 편집하고 영상으로 출력하는 Unreal Engine Sequencer(MovieScene) 기반 제작 도구 |
 | 참여 기간 | 2024.06 - 2026.04 |
+| 팀 규모 | 클라이언트 6~10명 중 액션 데이터, AI 결과 해석, 편집 UI와 Shot 상태 모델 담당 |
 | 주요 기술 | Unreal Engine 5, C++, UMG, Sequencer, ONNX |
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/NQJT8oN7NGg" title="CINEVStudio 사용 예시 - 무조건 이혼한다" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -77,11 +80,11 @@
 *의자에 앉는 모션 위에 자세 구간 Notify(Stand, SittingOnObject)와 골반 IK Curve를 함께 놓은 AnimComposite 화면입니다.*
 
 - **액션 데이터 작성 구조:** 문서와 대조하며 맞추던 액션 조건을 타입별 에셋 입력 구조로 바꾸고, 테이블에 프레임 값으로 적던 모션 구간과 이벤트 시점은 애니메이션을 보며 AnimComposite에서 편집하게 했습니다. 데이터 타입과 실행 경로, 변환기를 개발하고 검증 프레임워크에 액션 데이터 검증기를 추가했습니다. 제작자가 기억해 맞추던 조건 관계를 입력 구조와 검증기가 대신하게 됐습니다.
-- **AI 결과의 실행과 편집:** AI의 행동 지시를 현재 장면에서 실행할 수 있는 액션으로 해석하고, 생성 모션을 선택해 타임라인에 적용하는 흐름을 구현했습니다. 이 결과도 일반 편집 데이터와 같은 Undo/Redo와 저장, 복원 경로를 거치게 했습니다.
+- **AI 결과의 실행과 편집:** AI의 행동 지시를 현재 장면에서 실행할 수 있는 액션으로 해석하고, 생성 모션을 선택해 타임라인에 적용하는 흐름을 구현했습니다. 이 결과도 일반 편집 데이터와 같은 Undo/Redo와 저장, 복원 경로를 거치게 했습니다. 서버·생성 측은 AI 팀의 작업입니다.
 - **편집 UI 상태 관리:** UI Controller와 편집 State로 화면, 선택과 입력 처리를 나누고 Blackboard로 공유 상태를 전달했습니다. 새 편집 기능을 State 단위로 추가하는 구조를 만들고 공통 UI 컴포넌트를 개발했습니다.
-- **Shot 상태 모델:** 샷 초기 상태를 관리하는 Shot 모델과 ShotManager를 만들고, 상태 저장과 조회, 프레임 문맥과 재계산, 기존 저장 데이터 이관을 구현했습니다.
+- **Shot 상태 모델:** 샷 초기 상태를 관리하는 Shot 모델과 ShotManager의 재설계를 설계·구현 주도하고, 상태 저장과 조회, 프레임 문맥과 재계산, 기존 저장 데이터 이관을 구현했습니다. ShotBlock 타임라인 위젯은 동료의 구현을 리뷰했습니다.
 - **Root Motion과 카메라:** Root Motion 키를 타임라인 조건에 맞춰 다시 계산하고, 카메라 orbit의 반경 손실과 수직 회전 뒤집힘을 해결했습니다.
-- **빌드 환경과 엔진 이전:** GitLab CI 기반 빌드와 패키징, Shared DDC를 구성하고 Sentry 크래시 수집을 고도화했습니다. Unreal Engine 5.7 이전에서는 엔진 API 변경에 따른 코드 이전을 맡았습니다.
+- **빌드 환경과 엔진 이전:** GitLab CI 기반 빌드와 패키징, Shared DDC를 구성하고(2024년) Sentry 크래시 수집을 고도화했습니다(2025년). Unreal Engine 5.3에서 5.7로 이전할 때는 엔진 API 변경에 따른 코드 이전을 담당했습니다.
 
 [액션 입력 화면과 실행 구조](/projects/cinev-studio/#data-authoring) / [UI 상태 관리와 도식](/projects/cinev-studio/#ui-state) / [제품 화면과 실제 제작 사례](/projects/cinev-studio/#product-showcase)
 
@@ -99,17 +102,57 @@
 | --- | --- |
 | 소개 | 좀비의 습격에 대비해 방어 시설을 만들고 생존하는 오픈월드 멀티플레이 게임 |
 | 참여 기간 | 2021.01 - 2024.06 |
-| 팀 규모 | 약 10명, 프로그래머 2~3명 |
-| 주요 기술 | Unreal Engine 4/5, C++, Unreal Insights, EOS, Steamworks |
+| 팀 규모 | 클라이언트 2~3명 중 전투·장비·좀비 AI·네트워크 최적화 담당 |
+| 주요 기술 | Unreal Engine 4/5, C++, Dedicated Server, Steamworks, TeamCity |
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/VVwmqfkluGw" title="Night of The Dead v1.0 Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+- **전투와 무기 시스템:** 2022년 4월부터 8월까지 플레이어 무기를 `AWeaponEntity` 계층과 무기 종류별 공격 컴포넌트로 다시 짰습니다. 무기는 발사와 장전을, 캐릭터의 공격 컴포넌트는 입력과 조준을 맡고, 탄약·반동·조준 상태는 인터페이스로 연결해 컴포넌트끼리 직접 참조하지 않습니다. 그 위에 샷건, 발사체, 반동과 제어성, 총기 부착물을 만들었습니다.
+- **멀티플레이 판정:** 샷건은 클라이언트가 랜덤 시드로 펠릿을 트레이스하고, 서버가 시선 방향과 대상 바운딩 박스 여유로 검증한 히트에만 피해를 줍니다. 다른 클라이언트에는 시드만 복제해 같은 펠릿 패턴으로 이펙트를 그립니다. 발사체는 피해 계산을 쏜 쪽의 인터페이스에 위임하고, 모든 플레이어로부터 멀어진 탄환은 서버가 제거합니다.
+- **상태이상과 무기 특성:** 무기·능력치·전투 판정·버프를 Gameplay Ability System으로 옮기고, 속성 상쇄(독↔번개, 냉기↔화염)와 게임 시간 단위 지속시간을 GameplayEffect 적용 시점 한 곳에서 처리하도록 Ability System Component를 확장했습니다. 공격 경로마다 흩어져 있던 효과 부여를 AttackTrait 하나로 모았습니다.
+- **보스와 좀비 AI:** 어그로 테이블 모듈, GameplayTag 상태 머신 모듈, 강인도, 보스 무브먼트와 몽타주 관리를 독립 컴포넌트로 만들고 그 위에 1~6지역 보스 6종의 AI와 던전 보스룸을 구현했습니다. 일반 좀비는 전용 AI 컨트롤러와 네이티브 Behavior Tree 노드로 다시 짜고, 플레이어까지 길이 없을 때 도달 가능한 공격 지점을 검증하는 3단계 EQS 체인을 C++ 태스크로 만들었습니다.
 - **Dedicated Server 동기화:** Unreal Insights 분석을 바탕으로 Replication Graph가 거리와 소유 관계에 따라 연결별 복제 대상을 고르게 했습니다. 상태가 드물게 바뀌는 액터는 Net Dormancy로 휴면시키고, 접속 시 보내는 레벨 스트리밍 상태에는 커스텀 NetSerialize를 붙여 코드와 비트 플래그로 압축했습니다. 접속 시 한꺼번에 보내야 하는 기록 데이터는 Reliable 버퍼의 여유를 보고 레코드 단위로 나눠 보내는 RPC 스트리밍 라우터로 전송했습니다.
 - **다수 좀비의 실행 비용:** 서버의 포즈 갱신은 근접 판정이 필요한 전투 중에만 켰습니다. Significance Manager로 계산한 중요도를 Animation Budget Allocator에 전달해 예산 안에서 애니메이션 갱신 빈도를 조절하고, ACL로 애니메이션 데이터를 압축했습니다.
-- **게임플레이 구현:** 전투, 장비의 티어와 내구도, 파츠 개조, 보스 및 일반 좀비 AI를 구현했습니다.
-- **UE5 엔진 이전:** EOS가 Steam 외부 인증을 Web API 티켓으로 바꾸도록 요구하자, 이를 지원하는 Steamworks SDK 1.57 이상을 포함한 UE5로의 이전을 주도했습니다.
-- **파괴 연출:** 원인을 알 수 없는 에러가 잦던 APEX Destruction을 직접 제어할 수 있는 커스텀 Destructible 시스템으로 교체했습니다. 당시 환경을 재현해 교체 전 구성(교체형 APEX)과 비교한 결과 단일 파괴 스파이크가 27% 낮았고, 동시 파괴 부하 시험에서 찾은 병목을 프레임당 조각 컴포넌트 예산으로 줄여 100개 동시 파괴 스파이크를 교체 전 구성보다 낮췄습니다(UE 4.27, 138ms → 25ms, 교체 전 32ms).
+- **UE5 엔진 이전:** EOS가 Steam 외부 인증을 Web API 티켓으로 바꾸도록 요구하자, 이를 지원하는 Steamworks SDK 1.57 이상을 포함한 UE 5.3 커스텀 엔진으로 UE 4.27 프로젝트를 이전했습니다.
+- **파괴 연출:** 원인을 알 수 없는 에러가 잦던 UE4 APEX Destruction을 직접 제어할 수 있는 커스텀 Destructible 시스템으로 교체했습니다. 당시 환경을 재현해 교체 전 구성(교체형 APEX)과 비교한 결과 단일 파괴 스파이크가 27% 낮았고, 동시 파괴 부하 시험에서 찾은 병목을 프레임당 조각 컴포넌트 예산으로 줄여 100개 동시 파괴 스파이크를 교체 전 구성보다 낮췄습니다(UE 4.27, 138ms → 25ms, 교체 전 32ms).
 - **개발 인프라:** JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드, 패키징 자동화를 운영했습니다.
+
+![펌프 액션 샷건](../projects/images/night-of-the-dead/weapon-shotgun.webp)
+
+*펌프 액션 샷건입니다. 여러 발의 펠릿을 클라이언트가 시드로 트레이스하고 서버가 시선 방향과 바운딩 박스로 검증합니다.*
+
+![무기 부착물: 소음기, 머즐 브레이크, 홀로그램 사이트, 도트 사이트, 스코프, 라이트](../projects/images/night-of-the-dead/weapon-attachments.webp)
+
+*무기 부착물입니다. 조준경은 확대 배율을, 소음기는 총성과 좀비가 듣는 소음을 바꿉니다. 부착물 액터는 서버에서만 만들고 목록은 모든 클라이언트에 복제됩니다.*
+
+![장비와 인벤토리, 무기 파츠 장착 화면](../projects/images/night-of-the-dead/weapon-parts-ui.webp)
+
+*장비와 인벤토리, 무기 파츠 장착 화면입니다. 어떤 부착물이 어떤 무기에 맞고 어떤 효과를 주는지는 데이터로 정의합니다.*
+
+```text
+AEquipmentEntity
+└─ AWeaponEntity ──────── 무기 데이터(DataTable), 1인칭/3인칭 무기 액터, 무기 애니메이션, AI 소음
+   ├─ ARangedWeaponEntity ── 조준 원점 계산, 트레이스, 반동 전송(IRecoilSender), 탄약 사용자(IAmmoUser)
+   │  ├─ AFirearmEntity ──── 상태 머신(Idle/Firing/Reloading), 발사 모드, 탄 퍼짐, 탄창, 서버 RPC
+   │  │  ├─ AShotgunEntity ─────── 시드 기반 펠릿 히트스캔, 서버 피격 검증
+   │  │  └─ AProjectileFirearmEntity ─ 카메라 트레이스 후 총구 재조준, 서버 스폰 투사체(관통/유도/범위)
+   │  ├─ ABowEntity
+   │  └─ AThrowingWeaponEntity
+   ├─ AMeleeWeaponEntity
+   └─ AMachineryWeaponEntity
+ULFPlayerRecoilComponent ── 반동 보간과 회복, 입력에 따른 축별 회복 취소
+ULFCharacterFiringAttackComponent ── 조준 알파, ADS 카메라 전환, 스코프 FOV와 조준점 정렬
+```
+
+*무기 클래스 계층과 각 계층의 책임입니다. 공통 동작은 위쪽 클래스에, 샷건과 투사체 총기의 차이만 아래쪽에 둡니다.*
+
+![한 서버에서 함께 플레이하는 세 플레이어](../projects/images/night-of-the-dead/multiplayer-session.webp)
+
+*한 서버에서 함께 플레이하는 모습입니다. 각 플레이어의 장비와 부착물, 핫바의 무기와 탄약 수가 다른 플레이어에게도 같게 보입니다.*
+
+![밤에 기지 앞 방어벽에 몰린 좀비 무리](../projects/images/night-of-the-dead/wave-zombies.webp)
+
+*밤마다 기지 앞에 몰리는 좀비입니다. 서버는 전투 중인 좀비의 포즈만 갱신하고, 클라이언트는 Significance에 따라 애니메이션 갱신 빈도를 나눕니다.*
 
 ![UE 4.27에서 같은 장면을 커스텀 Destructible 시스템과 교체형 APEX로 부순 화면](../projects/images/night-of-the-dead/destruction-custom-vs-apexswap.webp)
 
@@ -121,7 +164,7 @@
 | --- | --- |
 | 소속 기간 | 2021.10 - 2023.12 |
 | 참여 형태 | 비고용 팀 활동, 정규직과 병행 |
-| 담당 직무 | 클라이언트 프로그래머 |
+| 담당 직무 | 클라이언트 프로그래머(리드) |
 
 #### 길고양이 이야기 2
 
@@ -137,17 +180,17 @@
 
 *G-STAR 2023 인디 어워즈에서 Games for Impact 수상이 발표된 중계 화면입니다.*
 
-- **주요 게임 시스템:** 세이브와 로드, 퀘스트, 대화, 이동, 컷신과 UI를 개발했습니다.
-- **플랫폼 연동:** 컨트롤러 입력, Steam 업적과 STOVE 구매 인증을 연동했습니다.
-- **PC 출시 전담:** 스토어 등록부터 다국어 빌드 준비, 출시 빌드 검수와 업로드까지 맡았습니다. 2023년 STOVE Windows 얼리 액세스와 Steam Windows, macOS 정식 출시를 진행했습니다.
+- **주요 게임 시스템:** 프로그래머 2인 팀에서 리드를 맡아 세이브와 로드, 퀘스트, 대화, 이동, 컷신, 환경설정과 UI를 개발했습니다.
+- **플랫폼 연동:** 컨트롤러 입력, Steamworks 업적과 STOVE 구매 인증을 연동했습니다.
+- **PC 출시 전담:** 스토어 등록부터 5개 언어 지원 빌드 준비, 출시 빌드 검수와 업로드까지 맡았습니다. 2023년 STOVE Windows 얼리 액세스와 Steam Windows, macOS 정식 출시를 진행했습니다. 프로젝트는 G-STAR 2023 인디 어워즈 Games for Impact 부문을 수상했습니다(2023.11).
 
 [게임 영상과 출시, 수상 자료](/projects/a-street-cats-tale-2/) / [담당 범위](/cv/#a-street-cats-tale-2)
 
-### 이메진템페스트 스튜디오
+### 이매진템페스트
 
 | 항목 | 내용 |
 | --- | --- |
-| 소속 기간 | 2019.06 - 2020.04 |
+| 소속 기간 | 2019.10 - 2020.04 |
 | 참여 형태 | 비고용 팀 활동, 군 복무와 일부 병행 |
 | 담당 직무 | 기획 및 클라이언트 프로그래머 |
 
@@ -156,14 +199,14 @@
 | 항목 | 내용 |
 | --- | --- |
 | 소개 | 환자들의 내면세계를 탐험하는 2D 액션 어드벤처 |
-| 참여 기간 | 2019.06 - 2020.04 |
+| 참여 기간 | 2019.10 - 2020.04 |
 | 주요 기술 | Unity, C#, Spine, URP |
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/1asejGtAMGY" title="Vapor World : Over the Mind - MWU Korea Awards Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-- **기획과 클라이언트 개발:** 스토리와 세계관을 기획하고 입력, 이동과 전투 시스템을 개발했습니다.
+- **기획과 클라이언트 개발:** 스토리와 세계관을 기획하고 입력, 이동과 전투 시스템을 개발했습니다. 이후 팀은 Vapor World: Over the Mind로 Steam에 출시했습니다.
 
-참여 기간 중 출품한 프로젝트가 제11회 새로운 경기 게임오디션 공동 2위에 선정됐고, MWU Korea Awards 2019 PC & Console 분야 Top 3에 올랐습니다.
+팀이 받은 상(본인 합류 전): 제11회 새로운 경기 게임오디션 공동 2위(2019.09), MWU Korea Awards 2019 PC & Console 분야 Top 3
 
 [출품 영상과 개발 기록](/projects/vapor-world/)
 
@@ -171,7 +214,7 @@
 
 | 항목 | 내용 |
 | --- | --- |
-| 소속 기간 | 2018.03 - 2019.10 |
+| 소속 기간 | 2018.02 - 2019.10 |
 | 참여 형태 | 군 복무 |
 | 담당 직무 | SW개발병 |
 
@@ -179,7 +222,7 @@
 
 | 항목 | 내용 |
 | --- | --- |
-| 참여 기간 | 2018.03 - 2019.10 |
+| 참여 기간 | 2018.02 - 2019.10 |
 | 주요 기술 | C#, WPF, VBA |
 
 <div class="service-awards">
@@ -205,7 +248,7 @@
 | 참여 형태 | 정규직 |
 | 담당 직무 | VR 소프트웨어 엔지니어 |
 
-Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담당했습니다. 아래 대표 작업 외에 [onAirVR Client 2.0](/projects/onairvr-client-2/)과 [#BeFearless - Fear of Heights](/projects/be-fearless/) 개발에 참여했습니다.
+Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담당했습니다. 아래 대표 작업 외에 [onAirVR Client 2.0](/projects/onairvr-client-2/), [학도병의 편지](/projects/student-soldiers-letter/), [#BeFearless - Fear of Heights](/projects/be-fearless/) 개발에 참여했습니다.
 
 #### CircleVR
 
@@ -217,8 +260,8 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/9N7_6xO2kNQ" title="CircleVR in Hongik University" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-- **장치 간 좌표 보정:** HMD와 외부 트래커의 좌표계를 맞추고 장착 오프셋을 보정했습니다.
-- **체험과 외부 시점 연결:** 여러 사용자의 시점을 외부 디스플레이로 연결해 체험자의 화면을 관람객과 공유하도록 했습니다.
+- **장치 간 좌표 보정:** HMD와 외부 트래커의 좌표계를 맞추고 장착 오프셋을 보정했습니다. Vive Tracker 정보는 소켓 통신으로 수신해 체험자의 위치와 자세를 콘텐츠에 연결했습니다.
+- **체험과 외부 시점 연결:** 여러 사용자의 시점을 외부 곡면 OLED 디스플레이 22대로 연결해 체험자의 화면을 관람객과 공유하도록 했습니다.
 
 [전시 영상과 담당 업무](/projects/circle-vr/)
 
@@ -242,18 +285,6 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 ## 오픈소스 프로젝트
 
 ### 유지관리자 (Maintainer)
-
-#### [Grimoire](https://github.com/hon454/grimoire)
-
-| 항목 | 내용 |
-| --- | --- |
-| 소개 | AI 에이전트의 코드 리뷰, 리뷰 대응, 이슈 준비도 판단, 작업 인계와 Git 운영을 위한 재사용 가능한 Skill과 Plugin |
-| 주요 기술 | Python, Codex Skills, Codex Plugins, GitHub CLI, Git |
-
-- **개발 흐름 구성:** PR 맥락 수집부터 피드백 분류, 사용자 의사결정, 구현과 검증, 리뷰어 후속 대응까지 하나의 흐름으로 연결했습니다. 대화와 작업이 바뀌어도 결정 상태를 이어가고, 원격 변경은 사용자 확인과 검증을 통과한 뒤에만 수행합니다.
-- **보호 장치:** 작업 인계와 Git 정리, 충돌 해결처럼 실수 비용이 큰 작업은 대상을 다시 확인하고, 확인에 실패하면 중단합니다.
-- **동작 검증:** Python 표준 라이브러리 기반 테스트로 주요 동작을 검증합니다.
-- **Skill과 Plugin 배포:** 코드 리뷰, 작업 인계와 Git 운영 절차를 Skill로 작성하고 설치 가능한 Plugin으로 제공합니다. Shotloom 개발 기간에 이 도구를 포함한 에이전트 환경을 운용했습니다.
 
 #### [GitHub Pulls Show Reviewers](https://github.com/hon454/github-pulls-show-reviewers)
 
@@ -304,7 +335,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 | 주요 기술 | Rust, Bevy, WGSL, WebGPU |
 
 - **재현과 원인 격리:** Shotloom 브라우저 편집기에서 MToon VRM을 표시한 직후 화면이 검게 변하는 문제를 Chrome WebGPU에서 재현했습니다. Metal 네이티브에서는 나타나지 않는 문제였고, 조명 단계별로 비교해 원인을 emissive 처리로 좁혔습니다.
-- **[셰이더 플래그 수정](https://github.com/not-elm/bevy_vrm1/pull/57):** MToon 셰이더가 `EMISSIVE_TEXTURE` 비트를 MToon uniform이 아닌 Standard Material 플래그 필드에서 읽어, WebGPU에서 바인딩되지 않은 텍스처를 샘플링하고 그 NaN이 톤매핑과 Bloom으로 퍼지는 것을 확인했습니다. 플래그를 MToon uniform에서 읽도록 수정했습니다.
+- **[셰이더 플래그 수정](https://github.com/not-elm/bevy_vrm1/pull/57):** MToon 셰이더가 `EMISSIVE_TEXTURE` 비트를 MToon uniform이 아닌 Standard Material 플래그 필드에서 읽어, WebGPU에서 바인딩되지 않은 텍스처를 샘플링하고 그 NaN이 톤매핑과 Bloom으로 퍼지는 것을 확인했습니다. 플래그를 MToon uniform에서 읽도록 수정해 라이브러리에 기여했습니다.
 
 ## 함께 일한 동료들의 추천
 

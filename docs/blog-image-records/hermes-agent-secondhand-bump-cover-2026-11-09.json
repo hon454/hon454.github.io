@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-09",
+  "post": "src/content/posts/hermes-agent-secondhand-bump.md",
+  "scope": "cover",
+  "tool": "ChatGPT web (Free plan, image generation)",
+  "asset": "src/assets/images/posts/hermes-agent-secondhand-bump-cover.webp",
+  "dimensions": {
+    "width": 1600,
+    "height": 900
+  },
+  "references": [
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+  ],
+  "selectedVersion": 1,
+  "concept": "낮은 시점의 세로 구도에서 작은 Steady Spiral 달팽이가 선반 탑의 중간 단에서 검은 콘솔을 맨 위 단으로 밀어 올린다. 체크 태그는 판매 완료를 뜻한다. 이전 Hermes 커버(작업대, 말풍선, 화살표)와 카메라, 배치 방향, 장소를 달리했다.",
+  "iterations": [
+    {
+      "version": 1,
+      "prompt": "Generate an image. A 16:9 landscape blog cover illustration.\n\nReference roles: the attached image of a single green snail with a lime spiral shell is the character reference (identity only). The attached clay scene with envelopes defines only the rendering style (soft handmade clay 3D look, warm ivory background, soft light and contact shadows). Do not copy its envelopes, numbers, road or question marks.\n\nCharacter: one adorable thick rounded dark forest-green snail, large bright lime spiral shell, two rounded antennae, ivory oval eyes, tiny smiling mouth, faithful to the reference proportions.\n\nScene: low camera angle looking slightly up, a vertical composition inside the wide frame. A small snail stands on the middle step of a chunky rounded clay shelf tower (three stacked cream-and-sage shelf levels, like a market display stand) and, with both small rounded hands, lifts a matte black rounded game console (a plain flat black slab with no logos or buttons) up onto the top shelf. A single small round clay tag with a green check mark hangs from the console. The snail is small relative to the tall shelf, looks up at the console with a determined friendly face. Only these props: the shelf tower, the black console, the check tag. Nothing else on the shelves.\n\nComposition: the shelf tower, snail and console are compact and centered, filling the central 50 percent of the width and most of the height with ample plain ivory padding around. Keep the bottom-right corner plain ivory background. Readable at thumbnail size.\n\nConstraints: no title, no text, no letters, no numbers, no logos, no watermark, no speech bubbles, no arrows, no desk or workbench, no extra snails.\n",
+      "review": "캐릭터, 점토 질감, 소품 3개, 텍스트·로고 없음 확인. 재생성 없이 적용."
+    }
+  ],
+  "export": "Original 1672x941 PNG center-cropped (cover) to 1600x900 WebP quality 85 with repository sharp. Source PNG kept in ~/.hermes/data/blog-merchant-shots/cover/v1.png."
+}

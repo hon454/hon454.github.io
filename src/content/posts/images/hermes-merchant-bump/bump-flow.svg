@@ -1,0 +1,41 @@
+<svg viewBox="0 0 960 330" width="960" height="330" role="img" lang="ko" xmlns="http://www.w3.org/2000/svg">
+<title>끌어올리기 크론 한 번의 흐름</title>
+<desc>크론 listing-bump가 오후 8시부터 10시대까지 10분마다 스크립트를 실행한다. 글과 플랫폼마다 날짜별로 정해진 목표 시각(오후 8시대 안)이 지났고 오늘 아직 누르지 않았으면 대상이 된다. 그날 첫 대상 실행에서 listing-sync로 판매·삭제된 글을 먼저 걸러낸다. 이어서 글을 하나씩 4–8초 간격으로 끌어올리고, 결과가 있을 때만 #flea-market에 알린다. 이 과정에는 에이전트 호출이 없다.</desc>
+<defs><marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#94a3b8"/></marker><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="0.5"/></pattern></defs>
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<rect width="100%" height="100%" fill="url(#g)"/>
+<rect x="10" y="24" width="940" height="150" rx="10" fill="none" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="24" y="46" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace, Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="600" fill="#64748b">01 / 10분마다 스크립트가 판단</text>
+<rect x="20" y="60" width="200" height="76" rx="9" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.6"/>
+<text x="120.0" y="95.0" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace, Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">크론 listing-bump</text>
+<text x="120.0" y="114.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">20–22시, 10분 간격</text>
+<rect x="260" y="60" width="200" height="76" rx="9" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.6"/>
+<text x="360.0" y="95.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">목표 시각 확인</text>
+<text x="360.0" y="114.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">글 · 플랫폼 · 날짜별로 다름</text>
+<rect x="500" y="60" width="200" height="76" rx="9" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.6"/>
+<text x="600.0" y="95.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">판매 · 삭제 글 거르기</text>
+<text x="600.0" y="114.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">그날 첫 실행에 장부 동기화</text>
+<rect x="740" y="60" width="200" height="76" rx="9" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.6"/>
+<text x="840.0" y="95.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">끌어올리기</text>
+<text x="840.0" y="114.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">글 사이 4–8초 간격</text>
+<polyline points="223,98 256,98" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<polyline points="463,98 496,98" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<polyline points="703,98 736,98" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="430" y="160" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#64748b">아직 때가 아니거나 오늘 이미 눌렀으면 아무것도 하지 않음</text>
+<rect x="10" y="194" width="940" height="96" rx="10" fill="none" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="24" y="216" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace, Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="600" fill="#64748b">02 / 결과가 있을 때만 알림</text>
+<rect x="740" y="222" width="200" height="56" rx="9" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.6"/>
+<text x="840.0" y="247.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">결과 기록</text>
+<text x="840.0" y="266.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">bump.log · 장부 갱신</text>
+<rect x="470" y="222" width="230" height="56" rx="9" fill="#fdecec" stroke="#dc2626" stroke-width="1.6"/>
+<text x="585.0" y="247.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">Slack #flea-market</text>
+<text x="585.0" y="266.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">완료 · 실패 · 놓침 메시지만 게시</text>
+<text x="240" y="246" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">에이전트 호출 없음</text>
+<text x="240" y="266" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">no_agent 크론: 스크립트만 실행</text>
+<polyline points="737,250 704,250" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<polyline points="840,138 840,218" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<rect x="40" y="306" width="14" height="14" rx="3" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.4"/>
+<text x="61" y="317" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" fill="#475569">스크립트</text>
+<rect x="147" y="306" width="14" height="14" rx="3" fill="#fdecec" stroke="#dc2626" stroke-width="1.4"/>
+<text x="168" y="317" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" fill="#475569">에이전트가 쓰는 채널</text>
+</svg>

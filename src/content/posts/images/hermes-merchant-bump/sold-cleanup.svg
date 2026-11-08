@@ -1,0 +1,52 @@
+<svg viewBox="0 0 960 420" width="960" height="420" role="img" lang="ko" xmlns="http://www.w3.org/2000/svg">
+<title>판매 보고 뒤 정리 순서</title>
+<desc>사용자가 번개장터에서 22만원에 팔렸다고 알린다. Merchant가 장부의 번개장터 글을 판매완료로 바꾸고 그 글의 끌어올리기를 끈다. 같은 물건의 중고나라 글이 아직 판매중임을 확인해 이중 판매 위험을 알리고, 내리거나 판매완료로 바꿔도 되는지 승인을 묻는다. 사용자가 중고나라 글을 직접 판매완료 처리한 뒤 다시 확인을 요청하면 Merchant가 목록에서 글이 빠진 것을 확인하고 장부에 종료로 기록한다. 판매중인 글이 남지 않는다.</desc>
+<defs><marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#94a3b8"/></marker><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="0.5"/></pattern></defs>
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<rect width="100%" height="100%" fill="url(#g)"/>
+<rect x="10" y="24" width="940" height="140" rx="10" fill="none" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="24" y="46" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace, Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="600" fill="#64748b">01 / 판매 보고</text>
+<rect x="20" y="58" width="200" height="80" rx="9" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.6"/>
+<text x="120.0" y="95.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">판매 보고</text>
+<text x="120.0" y="114.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">번개장터 22만원 판매 완료</text>
+<rect x="260" y="58" width="200" height="80" rx="9" fill="#fdecec" stroke="#dc2626" stroke-width="1.6"/>
+<text x="360.0" y="95.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">번개장터 글 정리</text>
+<text x="360.0" y="114.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">장부에 판매완료 · 끌올 끔</text>
+<rect x="500" y="58" width="200" height="80" rx="9" fill="#fdecec" stroke="#dc2626" stroke-width="1.6"/>
+<text x="600.0" y="95.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">같은 물건 확인</text>
+<text x="600.0" y="114.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">중고나라 글이 아직 판매중</text>
+<rect x="740" y="58" width="200" height="80" rx="9" fill="#fef3c7" stroke="#d97706" stroke-width="1.6"/>
+<text x="840.0" y="95.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">승인 요청</text>
+<text x="840.0" y="114.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">이중 판매 위험 · 내릴지 질문</text>
+<polyline points="223,98 256,98" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<polyline points="463,98 496,98" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<polyline points="703,98 736,98" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="480" y="154" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#b45309">중고나라 글의 끌어올리기도 승인 전까지 꺼 둠</text>
+<rect x="10" y="184" width="940" height="150" rx="10" fill="none" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="24" y="206" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace, Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="600" fill="#64748b">02 / 마무리</text>
+<rect x="20" y="222" width="200" height="80" rx="9" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.6"/>
+<text x="120.0" y="259.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">직접 판매완료 처리</text>
+<text x="120.0" y="278.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">중고나라 글을 사용자가 변경</text>
+<rect x="260" y="222" width="200" height="80" rx="9" fill="#fdecec" stroke="#dc2626" stroke-width="1.6"/>
+<text x="360.0" y="259.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">다시 확인</text>
+<text x="360.0" y="278.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">판매중 목록에서 빠졌는지 읽음</text>
+<rect x="500" y="222" width="200" height="80" rx="9" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.6"/>
+<text x="600.0" y="259.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">장부 종료 기록</text>
+<text x="600.0" y="278.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">중고나라 · 번개장터 모두 종료</text>
+<rect x="740" y="222" width="200" height="80" rx="9" fill="#fdecec" stroke="#dc2626" stroke-width="1.6"/>
+<text x="840.0" y="259.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f172a">남은 판매글 없음</text>
+<text x="840.0" y="278.0" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#475569">끌어올리기 대상 0건</text>
+<polyline points="840,141 840,170 120,170 120,218" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<polyline points="223,262 256,262" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<polyline points="463,262 496,262" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<polyline points="703,262 736,262" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="480" y="324" text-anchor="middle" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="11.5" fill="#64748b">목록에서 빠진 것만 확인하므로 판매완료인지 숨김인지 삭제인지는 구분하지 않음</text>
+<rect x="40" y="386" width="14" height="14" rx="3" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.4"/>
+<text x="61" y="397" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" fill="#475569">사용자</text>
+<rect x="134" y="386" width="14" height="14" rx="3" fill="#fdecec" stroke="#dc2626" stroke-width="1.4"/>
+<text x="155" y="397" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" fill="#475569">에이전트</text>
+<rect x="241" y="386" width="14" height="14" rx="3" fill="#e8f7ee" stroke="#16a34a" stroke-width="1.4"/>
+<text x="262" y="397" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" fill="#475569">스크립트 · 장부</text>
+<rect x="413" y="386" width="14" height="14" rx="3" fill="#fef3c7" stroke="#d97706" stroke-width="1.4"/>
+<text x="434" y="397" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" fill="#475569">승인 게이트</text>
+</svg>

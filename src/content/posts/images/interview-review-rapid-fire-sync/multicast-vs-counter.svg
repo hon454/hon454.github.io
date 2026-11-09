@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="1000" height="600" role="img" lang="ko" aria-labelledby="t d">
+<title id="t">발마다 Unreliable 멀티캐스트와 카운터 복제의 비교</title>
+<desc id="d">서버 30Hz에서 넷 업데이트 세 번 동안 2발, 2발, 3발을 쐈고 두 번째 업데이트의 패킷이 유실된 경우. 왼쪽은 발마다 Unreliable 멀티캐스트를 부르는 방식으로, 같은 함수는 넷 업데이트 한 번에 net.MaxRPCPerNetUpdate(기본 2)개까지만 보내고 세 번째 호출은 버린다. 유실된 패킷의 두 발도 다시 오지 않아 7발 중 4발만 도착한다. 오른쪽은 FireCounter를 COND_SkipOwner로 복제하는 방식으로, 유실된 값 4는 다음 업데이트의 최신 값 7에 포함되어 도착하고 OnRep에서 차이 5를 더해 7발이 모두 맞는다. 늦게 연관된 클라이언트는 지나간 멀티캐스트를 받지 못한다.</desc>
+<defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
+<marker id="arrx" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#b91c1c"/></marker>
+<style>
+text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;fill:#1f2937}
+.title{font-size:24px;font-weight:700}
+.sub{font-size:15px;fill:#64748b}
+.lane{font-size:16px;font-weight:700}
+.lanesub{font-size:13px;fill:#64748b}
+.mono{font-family:'JetBrains Mono',Consolas,'SFMono-Regular',Menlo,monospace}
+.tick{font-size:12px;fill:#94a3b8;text-anchor:middle}
+.cnt{font-size:13px;font-weight:700;text-anchor:middle}
+.note{font-size:13px;fill:#64748b}
+.big{font-size:28px;font-weight:800;text-anchor:middle}
+.cap{font-size:14px;font-weight:700;fill:#334155}
+</style>
+</defs>
+<rect width="1000" height="600" fill="#f8fafc"/>
+<rect width="1000" height="600" fill="url(#grid)"/>
+
+<text x="40" y="50" class="title">발마다 멀티캐스트 vs 카운터 복제</text>
+<text x="40" y="78" class="sub">서버 30Hz · 넷 업데이트 세 번 동안 2발, 2발, 3발 · 두 번째 패킷 유실</text>
+<rect x="40" y="100" width="440" height="430" rx="12" fill="#fff" stroke="#e2e8f0"/>
+<text x="60" y="132" class="lane" style="fill:#b91c1c">발마다 Unreliable 멀티캐스트</text>
+<text x="60" y="154" class="lanesub">같은 함수는 넷 업데이트당 2개까지 (net.MaxRPCPerNetUpdate)</text>
+<text x="60" y="215" class="lanesub" style="fill:#16a34a">서버</text>
+<text x="60" y="385" class="lanesub" style="fill:#4f46e5">다른</text>
+<text x="60" y="401" class="lanesub" style="fill:#4f46e5">클라이언트</text>
+<text x="190" y="176" class="tick">업데이트 1</text>
+<rect x="168" y="196" width="44" height="14" rx="4" fill="#d97706"/>
+<rect x="168" y="214" width="44" height="14" rx="4" fill="#d97706"/>
+<line x1="190" y1="245" x2="190" y2="350" stroke="#d97706" stroke-width="2" marker-end="url(#arr)"/>
+<circle cx="182" cy="385" r="6" fill="#d97706"/>
+<circle cx="198" cy="385" r="6" fill="#d97706"/>
+<text x="295" y="176" class="tick">업데이트 2</text>
+<rect x="273" y="196" width="44" height="14" rx="4" fill="#d97706"/>
+<rect x="273" y="214" width="44" height="14" rx="4" fill="#d97706"/>
+<line x1="295" y1="245" x2="295" y2="300" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="295" y="320" class="cnt" style="fill:#b91c1c">✕ 패킷 유실</text>
+<text x="295" y="390" class="cnt" style="fill:#94a3b8">없음</text>
+<text x="400" y="176" class="tick">업데이트 3</text>
+<rect x="378" y="187" width="44" height="14" rx="4" fill="#d97706"/>
+<rect x="378" y="205" width="44" height="14" rx="4" fill="#d97706"/>
+<rect x="378" y="223" width="44" height="14" rx="4" fill="#cbd5e1"/>
+<text x="400" y="234" class="cnt" style="fill:#b91c1c;font-size:11px">버림</text>
+<line x1="400" y1="245" x2="400" y2="350" stroke="#d97706" stroke-width="2" marker-end="url(#arr)"/>
+<circle cx="392" cy="385" r="6" fill="#d97706"/>
+<circle cx="408" cy="385" r="6" fill="#d97706"/>
+<text x="260" y="455" class="big" style="fill:#b91c1c">7발 중 4발</text>
+<text x="260" y="482" class="note" style="text-anchor:middle">버린 호출과 유실된 호출은 다시 오지 않는다</text>
+<text x="260" y="504" class="note" style="text-anchor:middle">늦게 연관된 클라이언트도 지난 사격을 모른다</text>
+<rect x="520" y="100" width="440" height="430" rx="12" fill="#fff" stroke="#e2e8f0"/>
+<text x="540" y="132" class="lane" style="fill:#16a34a">FireCounter 복제 (COND_SkipOwner)</text>
+<text x="540" y="154" class="lanesub">보내는 것은 이벤트가 아니라 최신 값</text>
+<text x="540" y="215" class="lanesub" style="fill:#16a34a">서버</text>
+<text x="540" y="385" class="lanesub" style="fill:#4f46e5">다른</text>
+<text x="540" y="401" class="lanesub" style="fill:#4f46e5">클라이언트</text>
+<text x="670" y="176" class="tick">업데이트 1</text>
+<rect x="640" y="195" width="60" height="30" rx="6" fill="#ecfdf5" stroke="#16a34a"/>
+<text x="670" y="216" class="cnt mono" style="fill:#16a34a;font-size:15px">2</text>
+<line x1="670" y1="245" x2="670" y2="350" stroke="#16a34a" stroke-width="2" marker-end="url(#arr)"/>
+<text x="670" y="380" class="cnt mono" style="fill:#4f46e5;font-size:15px">2</text>
+<text x="670" y="402" class="cnt" style="fill:#4f46e5">OnRep +2</text>
+<text x="775" y="176" class="tick">업데이트 2</text>
+<rect x="745" y="195" width="60" height="30" rx="6" fill="#ecfdf5" stroke="#16a34a"/>
+<text x="775" y="216" class="cnt mono" style="fill:#16a34a;font-size:15px">4</text>
+<line x1="775" y1="245" x2="775" y2="300" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="775" y="320" class="cnt" style="fill:#b91c1c">✕ 패킷 유실</text>
+<text x="775" y="390" class="cnt" style="fill:#94a3b8">그대로 2</text>
+<text x="880" y="176" class="tick">업데이트 3</text>
+<rect x="850" y="195" width="60" height="30" rx="6" fill="#ecfdf5" stroke="#16a34a"/>
+<text x="880" y="216" class="cnt mono" style="fill:#16a34a;font-size:15px">7</text>
+<line x1="880" y1="245" x2="880" y2="350" stroke="#16a34a" stroke-width="2" marker-end="url(#arr)"/>
+<text x="880" y="380" class="cnt mono" style="fill:#4f46e5;font-size:15px">7</text>
+<text x="880" y="402" class="cnt" style="fill:#4f46e5">OnRep +5</text>
+<text x="740" y="455" class="big" style="fill:#16a34a">7발 중 7발</text>
+<text x="740" y="482" class="note" style="text-anchor:middle">유실된 값은 다음 최신 값에 포함되어 온다</text>
+<text x="740" y="504" class="note" style="text-anchor:middle">OnRep에서 차이만큼 쌓아 발사 연출을 재생한다</text>
+<text x="40" y="566" class="note">Reliable 멀티캐스트는 이 상한에 걸리지 않지만, 발마다 보내면 초당 70개가 Reliable로 나가 손실이 길어지면 버퍼 한도에 빨리 닿는다.</text>
+</svg>

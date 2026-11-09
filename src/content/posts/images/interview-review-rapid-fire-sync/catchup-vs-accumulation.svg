@@ -210,7 +210,7 @@ text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR'
 <text x="930" y="200" class="big" style="fill:#4f46e5" opacity="0">58<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.70303;0.70313;0.71515;0.71525;1" dur="11.0s" repeatCount="indefinite"/></text>
 <text x="930" y="200" class="big" style="fill:#4f46e5" opacity="0">59<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.71515;0.71525;0.72727;0.72737;1" dur="11.0s" repeatCount="indefinite"/></text>
 <text x="930" y="200" class="big" style="fill:#4f46e5" opacity="0">60<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.72727;0.72737;1" dur="11.0s" repeatCount="indefinite"/></text>
-<text x="930" y="224" class="tick">발</text>
+<text x="930" y="224" class="tick">쏜 발 수</text>
 <text x="60" y="272" class="lane" style="fill:#d97706;paint-order:stroke;stroke:#f8fafc;stroke-width:6px">누적 시간 루프 (Source 엔진)</text>
 <text x="60" y="292" class="lanesub" style="paint-order:stroke;stroke:#f8fafc;stroke-width:6px">다음 발사 시각 ≤ 지금이면 반복</text>
 <line x1="60" y1="350" x2="840" y2="350" stroke="#cbd5e1" stroke-width="2"/>
@@ -406,7 +406,7 @@ text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR'
 <text x="930" y="360" class="big" style="fill:#d97706" opacity="0">67<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.70303;0.70313;0.71515;0.71525;1" dur="11.0s" repeatCount="indefinite"/></text>
 <text x="930" y="360" class="big" style="fill:#d97706" opacity="0">68<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.71515;0.71525;0.72727;0.72737;1" dur="11.0s" repeatCount="indefinite"/></text>
 <text x="930" y="360" class="big" style="fill:#d97706" opacity="0">70<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.72727;0.72737;1" dur="11.0s" repeatCount="indefinite"/></text>
-<text x="930" y="384" class="tick">발</text>
+<text x="930" y="384" class="tick">쏜 발 수</text>
 <line x1="60" y1="395" x2="840" y2="395" stroke="#94a3b8"/>
 <line x1="60.0" y1="395" x2="60.0" y2="401" stroke="#94a3b8"/>
 <text x="60.0" y="417" class="tick">0 ms</text>

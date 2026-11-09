@@ -79,6 +79,6 @@ text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR'
 <text x="880" y="402" class="cnt" style="fill:#4f46e5">OnRep +5</text>
 <text x="740" y="455" class="big" style="fill:#16a34a">7발 중 7발</text>
 <text x="740" y="482" class="note" style="text-anchor:middle">유실된 값은 다음 최신 값에 포함되어 온다</text>
-<text x="740" y="504" class="note" style="text-anchor:middle">OnRep에서 차이만큼 쌓아 재생한다</text>
+<text x="740" y="504" class="note" style="text-anchor:middle">OnRep에서 차이만큼 쌓아 발사 연출을 재생한다</text>
 <text x="40" y="566" class="note">Reliable 멀티캐스트는 이 상한에 걸리지 않지만, 발마다 보내면 초당 70개가 Reliable로 나가 손실이 길어지면 버퍼 한도에 빨리 닿는다.</text>
 </svg>

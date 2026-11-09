@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="1000" height="560" role="img" lang="ko" aria-labelledby="t d">
 <title id="t">다른 클라이언트에서 FireCounter를 재생하는 두 가지 방식</title>
-<desc id="d">쏘는 플레이어가 초당 70발로 1초 동안 쏜다. 서버는 30Hz로 FireCounter를 COND_SkipOwner로 복제하므로 다른 클라이언트에는 처음 +1 뒤로 넷 업데이트마다 카운터가 2 또는 3씩 뛰어서 도착한다. 가운데 줄은 OnRep에서 이전 값과의 차이를 남은 발 수에 쌓고 발사 간격(14.3 ms)으로 나눠 소진하는 방식으로, 1초 동안 70발을 거의 일정한 간격으로 재생한다. 아래 줄은 OnRep마다 연출을 한 번만 재생하는 방식(Night of the Dead)으로, 31번만 재생되어 실제보다 절반 이하로 느리게 쏘는 것처럼 보인다. 네트워크 지연은 그림에서 뺐다.</desc>
+<desc id="d">쏘는 플레이어가 초당 70발로 1초 동안 쏜다. 서버는 30Hz로 FireCounter를 COND_SkipOwner로 복제하므로 다른 클라이언트에는 처음 +1 뒤로 넷 업데이트마다 카운터가 2 또는 3씩 뛰어서 도착한다. 가운데 줄은 OnRep에서 이전 값과의 차이를 남은 발 수에 쌓고 발사 간격(14.3 ms)으로 나눠 소진하는 방식으로, 1초 동안 발사 연출을 70번 거의 일정한 간격으로 재생한다. 아래 줄은 OnRep마다 연출을 한 번만 재생하는 방식(Night of the Dead)으로, 31번만 재생되어 실제보다 절반 이하로 느리게 쏘는 것처럼 보인다. 네트워크 지연은 그림에서 뺐다.</desc>
 <defs>
 <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
 <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
@@ -258,7 +258,7 @@ text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR'
 <text x="930" y="345" class="big" style="fill:#d97706" opacity="0">67<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.65014;0.65024;0.66116;0.66126;1" dur="11.0s" repeatCount="indefinite"/></text>
 <text x="930" y="345" class="big" style="fill:#d97706" opacity="0">69<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.66116;0.66126;0.67218;0.67228;1" dur="11.0s" repeatCount="indefinite"/></text>
 <text x="930" y="345" class="big" style="fill:#d97706" opacity="0">70<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.67218;0.67228;1" dur="11.0s" repeatCount="indefinite"/></text>
-<text x="930" y="369" class="tick">보이는 발</text>
+<text x="930" y="369" class="tick">발사 연출 횟수</text>
 <text x="60" y="408" class="lane" style="fill:#4f46e5;paint-order:stroke;stroke:#f8fafc;stroke-width:6px">OnRep마다 한 번 재생 (Night of the Dead)</text>
 <text x="60" y="428" class="lanesub" style="paint-order:stroke;stroke:#f8fafc;stroke-width:6px">카운터가 바뀌면 연출 한 번 → 뛰어서 온 발 수가 사라진다</text>
 <line x1="60" y1="470" x2="840" y2="470" stroke="#cbd5e1" stroke-width="2"/>
@@ -325,7 +325,7 @@ text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR'
 <text x="930" y="480" class="big" style="fill:#4f46e5" opacity="0">29<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.61708;0.61718;0.63912;0.63922;1" dur="11.0s" repeatCount="indefinite"/></text>
 <text x="930" y="480" class="big" style="fill:#4f46e5" opacity="0">30<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.63912;0.63922;0.66116;0.66126;1" dur="11.0s" repeatCount="indefinite"/></text>
 <text x="930" y="480" class="big" style="fill:#4f46e5" opacity="0">31<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.66116;0.66126;1" dur="11.0s" repeatCount="indefinite"/></text>
-<text x="930" y="504" class="tick">보이는 발</text>
+<text x="930" y="504" class="tick">발사 연출 횟수</text>
 <line x1="60" y1="510" x2="840" y2="510" stroke="#94a3b8"/>
 <line x1="60.0" y1="510" x2="60.0" y2="516" stroke="#94a3b8"/>
 <text x="60.0" y="532" class="tick">0 ms</text>

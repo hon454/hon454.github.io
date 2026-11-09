@@ -110,5 +110,5 @@ text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR'
 <rect x="925.0" y="433" width="10" height="24" rx="2" fill="#16a34a"/>
 <text x="930.0" y="475" class="cnt" style="fill:#16a34a">RPC 2개 · 3발</text>
 <text x="40" y="560" class="cap">1초로 보면</text>
-<text x="150" y="560" class="note">클라이언트 60프레임 중 10프레임이 두 발을 처리해 70발, 서버 30프레임마다 클라이언트 RPC가 두 개씩, 발은 두세 발씩 도착</text>
+<text x="150" y="560" class="note">클라이언트 60프레임 중 10프레임이 두 발을 처리해 70발, 서버 30프레임마다 클라이언트 RPC 두 개로 두세 발씩 도착</text>
 </svg>

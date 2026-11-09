@@ -22,9 +22,7 @@
 
 ![Dedicated Server 하나에 접속한 클라이언트 8개의 화면과 클라이언트별 복제 상태 표시](./images/ue-dedicated-server-optimization-lab/eight-clients.webp)
 
-*클라이언트 화면마다 그 클라이언트에 복제된 자원 노드, NPC, 건축물 수와 플레이어 위치가 표시됩니다.*
-
-최적화가 없는 오픈월드 서버에서 시작해 Relevancy, Dormancy, Net Update Frequency 같은 엔진 기능을 한 번에 하나씩 적용합니다. 측정은 PC 한 대에서 서버 하나와 클라이언트 8개를 띄우고, 한 변이 2km인 맵에 자원 노드 5,001개, NPC 350명, 건축물 500개를 고정 시드로 배치한 같은 시나리오로 측정을 반복합니다. 실행마다 처음 30초를 제외하고 60초를 측정하며, 세 번 실행한 중앙값으로 서버 프레임 시간과 대역폭을 비교합니다. 단계마다 원리와 측정 근거를 글로 정리합니다.
+최적화가 없는 오픈월드 서버에서 시작해 Relevancy, Dormancy, Net Update Frequency 같은 엔진 기능을 한 번에 하나씩 적용합니다. 측정은 PC 한 대에서 서버 하나와 클라이언트 8개를 띄우고, 한 변이 2km인 맵에 자원 노드 5,001개, NPC 350명, 건축물 500개를 고정 시드로 배치한 같은 시나리오로 측정을 반복합니다. 실행마다 처음 30초를 제외하고 60초를 측정하며, 세 번 실행한 중앙값으로 서버 프레임 시간과 대역폭을 비교합니다. 클라이언트 화면마다 그 클라이언트에 복제된 자원 노드, NPC, 건축물 수와 플레이어 위치를 표시합니다. 단계마다 원리와 측정 근거를 글로 정리합니다.
 
 기법을 켜고 끄는 핵심 설정은 [자원 노드의 Relevancy, Dormancy와 갱신 빈도 설정](https://github.com/hon454/ue-dedicated-server-optimization-lab/blob/51816f637c4b8a99013e5c14591cd41cfdb85345/Source/DSOptLab/LabResourceNode.cpp#L19-L29)에서, 단계별 차이는 [단계별로 최적화해 보기](https://hon454.github.io/ue-dedicated-server-optimization-lab/)에서 볼 수 있습니다.
 
@@ -48,11 +46,9 @@
 
 ![Shotloom 편집기에서 0프레임과 60프레임 사이의 카메라를 30프레임에서 평가한 화면](../projects/images/shotloom/local-09-camera-keyframe-midpoint.webp)
 
-*0프레임과 60프레임에 카메라 키를 두고 30프레임을 평가한 화면입니다. 타임라인의 Camera 트랙 아래에 Position, Rotation, FOV 키가 따로 놓입니다.*
-
 - **편집 명령과 Undo/Redo:** React UI, Rust 문서 모델과 Bevy 런타임을 잇는 브리지 계약에 트랜잭션 수명주기와 Undo/Redo 명령을 추가하고, 이 경로 위에 Undo/Redo와 저장, 복원을 구현했습니다.
 - **편집 트랜잭션과 롤백:** 드래그 시작부터 확정까지를 하나의 트랜잭션으로 기록하고, 명령이 거절되거나 시간이 초과되면 롤백해 UI와 런타임, 저장 상태를 일치시켰습니다.
-- **캐릭터와 카메라 저작:** 캐릭터 배치와 포즈 후보 적용, 속성별 카메라 키프레임을 편집 UI부터 타임라인 평가와 저장 형식까지 연결했습니다. 브라우저와 CLI가 같은 Rust 코어와 번들 형식을 사용하도록 구성했습니다.
+- **캐릭터와 카메라 저작:** 캐릭터 배치와 포즈 후보 적용, 속성별(Position, Rotation, FOV) 카메라 키프레임을 편집 UI부터 타임라인 평가와 저장 형식까지 연결했습니다. 브라우저와 CLI가 같은 Rust 코어와 번들 형식을 사용하도록 구성했습니다.
 - **생성 서비스 통합:** 영상 제작 서비스 CineV의 샷을 편집 가능한 3D 장면으로 열고, 생성 영상의 마지막 프레임 이미지를 스토리보드로 돌려주도록 구현했습니다. 생성과 결과 저장을 분리해 저장에 실패하면 같은 결과를 다시 전송할 수 있게 했습니다.
 - **CI 캐시 개선:** Rust Engine CI의 캐시를 target 아카이브에서 sccache로 바꿔 캐시 크기를 약 1.8GB에서 684MB로 약 62% 줄였습니다. warm CI에서 컴파일 374건이 모두 캐시에 적중했습니다.
 
@@ -70,11 +66,7 @@
 
 ![CINEVStudio에서 액션 조건을 타입별 요구조건으로 입력하는 Unreal Editor 화면](../projects/images/cinev-studio/action-asset.webp)
 
-*액션 데이터 에셋에서 대상 타입(Prop, Location)을 고르고 높이와 태그 요구조건을 붙이는 화면입니다.*
-
 ![AnimComposite에서 액션의 모션 구간과 Notify, Curve를 함께 편집하는 Unreal Editor 화면](../projects/images/cinev-studio/animation-composite.webp)
-
-*의자에 앉는 모션 위에 자세 구간 Notify(Stand, SittingOnObject)와 골반 IK Curve를 함께 놓은 AnimComposite 화면입니다.*
 
 - **액션 데이터 작성 구조:** 문서와 대조하며 맞추던 액션 조건을 타입별 에셋 입력 구조로 바꾸고, 테이블에 프레임 값으로 적던 모션 구간과 이벤트 시점은 애니메이션을 보며 AnimComposite에서 편집하게 했습니다. 데이터 타입과 실행 경로, 변환기를 개발하고 검증 프레임워크에 액션 데이터 검증기를 추가했습니다. 제작자가 기억해 맞추던 조건 관계를 입력 구조와 검증기가 대신하게 됐습니다.
 - **AI 결과의 실행과 편집:** AI의 행동 지시를 현재 장면에서 실행할 수 있는 액션으로 해석하고, 생성 모션을 선택해 타임라인에 적용하는 흐름을 구현했습니다. 이 결과도 일반 편집 데이터와 같은 Undo/Redo와 저장, 복원 경로를 거치게 했습니다.
@@ -135,8 +127,6 @@
 
 ![G-STAR 2023 인디 어워즈에서 Games for Impact 수상작으로 발표된 길고양이 이야기 2](../projects/images/a-street-cats-tale-2/image-05.webp)
 
-*G-STAR 2023 인디 어워즈에서 Games for Impact 수상이 발표된 중계 화면입니다.*
-
 - **주요 게임 시스템:** 세이브와 로드, 퀘스트, 대화, 이동, 컷신과 UI를 개발했습니다.
 - **플랫폼 연동:** 컨트롤러 입력, Steam 업적과 STOVE 구매 인증을 연동했습니다.
 - **PC 출시 전담:** 스토어 등록부터 다국어 빌드 준비, 출시 빌드 검수와 업로드까지 맡았습니다. 2023년 STOVE Windows 얼리 액세스와 Steam Windows, macOS 정식 출시를 진행했습니다.
@@ -191,8 +181,6 @@
 ![SW 및 회의 지원 우수상](./images/army-service/sw-support-award-2019-06-19.webp)
 
 </div>
-
-*복무 중 받은 임명장과 표창입니다. 전장망 SW 지원과 회의 지원으로 우수상을, 을지태극훈련 지원으로 표창을 받았습니다.*
 
 - **프로그램 개발:** C#과 WPF로 기존 프로그램을 이식하고, VBA로 엑셀 데이터 정리 프로그램을 개발했습니다.
 - **시스템 운영:** 육군 지휘통제시스템의 장애 대응과 운영을 맡고 응용체계관리반 분대장으로 복무했습니다.

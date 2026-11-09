@@ -68,6 +68,13 @@ The files in `.agents/docs/blog-writing/` are the single source of truth for blo
 voice and editing policy. Do not duplicate those rules in skills or invoke a
 general humanizer as a required stage.
 
+### Post Dates
+
+- Post lists sort by the `published` value alone. When another post already
+  has the same publication date, write `published` with a time, for example
+  `2026-11-09T21:40:00+09:00`, so the newer post sorts first. A date-only
+  value ties with the other post and falls back to file-name order.
+
 ### Post Tags
 
 - Use English lowercase kebab-case for post `tags` (e.g. `agent-skill`).

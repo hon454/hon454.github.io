@@ -99,7 +99,7 @@
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/VVwmqfkluGw" title="Night of The Dead v1.0 Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-- **전투와 무기 시스템:** 2022년 4월부터 8월까지 플레이어 무기를 `AWeaponEntity` 계층과 무기 종류별 공격 컴포넌트로 다시 짰습니다. 무기는 발사와 장전을, 캐릭터의 공격 컴포넌트는 입력과 조준을 맡고, 탄약·반동·조준 상태는 인터페이스로 연결해 컴포넌트끼리 직접 참조하지 않습니다. 그 위에 샷건, 발사체, 반동과 제어성, 총기 부착물을 만들었습니다.
+- **전투와 무기 시스템:** 2022년 4월부터 8월까지 플레이어 무기를 `AWeaponEntity` 계층과 무기 종류별 공격 컴포넌트로 다시 짰습니다. 무기는 발사와 장전을, 캐릭터의 공격 컴포넌트는 입력과 조준을 맡고, 탄약·반동·조준 상태는 인터페이스로 연결해 컴포넌트끼리 직접 참조하지 않습니다. 그 위에 샷건, 발사체, 반동과 제어성, 총기 부착물을 만들었습니다. 부착물 액터는 서버에서만 만들고 장착 목록을 모든 클라이언트에 복제하며, 부착물의 호환 무기와 효과는 데이터로 정의합니다.
 - **멀티플레이 판정:** 샷건은 클라이언트가 랜덤 시드로 펠릿을 트레이스하고, 서버가 시선 방향과 대상 바운딩 박스 여유로 검증한 히트에만 피해를 줍니다. 다른 클라이언트에는 시드만 복제해 같은 펠릿 패턴으로 이펙트를 그립니다. 발사체는 피해 계산을 쏜 쪽의 인터페이스에 위임하고, 모든 플레이어로부터 멀어진 탄환은 서버가 제거합니다.
 - **상태이상과 무기 특성:** 무기·능력치·전투 판정·버프를 Gameplay Ability System으로 옮기고, 속성 상쇄(독↔번개, 냉기↔화염)와 게임 시간 단위 지속시간을 GameplayEffect 적용 시점 한 곳에서 처리하도록 Ability System Component를 확장했습니다. 공격 경로마다 흩어져 있던 효과 부여를 AttackTrait 하나로 모았습니다.
 - **근접 전투와 피격:** 적중 시 서버에서 확률로 발동하는 추가 공격 체계(넉백·강타·즉사·전기 폭발·독가스), 0.75초 안에 다시 맞출 때마다 쌓이는 연타 스택, 애니메이션 노티파이·장비 스탯·포스처로 판정하는 슈퍼아머와 무적 컴포넌트, 방패 패링 피해와 패링 강화 스킬을 구현했습니다. 피격 애니메이션은 서버가 고른 몽타주를 랜덤 시드와 함께 멀티캐스트해 모든 클라이언트가 같은 동작을 재생합니다. 근접 판정의 박스 스윕과 가드·패링 판정 창은 팀이 만든 것을 보강했습니다.
@@ -113,15 +113,9 @@
 
 ![펌프 액션 샷건](../projects/images/night-of-the-dead/weapon-shotgun.webp)
 
-*펌프 액션 샷건입니다. 여러 발의 펠릿을 클라이언트가 시드로 트레이스하고 서버가 시선 방향과 바운딩 박스로 검증합니다.*
-
 ![무기 부착물: 소음기, 머즐 브레이크, 홀로그램 사이트, 도트 사이트, 스코프, 라이트](../projects/images/night-of-the-dead/weapon-attachments.webp)
 
-*무기 부착물입니다. 조준경은 확대 배율을, 소음기는 총성과 좀비가 듣는 소음을 바꿉니다. 부착물 액터는 서버에서만 만들고 목록은 모든 클라이언트에 복제됩니다.*
-
 ![장비와 인벤토리, 무기 파츠 장착 화면](../projects/images/night-of-the-dead/weapon-parts-ui.webp)
-
-*장비와 인벤토리, 무기 파츠 장착 화면입니다. 어떤 부착물이 어떤 무기에 맞고 어떤 효과를 주는지는 데이터로 정의합니다.*
 
 ```text
 AEquipmentEntity
@@ -138,19 +132,11 @@ ULFPlayerRecoilComponent ── 반동 보간과 회복, 입력에 따른 축별
 ULFCharacterFiringAttackComponent ── 조준 알파, ADS 카메라 전환, 스코프 FOV와 조준점 정렬
 ```
 
-*무기 클래스 계층과 각 계층의 책임입니다. 공통 동작은 위쪽 클래스에, 샷건과 투사체 총기의 차이만 아래쪽에 둡니다.*
-
 ![한 서버에서 함께 플레이하는 세 플레이어](../projects/images/night-of-the-dead/multiplayer-session.webp)
-
-*한 서버에서 함께 플레이하는 모습입니다. 각 플레이어의 장비와 부착물, 핫바의 무기와 탄약 수가 다른 플레이어에게도 같게 보입니다.*
 
 ![녹색 빛을 내며 보스룸에 서 있는 보스 좀비](../projects/images/night-of-the-dead/boss-fight.webp)
 
-*보스룸의 보스 좀비입니다. 보스는 거리 구간과 확률, 쿨다운, 가중치로 패턴을 고르고, 공격 중에 맞아도 패턴을 유지하다가 강인도가 0이 되면 그로기에 들어갑니다.*
-
 ![밤에 기지 앞 방어벽에 몰린 좀비 무리](../projects/images/night-of-the-dead/wave-zombies.webp)
-
-*밤마다 기지 앞에 몰리는 좀비입니다. 서버는 전투 중인 좀비의 포즈만 갱신하고, 클라이언트는 Significance에 따라 애니메이션 갱신 빈도를 나눕니다.*
 
 ![UE 4.27에서 같은 장면을 커스텀 Destructible 시스템과 교체형 APEX로 부순 화면](../projects/images/night-of-the-dead/destruction-custom-vs-apexswap.webp)
 

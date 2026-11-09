@@ -33,7 +33,7 @@ order: 1
 
 이전에는 `Unreal Engine` 기반의 `CINEVStudio`를 개발했다. `Shotloom`에서는 그때 다뤘던 좌표계, 애니메이션, 카메라와 자산 로딩을 `Rust`의 소유권, `Bevy`의 `ECS` 구조, 브라우저의 비동기 실행과 저장 환경에 맞춰 구현했다. 담당 범위도 편집기 내부 기능에서 생성 파이프라인과 서비스 통합으로 넓어졌다.
 
-이 프로젝트는 사용자별 서버 GPU 세션에 의존하던 `Unreal Engine`과 Pixel Streaming 경로를 브라우저 우선 편집기로 대체하는 것을 목표로 했다. `CINEVStudio` 후속 개발의 속도를 높이기 위해 AI 에이전트를 개발 과정 전반에 활용하는 방식으로 전환했다. 에이전트 작업 가드레일과 hook을 추가하고, 요구사항을 Linear 이슈, 명세, ADR과 테스트로 구조화했다. 반복 절차는 2026년 5월 공개한 개인 오픈소스 [Grimoire](https://github.com/hon454/grimoire)로 정리했다. Rust 엔진 CI 작업의 약 1.8GB target 아카이브를 684MB sccache로 교체해 캐시 크기를 약 62% 줄였고, warm CI에서 374건의 컴파일이 모두 캐시에 적중하는 것을 확인했다. Linux headless WebGPU 테스트는 준비 이벤트 이후의 오류까지 확인하도록 보완해 거짓 통과를 제거했다.
+이 프로젝트는 사용자별 서버 GPU 세션에 의존하던 `Unreal Engine`과 Pixel Streaming 경로를 브라우저 우선 편집기로 대체하는 것을 목표로 했다. `CINEVStudio` 후속 개발의 속도를 높이기 위해 AI 에이전트를 개발 과정 전반에 활용하는 방식으로 전환했다. 에이전트 작업 가드레일과 hook을 추가하고, 요구사항을 Linear 이슈, 명세, ADR과 테스트로 구조화했다. Rust 엔진 CI 작업의 약 1.8GB target 아카이브를 684MB sccache로 교체해 캐시 크기를 약 62% 줄였고, warm CI에서 374건의 컴파일이 모두 캐시에 적중하는 것을 확인했다. Linux headless WebGPU 테스트는 준비 이벤트 이후의 오류까지 확인하도록 보완해 거짓 통과를 제거했다.
 
 ## 대표 제작 결과
 

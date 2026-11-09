@@ -8,14 +8,14 @@ draft: false
 status: published
 lang: ko
 link:
-  - label: "공식 사이트"
+  - label: "CINEV Archive"
     icon: "material-symbols:language"
-    value: "https://cinev.com/ko"
+    value: "https://cinev.github.io/archive/"
 ---
 
 ## 프로젝트와 담당 역할
 
-**CINEV**는 사용자가 입력한 이야기를 바탕으로 캐릭터, 배경, 행동, 대사, 카메라를 구성하는 AI 애니메이션 제작 서비스다. **이야기 입력 → AI 장면 구성 → Studio 편집 → 영상 출력**으로 이어진다.
+**CINEV**는 사용자가 입력한 이야기를 바탕으로 캐릭터, 배경, 행동, 대사, 카메라를 구성하는 AI 애니메이션 제작 서비스다. **이야기 입력 → AI 장면 구성 → Studio 편집 → 영상 출력**으로 이어진다. CINEV는 2026년 11월 서비스 종료를 공지했고, 제품과 기술 기록은 회사가 공개한 [CINEV Archive](https://cinev.github.io/archive/)에 남아 있다.
 
 **CINEVStudio**는 이 흐름에서 3D 장면 제작과 연출을 담당하는 **Unreal Engine 5** 기반 도구다. 사용자는 AI가 구성한 장면에서 캐릭터의 배치, 행동, 표정, 대사, 립싱크, 소품과의 상호작용, 카메라와 타임라인을 조정하고 편집한 장면을 영상으로 출력한다. 편집 타임라인은 Sequencer의 런타임 계층인 `MovieScene`을 확장한 커스텀 트랙과 섹션으로 이루어져 있다.
 
@@ -33,17 +33,24 @@ link:
 
 ### 제품 화면과 실제 제작 사례
 
+<center><figure>
 <iframe class="video-embed" src="https://www.youtube.com/embed/8Pq8nM0Rm-w" title="CINEV Build Storyboard 튜토리얼" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-*장면 편집과 영상 제작 흐름을 보여주는 제품 튜토리얼.*
+<figcaption>CINEV Build Storyboard 튜토리얼</figcaption>
+</figure></center>
 
 ![CINEVStudio의 캐릭터 뷰포트와 액션 타임라인](./images/cinev-studio/studio-editor.webp)
 
-*중앙 뷰포트에서 장면을 확인하고 하단 타임라인에서 편집한다. 화면과 콘텐츠는 팀의 결과물이다.*
+<center><figure>
+<iframe class="video-embed" src="https://www.youtube.com/embed/nD2Aw2uxv9s" title="CINEV Studio 내 캐릭터로 장면 제작" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<figcaption>캐릭터 배치와 카메라 타깃 설정 시연</figcaption>
+</figure></center>
 
+<center><figure>
 <iframe class="video-embed" src="https://www.youtube.com/embed/NQJT8oN7NGg" title="CINEV Studio를 활용한 무조건 이혼한다 애니메이션 제작 과정" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<figcaption>『무조건 이혼한다』 애니메이션 제작 과정</figcaption>
+</figure></center>
 
-*CINEVStudio로 [『무조건 이혼한다』](https://m.comic.naver.com/webtoon/list?titleId=842623)를 애니메이션화하는 과정. [완성 영상 / 네이버 컷츠 1화](https://comic.naver.com/cuts/embed?id=KW-cuts:0-cuts_6502-1).*
+CINEVStudio로 [『무조건 이혼한다』](https://m.comic.naver.com/webtoon/list?titleId=842623)를 애니메이션화한 완성 영상은 [네이버 컷츠 1화](https://comic.naver.com/cuts/embed?id=KW-cuts:0-cuts_6502-1)에서 볼 수 있다.
 
 ### 담당 업무와 활용 기술
 
@@ -120,17 +127,15 @@ public:
 
 </details>
 
-![액션 에셋 안에서 대상과 요구조건을 계층적으로 편집하는 프로토타입](./images/cinev-studio/action-asset.webp)
+아래 화면은 액션 → 대상 → 요구조건으로 이어지는 입력 구조의 프로토타입이다. 프로토타입은 `UObject` 기반 조건을 썼고, 이후 구현에서는 `TInstancedStruct`를 사용했다.
 
-*액션 → 대상 → 요구조건으로 이어지는 입력 구조. 화면의 프로토타입은 `UObject` 기반 조건이며, 이후 구현에서는 `TInstancedStruct`를 사용했다.*
+![액션 에셋 안에서 대상과 요구조건을 계층적으로 편집하는 프로토타입](./images/cinev-studio/action-asset.webp)
 
 ### 작성한 데이터를 실행용 에셋으로 통합
 
 애니메이션 구간과 `Notify`와 Curve는 `AnimComposite`에서 편집하게 했다. 원본 `AnimSequence`는 공유하고 액션별 구간과 이벤트는 Composite에 두어, 공유 원본을 수정하지 않고 액션별 설정을 작성하도록 했다.
 
 ![AnimComposite에서 모션 구간과 Notify와 Curve를 함께 편집하는 화면](./images/cinev-studio/animation-composite.webp)
-
-*테이블에 프레임 값을 따로 기입하던 작업을 애니메이션을 보며 편집하는 위치로 옮겼다.*
 
 | 작성 목적 | 데이터 구조 |
 |---|---|
@@ -141,11 +146,12 @@ public:
 
 이렇게 작성한 데이터를 Generated Data Asset으로 모아 실행 경로에 연결했다. 애니메이션 메타데이터와 이벤트 시각, 길이, `Modifier`를 생성 단계에서 정리해 런타임이 해당 정보를 읽기 위해 애니메이션 에셋에 접근하던 부분을 분리했다.
 
+<center><figure>
 <img src="/diagrams/cinev-studio/authoring.svg" width="440" height="478" alt="액션 조건과 AnimComposite의 이벤트 설정, 테이블 메타데이터를 생성 에셋으로 통합하는 구조" loading="lazy" decoding="async" />
+<figcaption>액션 데이터 작성과 생성 에셋 통합</figcaption>
+</figure></center>
 
 [액션 데이터 도식 원본 확대](/diagrams/cinev-studio/authoring.svg)
-
-*작성 목적에 맞춰 데이터를 나누고 생성 단계에서 실행용 정보로 모은다.*
 
 데이터 타입과 실행 경로 전환, 변환기 구현을 담당하고 전환 절차를 문서화했다. 동료와 도구 작업을 분담했으며 후속 콘텐츠팀 제작 가이드에도 에셋 작성과 생성 데이터 구축 절차가 반영됐다. 필요한 조건만 조합하고 타입별 필드로 값을 입력하는 흐름을 만들었고 소품별 값과 컴포넌트 선택에 필요한 문서 참조는 유지했다.
 
@@ -163,11 +169,12 @@ public:
 
 서비스의 대상 참조를 실제 `Actor`와 `Component` 문맥으로 채우고 `GameplayTag`로 식별한 행동과 액션별 요구조건을 현재 월드 상태와 대조했다. 자세, 대상, 점유 상태와 `NavMesh` 경로를 종합 평가하는 `Strategy`/`Functor` 기반 선택 파이프라인을 구현했다. 후보를 걸러내는 조건 검사와 점수 평가를 `Functor` 단위로 나눈 뒤, 선택한 액션을 `Executor`와 시퀀스 생성에 연결했다.
 
+<center><figure>
 <img src="/diagrams/cinev-studio/interpreter.svg" width="440" height="572" alt="외부 행동 지시를 파싱하고 월드 문맥과 요구조건을 평가해 Executor로 연결한다" loading="lazy" decoding="async" />
+<figcaption>AI 행동 해석 처리 흐름</figcaption>
+</figure></center>
 
 [AI 행동 해석 도식 원본 확대](/diagrams/cinev-studio/interpreter.svg)
-
-*행동 지시를 파싱한 뒤 대상 문맥 구성, 후보 평가, 실행으로 이어지는 처리 흐름.*
 
 #### 평가 경로 통합과 판단 과정 추적
 
@@ -224,11 +231,12 @@ HTTP/JSON API를 연동하고 생성 요청을 성별과 설정 가능한 배치
 
 생성 상태와 결과 목록을 관리하는 계층을 구성하고 약한 `UObject` 참조 기반 콜백과 `Delegate`로 결과를 편집기에 전달했다. 결과 조회 API와 선택 UI를 연결해 사용자가 생성된 모션을 고르고 타임라인에 적용하게 했다.
 
+<center><figure>
 <img src="/diagrams/cinev-studio/motion.svg" width="440" height="598" alt="비동기 모션 생성 결과를 집계하고 본 변환, 선택, 편집 적용과 실패 처리를 나눈다" loading="lazy" decoding="async" />
+<figcaption>AI 모션 생성 결과 처리 흐름</figcaption>
+</figure></center>
 
 [AI 모션 연동 도식 원본 확대](/diagrams/cinev-studio/motion.svg)
-
-*성공한 결과의 변환, 적용과 실패 처리를 나누고 편집 흐름에 연결한다.*
 
 <details>
 <summary>비동기 응답의 수명 관리와 부분 성공 처리</summary>
@@ -277,6 +285,11 @@ Client.GenerateBatch(Requests,
 
 사용 흐름으로 보면, 생성 결과 목록에서 모션을 고른 뒤 타임라인에 적용하고 필요하면 Undo/Redo로 적용을 취소하거나 다시 적용한다. 선택하고 편집한 결과는 프로젝트의 `MotionSet` 저장과 복원 경로로 이어진다. 원격 응답을 받는 기능을 편집기의 작업 단위와 데이터 모델에 연결한 것이다.
 
+<center><figure>
+<iframe class="video-embed" src="https://www.youtube.com/embed/Yp7Ao5nen8Q" title="CINEV Studio AI 액션 생성" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<figcaption>프롬프트로 모션을 생성해 적용하는 시연</figcaption>
+</figure></center>
+
 <a id="shot-model"></a>
 
 ## 3. Shot 상태 모델과 저장, 복원 구조 개편
@@ -287,11 +300,12 @@ Client.GenerateBatch(Requests,
 
 실행 중 객체 참조는 `TWeakObjectPtr`로 유지하고 저장할 때는 `FGuid`로 기록해 로드 시 객체 참조로 복원했다. `UObject`로 관리하는 샷 모델과 `MovieScene`/`Sequencer`의 타임라인 표현 사이에서 책임을 나눈 것이다.
 
+<center><figure>
 <img src="/diagrams/cinev-studio/shot.svg" width="440" height="624" alt="Shot 모델의 초기 상태 소유와 약한 참조, GUID 저장과 로드 복원, 프레임 범위 처리" loading="lazy" decoding="async" />
+<figcaption>Shot 모델의 상태 소유와 복원</figcaption>
+</figure></center>
 
 [Shot 모델 도식 원본 확대](/diagrams/cinev-studio/shot.svg)
-
-*샷 모델이 초기 상태를 관리하고 런타임 참조와 저장용 식별자를 연결한다.*
 
 `FFrameNumber` 기반 프레임 문맥과 범위별 링크 재계산을 샷 단위로 연결하고 기존 저장 데이터를 읽기 위한 이관 작업도 진행했다. 샷 초기 상태를 관리하는 주체와 참조의 복원 경로를 정리하면서 기존 프로젝트를 새 상태 모델에 연결했다.
 
@@ -342,11 +356,23 @@ bool UndoAndRefresh(FCompoundEdit& Edit, FTimelineModel& Timeline)
 
 </details>
 
+<center><figure>
+<iframe class="video-embed" src="https://www.youtube.com/embed/72bpQuRm7qM" title="CINEV Studio 액션 위치와 타이밍 편집" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<figcaption>액션 위치와 타이밍 편집 시연</figcaption>
+</figure></center>
+
 ### Root Motion과 카메라 이동의 재현
 
 타임라인에서 재생 속도나 반복 설정을 바꾸면 캐릭터의 이동 경로도 함께 달라져야 했다. `Root Motion`을 actor-space 기준으로 베이크하고, 재생 속도, loop, frame offset이 바뀌면 키를 다시 계산하도록 했다.
 
 카메라 orbit은 대상 주위를 도는 동안 반경이 줄어들거나 수직 회전이 극점에서 뒤집히는 문제가 있었다. Quaternion 기반 구면 이동에 충돌 처리와 pole 제한을 적용해 반경 손실과 수직 회전 뒤집힘을 해결했다.
+
+카메라 편집 V2와 Auto Camera 워크플로도 구현했다. 포커스 타깃, 자동 카메라 파라미터 `ViewModel`, 키 편집 상태와 템플릿 탭이 이 작업에 포함된다.
+
+<center><figure>
+<iframe class="video-embed" src="https://www.youtube.com/embed/NJJ5w8NFKiU" title="CINEV Studio 카메라 연출" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<figcaption>카메라 템플릿과 타깃 구도 시연</figcaption>
+</figure></center>
 
 ## 편집기를 지탱하는 UI와 공통 서비스
 

@@ -13,9 +13,9 @@ tags:
   - ai-agent
 lang: ko
 link:
-  - label: "공식 사이트"
+  - label: "CINEV Archive"
     icon: "material-symbols:language"
-    value: "https://cinev.com/ko"
+    value: "https://cinev.github.io/shotloom/"
 draft: false
 status: published
 order: 1
@@ -25,7 +25,7 @@ order: 1
 
 `Shotloom`은 캐릭터의 동작과 카메라 구도를 편집하는 브라우저 기반 3D 장면 연출 도구다. 캐릭터와 소품을 배치하고 포즈, 동작, 카메라 움직임을 타임라인에서 구성한다. 편집한 장면은 이미지와 영상으로 출력하거나 `SceneGen`의 영상 생성에 사용한다.
 
-나는 `Rust`, `Bevy`와 `React` 환경에서 캐릭터 가져오기, 편집 데이터 모델, 저장과 되돌리기, 카메라와 포즈 저작 기능을 구현했다. 이후 생성 서비스의 결과를 편집 가능한 장면으로 변환하고, 편집 결과를 `CineV`의 제작 흐름으로 연결하는 작업을 맡았다.
+나는 `Rust`, `Bevy`와 `React` 환경에서 캐릭터 가져오기, 편집 데이터 모델, 저장과 되돌리기, 카메라와 포즈 저작 기능을 구현했다. 이후 생성 서비스의 결과를 편집 가능한 장면으로 변환하고, 편집 결과를 `CineV`의 제작 흐름으로 연결하는 작업을 맡았다. `CineV`는 2026년 11월 서비스 종료를 공지했고, `Shotloom`의 사용법과 화면은 회사가 공개한 [CINEV Archive의 Shotloom 페이지](https://cinev.github.io/shotloom/)에 남아 있다.
 
 - **주요 환경:** `Rust`, `Bevy`, `WebAssembly`, `WebGPU`, `React`, `TypeScript`, `Tauri`
 - **담당 범위:** 3D 편집기 기반, 편집과 저장 구조, 생성 데이터 변환, 카메라와 포즈 저작과 출력, `CineV` 통합
@@ -41,9 +41,10 @@ order: 1
 
 스토리보드에서 인물을 가까이 담은 샷을 3D 장면으로 열고, 주변 공간이 함께 보이도록 카메라 구도를 바꾼 사례다. 아래 영상은 편집한 장면을 바탕으로 `SceneGen`에서 생성한 결과다.
 
+<center><figure>
 <iframe class="video-embed" src="https://www.youtube.com/embed/P-CnmKYDoxg" title="Shotloom에서 연출한 장면을 바탕으로 SceneGen에서 생성한 결과 영상" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-*장면 연출 이후 `SceneGen`으로 생성한 결과. 제품 화면과 콘텐츠는 팀의 결과물이며, 내가 맡은 편집기 구현 범위는 아래에 정리했다.*
+<figcaption>SceneGen으로 생성한 결과 영상</figcaption>
+</figure></center>
 
 ![원본 샷. 벤치에 앉아 책을 읽는 인물을 가까이 담은 스토리보드 이미지다.](./images/shotloom/workflow-original-shot.webp)
 
@@ -62,9 +63,10 @@ order: 1
 
 ### 포즈, 동작, 카메라를 편집하는 과정
 
+<center><figure>
 <iframe class="video-embed" src="https://www.youtube.com/embed/7tAEuFip6nA" title="Shotloom의 포즈, 동작, 카메라 편집부터 SceneGen 영상 생성까지의 제작 과정" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-*포즈와 동작을 적용하고 카메라 구도를 편집한 뒤 `SceneGen`으로 영상을 생성하는 과정.*
+<figcaption>포즈·동작·카메라 편집과 영상 생성 과정</figcaption>
+</figure></center>
 
 모션 후보를 미리 보는 것과 타임라인에 적용하는 것은 별개다. 후보를 확인한 뒤 대상 캐릭터와 구간을 정해 클립을 추가한다. 카메라도 프레임별로 구도를 저장하고, 키 사이를 재생하면서 의도한 움직임인지 확인한다.
 

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 590" width="1000" height="590" role="img" lang="ko" aria-labelledby="t d">
+<title id="t">렉으로 한 프레임에 몰려 나간 탄을 지난 시간만큼 앞에서 출발시키기</title>
+<desc id="d">한 프레임이 100 ms로 늘어져 누적 방식이 그 프레임에서 7발을 한꺼번에 쏜 경우. 위 줄은 보정 없이 7발이 모두 총구에서 겹쳐 출발한다. 가운데 줄은 각 발을 (지금 − 그 발의 발사 시각) × 탄속만큼 앞에서 출발시켜, 85.7 ms 전에 쐈어야 할 첫 발이 가장 앞에, 방금 쏜 발이 총구에 있다. 아래 줄은 한 프레임에 따라잡는 발 수에 상한(예: 4발)을 둔 경우로, 오래된 3발은 버리고 최근 4발만 쏜다.</desc>
+<defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
+
+<style>
+text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;fill:#1f2937}
+.title{font-size:24px;font-weight:700}
+.sub{font-size:15px;fill:#64748b}
+.lane{font-size:16px;font-weight:700}
+.lanesub{font-size:13px;fill:#64748b}
+.mono{font-family:'JetBrains Mono',Consolas,'SFMono-Regular',Menlo,monospace}
+.tick{font-size:12px;fill:#94a3b8;text-anchor:middle}
+.cnt{font-size:13px;font-weight:700;text-anchor:middle}
+.note{font-size:13px;fill:#64748b}
+.big{font-size:28px;font-weight:800;text-anchor:middle}
+.cap{font-size:14px;font-weight:700;fill:#334155}
+</style>
+</defs>
+<rect width="1000" height="590" fill="#f8fafc"/>
+<rect width="1000" height="590" fill="url(#grid)"/>
+
+<text x="40" y="50" class="title">몰려 나간 탄은 지난 시간만큼 앞에서 출발시킨다</text>
+<text x="40" y="78" class="sub">렉으로 한 프레임이 100 ms가 되어 누적 방식이 한 프레임에 7발을 쏜 순간 (초당 70발)</text>
+<text x="40" y="128" class="lane">보정 없이</text>
+<text x="40" y="148" class="lanesub">7발이 모두 총구에서 같은 순간에 출발한다</text>
+<line x1="210" y1="190" x2="970.0" y2="190" stroke="#e2e8f0" stroke-width="2"/>
+<rect x="114" y="177" width="90" height="26" rx="7" fill="#475569"/>
+<rect x="170" y="198" width="20" height="26" rx="5" fill="#475569"/>
+<line x1="210" y1="160" x2="210" y2="220" stroke="#94a3b8" stroke-dasharray="3 3"/>
+<circle cx="218.0" cy="190" r="9" fill="#d97706" stroke="#fff" stroke-width="1.5"/>
+<circle cx="220.2" cy="190" r="9" fill="#d97706" stroke="#fff" stroke-width="1.5"/>
+<circle cx="222.4" cy="190" r="9" fill="#d97706" stroke="#fff" stroke-width="1.5"/>
+<circle cx="224.6" cy="190" r="9" fill="#d97706" stroke="#fff" stroke-width="1.5"/>
+<circle cx="226.8" cy="190" r="9" fill="#d97706" stroke="#fff" stroke-width="1.5"/>
+<circle cx="229.0" cy="190" r="9" fill="#d97706" stroke="#fff" stroke-width="1.5"/>
+<circle cx="231.2" cy="190" r="9" fill="#d97706" stroke="#fff" stroke-width="1.5"/>
+<text x="258" y="195" class="cnt" style="fill:#b91c1c;text-anchor:start">7발이 겹친다</text>
+<text x="40" y="268" class="lane">지난 시간만큼 앞에서 출발</text>
+<text x="40" y="288" class="lanesub">각 발의 출발 위치 = 총구 + (지금 − 그 발의 발사 시각) × 탄속</text>
+<line x1="210" y1="330" x2="970.0" y2="330" stroke="#e2e8f0" stroke-width="2"/>
+<rect x="114" y="317" width="90" height="26" rx="7" fill="#475569"/>
+<rect x="170" y="338" width="20" height="26" rx="5" fill="#475569"/>
+<line x1="210" y1="300" x2="210" y2="360" stroke="#94a3b8" stroke-dasharray="3 3"/>
+<circle cx="861.3" cy="330" r="9" fill="#d97706"/>
+<text x="861.3" y="313" class="tick">85.7 ms 전</text>
+<circle cx="752.6" cy="330" r="9" fill="#d97706"/>
+<text x="752.6" y="313" class="tick">71.4 ms 전</text>
+<circle cx="644.0" cy="330" r="9" fill="#d97706"/>
+<text x="644.0" y="313" class="tick">57.1 ms 전</text>
+<circle cx="536.0" cy="330" r="9" fill="#d97706"/>
+<text x="536.0" y="313" class="tick">42.9 ms 전</text>
+<circle cx="427.4" cy="330" r="9" fill="#d97706"/>
+<text x="427.4" y="313" class="tick">28.6 ms 전</text>
+<circle cx="318.7" cy="330" r="9" fill="#d97706"/>
+<text x="318.7" y="313" class="tick">14.3 ms 전</text>
+<circle cx="210.0" cy="330" r="9" fill="#d97706"/>
+<text x="210.0" y="313" class="tick"></text>
+<text x="861.3" y="362" class="cnt" style="fill:#1f2937">첫 발</text>
+<text x="218.0" y="362" class="cnt" style="fill:#1f2937;text-anchor:start">마지막 발</text>
+<text x="40" y="413" class="lane">따라잡기 상한 4발</text>
+<text x="40" y="433" class="lanesub">한 프레임에 4발까지만 쏘고, 더 오래된 발은 버린다</text>
+<line x1="210" y1="475" x2="970.0" y2="475" stroke="#e2e8f0" stroke-width="2"/>
+<rect x="114" y="462" width="90" height="26" rx="7" fill="#475569"/>
+<rect x="170" y="483" width="20" height="26" rx="5" fill="#475569"/>
+<line x1="210" y1="445" x2="210" y2="505" stroke="#94a3b8" stroke-dasharray="3 3"/>
+<circle cx="861.3" cy="475" r="9" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="861.3" y="479" class="cnt" style="fill:#94a3b8;font-size:12px">✕</text>
+<circle cx="752.6" cy="475" r="9" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="752.6" y="479" class="cnt" style="fill:#94a3b8;font-size:12px">✕</text>
+<circle cx="644.0" cy="475" r="9" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="644.0" y="479" class="cnt" style="fill:#94a3b8;font-size:12px">✕</text>
+<circle cx="536.0" cy="475" r="9" fill="#d97706"/>
+<circle cx="427.4" cy="475" r="9" fill="#d97706"/>
+<circle cx="318.7" cy="475" r="9" fill="#d97706"/>
+<circle cx="210.0" cy="475" r="9" fill="#d97706"/>
+<text x="752.6" y="507" class="note" style="text-anchor:middle">버린 3발</text>
+<line x1="210" y1="540" x2="861.3199999999999" y2="540" stroke="#94a3b8" marker-end="url(#arr)"/>
+<text x="536" y="563" class="note" style="text-anchor:middle">탄이 날아가는 방향 (거리 = 지난 시간 × 탄속)</text>
+</svg>

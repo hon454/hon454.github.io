@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" width="1000" height="700" role="img" lang="ko" aria-labelledby="t d">
+<title id="t">쏘는 클라이언트가 서버에 알리는 세 가지 방식</title>
+<desc id="d">60fps 클라이언트가 초당 70발로 쏠 때 0–100 ms 동안 서버로 가는 RPC를 세 방식으로 비교한다. 첫째, 발마다 RPC를 보내면 1초에 70개이고 Reliable이면 손실이 길어지면 버퍼 한도에 닿는다. 둘째, 쏜 프레임마다 그 프레임의 발들을 RPC 하나로 묶어 첫 발 시각, 발 수, 조준 방향, 난수 시드를 보내면 1초에 60개 이하이며 서버는 발사 간격으로 각 발의 시각을 복원해 검사한다. 셋째, 사격 시작과 정지만 보내면 사격 한 번에 2개이고 서버가 같은 누적 시간 루프로 직접 쏜다. 조준 방향은 이동 RPC와 함께 오는 시야각을 쓴다. 네트워크 지연은 그림에서 뺐다.</desc>
+<defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
+
+<style>
+text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;fill:#1f2937}
+.title{font-size:24px;font-weight:700}
+.sub{font-size:15px;fill:#64748b}
+.lane{font-size:16px;font-weight:700}
+.lanesub{font-size:13px;fill:#64748b}
+.mono{font-family:'JetBrains Mono',Consolas,'SFMono-Regular',Menlo,monospace}
+.tick{font-size:12px;fill:#94a3b8;text-anchor:middle}
+.cnt{font-size:13px;font-weight:700;text-anchor:middle}
+.note{font-size:13px;fill:#64748b}
+.big{font-size:28px;font-weight:800;text-anchor:middle}
+.cap{font-size:14px;font-weight:700;fill:#334155}
+</style>
+</defs>
+<rect width="1000" height="700" fill="#f8fafc"/>
+<rect width="1000" height="700" fill="url(#grid)"/>
+
+<text x="40" y="50" class="title">서버에 알리는 세 가지 방식</text>
+<text x="40" y="78" class="sub">60fps 클라이언트 · 초당 70발 · 서버 30Hz, 0–100 ms 구간 (네트워크 지연은 뺐다)</text>
+<text x="40" y="106" class="lane">A. 발마다 RPC</text>
+<line x1="215" y1="140" x2="655" y2="140" stroke="#cbd5e1" stroke-width="2"/>
+<line x1="215" y1="232" x2="655" y2="232" stroke="#cbd5e1" stroke-width="2"/>
+<text x="40" y="145" class="lanesub" style="fill:#4f46e5">클라이언트</text>
+<text x="40" y="237" class="lanesub" style="fill:#16a34a">서버</text>
+<rect x="212.0" y="132" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="285.3" y="132" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="358.7" y="132" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="432.0" y="132" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="505.3" y="132" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="578.7" y="132" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="652.0" y="132" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="211.0" y="222" width="8" height="20" rx="2" fill="#16a34a"/>
+<rect x="357.7" y="222" width="8" height="20" rx="2" fill="#16a34a"/>
+<rect x="504.3" y="222" width="8" height="20" rx="2" fill="#16a34a"/>
+<rect x="651.0" y="222" width="8" height="20" rx="2" fill="#16a34a"/>
+<circle cx="215.0" cy="124" r="4.5" fill="#d97706"/>
+<circle cx="288.3" cy="124" r="4.5" fill="#d97706"/>
+<circle cx="361.7" cy="124" r="4.5" fill="#d97706"/>
+<circle cx="435.0" cy="124" r="4.5" fill="#d97706"/>
+<circle cx="508.3" cy="124" r="4.5" fill="#d97706"/>
+<circle cx="581.7" cy="124" r="4.5" fill="#d97706"/>
+<circle cx="655.0" cy="124" r="4.5" fill="#b91c1c"/>
+<circle cx="655.0" cy="113" r="4.5" fill="#b91c1c"/>
+<line x1="215.0" y1="150" x2="215.0" y2="220" stroke="#d97706" stroke-opacity="0.6" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="288.3" y1="150" x2="361.7" y2="220" stroke="#d97706" stroke-opacity="0.6" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="361.7" y1="150" x2="361.7" y2="220" stroke="#d97706" stroke-opacity="0.6" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="435.0" y1="150" x2="508.3" y2="220" stroke="#d97706" stroke-opacity="0.6" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="508.3" y1="150" x2="508.3" y2="220" stroke="#d97706" stroke-opacity="0.6" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="581.7" y1="150" x2="655.0" y2="220" stroke="#d97706" stroke-opacity="0.6" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="651.5" y1="150" x2="651.5" y2="220" stroke="#d97706" stroke-opacity="0.6" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="658.5" y1="150" x2="658.5" y2="220" stroke="#d97706" stroke-opacity="0.6" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="700" y="122" class="big" style="fill:#b91c1c;font-size:22px;text-anchor:start">70개/초</text>
+<text x="700" y="152" class="note">발마다 Reliable RPC 하나</text>
+<text x="700" y="174" class="note">담는 값: 그 발의 시각, 시드</text>
+<text x="700" y="196" class="note" style="fill:#b91c1c">손실이 길어지면 Reliable 한도에 닿는다</text>
+<text x="40" y="296" class="lane">B. 쏜 프레임마다 묶은 RPC</text>
+<line x1="215" y1="330" x2="655" y2="330" stroke="#cbd5e1" stroke-width="2"/>
+<line x1="215" y1="422" x2="655" y2="422" stroke="#cbd5e1" stroke-width="2"/>
+<text x="40" y="335" class="lanesub" style="fill:#4f46e5">클라이언트</text>
+<text x="40" y="427" class="lanesub" style="fill:#16a34a">서버</text>
+<rect x="212.0" y="322" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="285.3" y="322" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="358.7" y="322" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="432.0" y="322" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="505.3" y="322" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="578.7" y="322" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="652.0" y="322" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="211.0" y="412" width="8" height="20" rx="2" fill="#16a34a"/>
+<rect x="357.7" y="412" width="8" height="20" rx="2" fill="#16a34a"/>
+<rect x="504.3" y="412" width="8" height="20" rx="2" fill="#16a34a"/>
+<rect x="651.0" y="412" width="8" height="20" rx="2" fill="#16a34a"/>
+<circle cx="215.0" cy="314" r="4.5" fill="#d97706"/>
+<circle cx="288.3" cy="314" r="4.5" fill="#d97706"/>
+<circle cx="361.7" cy="314" r="4.5" fill="#d97706"/>
+<circle cx="435.0" cy="314" r="4.5" fill="#d97706"/>
+<circle cx="508.3" cy="314" r="4.5" fill="#d97706"/>
+<circle cx="581.7" cy="314" r="4.5" fill="#d97706"/>
+<circle cx="655.0" cy="314" r="4.5" fill="#b91c1c"/>
+<circle cx="655.0" cy="303" r="4.5" fill="#b91c1c"/>
+<line x1="215.0" y1="340" x2="215.0" y2="410" stroke="#4f46e5" stroke-opacity="0.75" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="288.3" y1="340" x2="361.7" y2="410" stroke="#4f46e5" stroke-opacity="0.75" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="361.7" y1="340" x2="361.7" y2="410" stroke="#4f46e5" stroke-opacity="0.75" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="435.0" y1="340" x2="508.3" y2="410" stroke="#4f46e5" stroke-opacity="0.75" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="508.3" y1="340" x2="508.3" y2="410" stroke="#4f46e5" stroke-opacity="0.75" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="581.7" y1="340" x2="655.0" y2="410" stroke="#4f46e5" stroke-opacity="0.75" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="655.0" y1="340" x2="655.0" y2="410" stroke="#4f46e5" stroke-opacity="0.75" stroke-width="2.4" marker-end="url(#arr)"/>
+<rect x="465.0" y="438" width="190" height="24" rx="5" fill="#fff" stroke="#b91c1c"/>
+<text x="560.0" y="455" class="cnt" style="fill:#b91c1c">RPC 하나: t₀ · 2발 · 조준 · 시드</text>
+<text x="700" y="312" class="big" style="fill:#4f46e5;font-size:22px;text-anchor:start">60개 이하/초</text>
+<text x="700" y="342" class="note">쏜 프레임마다 Reliable RPC 하나</text>
+<text x="700" y="364" class="note">담는 값: 첫 발 시각, 발 수, 조준, 시드</text>
+<text x="700" y="386" class="note">서버가 간격으로 각 발 시각을 복원·검사</text>
+<text x="40" y="486" class="lane">C. 시작과 정지만</text>
+<line x1="215" y1="520" x2="655" y2="520" stroke="#cbd5e1" stroke-width="2"/>
+<line x1="215" y1="612" x2="655" y2="612" stroke="#cbd5e1" stroke-width="2"/>
+<text x="40" y="525" class="lanesub" style="fill:#4f46e5">클라이언트</text>
+<text x="40" y="617" class="lanesub" style="fill:#16a34a">서버</text>
+<rect x="212.0" y="512" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="285.3" y="512" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="358.7" y="512" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="432.0" y="512" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="505.3" y="512" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="578.7" y="512" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="652.0" y="512" width="6" height="16" rx="2" fill="#4f46e5"/>
+<rect x="211.0" y="602" width="8" height="20" rx="2" fill="#16a34a"/>
+<rect x="357.7" y="602" width="8" height="20" rx="2" fill="#16a34a"/>
+<rect x="504.3" y="602" width="8" height="20" rx="2" fill="#16a34a"/>
+<rect x="651.0" y="602" width="8" height="20" rx="2" fill="#16a34a"/>
+<circle cx="215.0" cy="504" r="4.5" fill="#d97706"/>
+<circle cx="288.3" cy="504" r="4.5" fill="#d97706"/>
+<circle cx="361.7" cy="504" r="4.5" fill="#d97706"/>
+<circle cx="435.0" cy="504" r="4.5" fill="#d97706"/>
+<circle cx="508.3" cy="504" r="4.5" fill="#d97706"/>
+<circle cx="581.7" cy="504" r="4.5" fill="#d97706"/>
+<circle cx="655.0" cy="504" r="4.5" fill="#b91c1c"/>
+<circle cx="655.0" cy="493" r="4.5" fill="#b91c1c"/>
+<line x1="215.0" y1="530" x2="215.0" y2="600" stroke="#16a34a" stroke-opacity="0.8" stroke-width="2.4" marker-end="url(#arr)"/>
+<text x="223.0" y="560" class="cnt" style="fill:#16a34a;text-anchor:start">시작 (t₀)</text>
+<circle cx="229.0" cy="608.0" r="4.5" fill="#16a34a"/>
+<circle cx="375.7" cy="613.5" r="4.5" fill="#16a34a"/>
+<circle cx="375.7" cy="602.5" r="4.5" fill="#16a34a"/>
+<text x="361.7" y="642" class="cnt" style="fill:#16a34a">2발</text>
+<circle cx="522.3" cy="613.5" r="4.5" fill="#16a34a"/>
+<circle cx="522.3" cy="602.5" r="4.5" fill="#16a34a"/>
+<text x="508.3" y="642" class="cnt" style="fill:#16a34a">2발</text>
+<circle cx="669.0" cy="619.0" r="4.5" fill="#16a34a"/>
+<circle cx="669.0" cy="608.0" r="4.5" fill="#16a34a"/>
+<circle cx="669.0" cy="597.0" r="4.5" fill="#16a34a"/>
+<text x="655.0" y="642" class="cnt" style="fill:#16a34a">3발</text>
+<text x="700" y="502" class="big" style="fill:#16a34a;font-size:22px;text-anchor:start">사격 한 번에 2개</text>
+<text x="700" y="532" class="note">사격 시작과 정지만 Reliable로</text>
+<text x="700" y="554" class="note">서버가 같은 누적 루프로 직접 쏜다</text>
+<text x="700" y="576" class="note">조준은 이동과 함께 오는 시야각</text>
+<line x1="215" y1="655" x2="655" y2="655" stroke="#94a3b8"/>
+<line x1="215.0" y1="655" x2="215.0" y2="661" stroke="#94a3b8"/>
+<text x="215.0" y="677" class="tick">0 ms</text>
+<line x1="303.0" y1="655" x2="303.0" y2="661" stroke="#94a3b8"/>
+<text x="303.0" y="677" class="tick">20 ms</text>
+<line x1="391.0" y1="655" x2="391.0" y2="661" stroke="#94a3b8"/>
+<text x="391.0" y="677" class="tick">40 ms</text>
+<line x1="479.0" y1="655" x2="479.0" y2="661" stroke="#94a3b8"/>
+<text x="479.0" y="677" class="tick">60 ms</text>
+<line x1="567.0" y1="655" x2="567.0" y2="661" stroke="#94a3b8"/>
+<text x="567.0" y="677" class="tick">80 ms</text>
+<line x1="655.0" y1="655" x2="655.0" y2="661" stroke="#94a3b8"/>
+<text x="655.0" y="677" class="tick">100 ms</text>
+<circle cx="706" cy="657" r="4.5" fill="#b91c1c"/>
+<text x="718" y="662" class="note">한 프레임에 두 발</text>
+</svg>

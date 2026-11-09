@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="1000" height="600" role="img" lang="ko" aria-labelledby="t d">
 <title id="t">패킷 손실 뒤 카운터가 몰려 올 때 다른 클라이언트의 재생</title>
-<desc id="d">쏘는 플레이어가 초당 70발로 0.4초 동안 28발을 쏜다. 서버는 30Hz로 FireCounter와 사격 상태를 복제하는데, 200~267 ms의 업데이트 세 번이 유실되어 300 ms에 카운터가 한꺼번에 +9로 도착한다. 가운데 줄은 차이를 모두 쌓아 발사 간격으로 소진하기만 하는 방식으로, 밀린 발이 계속 뒤처져 쏜 사람이 400 ms에 멈춘 뒤에도 약 117 ms 더 쏘는 것처럼 보인다. 아래 줄은 남은 발 수에 5발 상한을 두고 사격 정지 상태를 받으면 남은 발을 비우는 방식으로, 정지 상태가 도착한 400 ms에 바로 멈춘다. 네트워크 지연은 그림에서 뺐다.</desc>
+<desc id="d">쏘는 플레이어가 초당 70발로 0.4초 동안 28발을 쏜다. 서버는 30Hz로 FireCounter와 사격 상태를 복제하는데, 200~267 ms의 업데이트 세 번이 유실되어 300 ms에 카운터가 한꺼번에 +9로 도착한다. 가운데 줄은 차이를 모두 쌓아 발사 간격으로 소진하기만 하는 방식으로, 밀린 발이 계속 뒤처져 쏜 사람이 400 ms에 멈춘 뒤에도 약 117 ms 더 쏘는 것처럼 보인다. 아래 줄은 남은 발사 횟수에 5발 상한을 두고 사격 정지 상태를 받으면 남은 발을 비우는 방식으로, 정지 상태가 도착한 400 ms에 바로 멈춘다. 네트워크 지연은 그림에서 뺐다.</desc>
 <defs>
 <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
 <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
@@ -26,7 +26,7 @@ text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR'
 <text x="40" y="78" class="sub">초당 70발로 0.4초 사격 · 서버 30Hz 복제 · 업데이트 세 번 유실 · 다른 클라이언트 60fps (지연은 뺐다)</text>
 <g><line x1="60" y1="110" x2="60" y2="535" stroke="#0f172a" stroke-opacity=".35" stroke-width="2" stroke-dasharray="4 4"/><animateTransform attributeName="transform" type="translate" values="0 0;780 0;780 0" keyTimes="0;0.7273;1" dur="11.0s" repeatCount="indefinite"/></g>
 <text x="60" y="138" class="lane" style="fill:#16a34a;paint-order:stroke;stroke:#f8fafc;stroke-width:6px">서버가 복제한 FireCounter와 사격 상태</text>
-<text x="60" y="158" class="lanesub" style="paint-order:stroke;stroke:#f8fafc;stroke-width:6px">넷 업데이트마다 그사이 쏜 발 수만큼 오른다 · 세 번은 유실</text>
+<text x="60" y="158" class="lanesub" style="paint-order:stroke;stroke:#f8fafc;stroke-width:6px">넷 업데이트마다 그사이 발사 횟수만큼 오른다 · 세 번은 유실</text>
 <line x1="60" y1="200" x2="840" y2="200" stroke="#cbd5e1" stroke-width="2"/>
 <rect x="97.0" y="191" width="6" height="18" rx="2" fill="#16a34a" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.03730;0.03740;1" dur="11.0s" repeatCount="indefinite"/></rect>
 <text x="100.0" y="184" class="cnt" style="fill:#16a34a;font-size:11.5px" opacity="0">+2<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.03730;0.03740;1" dur="11.0s" repeatCount="indefinite"/></text>

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 590" width="1000" height="590" role="img" lang="ko" aria-labelledby="t d">
 <title id="t">렉으로 한 프레임에 몰려 나간 탄을 지난 시간만큼 앞에서 출발시키기</title>
-<desc id="d">한 프레임이 100 ms로 늘어져 누적 방식이 그 프레임에서 7발을 한꺼번에 쏜 경우. 위 줄은 보정 없이 7발이 모두 총구에서 겹쳐 출발한다. 가운데 줄은 각 발을 (지금 − 그 발의 발사 시각) × 탄속만큼 앞에서 출발시켜, 85.7 ms 전에 쐈어야 할 첫 발이 가장 앞에, 방금 쏜 발이 총구에 있다. 아래 줄은 한 프레임에 따라잡는 발 수에 상한(예: 4발)을 둔 경우로, 오래된 3발은 버리고 최근 4발만 쏜다.</desc>
+<desc id="d">한 프레임이 100 ms로 늘어져 누적 방식이 그 프레임에서 7발을 한꺼번에 쏜 경우. 위 줄은 보정 없이 7발이 모두 총구에서 겹쳐 출발한다. 가운데 줄은 각 발을 (지금 − 그 발의 발사 시각) × 탄속만큼 앞에서 출발시켜, 85.7 ms 전에 쐈어야 할 첫 발이 가장 앞에, 방금 쏜 발이 총구에 있다. 아래 줄은 한 프레임에 따라잡는 발사 횟수에 상한(예: 4발)을 둔 경우로, 오래된 3발은 버리고 최근 4발만 쏜다.</desc>
 <defs>
 <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
 <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>

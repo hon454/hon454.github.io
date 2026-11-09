@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" width="1000" height="700" role="img" lang="ko" aria-labelledby="t d">
 <title id="t">쏘는 클라이언트가 서버에 알리는 세 가지 방식</title>
-<desc id="d">60fps 클라이언트가 초당 70발로 쏠 때 0–100 ms 동안 서버로 가는 RPC를 세 방식으로 비교한다. 첫째, 발마다 RPC를 보내면 1초에 70개이고 Reliable이면 손실이 길어지면 버퍼 한도에 닿는다. 둘째, 쏜 프레임마다 그 프레임의 발들을 RPC 하나로 묶어 첫 발 시각, 발 수, 조준 방향, 난수 시드를 보내면 1초에 60개 이하이며 서버는 발사 간격으로 각 발의 시각을 복원해 검사한다. 셋째, 사격 시작과 정지만 보내면 사격 한 번에 2개이고 서버가 같은 누적 시간 루프로 직접 쏜다. 조준 방향은 이동 RPC와 함께 오는 시야각을 쓴다. 네트워크 지연은 그림에서 뺐다.</desc>
+<desc id="d">60fps 클라이언트가 초당 70발로 쏠 때 0–100 ms 동안 서버로 가는 RPC를 세 방식으로 비교한다. 첫째, 발마다 RPC를 보내면 1초에 70개이고 Reliable이면 손실이 길어지면 버퍼 한도에 닿는다. 둘째, 쏜 프레임마다 그 프레임의 발들을 RPC 하나로 묶어 첫 발 시각, 발사 횟수, 조준 방향, 난수 시드를 보내면 1초에 60개 이하이며 서버는 발사 간격으로 각 발의 시각을 복원해 검사한다. 셋째, 사격 시작과 정지만 보내면 사격 한 번에 2개이고 서버가 같은 누적 시간 루프로 직접 쏜다. 조준 방향은 이동 RPC와 함께 오는 시야각을 쓴다. 네트워크 지연은 그림에서 뺐다.</desc>
 <defs>
 <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
 <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
@@ -24,7 +24,7 @@ text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR'
 
 <text x="40" y="50" class="title">서버에 알리는 세 가지 방식</text>
 <text x="40" y="78" class="sub">60fps 클라이언트 · 초당 70발 · 서버 30Hz, 0–100 ms 구간 (네트워크 지연은 뺐다)</text>
-<text x="40" y="106" class="lane">A. 발마다 RPC</text>
+<text x="40" y="106" class="lane">방법 1. 발마다 RPC</text>
 <line x1="215" y1="140" x2="655" y2="140" stroke="#cbd5e1" stroke-width="2"/>
 <line x1="215" y1="232" x2="655" y2="232" stroke="#cbd5e1" stroke-width="2"/>
 <text x="40" y="145" class="lanesub" style="fill:#4f46e5">클라이언트</text>
@@ -60,7 +60,7 @@ text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR'
 <text x="700" y="152" class="note">발마다 Reliable RPC 하나</text>
 <text x="700" y="174" class="note">담는 값: 그 발의 시각, 시드</text>
 <text x="700" y="196" class="note" style="fill:#b91c1c">손실이 길어지면 Reliable 한도에 닿는다</text>
-<text x="40" y="296" class="lane">B. 쏜 프레임마다 묶은 RPC</text>
+<text x="40" y="296" class="lane">방법 2. 쏜 프레임마다 묶은 RPC</text>
 <line x1="215" y1="330" x2="655" y2="330" stroke="#cbd5e1" stroke-width="2"/>
 <line x1="215" y1="422" x2="655" y2="422" stroke="#cbd5e1" stroke-width="2"/>
 <text x="40" y="335" class="lanesub" style="fill:#4f46e5">클라이언트</text>
@@ -95,9 +95,9 @@ text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR'
 <text x="560.0" y="455" class="cnt" style="fill:#b91c1c">RPC 하나: t₀ · 2발 · 조준 · 시드</text>
 <text x="700" y="312" class="big" style="fill:#4f46e5;font-size:22px;text-anchor:start">60개 이하/초</text>
 <text x="700" y="342" class="note">쏜 프레임마다 Reliable RPC 하나</text>
-<text x="700" y="364" class="note">담는 값: 첫 발 시각, 발 수, 조준, 시드</text>
+<text x="700" y="364" class="note">담는 값: 첫 발 시각, 발사 횟수, 조준, 시드</text>
 <text x="700" y="386" class="note">서버가 간격으로 각 발 시각을 복원·검사</text>
-<text x="40" y="486" class="lane">C. 시작과 정지만</text>
+<text x="40" y="486" class="lane">방법 3. 시작과 정지만</text>
 <line x1="215" y1="520" x2="655" y2="520" stroke="#cbd5e1" stroke-width="2"/>
 <line x1="215" y1="612" x2="655" y2="612" stroke="#cbd5e1" stroke-width="2"/>
 <text x="40" y="525" class="lanesub" style="fill:#4f46e5">클라이언트</text>

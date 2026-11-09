@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="1000" height="560" role="img" lang="ko" aria-labelledby="t d">
 <title id="t">다른 클라이언트에서 FireCounter를 재생하는 두 가지 방식</title>
-<desc id="d">쏘는 플레이어가 초당 70발로 1초 동안 쏜다. 서버는 30Hz로 FireCounter를 COND_SkipOwner로 복제하므로 다른 클라이언트에는 처음 +1 뒤로 넷 업데이트마다 카운터가 2 또는 3씩 뛰어서 도착한다. 가운데 줄은 OnRep에서 이전 값과의 차이를 남은 발 수에 쌓고 발사 간격(14.3 ms)으로 나눠 소진하는 방식으로, 1초 동안 발사 연출을 70번 거의 일정한 간격으로 재생한다. 아래 줄은 OnRep마다 연출을 한 번만 재생하는 방식(Night of the Dead)으로, 31번만 재생되어 실제보다 절반 이하로 느리게 쏘는 것처럼 보인다. 네트워크 지연은 그림에서 뺐다.</desc>
+<desc id="d">쏘는 플레이어가 초당 70발로 1초 동안 쏜다. 서버는 30Hz로 FireCounter를 COND_SkipOwner로 복제하므로 다른 클라이언트에는 처음 +1 뒤로 넷 업데이트마다 카운터가 2 또는 3씩 뛰어서 도착한다. 가운데 줄은 OnRep에서 이전 값과의 차이를 남은 발사 횟수에 쌓고 발사 간격(14.3 ms)으로 나눠 소진하는 방식으로, 1초 동안 발사 연출을 70번 거의 일정한 간격으로 재생한다. 아래 줄은 OnRep마다 연출을 한 번만 재생하는 방식(Night of the Dead)으로, 31번만 재생되어 실제보다 절반 이하로 느리게 쏘는 것처럼 보인다. 네트워크 지연은 그림에서 뺐다.</desc>
 <defs>
 <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
 <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
@@ -26,7 +26,7 @@ text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR'
 <text x="40" y="78" class="sub">초당 70발로 1초 사격 · 서버 30Hz 복제 · 다른 클라이언트 60fps (네트워크 지연은 뺐다)</text>
 <g><line x1="60" y1="100" x2="60" y2="510" stroke="#0f172a" stroke-opacity=".35" stroke-width="2" stroke-dasharray="4 4"/><animateTransform attributeName="transform" type="translate" values="0 0;780 0;780 0" keyTimes="0;0.7273;1" dur="11.0s" repeatCount="indefinite"/></g>
 <text x="60" y="123" class="lane" style="fill:#16a34a;paint-order:stroke;stroke:#f8fafc;stroke-width:6px">서버의 FireCounter (30Hz 복제)</text>
-<text x="60" y="143" class="lanesub" style="paint-order:stroke;stroke:#f8fafc;stroke-width:6px">넷 업데이트마다 그사이 쏜 발 수만큼 한꺼번에 오른다</text>
+<text x="60" y="143" class="lanesub" style="paint-order:stroke;stroke:#f8fafc;stroke-width:6px">넷 업데이트마다 그사이 발사 횟수만큼 한꺼번에 오른다</text>
 <line x1="60" y1="185" x2="840" y2="185" stroke="#cbd5e1" stroke-width="2"/>
 <rect x="57.0" y="176" width="6" height="18" rx="2" fill="#16a34a" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.00010;0.00020;1" dur="11.0s" repeatCount="indefinite"/></rect>
 <text x="60.0" y="169" class="cnt" style="fill:#b91c1c;font-size:11.5px" opacity="0">+1<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.00010;0.00020;1" dur="11.0s" repeatCount="indefinite"/></text>
@@ -124,7 +124,7 @@ text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR'
 <text x="930" y="195" class="big" style="fill:#16a34a" opacity="0">70<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.66116;0.66126;1" dur="11.0s" repeatCount="indefinite"/></text>
 <text x="930" y="219" class="tick">카운터</text>
 <text x="60" y="273" class="lane" style="fill:#d97706;paint-order:stroke;stroke:#f8fafc;stroke-width:6px">차이를 쌓아 발사 간격으로 소진</text>
-<text x="60" y="293" class="lanesub" style="paint-order:stroke;stroke:#f8fafc;stroke-width:6px">OnRep: 남은 발 수 += 이번 값 − 지난 값 → 누적 루프로 한 발씩</text>
+<text x="60" y="293" class="lanesub" style="paint-order:stroke;stroke:#f8fafc;stroke-width:6px">OnRep: 남은 발사 횟수 += 이번 값 − 지난 값 → 누적 루프로 한 발씩</text>
 <line x1="60" y1="335" x2="840" y2="335" stroke="#cbd5e1" stroke-width="2"/>
 <circle cx="60.0" cy="323" r="4" fill="#d97706" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.00010;0.00020;1" dur="11.0s" repeatCount="indefinite"/></circle>
 <circle cx="83.6" cy="323" r="4" fill="#d97706" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.02204;0.02214;1" dur="11.0s" repeatCount="indefinite"/></circle>
@@ -260,7 +260,7 @@ text{font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR'
 <text x="930" y="345" class="big" style="fill:#d97706" opacity="0">70<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.67218;0.67228;1" dur="11.0s" repeatCount="indefinite"/></text>
 <text x="930" y="369" class="tick">발사 연출 횟수</text>
 <text x="60" y="408" class="lane" style="fill:#4f46e5;paint-order:stroke;stroke:#f8fafc;stroke-width:6px">OnRep마다 한 번 재생 (Night of the Dead)</text>
-<text x="60" y="428" class="lanesub" style="paint-order:stroke;stroke:#f8fafc;stroke-width:6px">카운터가 바뀌면 연출 한 번 → 뛰어서 온 발 수가 사라진다</text>
+<text x="60" y="428" class="lanesub" style="paint-order:stroke;stroke:#f8fafc;stroke-width:6px">카운터가 바뀌면 연출 한 번 → 뛰어서 온 만큼 연출이 빠진다</text>
 <line x1="60" y1="470" x2="840" y2="470" stroke="#cbd5e1" stroke-width="2"/>
 <circle cx="60.0" cy="458" r="4" fill="#4f46e5" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.00010;0.00020;1" dur="11.0s" repeatCount="indefinite"/></circle>
 <circle cx="83.6" cy="458" r="4" fill="#4f46e5" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.02204;0.02214;1" dur="11.0s" repeatCount="indefinite"/></circle>

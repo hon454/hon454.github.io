@@ -1,16 +1,19 @@
 ---
 title: "길고양이 이야기 2"
 published: 2021-10-15
-description: "Unity와 C# 기반 2D 퍼즐 어드벤처. 주요 게임 시스템과 컨트롤러 입력, Steam과 STOVE 연동을 구현했다."
-image: ./images/a-street-cats-tale-2/cover.webp
-tags: [unity, csharp, devops]
 draft: false
 status: published
+description: "Unity와 C# 기반 2D 퍼즐 어드벤처. 주요 게임 시스템과 컨트롤러 입력, Steam과 STOVE 연동을 구현했다."
+image: "./images/a-street-cats-tale-2/cover.webp"
 lang: ko
+tags:
+  - unity
+  - csharp
+  - devops
 link:
   - label: "Steam"
     icon: "fa7-brands:steam"
-    value: "https://store.steampowered.com/app/2356450/__2/?l=koreana"
+    value: "https://store.steampowered.com/app/2356450/__2/"
 ---
 
 | 항목 | 내용 |
@@ -18,12 +21,12 @@ link:
 | 기간 | 2021.10 - 2023.12 |
 | 소속 | 삐요 스튜디오 |
 | 참여 형태 | 비고용 팀 활동, 정규직과 병행 |
-| 역할 | 클라이언트 프로그래머 |
-| 기술 | Unity, C#, Steamworks, STOVE SDK, GitLab |
+| 역할 | 클라이언트 프로그래머(리드) |
+| 기술 | Unity, C#, Steamworks, STOVE SDK |
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/CkWISiLW1p0" title="길고양이 이야기 2 영상 1" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-![](./images/a-street-cats-tale-2/image-01.webp)
+![](./images/a-street-cats-tale-2/credits.webp)
 
 ## 프로젝트와 담당 역할
 
@@ -49,7 +52,7 @@ link:
 
 ### 학대 동물 보호 캠페인 참가 (2023.02.20)
 
-![](./images/a-street-cats-tale-2/image-02.webp)
+![](./images/a-street-cats-tale-2/animal-protection-campaign.webp)
 
 [학대 동물 보호 캠페인](https://www.smilegatefoundation.org/hope/giveDetail?seq=680)
 
@@ -59,14 +62,14 @@ link:
 
 ### 도쿄 게임쇼 2023 참가 (2023.09.21 - 2023.09.24)
 
-![](./images/a-street-cats-tale-2/image-03.webp)
+![](./images/a-street-cats-tale-2/tokyo-game-show-2023.webp)
 
 ### G-STAR 2023 인디 쇼케이스 전시와 Indie Awards 수상 (2023.11.16 - 2023.11.19)
 
 G-STAR 2023 인디 쇼케이스에 전시했고, 스토브인디가 주최한 지스타 인디 어워즈에서 Games for Impact 부문을 수상했다.
 
-![](./images/a-street-cats-tale-2/image-04.webp)
-
-![](./images/a-street-cats-tale-2/image-05.webp)
-
 <iframe class="video-embed" src="https://www.youtube.com/embed/loIGaQyzFPc" title="길고양이 이야기 2 영상 2" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+![](./images/a-street-cats-tale-2/g-star-2023-booth-map.webp)
+
+![](./images/a-street-cats-tale-2/g-star-2023-indie-awards.webp)

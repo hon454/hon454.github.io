@@ -1,12 +1,15 @@
 ---
 title: "RythM_Eister"
 published: 2011-10-12
-description: "DirectX와 C++로 제작한 BMS 기반 리듬 게임. 노트 제작 에디터를 구현했다."
-image: ./images/rythm-eister/cover.webp
-tags: [directx, cpp]
 draft: false
 status: archived
+description: "DirectX와 C++로 제작한 BMS 기반 리듬 게임. 노트 제작 에디터를 구현했다."
+image: "./images/rythm-eister/cover.webp"
 lang: ko
+tags:
+  - directx
+  - cpp
+link: []
 ---
 
 | 항목 | 내용 |
@@ -14,15 +17,15 @@ lang: ko
 | 기간 | 2011.10 - 2011.12 |
 | 소속 | 선린인터넷고등학교 |
 | 역할 | 기획, 클라이언트 프로그래머 |
-| 기술 | DirectX, C++, BMS |
+| 기술 | DirectX, C++ |
 
-![](./images/rythm-eister/image-01.webp)
+![](./images/rythm-eister/title-screen.webp)
 
-![](./images/rythm-eister/image-02.webp)
+![](./images/rythm-eister/music-select.webp)
 
-![](./images/rythm-eister/image-03.webp)
+![](./images/rythm-eister/gameplay.webp)
 
-![](./images/rythm-eister/image-04.webp)
+![](./images/rythm-eister/award-certificate.webp)
 
 ## 프로젝트 소개
 

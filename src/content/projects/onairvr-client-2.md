@@ -1,12 +1,17 @@
 ---
 title: "onAirVR Client 2.0"
 published: 2017-01-17
-description: "PC 렌더링 결과를 모바일 HMD로 무선 전송하는 onAirVR 클라이언트의 UI 개선, 최신 OVR API 지원과 Daydream용 GoogleVR API 연동."
-image: ./images/onairvr-client-2/cover.webp
-tags: [unity, csharp, oculus, tcp-ip]
 draft: false
 status: published
+description: "PC 렌더링 결과를 모바일 HMD로 무선 전송하는 onAirVR 클라이언트의 UI 개선, 최신 OVR API 지원과 Daydream용 GoogleVR API 연동."
+image: "./images/onairvr-client-2/cover.webp"
 lang: ko
+tags:
+  - unity
+  - csharp
+  - oculus
+  - tcp-ip
+link: []
 ---
 
 | 항목 | 내용 |
@@ -14,7 +19,7 @@ lang: ko
 | 기간 | 2017.01 - 2017.05 |
 | 소속 | 클릭트 |
 | 역할 | 클라이언트 프로그래머 |
-| 기술 | Unity, C#, OVR API, GoogleVR API, TCP/IP |
+| 기술 | Unity, C#, OVR API, GoogleVR API |
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/Zd2tXpcpDWM" title="onAirVR Client 2.0 영상 1" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 

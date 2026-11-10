@@ -4,7 +4,7 @@ published: 2026-02-18
 draft: false
 status: published
 description: "JetBrains IDE에서 파일 경로, 줄 번호와 코드를 함께 복사하는 플러그인. AI에 전달할 코드 문맥을 준비할 때 사용한다."
-image: "images/copy-selection-context.webp"
+image: "./images/copy-selection-context/cover.webp"
 lang: ko
 tags:
   - jetbrains-plugin
@@ -14,6 +14,7 @@ link:
     icon: "fa7-brands:github"
     value: "https://github.com/hon454/copy-selection-context"
   - label: "JetBrains Marketplace"
+    icon: "material-symbols:language"
     value: "https://plugins.jetbrains.com/plugin/30262-copy-selection-context"
 ---
 
@@ -39,7 +40,7 @@ Kotlin과 IntelliJ Platform을 기반으로 에디터 액션, 설정 화면, 복
 
 컬렉션에는 수집 당시의 코드와 경로, 줄 범위를 스냅샷으로 보관한다. 원본을 수정하거나 삭제해도 수집한 코드는 유지된다. 같은 위치의 코드가 바뀌면 별도 스냅샷으로 남겨 수정 전후를 함께 전달할 수 있다. 컬렉션은 프로젝트 세션 안에서만 유지하고 영구 저장하지 않는다.
 
-![수정 전 값 10과 수정 후 값 30을 별도 스냅샷으로 보관한다. 출력 미리보기에서도 수집 당시의 코드와 시각을 확인할 수 있다.](images/copy-selection-context-snapshots.webp)
+![수정 전 값 10과 수정 후 값 30을 별도 스냅샷으로 보관한다. 출력 미리보기에서도 수집 당시의 코드와 시각을 확인할 수 있다.](./images/copy-selection-context/snapshots.webp)
 
 GitHub와 GitLab permalink는 현재 문서와 HEAD의 내용이 다를 수 있다는 점을 별도로 다뤘다. Git 조회는 백그라운드에서 실행하고, 문서가 HEAD와 다르면 확인을 거쳐 해당 커밋의 링크를 복사한다. 줄 번호를 임의로 보정하거나 파일을 저장하거나 커밋하지 않는다.
 

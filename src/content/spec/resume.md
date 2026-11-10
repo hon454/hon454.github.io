@@ -2,7 +2,7 @@
 
 회사별 주요 업무의 과제와 판단, 성과는 [경력기술서](/cv/)에서 설명합니다. 대표 작업의 화면과 영상, 공개 코드와 기여 내용은 [포트폴리오](/portfolio/)에서 확인할 수 있습니다.
 
-[hon454@gmail.com](mailto:hon454@gmail.com) / [LinkedIn](https://www.linkedin.com/in/jihoon-jeon-b7ab83116) / [GitHub](https://github.com/hon454) / [동료 추천사](https://www.linkedin.com/in/jihoon-jeon-b7ab83116/details/recommendations/?detailScreenTabIndex=0)
+[hon454@gmail.com](mailto:hon454@gmail.com) / [LinkedIn](https://www.linkedin.com/in/jihoon-jeon-b7ab83116) / [GitHub](https://github.com/hon454)
 
 ## 프로필
 
@@ -10,7 +10,7 @@
 
 ## 핵심 역량
 
-- **게임 개발:** Unreal Engine과 Unity에서 전투, 장비, AI 등 게임플레이를 구현했습니다. Replication Graph, Net Dormancy와 커스텀 NetSerialize로 Dedicated Server 동기화를 최적화하고, 애니메이션 예산 관리와 압축으로 다수 개체의 실행 비용을 관리했습니다.
+- **게임 개발:** Unreal Engine과 Unity에서 전투, 장비, AI 등 게임플레이를 구현했습니다. Replication Graph, Net Dormancy와 커스텀 NetSerialize로 Dedicated Server 동기화를 최적화하고, 애니메이션 갱신 빈도 조절로 다수 개체의 실행 비용을 관리했습니다.
 - **3D 제작 도구:** Unreal Engine과 Rust, Bevy 환경에서 액션 데이터 구조, 타임라인과 카메라 편집, Undo/Redo, 저장과 복원을 설계하고 생성형 AI 서비스의 결과를 편집 가능한 장면으로 연결했습니다.
 - **개발 환경과 협업:** TeamCity와 GitLab CI 기반 빌드 자동화, Sentry 크래시 수집, 코드 리뷰와 AI 에이전트 개발 체계를 구성해 운용하고, 반복 작업을 오픈소스 도구로 만들어 배포했습니다.
 
@@ -51,18 +51,18 @@
 - 클라이언트 2~3명 중 전투와 장비, 보스 및 일반 좀비 AI, 월드 상호작용을 개발하고 2024년 5월 1.0 정식 출시까지 참여했습니다.
 - Windows Server 기반 Dedicated Server에서 Replication Graph와 Net Dormancy로 연결별 복제 대상을 고르고, 접속 시 보내는 레벨 스트리밍 상태에 커스텀 NetSerialize를 붙여 코드와 비트 플래그로 압축했습니다.
 - 접속 시 한꺼번에 보내야 하는 기록 데이터는 Reliable 버퍼의 여유를 보고 레코드 단위로 나눠 보내는 RPC 스트리밍 라우터를 만들어 전송했습니다.
-- 다수 좀비의 애니메이션 갱신을 Significance Manager와 Animation Budget Allocator로 조절하고, 서버의 포즈 갱신을 전투 중으로 한정했으며 ACL로 애니메이션 데이터를 압축했습니다.
+- 다수 좀비의 애니메이션 갱신을 Significance Manager로 조절하고, 서버의 포즈 갱신을 전투 중으로 한정했습니다.
 - EOS가 Steam 외부 인증을 Web API 티켓으로 바꾸도록 요구하자, 이를 지원하는 Steamworks SDK 1.57 이상을 포함한 UE 5.3 커스텀 엔진으로 UE 4.27 프로젝트를 이전했습니다.
 - 원인을 알 수 없는 에러가 잦던 UE4 APEX Destruction을 커스텀 Destructible 시스템으로 교체했습니다. 당시 환경을 재현한 실험 프로젝트에서 동시 파괴의 병목을 찾고, 프레임당 조각 컴포넌트 예산으로 100개 동시 파괴 스파이크를 138ms에서 25ms로 낮췄습니다(UE 4.27, 교체 전 구성인 교체형 APEX 32ms).
 - Jira, Confluence, Slack을 대체하는 JetBrains Space On-Premise 서버와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드 자동화를 운영했습니다.
 
 ### 삐요 스튜디오(Ppiyo Game Studios) / 클라이언트 프로그래머(리드)
 
-2021.10 - 2023.12 / 비고용 팀 활동, 정규직과 병행
+2021.10 - 2023.12 / 비고용 팀, 정규직과 병행
 
 **길고양이 이야기 2 (2021.10 - 2023.12)** / Unity, C#, Steamworks, STOVE SDK
 
-- 프로그래머 2인 팀에서 리드를 맡아 세이브와 로드, 퀘스트, 대화, 이동, 컷신, 환경설정과 UI 등 주요 게임 시스템을 개발했습니다.
+- 3인 팀의 프로그래머 2명 중 리드를 맡아 세이브와 로드, 퀘스트, 대화, 이동, 컷신, 환경설정과 UI 등 주요 게임 시스템을 개발했습니다.
 - 컨트롤러 입력, Steamworks 업적과 STOVE 구매 인증을 연동했습니다.
 - 스토어 등록부터 5개 언어 지원 빌드 준비, 출시 빌드 검수와 업로드까지 출시 작업을 전담해 2023년 STOVE에서 Windows 얼리 액세스를, Steam에서 Windows와 macOS 정식 출시를 진행했습니다. 프로젝트는 G-STAR 2023 인디 어워즈 Games for Impact 부문을 수상했습니다.
 
@@ -74,7 +74,7 @@ Unity, C#과 GameSparks를 사용해 Android용 격투 테마 3D 방치형 게�
 
 ### 이매진템페스트(Imagine Tempest) / 기획 및 클라이언트 프로그래머
 
-2019.10 - 2020.04 / 비고용 팀 활동, 군 복무와 일부 병행
+2019.10 - 2020.04 / 비고용 팀, 군 복무와 일부 병행
 
 Vapor World의 스토리와 세계관을 기획하고, Unity 기반 입력과 이동, 전투 시스템을 개발했습니다.
 
@@ -109,7 +109,8 @@ Vapor World의 스토리와 세계관을 기획하고, Unity 기반 입력과 �
 
 ## 기술 검증 프로젝트
 
-- **[UE5 Dedicated Server 최적화 실험실](https://github.com/hon454/ue-dedicated-server-optimization-lab):** 2026.10 - 진행 중. Unreal Engine 5.8.3 Dedicated Server의 리플리케이션 비용을 Unreal Insights로 측정하고, 최적화 기법을 하나씩 적용해 전후를 비교합니다.
+- **[Unreal 호드 최적화 실험실](https://github.com/hon454/unreal-horde-optimization-lab):** Unreal Engine 5.8.4에서 클라이언트가 그리고 움직이는 군중의 비용을 측정하고, Mass Entity 기반 최적화를 하나씩 적용해 전후를 비교합니다.
+- **[UE5 Dedicated Server 최적화 실험실](https://github.com/hon454/ue-dedicated-server-optimization-lab):** Unreal Engine 5.8.3 Dedicated Server의 리플리케이션 비용을 Unreal Insights로 측정하고, 최적화 기법을 하나씩 적용해 전후를 비교합니다.
 
 ## 외부활동
 

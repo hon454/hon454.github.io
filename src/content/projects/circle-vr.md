@@ -1,12 +1,17 @@
 ---
 title: "CircleVR"
 published: 2017-06-19
-description: "클라우드 기반 다중 접속 무선 VR 전시 플랫폼. 장치 간 좌표계 보정과 외부 시점 연결을 담당했고 홍익대학교 VR 뮤지엄에 설치됐다."
-image: ./images/circle-vr/cover.webp
-tags: [unity, csharp, htc-vive, tcp-ip]
 draft: false
 status: published
+description: "클라우드 기반 다중 접속 무선 VR 전시 플랫폼. 장치 간 좌표계 보정과 외부 시점 연결을 담당했고 홍익대학교 VR 뮤지엄에 설치됐다."
+image: "./images/circle-vr/cover.webp"
 lang: ko
+tags:
+  - unity
+  - csharp
+  - htc-vive
+  - tcp-ip
+link: []
 ---
 
 | 항목 | 내용 |
@@ -14,7 +19,9 @@ lang: ko
 | 기간 | 2017.06 - 2018.02 |
 | 소속 | 클릭트 |
 | 역할 | 클라이언트 프로그래머 |
-| 기술 | Unity, C#, Gear VR, HTC Vive Tracker, TCP/IP |
+| 기술 | Unity, C#, Gear VR, HTC Vive Tracker |
+
+<iframe class="video-embed" src="https://www.youtube.com/embed/SJXxF24qk70" title="CircleVR 영상 1" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 프로젝트와 담당 역할
 
@@ -29,8 +36,6 @@ CircleVR은 클릭트가 개발한 클라우드 기반 다중 접속 무선 VR �
 - 여러 사용자의 시점을 외부 디스플레이로 연결하는 전시 시스템 구성
 
 ## 전시 영상
-
-<iframe class="video-embed" src="https://www.youtube.com/embed/SJXxF24qk70" title="CircleVR 영상 1" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/vuU4vzvfMos" title="CircleVR 영상 2" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 

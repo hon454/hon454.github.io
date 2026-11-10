@@ -1,12 +1,16 @@
 ---
 title: "해녀와 바다"
 published: 2015-12-14
-description: "교육용 게임 제안과 Unity 프로토타입 개발. 국내 스낵컬처 게임 시장 조사와 분석 보고서를 함께 작성했다."
-image: ./images/haenyeo-and-the-sea/cover.webp
-tags: [unity, csharp, powerpoint]
 draft: false
 status: archived
+description: "교육용 게임 제안과 Unity 프로토타입 개발. 국내 스낵컬처 게임 시장 조사와 분석 보고서를 함께 작성했다."
+image: "./images/haenyeo-and-the-sea/cover.webp"
 lang: ko
+tags:
+  - unity
+  - csharp
+  - powerpoint
+link: []
 ---
 
 | 항목 | 내용 |
@@ -15,7 +19,7 @@ lang: ko
 | 소속 | 웹젠 |
 | 참여 형태 | 인턴 |
 | 역할 | 기획, 클라이언트 프로그래머 |
-| 기술 | Unity, C#, PowerPoint |
+| 기술 | Unity, C# |
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/HcCAR2fOCdU" title="해녀와 바다 영상 1" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 

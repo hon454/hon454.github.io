@@ -1,12 +1,17 @@
 ---
 title: "Brutal League"
 published: 2020-07-09
-description: "Unity 기반 Android 방치형 게임. 캠페인 모드와 GameSparks 보상 시스템을 구현했다."
-image: ./images/brutal-league/cover.webp
-tags: [unity, csharp, gamesparks, javascript]
 draft: false
 status: archived
+description: "Unity 기반 Android 방치형 게임. 캠페인 모드와 GameSparks 보상 시스템을 구현했다."
+image: "./images/brutal-league/cover.webp"
 lang: ko
+tags:
+  - unity
+  - csharp
+  - gamesparks
+  - javascript
+link: []
 ---
 
 | 항목 | 내용 |
@@ -15,7 +20,7 @@ lang: ko
 | 소속 | 누라임게임즈 |
 | 참여 형태 | 인턴 |
 | 역할 | 클라이언트 프로그래머 |
-| 기술 | Unity, C#, GameSparks, JavaScript |
+| 기술 | Unity, C#, GameSparks |
 
 ## 프로젝트와 담당 역할
 

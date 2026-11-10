@@ -1,12 +1,16 @@
 ---
 title: "학도병의 편지"
 published: 2017-05-22
-description: "충남보훈관에 전시된 HTC Vive 기반 인터랙티브 무비 VR 콘텐츠."
-image: ./images/student-soldiers-letter/cover.webp
-tags: [unity, csharp, htc-vive]
 draft: false
 status: published
+description: "충남보훈관에 전시된 HTC Vive 기반 인터랙티브 무비 VR 콘텐츠."
+image: "./images/student-soldiers-letter/cover.webp"
 lang: ko
+tags:
+  - unity
+  - csharp
+  - htc-vive
+link: []
 ---
 
 | 항목 | 내용 |
@@ -16,9 +20,9 @@ lang: ko
 | 역할 | 클라이언트 프로그래머 |
 | 기술 | Unity, C#, HTC Vive |
 
-![](./images/student-soldiers-letter/image-01.webp)
+![](./images/student-soldiers-letter/exhibition-booth.webp)
 
-![](./images/student-soldiers-letter/image-02.webp)
+![](./images/student-soldiers-letter/exhibition-hmd-play.webp)
 
 ## 프로젝트 소개
 

@@ -1,29 +1,30 @@
 ---
 title: "Vapor World"
 published: 2019-06-13
-description: "Unity와 C# 기반 2D 사이드 스크롤 액션 어드벤처. 스토리와 세계관 기획, 입력과 이동, 전투 시스템을 개발했다."
-image: ./images/vapor-world/cover.webp
-tags: [unity, csharp, spine]
 draft: false
 status: published
+description: "Unity와 C# 기반 2D 사이드 스크롤 액션 어드벤처. 스토리와 세계관 기획, 입력과 이동, 전투 시스템을 개발했다."
+image: "./images/vapor-world/cover.webp"
 lang: ko
+tags:
+  - unity
+  - csharp
+  - spine
 link:
-  - label: "Steam"
+  - label: "Steam (Vapor World: Over the Mind)"
     icon: "fa7-brands:steam"
     value: "https://store.steampowered.com/app/1996090/Vapor_World_Over_The_Mind/"
 ---
 
 | 항목 | 내용 |
 | --- | --- |
-| 기간 | 2019.06 - 2020.04 |
-| 소속 | 이메진템페스트 스튜디오 |
+| 기간 | 2019.10 - 2020.04 |
+| 소속 | 이매진템페스트 |
 | 참여 형태 | 비고용 팀 활동, 군 복무와 일부 병행 |
 | 역할 | 기획, 클라이언트 프로그래머 |
 | 기술 | Unity, C#, Spine, URP |
 
-<iframe class="video-embed" src="https://www.youtube.com/embed/1asejGtAMGY" title="Vapor World 영상 1" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-<iframe class="video-embed" src="https://www.youtube.com/embed/DKiYb-e6Jqs" title="Vapor World 영상 2" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe class="video-embed" src="https://www.youtube.com/embed/DKiYb-e6Jqs" title="Vapor World E3 Reveal Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 프로젝트와 담당 역할
 
@@ -38,3 +39,5 @@ Vapor World는 트라우마를 가진 환자들의 내면 세계를 탐험하고
 ## 수상
 
 참여 기간 중 프로젝트가 제11회 새로운 경기 게임오디션에서 공동 2위에 선정됐고, MWU Korea Awards 2019 PC & Console 분야 Top 3에 올랐다.
+
+<iframe class="video-embed" src="https://www.youtube.com/embed/1asejGtAMGY" title="Vapor World : Over the Mind - MWU Korea Awards Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>

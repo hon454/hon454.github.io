@@ -12,7 +12,7 @@
 - **개발 환경:** GitLab CI와 TeamCity 기반 빌드 자동화, Sentry 크래시 수집, 엔진 버전 이전, AI 에이전트 개발 체계 운용
 - **대표 성과:** Night of the Dead 1.0 정식 출시, 길고양이 이야기 2의 STOVE와 Steam 출시 전담, UE4에서 UE5로의 엔진 이전, CINEVStudio의 액션 데이터 작성 구조 전환과 편집 UI 상태 관리 재구성, Shotloom의 편집 트랜잭션과 저장 구조 구현
 
-## 시나몬
+## 시나몬(Cinamon)
 
 2024.06 - 2026.09 / 정규직 / 클라이언트 프로그래머
 
@@ -20,7 +20,7 @@ AI 애니메이션 제작 서비스 CineV의 3D 제작 도구 개발. Unreal Eng
 
 ### Shotloom
 
-2026.04 - 2026.09 / Rust, Bevy, WebAssembly, WebGPU, React, TypeScript
+[Shotloom](/projects/shotloom/) / 2026.04 - 2026.09 / Rust, Bevy, WebAssembly, WebGPU, React, TypeScript
 
 - **개요:** 사용자별 서버 GPU 세션에 의존하던 Unreal Engine과 Pixel Streaming 경로를 대체하는 브라우저 3D 편집기. 캐릭터 동작과 카메라를 편집하고 결과를 CineV의 제작 흐름으로 연결
 - **담당 범위:** 클라이언트 4명 중 캐릭터와 카메라 편집, 문서 모델, 저장과 복원, 생성 서비스 연동 담당. 기술 스택 선정과 저장소 골격은 팀이 맡았고, 본인은 핵심 구현 역할
@@ -72,13 +72,16 @@ AI 애니메이션 제작 서비스 CineV의 3D 제작 도구 개발. Unreal Eng
 - Linux headless WebGPU 테스트가 준비 이벤트 이후의 오류까지 확인하도록 보완해 거짓 통과 제거
 - 편집기 화면이 검게 변하는 원인을 VRM 렌더링 라이브러리 bevy_vrm1의 MToon 셰이더 결함으로 추적해 [수정 기여](https://github.com/not-elm/bevy_vrm1/pull/57)
 
-[저장 복원, 제작 과정과 검증 범위](/projects/shotloom/)
+**관련 자료**
 
-<a id="cinev-studio"></a>
+- [편집 트랜잭션과 저장 구조](/projects/shotloom/#작업을-저장하고-다시-이어가는-편집-구조)
+- [카메라 편집과 키프레임 전환](/projects/shotloom/#카메라와-포즈를-저작하고-결과를-출력하는-기능)
+- [생성 서비스 연동](/projects/shotloom/#cinev에서-시작해-편집-결과를-돌려보내는-서비스-통합)
+- [CI 캐시와 개발 체계](/projects/shotloom/#ci-캐시와-개발-체계)
 
 ### CINEVStudio
 
-2024.06 - 2026.04 / Unreal Engine 5, C++, UMG, Sequencer, MovieScene, HTTP, ONNX
+[CINEVStudio](/projects/cinev-studio/) / 2024.06 - 2026.04 / Unreal Engine 5, C++, UMG, Sequencer, MovieScene, HTTP, ONNX
 
 - **개요:** AI가 구성한 장면을 사용자가 편집하고 영상으로 출력하는 Unreal Engine 5 Sequencer(MovieScene) 기반 제작 도구
 - **담당 범위:** 클라이언트 6~10명 중 콘텐츠팀의 액션 데이터 작성부터 AI 결과 해석, 타임라인 편집, 저장과 재생까지 잇는 클라이언트 개발 담당
@@ -86,7 +89,7 @@ AI 애니메이션 제작 서비스 CineV의 3D 제작 도구 개발. Unreal Eng
 #### 액션 데이터 작성 구조 전환
 
 - **과제:** 애니메이션 구간과 상호작용 설정을 DataTable과 Notify에 타입과 인덱스로 맞추고, 문자열 파라미터를 별도 설계 문서와 대조해야 하는 입력 구조
-- **판단:** 액션 정의는 DataAsset으로 분리해 필요한 요구조건만 타입별 구조체로 추가하고, 모션 구간과 이벤트 시점은 애니메이션을 보며 AnimComposite에서 편집하는 구조 선택. 조건 값의 조합에는 구조체를, 이벤트별 동작 확장에는 UObject를 사용
+- **판단:** 액션 정의는 DataAsset으로 분리해 필요한 요구조건만 타입별 구조체로 추가하고, 모션 구간과 이벤트 시점은 애니메이션을 보며 AnimComposite에서 편집하는 구조 선택
 - **수행:**
   - 데이터 타입과 실행 경로 전환, 변환기 구현, 전환 절차 문서화
   - 작성한 데이터를 생성 단계에서 실행용 에셋으로 모아 런타임이 애니메이션 에셋에 직접 접근하던 부분 분리
@@ -133,17 +136,22 @@ AI 애니메이션 제작 서비스 CineV의 3D 제작 도구 개발. Unreal Eng
 - Root Motion 키를 재생 속도, 반복, 프레임 오프셋에 맞춰 재계산하고, 카메라 orbit의 반경 손실과 수직 회전 뒤집힘 해결
 - GitLab CI 기반 빌드와 패키징, Shared DDC, Symbol Store를 구성해 기획과 QA가 개발 빌드를 직접 내려받아 검증하는 배포 체계 운영 (2024년)
 - Sentry 크래시 수집 고도화(미니덤프와 PDB 업로드, Slack 알림) (2025년)
-- UnrealBuildTool 실행 방식을 바꿔 에디터 바이너리 생성 파이프라인의 약 10분 성능 저하 회복(자체 측정), 멀티프로세스 쿠킹 프로세스 수 조정으로 쿠킹 단계 약 20% 단축(자체 측정)
+- UnrealBuildTool 실행 방식을 바꿔 에디터 바이너리 생성 파이프라인의 약 10분 성능 저하 회복(자체 측정), 멀티프로세스 쿠킹 프로세스 수 조정으로 쿠킹 단계를 약 600초에서 500초대로 단축(자체 측정)
 - 영상 내보내기 후처리의 불필요한 프로세스 대기와 클립 수에 비례하던 파일 스캔 제거
 - Unreal Engine 5.3에서 5.7로 이전할 때 엔진 API 변경에 따른 코드 이전 담당
 - 개발 환경 문서와 AI 에이전트 작업 규약 문서 작성, 팀 MR 리뷰 지속
 - 시나몬 GitLab 개발왕 선정 (GitLab 커밋·MR·댓글 활동 점수 기준 사내 선정, 2025.12)
 
-[데이터 구조, 도식과 구현 예시](/projects/cinev-studio/)
+**관련 자료**
 
-<a id="teamsparta"></a>
+- [액션 데이터 구조](/projects/cinev-studio/#문서와-대조하던-액션-조건을-타입별-입력-구조로-전환)
+- [AI 행동 해석](/projects/cinev-studio/#ai의-행동-지시를-현재-장면에서-실행할-수-있는-액션으로-해석)
+- [생성 모션 적용](/projects/cinev-studio/#ai가-생성한-모션을-선택-편집-저장까지-연결)
+- [편집 UI 상태 관리](/projects/cinev-studio/#ui-상태별로-화면-선택-입력-처리-분리)
+- [Shot 상태 모델](/projects/cinev-studio/#샷-초기-상태의-소유와-저장-복원-경로-정리)
+- [빌드와 크래시 수집](/projects/cinev-studio/#빌드-패키징과-오류-추적)
 
-## 팀스파르타
+## 팀스파르타(TeamSparta)
 
 2024.12 - 2025.07 / 프리랜서, 정규직과 병행 / 언리얼 게임 개발 코스 튜터
 
@@ -155,13 +163,13 @@ Unreal Engine, C++
 - 과제와 팀 프로젝트 코드 리뷰, 취업 준비 단계의 이력서와 포트폴리오 피드백, 모의 면접 진행
 - 담당 최종 프로젝트 팀과 수강생이 각각 최우수 팀과 최우수 수강생으로 선정
 
-## 작두 스튜디오
+## 작두 스튜디오(Jackto Studios)
 
 2021.01 - 2024.06 / 정규직 / 클라이언트 프로그래머
 
 ### Night of the Dead
 
-Unreal Engine 4/5, C++, Windows Server, Unreal Insights, Epic Online Services, Steamworks, TeamCity
+[Night of the Dead](/projects/night-of-the-dead/) / 2021.01 - 2024.06 / Unreal Engine 4/5, C++, Windows Server, Epic Online Services, Steamworks, TeamCity
 
 - **개요:** 밤마다 몰려오는 좀비에 대비해 방어 시설을 짓고 생존하는 오픈월드 멀티플레이 게임. Windows Server 기반 Dedicated Server 지원, 클라이언트 2~3명 중 전투·장비·좀비 AI·네트워크 최적화 담당. 서버 설정 기본값 기준 Dedicated Server 인원 16명(상한 클램프는 2023.12 본인이 제거), 웨이브 동시 좀비 상한 200(선택지 50~2,000, 상한 구현은 팀 작업)
 - **담당 범위:** 전투, 장비, 좀비 AI와 멀티플레이 동기화, 런타임 최적화, 엔진 이전과 개발 인프라. 얼리 액세스 업데이트부터 2024년 5월 1.0 정식 출시까지 참여
@@ -169,9 +177,9 @@ Unreal Engine 4/5, C++, Windows Server, Unreal Insights, Epic Online Services, S
 #### 멀티플레이 동기화 최적화
 
 - **과제:** 소유 관계에 따라 거리와 무관하게 전달해야 하는 상태, 접속 시 한꺼번에 보내야 하는 레벨 스트리밍 상태와 기록 데이터, 자주 바뀌는 상태 프로퍼티의 전송량
-- **판단:** Unreal Insights 분석을 바탕으로 복제 대상 선정, 전송 데이터 축소, 전송 경로 분할로 나눠 최적화
+- **판단:** 복제 대상 선정, 전송 데이터 축소, 전송 경로 분할로 나눠 최적화
 - **수행:**
-  - Replication Graph에서 거리로 연결별 후보를 수집하고, 오너, 팀, 그룹에 종속된 액터는 거리와 무관하게 포함
+  - Replication Graph에서 거리로 연결별 후보를 수집
   - 장착 장비와 무기 부속품, 고용한 NPC, 탑승물은 Dependent Actor로 묶어 부모 액터가 복제될 때 함께 검토
   - 상태가 드물게 바뀌는 아이템, 문, 풀링 좀비에 Net Dormancy 적용
   - 접속 시 보내는 레벨 스트리밍 상태 목록에 커스텀 NetSerialize를 붙여 패키지 경로를 int16 코드와 비트 플래그로 압축
@@ -179,7 +187,10 @@ Unreal Engine 4/5, C++, Windows Server, Unreal Insights, Epic Online Services, S
   - Reliable 버퍼의 여유를 보고 레코드 단위로 나눠 보내는 RPC 스트리밍 라우터를 만들고 지도 안개 동기화를 Fast Array에서 이 경로로 전환
 - **결과:** 복제 대상, 전송 데이터, 전송 경로를 나눠 다루는 동기화 구조로 전환, 개발 업데이트 #10, #11, #15, #19와 1.0 정식 출시에 반영. 효과 수치는 측정하지 않음
 
-[동기화 구조와 코드](/posts/notd-multiplayer-optimization-overview/)
+**관련 자료**
+
+- [멀티플레이 동기화](/projects/night-of-the-dead/#복제-대상과-크기-빈도로-나눠-다룬-dedicated-server-대역폭)
+- [동기화 구조와 코드](/posts/notd-multiplayer-optimization-overview/)
 
 #### 다수 좀비의 실행 비용
 
@@ -187,11 +198,14 @@ Unreal Engine 4/5, C++, Windows Server, Unreal Insights, Epic Online Services, S
 - **수행:**
   - 전투와 렌더링 여부에 따라 틱 간격을 늘리고, Significance에 따라 AI 캐릭터의 이동 갱신 간격 조절(당시 적용, 일부는 출시 전 해제)
   - 근접 판정에 본 위치가 필요한 전투 중에만 서버의 포즈 갱신을 켜고 평소에는 몽타주만 틱
-  - Significance Manager로 계산한 중요도를 Animation Budget Allocator에 전달해 클라이언트 애니메이션 평가 빈도를 조절하고, ACL로 애니메이션 데이터 압축
+  - Significance Manager로 계산한 중요도로 클라이언트 애니메이션 갱신 빈도를 조절
   - 웨이브 경로에 인보커 전용 액터를 두어 경로 주변의 내비메시를 미리 만들고, 웨이브 좀비의 Perception 제거
 - **결과:** 서버 포즈, 클라이언트 애니메이션 평가, AI 틱과 내비메시 생성을 각각의 조건에서만 처리하는 구조 적용, 개발 업데이트 #10과 #11에 반영
 
-[다수 좀비 최적화와 코드](/posts/notd-zombie-horde-cost/)
+**관련 자료**
+
+- [서버 포즈와 애니메이션 갱신](/projects/night-of-the-dead/#싸우는-좀비만-포즈를-갱신하는-서버와-중요도-기반-애니메이션-갱신)
+- [다수 좀비 최적화와 코드](/posts/notd-zombie-horde-cost/)
 
 #### UE5 엔진 이전
 
@@ -203,7 +217,11 @@ Unreal Engine 4/5, C++, Windows Server, Unreal Insights, Epic Online Services, S
   - 이전 후 Epic Online Services 세션 개설과 접속 흐름 재구성
 - **결과:** UE5 이전을 2023년 11월 개발 업데이트 #15에 반영, Web API 티켓 기반 EOS 로그인 적용
 
-[UE5 이전과 Replication Graph 재작성](/posts/notd-multiplayer-optimization-overview/#replication-graph) / [Steam 인증 티켓과 EOS Private Sandbox 권한 확인](/posts/steam-eos-private-sandbox-web-api-auth-ticket/)
+**관련 자료**
+
+- [엔진 이전과 개발 인프라](/projects/night-of-the-dead/#그-밖의-담당-업무)
+- [UE5 이전과 Replication Graph 재작성](/posts/notd-multiplayer-optimization-overview/#replication-graph)
+- [Steam 인증 티켓과 EOS Private Sandbox 권한 확인](/posts/steam-eos-private-sandbox-web-api-auth-ticket/)
 
 #### 커스텀 Destructible
 
@@ -219,15 +237,19 @@ Unreal Engine 4/5, C++, Windows Server, Unreal Insights, Epic Online Services, S
   - 50개 순차 파괴의 p95 5.24ms로 60fps 예산 안
   - 실험 프로젝트에서 개선안으로 100개 동시 파괴 스파이크를 138ms에서 25ms로 82% 낮춰 교체형 APEX(32ms)보다 낮춤
 
-[커스텀 Destructible 구조와 코드](/posts/notd-custom-destructible/) / [재현 환경에서의 측정](/posts/notd-custom-destructible/#재현-환경에서-측정하기)
+**관련 자료**
+
+- [파괴 오브젝트](/projects/night-of-the-dead/#apex-destruction을-대체한-조각-메시-기반-파괴-시스템)
+- [커스텀 Destructible 구조와 코드](/posts/notd-custom-destructible/)
+- [재현 환경에서의 측정](/posts/notd-custom-destructible/#재현-환경에서-측정하기)
 
 #### 게임플레이와 개발 인프라
 
 - 무기와 능력치, 전투 판정 구현. 무기 시스템 전면 개편과 샷건 클라이언트 판정·서버 검증 (2022.04 - 08)
 - 기존 버프 컴포넌트를 Gameplay Ability System으로 옮겨(2022.02 - 03) 화상 같은 상태 이상과 버프를 GameplayEffect로 적용하고, GAS의 Attribute 대신 프로젝트의 장비 능력치 체계로 효과를 계산하도록 GameplayEffect와 Ability System Component 확장
 - 상태 효과의 남은 시간 저장과 복원, 게임 시간 기준 지속 시간 구현
-- 장비 시스템 모듈을 만들고 티어, 내구도와 부품 개조, 대장간 강화, 가격 변동과 할인이 있는 상점, 장비와 수집물을 전시하는 장식대, 코스튬과 외형 변경 DLC 구현
-- 레벨링 시스템 모듈과 장비에 끼워 화염, 냉기, 번개, 독 같은 속성 공격을 더하는 부품 스킬, 패시브 스킬, 능력치 분배 구현
+- 장비 시스템을 만들고 티어, 내구도와 부품 개조, 대장간 강화, 가격 변동과 할인이 있는 상점, 장비와 수집물을 전시하는 장식대, 코스튬과 외형 변경 DLC 구현
+- 레벨링 시스템 모듈과 장비에 끼워 화염, 냉기, 번개, 독 같은 속성 공격이나 방어, 유틸 효과를 더하는 부품 스킬, 패시브 스킬, 능력치 분배 구현
 - 일반 좀비의 AI 컨트롤러를 만들고, 대체 대상과 공격 지점을 고르는 EQS 질의를 구현한 뒤 Behavior Tree 태스크를 C++로 전환
 - 비명으로 주변 좀비를 불러 모으는 좀비, 작살로 대상을 끌어당기는 좀비 같은 특수 좀비 구현
 - 미끼 덫처럼 좀비의 공격 대상을 끌어오는 도발 시스템 구현
@@ -243,56 +265,52 @@ Unreal Engine 4/5, C++, Windows Server, Unreal Insights, Epic Online Services, S
 - Jira, Confluence, Slack을 대체하는 JetBrains Space On-Premise 서버 구축·운영, TeamCity On-Premise 기반 빌드와 패키징 자동화 구성, Shared DDC 운영
 - Easy Anti-Cheat 보호 세션의 접속 처리와 안티치트 제어 시스템 구현
 
-[동기화 설계와 업데이트별 담당 업무](/projects/night-of-the-dead/)
+**관련 자료**
 
-## 삐요 스튜디오
+- [무기 계층과 샷건 판정](/projects/night-of-the-dead/#무기-계층-재구성과-클라이언트-판정-서버-검증-방식의-샷건)
+- [보스 전투 모듈](/projects/night-of-the-dead/#보스-여섯-종이-함께-쓰는-어그로와-상태-머신-모듈)
+- [장비와 그 밖의 담당 업무](/projects/night-of-the-dead/#그-밖의-담당-업무)
+- [업데이트별 담당 업무](/projects/night-of-the-dead/#업데이트별-담당-업무)
 
-2021.10 - 2023.12 / 비고용 팀 활동, 정규직과 병행 / 클라이언트 프로그래머(리드)
+## 삐요 스튜디오(Ppiyo Game Studios)
 
-<a id="other-experience"></a>
-<a id="a-street-cats-tale-2"></a>
+2021.10 - 2023.12 / 비고용 팀, 정규직과 병행 / 클라이언트 프로그래머(리드)
 
 ### 길고양이 이야기 2
 
-2021.10 - 2023.12 / Unity, C#, Steamworks, STOVE SDK
+[길고양이 이야기 2](/projects/a-street-cats-tale-2/) / 2021.10 - 2023.12 / Unity, C#, Steamworks, STOVE SDK
 
-- 프로그래머 2인 팀에서 리드를 맡아 2D 퍼즐 어드벤처의 세이브와 로드, 퀘스트, 대화, 이동, 컷신, 환경설정과 UI 등 주요 시스템 개발
+- 3인 팀의 프로그래머 2명 중 리드를 맡아 2D 퍼즐 어드벤처의 세이브와 로드, 퀘스트, 대화, 이동, 컷신, 환경설정과 UI 등 주요 시스템 개발
 - PlayStation, Nintendo Switch, Xbox 컨트롤러 입력과 Steamworks 업적, STOVE 구매 인증 연동
 - 스토어 등록부터 5개 언어 지원 빌드 준비, 출시 빌드 검수와 업로드까지 출시 작업 전담, 2023년 2월 STOVE에서 Windows 얼리 액세스, 6월 Steam에서 Windows와 macOS 정식 출시
 - 프로젝트가 G-STAR 2023 인디 어워즈 Games for Impact 부문 수상 (2023.11)
 
-[PC 출시와 전시, 수상 자료](/projects/a-street-cats-tale-2/)
+**관련 자료**
 
-<a id="nurhyme"></a>
+- [PC 출시와 전시, 수상 자료](/projects/a-street-cats-tale-2/#출시와-전시-기록)
 
-## 누라임게임즈
+## 누라임게임즈(NurhymeGames)
 
 2020.07 - 2020.08 / 인턴 / 클라이언트 프로그래머
 
 ### Brutal League
 
-2020.07 - 2020.08 / Unity, C#, GameSparks
+[Brutal League](/projects/brutal-league/) / 2020.07 - 2020.08 / Unity, C#, GameSparks
 
 - Android용 격투 테마 3D 방치형 게임의 클라이언트 개발 전담
 - 캠페인 모드 구현, 게임 서버 서비스 GameSparks 기반 보상 시스템과 서버 연동 개발
 
-[프로젝트 소개와 담당 기능](/projects/brutal-league/)
+## 이매진템페스트(Imagine Tempest)
 
-## 이매진템페스트
-
-2019.10 - 2020.04 / 비고용 팀 활동, 군 복무와 일부 병행 / 기획 및 클라이언트 프로그래머
+2019.10 - 2020.04 / 비고용 팀, 군 복무와 일부 병행 / 기획 및 클라이언트 프로그래머
 
 ### Vapor World
 
-2019.10 - 2020.04 / Unity, C#, Spine, URP
+[Vapor World](/projects/vapor-world/) / 2019.10 - 2020.04 / Unity, C#, Spine, URP
 
 - 환자들의 내면세계를 탐험하는 2D 사이드 스크롤 액션 어드벤처의 스토리와 세계관 구성
 - 입력, 이동과 전투 시스템 구현, Unity 2D Light와 URP 기반 출품 빌드 제작 참여
 - 팀이 받은 상(본인 합류 전): 제11회 새로운 경기 게임오디션 공동 2위(2019.09), MWU Korea Awards 2019 PC & Console 분야 Top 3
-
-[출품 영상과 개발 기록](/projects/vapor-world/)
-
-<a id="army-software"></a>
 
 ## 육군
 
@@ -306,9 +324,7 @@ C#, WPF, VBA
 - VBA 기반 엑셀 데이터 정리 프로그램 개발
 - 육군 지휘통제시스템의 장애 대응과 운영, 응용체계관리반 분대장 임무 수행
 
-<a id="clicked"></a>
-
-## 클릭트
+## 클릭트(Clicked, Inc.)
 
 2016.07 - 2018.02 / 정규직 / VR 소프트웨어 엔지니어
 
@@ -316,69 +332,57 @@ Unity 기반 VR 콘텐츠와 클라이언트 개발. HTC Vive Tracker 정보를 
 
 ### CircleVR
 
-2017.06 - 2018.02 / Unity, C#, Gear VR, HTC Vive Tracker
+[CircleVR](/projects/circle-vr/) / 2017.06 - 2018.02 / Unity, C#, Gear VR, HTC Vive Tracker
 
 - 여러 사용자가 동시에 체험하고 각 시점을 22대의 곡면 OLED 디스플레이에 공유하는 무선 VR 전시 시스템에서 장치 간 좌표계 보정과 체험자 시점의 외부 출력 연결 담당
 - Gear VR 클라이언트를 외부 HTC Vive Tracker의 6DoF 좌표계에 맞추고 장착 오프셋 보정, Vive Tracker 정보를 소켓 통신으로 수신해 체험자 위치·자세를 콘텐츠에 연결
 - 홍익대학교 VR 뮤지엄 전시관에 설치
 
-[전시 영상과 개발 기록](/projects/circle-vr/)
+**관련 자료**
+
+- [전시 영상과 개발 기록](/projects/circle-vr/#전시-영상)
 
 ### Space Walker
 
-2017.05 - 2017.06 / Unity, C#, Perception Neuron, GPU 파티클, onAirVR
+[Space Walker](/projects/space-walker/) / 2017.05 - 2017.06 / Unity, C#, Perception Neuron, GPU 파티클, onAirVR
 
 - 홍익대학교 영상대학원과 산학협력으로 개발한 VR 공연 콘텐츠의 3D 배경 인터랙션 구현, 다수 파티클의 성능 부담을 줄이기 위해 GPU 파티클 시스템 적용
 - 모션 캡처 장비 Perception Neuron의 전신 모션을 Unity Humanoid 아바타에 실시간 적용하고 좌표축 차이 보정
 - Unite ’17 Seoul 키노트 오프닝 공연에서 onAirVR 기반 무선 VR로 시연
 
-[공연 영상과 개발 기록](/projects/space-walker/)
-
 ### 학도병의 편지
 
-2017.05 - 2017.06 / Unity, C#, HTC Vive
+[학도병의 편지](/projects/student-soldiers-letter/) / 2017.05 - 2017.06 / Unity, C#, HTC Vive
 
 - HTC Vive 기반 인터랙티브 무비 VR 콘텐츠 제작, 충남보훈관 VR 코너 전시
 
-[전시 화면](/projects/student-soldiers-letter/)
-
 ### onAirVR Client 2.0
 
-2017.01 - 2017.05 / Unity, C#, OVR API, GoogleVR API
+[onAirVR Client 2.0](/projects/onairvr-client-2/) / 2017.01 - 2017.05 / Unity, C#, OVR API, GoogleVR API
 
 - PC 렌더링 결과와 모바일 HMD의 자세, 입력을 연결하는 스튜디오 클라이언트와 세션별 카메라 리그 구현
 - Client 2.0의 UI 개선, OVR API 대응과 Daydream용 GoogleVR API 연동, 사내 콘텐츠 3개의 데모 제작
 
-[onAirVR Client 2.0 시연과 개발 기록](/projects/onairvr-client-2/)
-
 ### #BeFearless - Fear of Heights
 
-2016.07 - 2016.12, Oculus Go 추가 대응 2017년 말 - 2018년 초 / Unity, C#, Gear VR, Oculus Go, Gear S2
+[BeFearless](/projects/be-fearless/) / 2016.07 - 2016.12, Oculus Go 추가 대응 2017년 말 - 2018년 초 / Unity, C#, Gear VR, Oculus Go, Gear S2
 
 - 삼성 #BeFearless 캠페인의 고소공포증 훈련 VR 앱 외주 개발, Landscapes와 Cityscapes 두 빌드 제작
 - Gear S2 스마트워치의 심박수 데이터 연동과 다국어 시스템 개발
 - Gear VR 대응과 Oculus Store 등록, 이후 정식 출시 전 제공받은 개발킷 기반 Oculus Go 추가 대응
 
-[캠페인 영상과 개발 기록](/projects/be-fearless/)
-
-<a id="webzen"></a>
-
-## 웹젠
+## 웹젠(WEBZEN Inc.)
 
 2015.12 - 2016.01 / 인턴 / 게임 기획자
 
 ### 해녀와 바다
 
-2015.12 - 2016.01 / Unity, C#
+[해녀와 바다](/projects/haenyeo-and-the-sea/) / 2015.12 - 2016.01 / Unity, C#
 
 - 동계 직업 연수 프로그램에서 국내 스낵컬처 게임 시장 조사와 분석 보고서 작성
 - 교육용 게임 '해녀와 바다'의 제안서와 Unity 프로토타입 제작
 
-[시연 영상과 제안서](/projects/haenyeo-and-the-sea/)
-
-<a id="bitmango"></a>
-
-## 비트망고
+## 비트망고(BitMango)
 
 2014.07 - 2014.08 / 인턴 / 게임 기획자
 

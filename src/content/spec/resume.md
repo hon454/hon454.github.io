@@ -109,7 +109,7 @@ Vapor World의 스토리와 세계관을 기획하고, Unity 기반 입력과 �
 
 ## 기술 검증 프로젝트
 
-- **[Unreal 호드 최적화 실험실](https://github.com/hon454/unreal-horde-optimization-lab):** Unreal Engine 5.8.4에서 클라이언트가 그리고 움직이는 군중의 비용을 측정하고, Mass Entity 기반 최적화를 하나씩 적용해 전후를 비교합니다.
+- **[Unreal 호드 최적화 실험실](https://github.com/hon454/unreal-horde-optimization-lab):** 액터로는 한 프레임에 444ms가 걸리는 호드 1만을 Unreal Engine 5.8.4의 Mass Entity로 다시 만들고, 기법을 한 단계씩 더해 자체 측정으로 9.75ms까지 줄였습니다.
 - **[UE5 Dedicated Server 최적화 실험실](https://github.com/hon454/ue-dedicated-server-optimization-lab):** Unreal Engine 5.8.3 Dedicated Server의 리플리케이션 비용을 Unreal Insights로 측정하고, 최적화 기법을 하나씩 적용해 전후를 비교합니다.
 
 ## 외부활동

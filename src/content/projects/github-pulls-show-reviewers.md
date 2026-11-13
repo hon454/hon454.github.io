@@ -43,7 +43,7 @@ GitHub App의 요청 권한은 `Pull requests: Read`로 제한했다. OAuth 처�
 
 여러 계정을 연결한 경우에는 앱의 설치 범위와 계정의 저장소 접근 권한을 함께 확인한다. 조직에 앱이 설치돼 있어도 연결한 사용자에게 접근 권한이 없을 수 있기 때문이다. 설정 화면의 저장소 진단에서는 실제 사용한 계정과 API 응답, 설치 범위와 요청 한도를 확인할 수 있다.
 
-![토큰 없이 조회한 API 응답과 접근 결과를 보여주는 진단 예시다. 커버와 이 화면은 저장소에서 관리하는 데모 데이터로 구성했다.](./images/github-pulls-show-reviewers/diagnostics.webp)
+![토큰 없이 조회한 API 응답과 접근 결과 진단 예시(데모 데이터)](./images/github-pulls-show-reviewers/diagnostics.webp)
 
 ## 검증과 배포
 

@@ -151,7 +151,7 @@
 
 - **전투와 무기 시스템:** 2022년 4월부터 8월까지 플레이어 무기를 `AWeaponEntity` 계층과 무기 종류별 공격 컴포넌트로 다시 짰습니다. 무기는 발사와 장전을, 캐릭터의 공격 컴포넌트는 입력과 조준을 맡고, 탄약·반동·조준 상태는 인터페이스로 연결해 컴포넌트끼리 직접 참조하지 않습니다. 그 위에 샷건, 발사체, 반동과 제어성, 총기 부착물을 만들었습니다. 부착물 액터는 서버에서만 만들고 장착 목록을 모든 클라이언트에 복제하며, 부착물의 호환 무기와 효과는 데이터로 정의합니다.
 
-![소음기, 머즐 브레이크, 사이트 3종, 라이트 부착물](../projects/images/night-of-the-dead/weapon-attachments.webp)
+![소음기, 머즐 브레이크, 조준경 3종, 라이트 부착물](../projects/images/night-of-the-dead/weapon-attachments.webp)
 
 ![장비와 인벤토리, 무기 파츠 장착 화면](../projects/images/night-of-the-dead/weapon-parts-ui.webp)
 

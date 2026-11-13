@@ -1,6 +1,6 @@
 게임 클라이언트와 실시간 3D 제작 도구를 개발해 왔습니다. 대표 작업에서 맡은 문제와 구현 내용을 화면, 영상과 설계 자료로 소개합니다.
 
-- **기술 검증:** [Unreal 호드 최적화 실험실](#unreal-호드-최적화-실험실)의 Mass Entity 기반 군중 최적화 측정, [UE5 Dedicated Server 최적화 실험실](#ue5-dedicated-server-최적화-실험실)의 리플리케이션 비용 측정과 단계별 최적화 비교
+- **기술 검증:** [Unreal 호드 최적화 실험실](#unreal-호드-최적화-실험실)의 Mass Entity로 호드 1만을 60fps 안에 그린 단계별 최적화와 측정, [UE5 Dedicated Server 최적화 실험실](#ue5-dedicated-server-최적화-실험실)의 리플리케이션 비용 측정과 단계별 최적화 비교
 - **3D 제작 도구:** [Shotloom](#shotloom)의 편집과 저장 구조, [CINEVStudio](#cinevstudio)의 액션 데이터와 편집 UI 설계
 - **게임 개발과 출시:** [Night of the Dead](#night-of-the-dead)의 전투와 무기 시스템, Dedicated Server 동기화, 다수 좀비 처리, [길고양이 이야기 2](#길고양이-이야기-2)의 PC 출시 전담
 - **VR 장치 연동:** [CircleVR](#circlevr)의 좌표계 보정과 다중 사용자 전시, [Space Walker](#space-walker)의 실시간 모션 연동
@@ -14,20 +14,29 @@
 
 | 항목 | 내용 |
 | --- | --- |
-| 소개 | Unreal Engine 5.8.4에서 클라이언트가 그리고 움직이는 군중의 비용을 측정하고 Mass Entity 기반 최적화를 하나씩 적용해 비교하는 실험 프로젝트 |
+| 소개 | Unreal Engine 5.8.4에서 액터로는 60fps를 지키지 못하는 호드 1만을 Mass Entity로 다시 만들고, 최적화 기법을 한 단계씩 더하며 같은 조건으로 측정한 실험 프로젝트 |
 | 주요 기술 | Unreal Engine 5, C++, Mass Entity, Unreal Insights |
 
-![오브 시점에서 본 Mass 군중 5,000개. 가운데 오브로 미니언이 사방에서 모여드는 장면](../projects/images/unreal-horde-optimization-lab/mass-vat-5000-orb-view.webp)
+![같은 호드 1만을 액터로 그린 1단계(왼쪽)와 최종 구성(오른쪽)을 같은 카메라로 비교한 화면. 왼쪽 위 HUD에 프레임 시간과 거리별 개체 수가 나옴](../projects/images/unreal-horde-optimization-lab/step1-vs-step8-orb-view.webp)
 
-- **벤치마크 시나리오:** 맵 중앙의 오브를 향해 개체가 사방에서 걸어오고, 오브가 가까운 개체를 지우고 먼 개체를 쏘는 시나리오를 구성했습니다. 고정 시드와 고정 카메라 프리셋으로 같은 조건을 반복합니다.
-- **측정 방법:** Test 구성 패키지에서 `csvprofile`과 Unreal Insights로 프레임, Game Thread, Render Thread, GPU 시간을 60초 동안 재고, 세 번 실행한 중앙값을 비교합니다.
-- **Mass Entity 전환:** Night of the Dead에서 액터로 했던 좀비 호드 최적화를 다시 구현했습니다. 액터 + AnimBP 군중을 기준선으로 두고 이동, 피해, 사망 로직을 Fragment와 Processor로 옮겼습니다.
-- **거리별 표현:** 먼 개체는 AnimToTexture로 구운 VAT 애니메이션이 있는 ISM으로 그리고, 가까운 개체에만 액터를 붙이는 액터 하이드레이션과 풀링을 구현했습니다.
-- **애니메이션 예산:** Significance Manager, Animation Budget Allocator와 URO로 가까운 액터의 애니메이션 비용을 제한했습니다.
+- **벤치마크 시나리오:** 반경 500m 맵 중앙의 오브로 호드 1만이 사방에서 걸어오고, 오브가 가까운 개체에 피해를 주고 먼 개체를 저격하는 시나리오를 만들었습니다. 모든 거리에서 생성, 피격, 사망, 표현 전환이 계속 일어납니다.
+- **측정 방법:** Test 구성 패키지에서 `csvprofile`로 프레임, 게임 스레드, 렌더 스레드, GPU 시간을 60초씩 세 번 재고 중앙값과 범위를 비교했습니다. 조건을 섞어 도는 측정 러너가 창 포커스와 다른 프로그램을 확인합니다.
+- **단계별 최적화:** 액터 군중을 기준선으로 Mass 로직, ISM + VAT, 액터 하이드레이션과 애니메이션 예산, Simulation LOD, ISKM, Niagara 배경 무리를 한 단계씩 더했습니다. 호드 1만의 프레임 시간이 자체 측정으로 444ms에서 9.75ms로 줄었습니다.
+
+![단계마다 프레임 시간과 게임 스레드, 렌더 스레드, GPU 시간을 같은 조건으로 잰 그림](../projects/images/unreal-horde-optimization-lab/frame-time-ladder.svg)
+
+- **거리별 표현:** 최종 구성은 40m 안을 액터, 200m 안을 ISKM, 그 밖을 엔티티가 움직이는 Niagara 입자로 그립니다. 60fps를 지키는 최대 개체 수는 자체 측정으로 약 2만입니다.
+- **엔진 문제 우회:** 움직이는 ISKM 엔티티가 파괴될 때 엔진이 애니메이션 트랙을 돌려받지 않는 문제를 찾았습니다. 엔티티를 다시 쓰는 풀로 우회하고 16분 실행으로 확인했습니다.
+
+![엔티티 풀을 켜고 끈 16분 실행의 ISKM 트랙 수, GPU 메모리, 프레임 시간](../projects/images/unreal-horde-optimization-lab/entity-pool-16min.svg)
+
+- **빼 보기:** 최종 구성에서 기법을 하나씩 끈 열 가지 조건을 같은 측정에서 재서 기법마다의 몫을 확인했습니다. 이점이 보이지 않은 기법도 그대로 기록했습니다.
 
 **관련 자료**
 
-- [단계별 수치와 측정 조건](https://github.com/hon454/unreal-horde-optimization-lab#결과-한눈에-보기)
+- [단계를 고르면 화면과 측정값이 바뀌는 한 페이지 요약](https://hon454.github.io/unreal-horde-optimization-lab/)
+- [단계별 글 10편](https://github.com/hon454/unreal-horde-optimization-lab#글)
+- [빌드 없이 실행하는 Test 패키지](https://github.com/hon454/unreal-horde-optimization-lab/releases/tag/test-package-08e45f2)
 
 ### [UE5 Dedicated Server 최적화 실험실](https://github.com/hon454/ue-dedicated-server-optimization-lab)
 

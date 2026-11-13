@@ -1,12 +1,20 @@
-게임 클라이언트와 실시간 3D 제작 도구를 개발해 왔습니다. 대표 작업에서 맡은 문제와 구현 내용을 화면, 영상과 설계 자료로 소개합니다.
+게임 클라이언트와 실시간 3D 제작 도구를 개발해 왔습니다. 대표 작업에서 맡은 문제와 구현 내용을 화면, 영상과 설계 자료로 소개합니다. 여기에 싣지 않은 프로젝트는 [전체 프로젝트](/projects/)에서 볼 수 있습니다.
 
-- **기술 검증:** [Unreal 호드 최적화 실험실](#unreal-호드-최적화-실험실)의 Mass Entity로 호드 1만을 60fps 안에 그린 단계별 최적화와 측정, [UE5 Dedicated Server 최적화 실험실](#ue5-dedicated-server-최적화-실험실)의 리플리케이션 비용 측정과 단계별 최적화 비교
-- **3D 제작 도구:** [Shotloom](#shotloom)의 편집과 저장 구조, [CINEVStudio](#cinevstudio)의 액션 데이터와 편집 UI 설계
-- **게임 개발과 출시:** [Night of the Dead](#night-of-the-dead)의 전투와 무기 시스템, Dedicated Server 동기화, 다수 좀비 처리, [길고양이 이야기 2](#길고양이-이야기-2)의 PC 출시 전담
-- **VR 장치 연동:** [CircleVR](#circlevr)의 좌표계 보정과 다중 사용자 전시, [Space Walker](#space-walker)의 실시간 모션 연동
-- **개발 도구와 오픈소스:** [IDE 플러그인](#copy-selection-context)과 [브라우저 확장](#github-pulls-show-reviewers) 배포, [Firefly](#firefly)와 [bevy_vrm1](#bevy_vrm1) 기여
-
-[hon454@gmail.com](mailto:hon454@gmail.com) / [이력서](/resume/) / [경력기술서](/cv/) / [전체 프로젝트](/projects/)
+- **기술 검증**
+  - [Unreal 호드 최적화 실험실](#unreal-호드-최적화-실험실): Mass Entity로 호드 1만을 60fps 안에 그린 단계별 최적화와 측정
+  - [UE5 Dedicated Server 최적화 실험실](#ue5-dedicated-server-최적화-실험실): 리플리케이션 비용 측정과 단계별 최적화 비교
+- **3D 제작 도구**
+  - [Shotloom](#shotloom): 편집과 저장 구조
+  - [CINEVStudio](#cinevstudio): 액션 데이터와 편집 UI 설계
+- **게임 개발과 출시**
+  - [Night of the Dead](#night-of-the-dead): 전투와 무기 시스템, Dedicated Server 동기화, 다수 좀비 처리
+  - [길고양이 이야기 2](#길고양이-이야기-2): PC 출시 전담
+- **VR 장치 연동**
+  - [CircleVR](#circlevr): 좌표계 보정과 다중 사용자 전시
+  - [Space Walker](#space-walker): 실시간 모션 연동
+- **개발 도구와 오픈소스**
+  - 배포: [IDE 플러그인](#copy-selection-context), [브라우저 확장](#github-pulls-show-reviewers)
+  - 기여: [Firefly](#firefly), [bevy_vrm1](#bevy_vrm1)
 
 ## 기술 검증 프로젝트
 
@@ -17,18 +25,16 @@
 | 소개 | Unreal Engine 5.8.4에서 액터로는 60fps를 지키지 못하는 호드 1만을 Mass Entity로 다시 만들고, 최적화 기법을 한 단계씩 더하며 같은 조건으로 측정한 실험 프로젝트 |
 | 주요 기술 | Unreal Engine 5, C++, Mass Entity, Unreal Insights |
 
-![같은 호드 1만을 액터로 그린 1단계(왼쪽)와 최종 구성(오른쪽)을 같은 카메라로 비교한 화면. 왼쪽 위 HUD에 프레임 시간과 거리별 개체 수가 나옴](../projects/images/unreal-horde-optimization-lab/step1-vs-step8-orb-view.webp)
+![1단계 액터(왼쪽)와 최종 구성(오른쪽)의 같은 장면 비교](../projects/images/unreal-horde-optimization-lab/step1-vs-step8-orb-view.webp)
 
 - **벤치마크 시나리오:** 반경 500m 맵 중앙의 오브로 호드 1만이 사방에서 걸어오고, 오브가 가까운 개체에 피해를 주고 먼 개체를 저격하는 시나리오를 만들었습니다. 모든 거리에서 생성, 피격, 사망, 표현 전환이 계속 일어납니다.
 - **측정 방법:** Test 구성 패키지에서 `csvprofile`로 프레임, 게임 스레드, 렌더 스레드, GPU 시간을 60초씩 세 번 재고 중앙값과 범위를 비교했습니다. 조건을 섞어 도는 측정 러너가 창 포커스와 다른 프로그램을 확인합니다.
 - **단계별 최적화:** 액터 군중을 기준선으로 Mass 로직, ISM + VAT, 액터 하이드레이션과 애니메이션 예산, Simulation LOD, ISKM, Niagara 배경 무리를 한 단계씩 더했습니다. 호드 1만의 프레임 시간이 자체 측정으로 444ms에서 9.75ms로 줄었습니다.
 
-![단계마다 프레임 시간과 게임 스레드, 렌더 스레드, GPU 시간을 같은 조건으로 잰 그림](../projects/images/unreal-horde-optimization-lab/frame-time-ladder.svg)
+![단계별 프레임, 게임·렌더 스레드, GPU 시간](../projects/images/unreal-horde-optimization-lab/frame-time-ladder.svg)
 
 - **거리별 표현:** 최종 구성은 40m 안을 액터, 200m 안을 ISKM, 그 밖을 엔티티가 움직이는 Niagara 입자로 그립니다. 60fps를 지키는 최대 개체 수는 자체 측정으로 약 2만입니다.
 - **엔진 문제 우회:** 움직이는 ISKM 엔티티가 파괴될 때 엔진이 애니메이션 트랙을 돌려받지 않는 문제를 찾았습니다. 엔티티를 다시 쓰는 풀로 우회하고 16분 실행으로 확인했습니다.
-
-![엔티티 풀을 켜고 끈 16분 실행의 ISKM 트랙 수, GPU 메모리, 프레임 시간](../projects/images/unreal-horde-optimization-lab/entity-pool-16min.svg)
 
 - **빼 보기:** 최종 구성에서 기법을 하나씩 끈 열 가지 조건을 같은 측정에서 재서 기법마다의 몫을 확인했습니다. 이점이 보이지 않은 기법도 그대로 기록했습니다.
 
@@ -45,7 +51,7 @@
 | 소개 | Unreal Engine 5.8.3 Dedicated Server의 리플리케이션 비용을 측정하고 최적화 기법을 하나씩 적용해 비교하는 실험 프로젝트 |
 | 주요 기술 | Unreal Engine 5, C++, Unreal Insights, PowerShell |
 
-![Dedicated Server 하나에 접속한 클라이언트 8개의 화면과 클라이언트별 복제 상태 표시](../projects/images/ue-dedicated-server-optimization-lab/eight-clients.webp)
+![서버 하나에 접속한 클라이언트 8개와 복제 상태 표시](../projects/images/ue-dedicated-server-optimization-lab/eight-clients.webp)
 
 - **측정 시나리오:** PC 한 대에서 서버 하나와 클라이언트 8개를 띄우고, 한 변이 2km인 맵에 자원 노드 5,001개, NPC 350명, 건축물 500개를 고정 시드로 배치한 같은 시나리오로 측정을 반복합니다.
 - **측정 방법:** 실행마다 처음 30초를 제외하고 60초를 측정하며, 세 번 실행한 중앙값으로 서버 프레임 시간과 대역폭을 비교합니다.
@@ -76,7 +82,7 @@
 | 팀 규모 | 클라이언트 4명 중 캐릭터·카메라 편집, 문서 모델, 저장·복원, 생성 서비스 연동 담당 |
 | 주요 기술 | Rust, Bevy, WebAssembly, WebGPU, React, TypeScript |
 
-![0프레임과 60프레임에 카메라 키를 두고 30프레임을 평가한 화면. 타임라인의 Camera 트랙 아래에 Position, Rotation, FOV 키가 따로 놓인 모습](../projects/images/shotloom/local-camera-keyframe-midpoint.webp)
+![0·60프레임 카메라 키 사이의 30프레임 평가](../projects/images/shotloom/local-camera-keyframe-midpoint.webp)
 
 - **편집 명령과 Undo/Redo:** React UI, Rust 문서 모델과 Bevy 런타임을 잇는 브리지 계약에 트랜잭션 수명주기와 Undo/Redo 명령을 추가하고, 이 경로 위에 Undo/Redo와 저장, 복원을 구현했습니다.
 - **편집 트랜잭션과 롤백:** 드래그 시작부터 확정까지를 하나의 트랜잭션으로 기록하고, 명령이 거절되거나 시간이 초과되면 롤백해 UI와 런타임, 저장 상태를 일치시켰습니다.
@@ -104,9 +110,9 @@
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/NQJT8oN7NGg" title="CINEVStudio 사용 예시 - 무조건 이혼한다" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-![액션 데이터 에셋에서 대상 타입(Prop, Location)을 고르고 높이와 태그 요구조건을 붙이는 화면](../projects/images/cinev-studio/action-asset.webp)
+![대상 타입과 높이, 태그 요구조건을 고르는 액션 데이터 에셋](../projects/images/cinev-studio/action-asset.webp)
 
-![의자에 앉는 모션 위에 자세 구간 Notify(Stand, SittingOnObject)와 골반 IK Curve를 함께 놓은 AnimComposite 화면](../projects/images/cinev-studio/animation-composite.webp)
+![자세 구간 Notify와 골반 IK Curve를 놓은 AnimComposite](../projects/images/cinev-studio/animation-composite.webp)
 
 - **액션 데이터 작성 구조:** 문서와 대조하며 맞추던 액션 조건을 타입별 에셋 입력 구조로 바꾸고, 테이블에 프레임 값으로 적던 모션 구간과 이벤트 시점은 애니메이션을 보며 AnimComposite에서 편집하게 했습니다. 데이터 타입과 실행 경로, 변환기를 개발하고 검증 프레임워크에 액션 데이터 검증기를 추가했습니다. 제작자가 기억해 맞추던 조건 관계를 입력 구조와 검증기가 대신하게 됐습니다.
 - **AI 결과의 실행과 편집:** AI의 행동 지시를 현재 장면에서 실행할 수 있는 액션으로 해석하고, 생성 모션을 선택해 타임라인에 적용하는 흐름을 구현했습니다. 이 결과도 일반 편집 데이터와 같은 Undo/Redo와 저장, 복원 경로를 거치게 했습니다. 서버·생성 측은 AI 팀의 작업입니다.
@@ -141,23 +147,34 @@
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/VVwmqfkluGw" title="Night of the Dead 1.0 트레일러" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+**전투**
+
 - **전투와 무기 시스템:** 2022년 4월부터 8월까지 플레이어 무기를 `AWeaponEntity` 계층과 무기 종류별 공격 컴포넌트로 다시 짰습니다. 무기는 발사와 장전을, 캐릭터의 공격 컴포넌트는 입력과 조준을 맡고, 탄약·반동·조준 상태는 인터페이스로 연결해 컴포넌트끼리 직접 참조하지 않습니다. 그 위에 샷건, 발사체, 반동과 제어성, 총기 부착물을 만들었습니다. 부착물 액터는 서버에서만 만들고 장착 목록을 모든 클라이언트에 복제하며, 부착물의 호환 무기와 효과는 데이터로 정의합니다.
 
-![무기 부착물: 소음기, 머즐 브레이크, 홀로그램 사이트, 도트 사이트, 스코프, 라이트](../projects/images/night-of-the-dead/weapon-attachments.webp)
+![소음기, 머즐 브레이크, 사이트 3종, 라이트 부착물](../projects/images/night-of-the-dead/weapon-attachments.webp)
 
 ![장비와 인벤토리, 무기 파츠 장착 화면](../projects/images/night-of-the-dead/weapon-parts-ui.webp)
 
 - **멀티플레이 판정:** 샷건은 클라이언트가 랜덤 시드로 펠릿을 트레이스하고, 서버가 시선의 수평 방향과 배율로 넓힌 대상 바운딩 박스로 검증한 히트에만 피해를 줍니다. 다른 클라이언트에는 시드와 퍼짐 값, 발사 원점만 복제해 같은 펠릿 패턴으로 이펙트를 그립니다. 발사체는 피해 계산을 쏜 쪽의 인터페이스에 위임하고, 모든 플레이어로부터 멀어진 탄환은 서버가 제거합니다.
-
-![펌프 액션 샷건](../projects/images/night-of-the-dead/weapon-shotgun.webp)
-
-- **상태이상과 무기 특성:** 상태이상과 버프를 Gameplay Ability System으로 옮기고, 속성 상쇄(독↔번개, 냉기↔화염)와 게임 시간 단위 지속시간을 GameplayEffect 적용 시점 한 곳에서 처리하도록 Ability System Component를 확장했습니다. 공격 경로마다 흩어져 있던 효과 부여를 AttackTrait 하나로 모았습니다.
 - **근접 전투와 피격:** 적중 시 서버에서 확률로 발동하는 추가 공격 체계(넉백·강타·즉사·전기 폭발·독가스), 0.75초 안에 다시 맞출 때마다 쌓이는 연타 스택, 애니메이션 노티파이·장비 스탯·포스처로 판정하는 슈퍼아머와 무적 컴포넌트, 방패 패링 피해와 패링 강화 스킬을 구현했습니다. 피격 애니메이션은 서버가 피격 유형과 랜덤 시드를 멀티캐스트하고 모든 클라이언트가 같은 시드로 같은 몽타주를 고릅니다. 근접 판정의 박스 스윕과 가드·패링 판정 창은 팀이 만든 것을 보강했습니다.
+- **상태이상과 무기 특성:** 상태이상과 버프를 Gameplay Ability System으로 옮기고, 속성 상쇄(독↔번개, 냉기↔화염)와 게임 시간 단위 지속시간을 GameplayEffect 적용 시점 한 곳에서 처리하도록 Ability System Component를 확장했습니다. 공격 경로마다 흩어져 있던 효과 부여를 AttackTrait 하나로 모았습니다.
+
+**AI**
+
 - **보스 전투:** 어그로 테이블 모듈, GameplayTag 상태 머신 모듈, 강인도와 그로기, 페이즈, 물리 피격 반응, 보스 무브먼트와 몽타주 관리를 독립 컴포넌트로 만들고, 추적 공격·AOE 판정·전진 이동 같은 전투용 애님 노티파이로 패턴을 조립해 1~6지역 보스 6종의 AI와 던전 보스룸을 구현했습니다. 패턴은 Behavior Tree 서브트리마다 거리 구간·확률·쿨다운·가중치 선택으로 고르고, 보스는 공격 중에 맞아도 패턴을 유지하다가 강인도가 0이 되면 그로기에 들어갑니다. 패턴 기획과 애니메이션은 다른 직군의 작업입니다.
 
 ![녹색 빛을 내며 보스룸에 서 있는 보스 좀비](../projects/images/night-of-the-dead/boss-fight.webp)
 
 - **좀비 AI:** 일반 좀비는 전용 AI 컨트롤러와 네이티브 Behavior Tree 노드로 다시 짜고, 플레이어까지 길이 없을 때 도달 가능한 공격 지점을 검증하는 3단계 EQS 체인을 C++ 태스크로 만들었습니다. 산성 투사체를 뱉고 자폭하는 좀비, 줄로 대상을 끌어당기는 작살 좀비 같은 특수 좀비도 구현했습니다.
+
+**네트워크와 최적화**
+
+- **파괴 연출:** 원인을 알 수 없는 에러가 잦던 UE4 APEX Destruction을 직접 제어할 수 있는 커스텀 Destructible 시스템으로 교체했습니다. 당시 환경을 재현해 교체 전 구성(교체형 APEX)과 비교한 결과 단일 파괴 스파이크가 27% 낮았고, 동시 파괴 부하 시험에서 찾은 병목을 프레임당 조각 컴포넌트 예산으로 줄여 100개 동시 파괴 스파이크를 교체 전 구성보다 낮췄습니다(UE 4.27, 138ms → 25ms, 교체 전 32ms).
+
+![같은 장면을 커스텀 Destructible과 교체형 APEX로 부순 화면](../projects/images/night-of-the-dead/destruction-custom-vs-apexswap.webp)
+
+![파괴 스파이크를 측정한 Unreal Insights 타임라인](../projects/images/night-of-the-dead/evidence-destructible-timeline.webp)
+
 - **Dedicated Server 동기화:** Replication Graph가 거리와 소유 관계에 따라 연결별 복제 대상을 고르게 했습니다. 상태가 드물게 바뀌는 액터는 Net Dormancy로 휴면시키고, 접속 시 보내는 레벨 스트리밍 상태에는 커스텀 NetSerialize를 붙여 코드와 비트 플래그로 압축했습니다. 접속 시 한꺼번에 보내야 하는 기록 데이터는 Reliable 버퍼의 여유를 보고 레코드 단위로 나눠 보내는 RPC 스트리밍 라우터로 전송했습니다.
 
 ![한 서버에서 함께 플레이하는 세 플레이어](../projects/images/night-of-the-dead/multiplayer-session.webp)
@@ -165,15 +182,6 @@
 - **다수 좀비의 실행 비용:** 서버의 포즈 갱신은 근접 판정이 필요한 전투 중에만 켰습니다. Significance Manager로 계산한 중요도로 애니메이션 갱신 빈도를 조절했습니다.
 
 ![밤에 기지 앞 방어벽에 몰린 좀비 무리](../projects/images/night-of-the-dead/wave-zombies.webp)
-
-- **UE5 엔진 이전:** EOS가 Steam 외부 인증을 Web API 티켓으로 바꾸도록 요구하자, 이를 지원하는 Steamworks SDK 1.57 이상을 포함한 UE 5.3 커스텀 엔진으로 UE 4.27 프로젝트를 이전했습니다.
-- **파괴 연출:** 원인을 알 수 없는 에러가 잦던 UE4 APEX Destruction을 직접 제어할 수 있는 커스텀 Destructible 시스템으로 교체했습니다. 당시 환경을 재현해 교체 전 구성(교체형 APEX)과 비교한 결과 단일 파괴 스파이크가 27% 낮았고, 동시 파괴 부하 시험에서 찾은 병목을 프레임당 조각 컴포넌트 예산으로 줄여 100개 동시 파괴 스파이크를 교체 전 구성보다 낮췄습니다(UE 4.27, 138ms → 25ms, 교체 전 32ms).
-
-![UE 4.27에서 같은 장면을 커스텀 Destructible 시스템과 교체형 APEX로 부순 화면](../projects/images/night-of-the-dead/destruction-custom-vs-apexswap.webp)
-
-![재현 환경(UE 4.27)에서 커스텀 Destructible의 파괴 스파이크를 Unreal Insights 타임라인으로 측정한 화면](../projects/images/night-of-the-dead/evidence-destructible-timeline.webp)
-
-- **개발 인프라:** JetBrains Space와 TeamCity On-Premise 서버를 구축해 협업 도구와 빌드, 패키징 자동화를 운영했습니다.
 
 **관련 자료**
 
@@ -204,7 +212,7 @@
 
 <iframe class="video-embed" src="https://www.youtube.com/embed/CkWISiLW1p0" title="길고양이 이야기 2 공식 트레일러" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-![G-STAR 2023 인디 어워즈에서 Games for Impact 수상이 발표된 중계 화면](../projects/images/a-street-cats-tale-2/g-star-2023-indie-awards.webp)
+![Games for Impact 수상이 발표된 G-STAR 2023 중계 화면](../projects/images/a-street-cats-tale-2/g-star-2023-indie-awards.webp)
 
 - **주요 게임 시스템:** 3인 팀의 프로그래머 2명 중 리드를 맡아 세이브와 로드, 퀘스트, 대화, 이동, 컷신, 환경설정과 UI를 개발했습니다.
 - **플랫폼 연동:** 컨트롤러 입력, Steamworks 업적과 STOVE 구매 인증을 연동했습니다.
@@ -296,7 +304,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 | 소개 | GitHub PR 목록에 리뷰 요청 대상과 리뷰 상태를 표시하는 Chrome 확장 프로그램 |
 | 주요 기술 | TypeScript, React, WXT, GitHub REST API, Vitest, Playwright |
 
-![GitHub PR 목록의 각 행에 리뷰 요청 대상과 리뷰어별 승인 상태를 표시한 화면](../projects/images/github-pulls-show-reviewers/cover.webp)
+![PR 목록 각 행의 리뷰 요청 대상과 리뷰어별 승인 상태](../projects/images/github-pulls-show-reviewers/cover.webp)
 
 - **리뷰 상태 표시:** 요청된 사용자와 팀, 리뷰어별 승인 및 변경 요청 상태를 PR 목록에 표시했습니다. 한국어를 포함한 5개 언어를 지원합니다.
 - **화면 갱신과 API 처리:** GitHub의 목록 갱신에 맞춰 표시를 복원하고, 페이지 단위 API 배치와 행 단위 캐시, 동시 요청 수 제한을 구현했습니다.
@@ -313,7 +321,7 @@ Unity 기반 VR 클라이언트와 소켓 통신을 통한 장치 연동을 담�
 | 소개 | 선택한 코드의 파일 경로와 줄 번호를 함께 복사하고 여러 파일의 문맥을 모으는 JetBrains 플러그인 |
 | 주요 기술 | Kotlin, IntelliJ Platform SDK, Gradle, JUnit 5, GitHub Actions |
 
-![선택한 코드를 파일 경로, 줄 번호와 함께 복사하고 도구 창에서 여러 문맥을 모은 화면](../projects/images/copy-selection-context/cover.webp)
+![파일 경로, 줄 번호와 함께 복사한 코드 문맥을 모은 도구 창](../projects/images/copy-selection-context/cover.webp)
 
 - **코드와 위치 복사:** 선택 영역의 경로와 줄 범위를 계산하고, 여러 커서의 선택 영역과 사용자 지정 출력 형식, GitHub와 GitLab permalink를 지원했습니다.
 - **문맥 수집과 검토:** 수집 당시의 코드와 위치를 스냅샷으로 보관하고, 도구 창에서 순서를 조정한 뒤 함께 복사하도록 구현했습니다.

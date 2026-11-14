@@ -175,9 +175,9 @@
 
 ![파괴 스파이크를 측정한 Unreal Insights 타임라인](../projects/images/night-of-the-dead/evidence-destructible-timeline.webp)
 
-- **Dedicated Server 동기화:** Replication Graph가 거리와 소유 관계에 따라 연결별 복제 대상을 고르게 했습니다. 상태가 드물게 바뀌는 액터는 Net Dormancy로 휴면시키고, 접속 시 보내는 레벨 스트리밍 상태에는 커스텀 NetSerialize를 붙여 코드와 비트 플래그로 압축했습니다. 접속 시 한꺼번에 보내야 하는 기록 데이터는 Reliable 버퍼의 여유를 보고 레코드 단위로 나눠 보내는 RPC 스트리밍 라우터로 전송했습니다.
+- **Dedicated Server 동기화:** Replication Graph가 거리와 소유 관계에 따라 연결별 복제 대상을 고르게 했습니다. 상태가 드물게 바뀌는 액터는 Net Dormancy로 휴면시키고, 접속 시 보내는 레벨 스트리밍 상태에는 커스텀 NetSerialize를 붙여 코드와 비트 플래그로 압축했습니다. 접속 시 한꺼번에 보내야 하는 기록 데이터는 Reliable 버퍼의 여유를 보고 레코드 단위로 나눠 보내는 RPC 스트리밍 라우터로 전송했습니다. 복제되지 않는 채집 자원의 제거 이력도 이 경로로 보내고, 전송이 끝나면 클라이언트가 받은 항목 수를 서버와 대조해 다르면 전체를 다시 보냅니다.
 
-![한 서버에서 함께 플레이하는 세 플레이어](../projects/images/night-of-the-dead/multiplayer-session.webp)
+![Reliable 버퍼 여유에 따라 조각을 보내는 스트리밍 라우터의 흐름](../projects/images/night-of-the-dead/diagram-rpc-buffer-flow.webp)
 
 - **다수 좀비의 실행 비용:** 서버의 포즈 갱신은 근접 판정이 필요한 전투 중에만 켰습니다. Significance Manager로 계산한 중요도로 애니메이션 갱신 빈도를 조절했습니다.
 
@@ -189,6 +189,7 @@
 - [파괴 오브젝트](/projects/night-of-the-dead/#apex-destruction을-대체한-조각-메시-기반-파괴-시스템)
 - [멀티플레이 동기화](/projects/night-of-the-dead/#복제-대상과-크기-빈도로-나눠-다룬-dedicated-server-대역폭)
 - [멀티플레이 최적화 시리즈](/posts/notd-multiplayer-optimization-overview/)
+- [RPC 스트리밍 라우터의 구조와 코드](/posts/notd-reliable-rpc-data-streaming/)
 - [다수 좀비 최적화](/posts/notd-zombie-horde-cost/)
 - [커스텀 Destructible](/posts/notd-custom-destructible/)
 - [재현 환경에서의 측정](/posts/notd-custom-destructible/#재현-환경에서-측정하기)

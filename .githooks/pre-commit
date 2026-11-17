@@ -1,0 +1,16 @@
+#!/bin/sh
+# Run the same Biome check as the "Code quality" workflow before each commit.
+# Skip only when necessary: git commit --no-verify
+
+BIOME="node_modules/.bin/biome"
+if [ ! -x "$BIOME" ]; then
+	echo "pre-commit: Biome is not installed. Run pnpm install first." >&2
+	exit 1
+fi
+
+if ! "$BIOME" ci ./src --reporter=summary --colors=off; then
+	echo "" >&2
+	echo "pre-commit: Biome found errors in ./src (same check as CI Code quality)." >&2
+	echo "Fix them, or run pnpm lint for auto-fixable issues." >&2
+	exit 1
+fi

@@ -191,6 +191,12 @@ attachments. Local screenshots may be used for QA, but do not commit them or
 include them in PR descriptions or comments without that request. Name future
 tests near the feature they cover, using the local file name as the stem.
 
+A versioned pre-commit hook in `.githooks/pre-commit` runs `biome ci ./src`, the
+same check as the Code quality workflow. `pnpm install` enables it through the
+`prepare` script, which sets `core.hooksPath`. This check also lints SVG files
+under `src`, which need a non-empty `<title>`. Fix reported errors instead of
+bypassing the hook with `--no-verify`.
+
 ## Deployment
 
 - Vercel is configured through `vercel.json`.

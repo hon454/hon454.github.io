@@ -20,6 +20,7 @@
     "format": "biome format --write ./src ./scripts",
     "lint": "biome check --write ./src ./scripts",
     "preinstall": "npx only-allow pnpm",
+    "prepare": "node scripts/setup-git-hooks.mjs",
     "lqips": "npx tsx scripts/generate-lqips.ts",
     "github-cards": "npx tsx scripts/generate-github-card-data.ts",
     "cover": "npx tsx scripts/post-cover.ts"

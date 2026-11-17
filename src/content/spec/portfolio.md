@@ -27,22 +27,28 @@
 
 ![1단계 액터(왼쪽)와 최종 구성(오른쪽)의 같은 장면 비교](../projects/images/unreal-horde-optimization-lab/step1-vs-step8-orb-view.webp)
 
-- **벤치마크 시나리오:** 반경 500m 맵 중앙의 오브로 호드 1만이 사방에서 걸어오고, 오브가 가까운 개체에 피해를 주고 먼 개체를 저격하는 시나리오를 만들었습니다. 모든 거리에서 생성, 피격, 사망, 표현 전환이 계속 일어납니다.
-- **측정 방법:** Test 구성 패키지에서 `csvprofile`로 프레임, 게임 스레드, 렌더 스레드, GPU 시간을 60초씩 세 번 재고 중앙값과 범위를 비교했습니다. 조건을 섞어 도는 측정 러너가 창 포커스와 다른 프로그램을 확인합니다.
-- **단계별 최적화:** 액터 군중을 기준선으로 Mass 로직, ISM + VAT, 액터 하이드레이션과 애니메이션 예산, Simulation LOD, ISKM, Niagara 배경 무리를 한 단계씩 더했습니다. 호드 1만의 프레임 시간이 자체 측정으로 444ms에서 9.75ms로 줄었습니다.
+- **벤치마크와 측정:** 반경 500m 맵 중심 둘레를 도는 오브를 호드 1만이 사방에서 쫓고, 오브가 가까운 개체에 피해를 주고 먼 개체를 저격하는 시나리오를 만들었습니다. Test 구성 패키지에서 `csvprofile`로 오브가 한 바퀴 도는 180초씩 세 번 재고 중앙값과 범위를 비교했습니다. 동등성 검사로 모든 단계가 겹침 방지와 캡슐 콜리전까지 같은 일을 하는지 확인했습니다.
+- **단계별 최적화:** 액터 기준선에서 Mass 엔진 기본 경로, 직접 짠 분리, VAT 인스턴스와 애니메이션 예산, Simulation LOD와 엔티티 풀, ISKM, Niagara 배경 무리, 남은 비용 줄이기를 한 단계씩 더했습니다. 호드 1만에서 액터 기준선의 프레임 시간 중앙값은 자체 측정으로 597ms였고, 최종 구성은 느린 쪽 5% 프레임도 14.2ms로 60fps의 16.7ms 안에 들었습니다.
 
-![단계별 프레임, 게임·렌더 스레드, GPU 시간](../projects/images/unreal-horde-optimization-lab/frame-time-ladder.svg)
+![여덟 단계의 프레임 p95와 프레임 p50](../projects/images/unreal-horde-optimization-lab/frame-time-ladder.svg)
 
-- **거리별 표현:** 최종 구성은 40m 안을 액터, 200m 안을 ISKM, 그 밖을 엔티티가 움직이는 Niagara 입자로 그립니다. 60fps를 지키는 최대 개체 수는 자체 측정으로 약 2만입니다.
-- **엔진 문제 우회:** 움직이는 ISKM 엔티티가 파괴될 때 엔진이 애니메이션 트랙을 돌려받지 않는 문제를 찾았습니다. 엔티티를 다시 쓰는 풀로 우회하고 16분 실행으로 확인했습니다.
+- **엔진 회피 교체:** Mass로 옮긴 뒤 작업자 스레드 하나에서 도는 엔진 회피를 게임 스레드가 기다리는 것을 확인하고, 균일 격자로 이웃을 찾는 분리 Processor로 바꿨습니다. 프레임 시간 중앙값이 자체 측정으로 34.1ms에서 12.4ms로 줄고, 깊게 겹친 개체 쌍은 0이 됐습니다.
+- **거리별 표현:** 최종 구성은 35m 안을 액터, 200m 안을 ISKM, 그 밖을 엔티티 자리를 걷는 Niagara 입자로 그립니다. 60fps를 지키는 최대 개체 수는 자체 측정으로 약 1만 2천입니다.
 
-- **빼 보기:** 최종 구성에서 기법을 하나씩 끈 열 가지 조건을 같은 측정에서 재서 기법마다의 몫을 확인했습니다. 이점이 보이지 않은 기법도 그대로 기록했습니다.
+![최종 구성의 표현을 거리별 색으로 구분한 화면](../projects/images/unreal-horde-optimization-lab/representation-tint-final.webp)
+
+- **기법별 기여:** 최종 구성에서 기법을 하나씩 끈 조건 열일곱을 같은 측정에서 쟀습니다. 가장 큰 절약은 200m 밖을 그리지 않는 일이고(끄면 프레임 p95 +3.54ms), 가장 큰 비용은 가까운 개체의 액터였습니다(끄면 −6.98ms). 이점이 보이지 않은 기법도 그대로 기록했습니다.
+
+![기법 하나를 껐을 때 프레임 p95가 바뀐 양](../projects/images/unreal-horde-optimization-lab/technique-ablation.svg)
+
+- **엔진 문제 우회:** UE 5.8.4의 ISKM, Mass, Chaos에서 엔진 문제 다섯을 찾아 엔진 소스를 고치지 않고 우회했습니다. 가장 큰 ISKM 트랙 누수는 엔티티 풀로 피했고, 풀이 없으면 16분 실행 동안 트랙이 120,428개까지 늘었습니다.
 
 **관련 자료**
 
 - [단계를 고르면 화면과 측정값이 바뀌는 한 페이지 요약](https://hon454.github.io/unreal-horde-optimization-lab/)
-- [단계별 글 10편](https://github.com/hon454/unreal-horde-optimization-lab#글)
-- [빌드 없이 실행하는 Test 패키지](https://github.com/hon454/unreal-horde-optimization-lab/releases/tag/test-package-08e45f2)
+- [단계별 글 8편](https://github.com/hon454/unreal-horde-optimization-lab#글-목록)
+- [Mass 군중 최적화와 프로파일링 팁](https://github.com/hon454/unreal-horde-optimization-lab/blob/main/Docs/Guides/mass-crowd-tips.md)
+- [빌드 없이 실행하는 Test 패키지](https://github.com/hon454/unreal-horde-optimization-lab/releases/tag/v2)
 
 ### [UE5 Dedicated Server 최적화 실험실](https://github.com/hon454/ue-dedicated-server-optimization-lab)
 

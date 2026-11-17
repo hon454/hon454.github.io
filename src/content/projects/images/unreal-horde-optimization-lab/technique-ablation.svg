@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="1434" viewBox="0 0 800 1434" font-family="Malgun Gothic, Apple SD Gothic Neo, Noto Sans KR, Segoe UI, sans-serif" font-size="16" fill="#111827">
+<title>기법별 기여(최종 구성에서 하나씩 껐을 때)</title>
 <rect x="0.5" y="0.5" width="799" height="1433" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
 <text x="32" y="46" font-size="22" font-weight="700">기법별 기여(최종 구성에서 하나씩 껐을 때)</text>
 <text x="32" y="74" font-size="16" fill="#4b5563">최종 구성(단계 8)에서 기법 하나를 끄고 같은 조건으로 잰 프레임 p95의 차이(ms)</text>

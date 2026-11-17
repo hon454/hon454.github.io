@@ -25,7 +25,7 @@
 | 소개 | Unreal Engine 5.8.4에서 액터로는 60fps를 지키지 못하는 호드 1만을 Mass Entity로 다시 만들고, 최적화 기법을 한 단계씩 더하며 같은 조건으로 측정한 실험 프로젝트 |
 | 주요 기술 | Unreal Engine 5, C++, Mass Entity, Unreal Insights |
 
-![1단계 액터(왼쪽)와 최종 구성(오른쪽)의 같은 장면 비교](../projects/images/unreal-horde-optimization-lab/step1-vs-step8-orb-view.webp)
+![1단계 액터(왼쪽)와 최종 구성(오른쪽)의 같은 장면 비교](../projects/images/unreal-horde-optimization-lab/step1-vs-step8-orb-view-v2.webp)
 
 - **벤치마크와 측정:** 반경 500m 맵 중심 둘레를 도는 오브를 호드 1만이 사방에서 쫓고, 오브가 가까운 개체에 피해를 주고 먼 개체를 저격하는 시나리오를 만들었습니다. Test 구성 패키지에서 `csvprofile`로 오브가 한 바퀴 도는 180초씩 세 번 재고 중앙값과 범위를 비교했습니다. 동등성 검사로 모든 단계가 겹침 방지와 캡슐 콜리전까지 같은 일을 하는지 확인했습니다.
 - **단계별 최적화:** 액터 기준선에서 Mass 엔진 기본 경로, 직접 짠 분리, VAT 인스턴스와 애니메이션 예산, Simulation LOD와 엔티티 풀, ISKM, Niagara 배경 무리, 남은 비용 줄이기를 한 단계씩 더했습니다. 호드 1만에서 액터 기준선의 프레임 시간 중앙값은 자체 측정으로 597ms였고, 최종 구성은 느린 쪽 5% 프레임도 14.2ms로 60fps의 16.7ms 안에 들었습니다.

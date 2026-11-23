@@ -22,7 +22,7 @@
 <circle cx="760" cy="270" r="7" fill="#16a34a"/>
 <circle cx="662" cy="201" r="5" fill="#0891b2"/>
 <path d="M 760 222 A 48 48 0 0 0 721 242" fill="none" stroke="#dc2626" stroke-width="1.8"/>
-<text x="700" y="216" text-anchor="end" font-size="12" font-weight="700" fill="#dc2626">약 55°</text>
+<text x="772" y="232" font-size="12" font-weight="700" fill="#dc2626">약 55°</text>
 <text x="646" y="196" text-anchor="end" font-size="11.5" fill="#475569">어깨</text>
 <text x="774" y="275" font-size="11.5" fill="#475569">엉덩이</text>
 <text x="710" y="316" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0f172a">2D 상체 기울기가 크게 나온다</text>

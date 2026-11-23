@@ -1,6 +1,7 @@
 ---
 title: MTB 강습 영상에서 자전거 기울기를 재고 직접 그린 선으로 채점하기
 published: 2026-11-23T12:00:00+09:00
+image: ../../assets/images/posts/ai-mtb-coach-bike-lean-cover.webp
 author: Jihoon Jeon
 description: 스마트폰으로 찍은 MTB 강습 영상에서 자전거가 기운 각도를 재려고 한 과정이다. SAM2로 자전거 마스크를 추적하고 3D 자전거 모델을 마스크에 맞췄지만 다섯 번 고쳐도 값이 수렴하지 않았다. 그래서 핸들바 선을 직접 그려 채점 기준으로 삼았고, 실루엣 맞추기 값은 참고 값으로 내렸다.
 tags:

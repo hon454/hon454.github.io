@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-24",
+  "branch": "docs/ai-mtb-coach-post-2",
+  "post": "src/content/posts/ai-mtb-coach-bike-lean.md",
+  "scope": "cover",
+  "tool": "chatgpt-web",
+  "asset": "src/assets/images/posts/ai-mtb-coach-bike-lean-cover.webp",
+  "dimensions": {
+    "width": 1600,
+    "height": 900
+  },
+  "references": [
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+  ],
+  "userDirection": "ChatGPT로 커버 후보를 만들라는 요청. 첫 후보를 보고 사용자가 같은 대화에서 수정 요청하기를 골랐다. 수정본의 최종 선택은 사용자가 자리를 비우며 맡겨서 에이전트가 했다. 사용자가 돌아와 바꿀 수 있다.",
+  "concept": "Steady Spiral 달팽이가 벽에 걸린 영상 한 프레임(뒤에서 본 좌회전 라이더) 위에 주황 마커로 핸들바 선을 직접 긋고 있다. 왼쪽에는 다른 각도로 기운 작은 자전거 모형이 놓여 있다. 그린 선이 채점 기준이 되고 모델 값은 참고로 내려갔다는 글의 결론만 표현한다. 각도 숫자나 정답 표시는 넣지 않았다.",
+  "differentiation": "1편 커버(어깨 너머 근접, 야외 뱅크)와 달리 정면 눈높이, 실내 벽, 작은 달팽이와 큰 액자 배치를 썼다.",
+  "candidates": [
+    {
+      "tool": "chatgpt-web",
+      "file": "chatgpt.png",
+      "size": "1672×941",
+      "selected": false,
+      "review": "액자 속 자전거가 오른쪽으로 기울었고(글은 좌회전), 주황 선이 긴 막대처럼 보였고, 모형이 드롭바 로드 자전거였다."
+    },
+    {
+      "tool": "chatgpt-web",
+      "file": "chatgpt-v2.png",
+      "size": "1672×941",
+      "selected": true,
+      "review": "왼쪽 기울기, 일자 핸들바 모형, 더듬이 옆 강조선 제거가 반영됐다. 주황 선은 그립에서 그립까지 그어졌지만 오른쪽 그립에서 마커 끝까지 한 토막 더 이어진다. 뱅크는 낮은 둔덕으로 보인다."
+    }
+  ],
+  "prompt": "Generate an image. Create a 16:9 cover illustration for a blog post about measuring how far a mountain bike leans in a smartphone video. The attached image of a single green snail with a lime spiral shell is the character reference. Keep its identity exactly: dark green body, lime-green spiral shell, two round antennae, ivory eyes, small mouth, chunky rounded proportions. The attached clay scene with envelopes defines only the rendering style: soft clay-like 3D, warm ivory background, soft lighting, grounded shadows, simple rounded props. Do not copy its envelopes, numbers, paths or question mark. Scene: a flat, straight-on, eye-level view of a plain ivory indoor wall, like looking at a picture hung in a quiet studio. There is no table, no phone held in a hand and no outdoor landscape. In the center of the wall hangs one large landscape-format clay picture panel with a thick rounded pale frame, about half the image wide. The panel shows a single frozen video frame, modeled in the same soft clay style and not photo-realistic: a small rider seen from directly behind on a mountain bike that leans clearly to the left inside a banked dirt corner. The bike's handlebar is wide and sticks out well past both sides of the rider's body. Just to the right of the panel, the snail stands on a low rounded clay step stool, small compared with the panel, about one third of the panel's height. Its body is turned toward the panel and its face is visible in three-quarter view. It stretches one stubby arm up to the picture and holds a chunky orange marker, in the middle of drawing one thick, slightly wobbly, hand-drawn orange stroke along the handlebar from one grip to the other, tilted with the bike. The stroke is not finished: the marker tip is still touching it. The snail looks careful and concentrated, a little unsure, not triumphant. Set aside, leaning against the wall just to the left of the panel and not touching it, is a small simple wire model of a bicycle with thin yellow wheels, a green frame and a red handlebar, tilted at a different angle from the bike in the picture. Composition: keep the snail's face, the marker tip, the orange stroke and the wire bike model inside the middle half of the image height, grouped in the center with generous padding, so a wide centered crop still shows them. The edges are plain ivory background. Keep the bottom-right corner plain ivory background. No title, no text, no letters, no numbers, no check marks, no rulers or protractors, no arrows, no speech bubbles, no logos, no watermark.",
+  "revisionPrompt": "Revise this same image. Keep everything else exactly as it is: the snail, the step stool, the picture frame, the plain indoor wall, the composition and the clay rendering style. Change only these points. 1) Inside the framed picture, make the bike and rider lean to the LEFT. It is a left turn seen from directly behind: the rider's head and upper body are to the left of the tire's contact point on the ground, the handlebar's left grip is lower than its right grip, and the banked dirt wall is on the right side of the picture. 2) The orange line is not a long rod. It is a hand-drawn, slightly wobbly marker stroke drawn on top of the handlebar, running only from the left grip to the right grip, with the same tilt as the handlebar. The marker tip touches the right end of the stroke. 3) Replace the wire model on the left: it is not a drop-bar road bike but a mountain bike shape with a wide flat handlebar. Keep its colors (yellow wheels, green frame, red handlebar) and keep it tilted at a different angle from the bike in the picture. 4) Remove the two small green accent marks next to the snail's antennae. Still no text, no letters, no numbers, no logos, no watermark.",
+  "iterations": 2,
+  "export": "ChatGPT 웹 원본 1672×941 PNG를 ffmpeg로 위 1672×940을 잘라 1600×900 WebP(quality 85)로 변환했다. Gemini 후보는 만들지 않았다.",
+  "validation": {
+    "commands": {
+      "pnpm check": "PASS: 0 errors",
+      "pnpm type-check": "PASS",
+      "pnpm build": "PASS"
+    },
+    "visualReview": "pnpm dev 기준 모바일(375px) 카드에서 액자, 주황 선, 달팽이, 자전거 모형이 모두 보인다. 데스크톱 목록형 카드는 화면으로 확인하지 못했다."
+  }
+}

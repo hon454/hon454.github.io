@@ -1,0 +1,36 @@
+<svg viewBox="0 0 960 300" width="960" height="300" role="img" lang="ko" xmlns="http://www.w3.org/2000/svg">
+<title>강습 코스 순서와 분석 구간</title>
+<desc>코스는 롤러 두 개, 세 번째 롤러 끝의 우회전 뱅크, 점프, 좌회전 뱅크, 갭 점프 순서다. 분석 구간은 점프 착지부터 좌회전 뱅크 탈출까지이고 런마다 1.75초에서 2.25초이고 Run 6만 2.65초다. 축척이 없는 순서도다.</desc>
+<defs><marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#94a3b8"/></marker><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="0.5"/></pattern></defs>
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<rect width="100%" height="100%" fill="url(#g)"/>
+<text x="30" y="36" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace, Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" font-size="12" font-weight="600" fill="#64748b">코스 순서 (축척 없음)</text>
+<g font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" text-anchor="middle">
+<rect x="30" y="60" width="150" height="64" rx="9" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+<text x="105" y="97" font-size="14" font-weight="700" fill="#0f172a">롤러 2개</text>
+<rect x="216" y="60" width="150" height="64" rx="9" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+<text x="291" y="88" font-size="14" font-weight="700" fill="#0f172a">우회전 뱅크</text>
+<text x="291" y="107" font-size="11.5" fill="#475569">3번째 롤러 끝</text>
+<rect x="402" y="60" width="150" height="64" rx="9" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+<text x="477" y="97" font-size="14" font-weight="700" fill="#0f172a">점프</text>
+<rect x="588" y="60" width="170" height="64" rx="9" fill="#e8f7ee" stroke="#16a34a" stroke-width="2"/>
+<text x="673" y="88" font-size="14" font-weight="700" fill="#0f172a">좌회전 뱅크</text>
+<text x="673" y="107" font-size="11.5" fill="#475569">안에 약한 롤러 2개</text>
+<rect x="794" y="60" width="136" height="64" rx="9" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+<text x="862" y="97" font-size="14" font-weight="700" fill="#0f172a">갭 점프</text>
+</g>
+<g stroke="#94a3b8" stroke-width="1.6" fill="none">
+<line x1="180" y1="92" x2="214" y2="92" marker-end="url(#ah)"/>
+<line x1="366" y1="92" x2="400" y2="92" marker-end="url(#ah)"/>
+<line x1="552" y1="92" x2="586" y2="92" marker-end="url(#ah)"/>
+<line x1="758" y1="92" x2="792" y2="92" marker-end="url(#ah)"/>
+</g>
+<path d="M 520 150 L 520 166 L 770 166 L 770 150" fill="none" stroke="#16a34a" stroke-width="1.8"/>
+<line x1="645" y1="166" x2="645" y2="190" stroke="#16a34a" stroke-width="1.8"/>
+<g font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif" text-anchor="middle">
+<rect x="430" y="190" width="430" height="80" rx="9" fill="#ffffff" stroke="#16a34a" stroke-width="1.6"/>
+<text x="645" y="220" font-size="14" font-weight="700" fill="#0f172a">분석 구간: 점프 착지 → 뱅크 탈출</text>
+<text x="645" y="242" font-size="12" fill="#475569">런마다 1.75–2.25초 (Run 6만 2.65초), 1080p 30fps</text>
+<text x="645" y="259" font-size="12" fill="#475569">같은 구간을 7번 탔고, 코치 모범 주행 1개와 비교</text>
+</g>
+</svg>

@@ -1,0 +1,73 @@
+<svg viewBox="0 0 960 430" width="960" height="430" role="img" lang="ko" xmlns="http://www.w3.org/2000/svg">
+<title>정사영에서 실루엣이 같은 두 자전거 자세</title>
+<desc>좌우대칭 자전거 모델을 원근 없이 화면에 투영하면 yaw 30도, 왼쪽 기울기 25도인 자세와 yaw 150도, 오른쪽 기울기 25도인 자세의 실루엣이 같다. 앞의 자세는 앞바퀴가 카메라에서 먼 쪽에 있고 뒤의 자세는 앞바퀴가 카메라에 가까운 쪽에 있다. 실루엣은 bike_fit 모델로 계산했고 192px 렌더에서 두 자세의 차이 픽셀은 0개였다.</desc>
+<defs><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="0.5"/></pattern></defs>
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<rect width="100%" height="100%" fill="url(#g)"/>
+<g font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif">
+<text x="480" y="38" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">정사영 + 좌우대칭 모델: 두 자세의 실루엣이 같다</text>
+<rect x="60" y="62" width="380" height="300" rx="9" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+<rect x="520" y="62" width="380" height="300" rx="9" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+<text x="250" y="90" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">yaw 30°, lean +25° (왼쪽으로 기움)</text>
+<text x="710" y="90" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">yaw 150°, lean −25° (오른쪽으로 기움)</text>
+<polygon points="231.5,250.8 227.2,241.4 222.1,232.5 216.3,224.2 210.1,216.9 203.7,211.0 197.3,206.6 191.3,203.8 185.8,202.9 181.0,203.8 177.1,206.6 174.4,211.0 172.8,216.9 172.4,224.2 173.3,232.5 175.4,241.4 178.7,250.8 183.0,260.1 188.1,269.1 193.9,277.4 200.1,284.6 206.5,290.6 212.9,295.0 218.9,297.7 224.4,298.6 229.2,297.7 233.1,295.0 235.8,290.6 237.4,284.6 237.8,277.4 236.9,269.1 234.8,260.1" fill="#7c3aed" fill-opacity="0.55" stroke="#5b21b6" stroke-width="1"/>
+<polygon points="224.2,254.7 219.9,245.4 214.8,236.4 209.0,228.1 202.8,220.9 196.4,214.9 190.1,210.5 184.0,207.8 178.5,206.8 173.7,207.8 169.8,210.5 167.1,214.9 165.5,220.9 165.1,228.1 166.0,236.4 168.1,245.4 171.4,254.7 175.7,264.0 180.8,273.0 186.6,281.3 192.8,288.5 199.2,294.5 205.6,298.9 211.6,301.6 217.1,302.5 221.9,301.6 225.8,298.9 228.5,294.5 230.1,288.5 230.5,281.3 229.6,273.0 227.5,264.0" fill="#7c3aed" fill-opacity="0.55" stroke="#5b21b6" stroke-width="1"/>
+<polygon points="328.2,247.6 323.6,237.7 318.2,228.1 312.0,219.3 305.4,211.6 298.6,205.3 291.8,200.5 285.4,197.6 279.5,196.7 274.4,197.6 270.3,200.5 267.3,205.3 265.6,211.6 265.2,219.3 266.2,228.1 268.5,237.7 271.9,247.6 276.5,257.6 282.0,267.1 288.1,276.0 294.7,283.7 301.6,290.0 308.3,294.7 314.8,297.6 320.7,298.6 325.7,297.6 329.8,294.7 332.8,290.0 334.5,283.7 334.9,276.0 333.9,267.1 331.7,257.6" fill="#7c3aed" fill-opacity="0.55" stroke="#5b21b6" stroke-width="1"/>
+<polygon points="320.9,251.6 316.3,241.6 310.9,232.1 304.7,223.2 298.1,215.5 291.3,209.2 284.5,204.5 278.1,201.6 272.2,200.6 267.1,201.6 263.0,204.5 260.0,209.2 258.3,215.5 257.9,223.2 258.9,232.1 261.2,241.6 264.6,251.6 269.2,261.5 274.7,271.1 280.8,279.9 287.4,287.6 294.3,294.0 301.0,298.7 307.5,301.6 313.4,302.5 318.4,301.6 322.5,298.7 325.5,294.0 327.2,287.6 327.6,279.9 326.6,271.1 324.4,261.5" fill="#7c3aed" fill-opacity="0.55" stroke="#5b21b6" stroke-width="1"/>
+<line x1="247.3" y1="183.2" x2="236.3" y2="255.0" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="14.2" stroke-linecap="round"/>
+<line x1="236.0" y1="166.9" x2="199.7" y2="186.2" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="8.2" stroke-linecap="round"/>
+<line x1="236.3" y1="255.0" x2="199.7" y2="186.2" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="8.2" stroke-linecap="round"/>
+<line x1="236.0" y1="166.9" x2="232.7" y2="162.1" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="6.0" stroke-linecap="round"/>
+<line x1="232.7" y1="162.1" x2="234.7" y2="159.0" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="6.0" stroke-linecap="round"/>
+<line x1="241.6" y1="252.2" x2="209.7" y2="248.3" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="5.2" stroke-linecap="round"/>
+<line x1="202.3" y1="184.8" x2="209.7" y2="248.3" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="3.8" stroke-linecap="round"/>
+<line x1="253.7" y1="179.7" x2="303.2" y2="245.9" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="6.8" stroke-linecap="round"/>
+<line x1="231.0" y1="257.9" x2="193.2" y2="257.2" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="5.2" stroke-linecap="round"/>
+<line x1="197.2" y1="187.6" x2="193.2" y2="257.2" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="3.8" stroke-linecap="round"/>
+<line x1="240.8" y1="186.7" x2="289.6" y2="253.3" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="6.8" stroke-linecap="round"/>
+<line x1="210.6" y1="247.8" x2="192.3" y2="257.7" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="6.8" stroke-linecap="round"/>
+<line x1="303.2" y1="245.9" x2="289.6" y2="253.3" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="5.2" stroke-linecap="round"/>
+<line x1="275.5" y1="127.5" x2="251.9" y2="144.8" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="251.9" y1="144.8" x2="248.2" y2="147.9" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="248.2" y1="147.9" x2="244.8" y2="151.9" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="244.8" y1="151.9" x2="240.0" y2="156.1" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="240.0" y1="156.1" x2="234.7" y2="159.0" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="234.7" y1="159.0" x2="229.4" y2="161.8" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="229.4" y1="161.8" x2="223.6" y2="163.3" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="223.6" y1="163.3" x2="218.7" y2="163.7" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="218.7" y1="163.7" x2="214.3" y2="165.1" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="214.3" y1="165.1" x2="183.6" y2="176.9" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<polygon points="691.5,250.8 687.2,241.4 682.1,232.5 676.3,224.2 670.1,216.9 663.7,211.0 657.3,206.6 651.3,203.8 645.8,202.9 641.0,203.8 637.1,206.6 634.4,211.0 632.8,216.9 632.4,224.2 633.3,232.5 635.4,241.4 638.7,250.8 643.0,260.1 648.1,269.1 653.9,277.4 660.1,284.6 666.5,290.6 672.9,295.0 678.9,297.7 684.4,298.6 689.2,297.7 693.1,295.0 695.8,290.6 697.4,284.6 697.8,277.4 696.9,269.1 694.8,260.1" fill="#7c3aed" fill-opacity="0.55" stroke="#5b21b6" stroke-width="1"/>
+<polygon points="684.2,254.7 679.9,245.4 674.8,236.4 669.0,228.1 662.8,220.9 656.4,214.9 650.1,210.5 644.0,207.8 638.5,206.8 633.7,207.8 629.8,210.5 627.1,214.9 625.5,220.9 625.1,228.1 626.0,236.4 628.1,245.4 631.4,254.7 635.7,264.0 640.8,273.0 646.6,281.3 652.8,288.5 659.2,294.5 665.6,298.9 671.6,301.6 677.1,302.5 681.9,301.6 685.8,298.9 688.5,294.5 690.1,288.5 690.5,281.3 689.6,273.0 687.5,264.0" fill="#7c3aed" fill-opacity="0.55" stroke="#5b21b6" stroke-width="1"/>
+<polygon points="788.2,247.6 783.6,237.7 778.2,228.1 772.0,219.3 765.4,211.6 758.6,205.3 751.8,200.5 745.4,197.6 739.5,196.7 734.4,197.6 730.3,200.5 727.3,205.3 725.6,211.6 725.2,219.3 726.2,228.1 728.5,237.7 731.9,247.6 736.5,257.6 742.0,267.1 748.1,276.0 754.7,283.7 761.6,290.0 768.3,294.7 774.8,297.6 780.7,298.6 785.7,297.6 789.8,294.7 792.8,290.0 794.5,283.7 794.9,276.0 793.9,267.1 791.7,257.6" fill="#7c3aed" fill-opacity="0.55" stroke="#5b21b6" stroke-width="1"/>
+<polygon points="780.9,251.6 776.3,241.6 770.9,232.1 764.7,223.2 758.1,215.5 751.3,209.2 744.5,204.5 738.1,201.6 732.2,200.6 727.1,201.6 723.0,204.5 720.0,209.2 718.3,215.5 717.9,223.2 718.9,232.1 721.2,241.6 724.6,251.6 729.2,261.5 734.7,271.1 740.8,279.9 747.4,287.6 754.3,294.0 761.0,298.7 767.5,301.6 773.4,302.5 778.4,301.6 782.5,298.7 785.5,294.0 787.2,287.6 787.6,279.9 786.6,271.1 784.4,261.5" fill="#7c3aed" fill-opacity="0.55" stroke="#5b21b6" stroke-width="1"/>
+<line x1="707.3" y1="183.2" x2="696.3" y2="255.0" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="14.2" stroke-linecap="round"/>
+<line x1="696.0" y1="166.9" x2="659.7" y2="186.2" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="8.2" stroke-linecap="round"/>
+<line x1="696.3" y1="255.0" x2="659.7" y2="186.2" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="8.2" stroke-linecap="round"/>
+<line x1="696.0" y1="166.9" x2="692.7" y2="162.1" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="6.0" stroke-linecap="round"/>
+<line x1="692.7" y1="162.1" x2="694.7" y2="159.0" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="6.0" stroke-linecap="round"/>
+<line x1="701.6" y1="252.2" x2="669.7" y2="248.3" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="5.2" stroke-linecap="round"/>
+<line x1="662.3" y1="184.8" x2="669.7" y2="248.3" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="3.8" stroke-linecap="round"/>
+<line x1="713.7" y1="179.7" x2="763.2" y2="245.9" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="6.8" stroke-linecap="round"/>
+<line x1="691.0" y1="257.9" x2="653.2" y2="257.2" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="5.2" stroke-linecap="round"/>
+<line x1="657.2" y1="187.6" x2="653.2" y2="257.2" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="3.8" stroke-linecap="round"/>
+<line x1="700.8" y1="186.7" x2="749.6" y2="253.3" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="6.8" stroke-linecap="round"/>
+<line x1="670.6" y1="247.8" x2="652.3" y2="257.7" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="6.8" stroke-linecap="round"/>
+<line x1="763.2" y1="245.9" x2="749.6" y2="253.3" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="5.2" stroke-linecap="round"/>
+<line x1="735.5" y1="127.5" x2="711.9" y2="144.8" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="711.9" y1="144.8" x2="708.2" y2="147.9" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="708.2" y1="147.9" x2="704.8" y2="151.9" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="704.8" y1="151.9" x2="700.0" y2="156.1" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="700.0" y1="156.1" x2="694.7" y2="159.0" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="694.7" y1="159.0" x2="689.4" y2="161.8" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="689.4" y1="161.8" x2="683.6" y2="163.3" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="683.6" y1="163.3" x2="678.7" y2="163.7" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="678.7" y1="163.7" x2="674.3" y2="165.1" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="674.3" y1="165.1" x2="643.6" y2="176.9" stroke="#7c3aed" stroke-opacity="0.75" stroke-width="4.5" stroke-linecap="round"/>
+<text x="250" y="344" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0f172a">카메라에서 멀어지는 자전거</text>
+<text x="710" y="344" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0f172a">카메라 쪽으로 오는 자전거</text>
+<text x="480" y="208" text-anchor="middle" font-size="22" font-weight="700" fill="#dc2626">=</text>
+<text x="480" y="390" text-anchor="middle" font-size="12.5" fill="#475569">좌우대칭 모델은 깊이 방향으로 뒤집어도 실루엣이 같다. (yaw, lean)과 (180° − yaw, −lean)은 마스크만으로 구분할 수 없다.</text>
+<text x="480" y="410" text-anchor="middle" font-size="12.5" fill="#475569">실루엣은 맞추기에 쓴 3D 자전거 모델로 계산했다. 192px 렌더에서 두 자세의 차이 픽셀은 0개다.</text>
+</g>
+</svg>

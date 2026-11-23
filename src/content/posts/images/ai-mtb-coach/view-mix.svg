@@ -1,0 +1,32 @@
+<svg viewBox="0 0 960 400" width="960" height="400" role="img" lang="ko" xmlns="http://www.w3.org/2000/svg">
+<title>같은 상체 자세가 시점에 따라 다른 2D 기울기로 보이는 이유</title>
+<desc>옆으로는 기울지 않고 앞으로만 숙인 상체를 가정한다. 뒤에서 찍으면 엉덩이에서 어깨로 가는 선이 화면에서 수직으로 보여 2D 기울기가 0도에 가깝다. 옆에서 찍으면 같은 선이 화면에서 크게 기울어 보인다. 좌회전 구간에서는 화면이 뒷모습에서 옆모습으로 바뀌므로 2D 기울기에 시점 변화가 섞인다. 각도는 설명용 예시다.</desc>
+<defs><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="0.5"/></pattern></defs>
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<rect width="100%" height="100%" fill="url(#g)"/>
+<g font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif">
+<text x="480" y="38" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">같은 자세: 옆으로 기울지 않고 앞으로만 숙인 상체 (각도는 예시)</text>
+<rect x="60" y="62" width="380" height="270" rx="9" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+<rect x="520" y="62" width="380" height="270" rx="9" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+<text x="250" y="90" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">뒤에서 찍은 화면 (구간 중간)</text>
+<text x="710" y="90" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">옆에서 찍은 화면 (구간 끝)</text>
+<line x1="250" y1="110" x2="250" y2="290" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 5"/>
+<line x1="250" y1="270" x2="250" y2="190" stroke="#16a34a" stroke-width="6" stroke-linecap="round"/>
+<circle cx="250" cy="270" r="7" fill="#16a34a"/>
+<line x1="215" y1="190" x2="285" y2="190" stroke="#0891b2" stroke-width="4" stroke-linecap="round"/>
+<text x="300" y="194" font-size="11.5" fill="#475569">어깨</text>
+<text x="264" y="275" font-size="11.5" fill="#475569">엉덩이</text>
+<text x="250" y="316" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0f172a">2D 상체 기울기 ≈ 0°</text>
+<line x1="760" y1="110" x2="760" y2="290" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 5"/>
+<line x1="760" y1="270" x2="662" y2="201" stroke="#16a34a" stroke-width="6" stroke-linecap="round"/>
+<circle cx="760" cy="270" r="7" fill="#16a34a"/>
+<circle cx="662" cy="201" r="5" fill="#0891b2"/>
+<path d="M 760 222 A 48 48 0 0 0 721 242" fill="none" stroke="#dc2626" stroke-width="1.8"/>
+<text x="772" y="232" font-size="12" font-weight="700" fill="#dc2626">약 55°</text>
+<text x="646" y="196" text-anchor="end" font-size="11.5" fill="#475569">어깨</text>
+<text x="774" y="275" font-size="11.5" fill="#475569">엉덩이</text>
+<text x="710" y="316" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0f172a">2D 상체 기울기가 크게 나온다</text>
+<text x="480" y="362" text-anchor="middle" font-size="12.5" fill="#475569">초록 선 = 엉덩이 → 어깨, 점선 = 화면 수직. 화면에서 잰 각도에는 옆 기울기와 앞 숙임이 시점에 따라 다른 비율로 섞인다.</text>
+<text x="480" y="382" text-anchor="middle" font-size="12.5" fill="#475569">좌회전 구간에서는 화면이 뒷모습에서 옆모습으로 바뀐다.</text>
+</g>
+</svg>

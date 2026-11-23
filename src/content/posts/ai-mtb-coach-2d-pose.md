@@ -20,7 +20,7 @@ lang: ko
 
 그래서 영상을 분석하는 도구를 만들기 시작했다. 구현은 Claude Code에 맡겼다. 무엇을 볼지 정하고, 나온 결과에 질문하는 일은 내가 했다. 코드와 README는 [ai-mtb-coach 저장소](https://github.com/hon454/ai-mtb-coach)에 있다.
 
-이 글은 세 편 중 첫 편이고 2D 자세 인식만으로 갈 수 있었던 곳까지를 다룬다. 먼저 결과다.
+이 글은 2D 자세 인식만으로 갈 수 있었던 곳까지를 다룬다. 먼저 결과다.
 
 ![코치와 내 런 6개를 같은 순간끼리 놓은 비교 보드](./images/ai-mtb-coach/timing-vs-coach.jpg)
 

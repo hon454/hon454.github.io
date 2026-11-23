@@ -1,6 +1,7 @@
 ---
 title: MTB 강습 영상에서 좌회전 자세 차이를 2D 자세 인식으로 찾기
 published: 2026-11-23
+image: ../../assets/images/posts/ai-mtb-coach-2d-pose-cover.webp
 author: Jihoon Jeon
 description: 코치가 스마트폰으로 찍어 준 MTB 강습 영상 7개에서 좌회전 뱅크 구간만 잘라, 동기화 영상과 2D 자세 인식으로 코치의 모범 주행과 비교한 과정이다. 지표를 검증하며 결론 세 가지를 고쳤고, 2D 영상만으로는 자전거 기울기와 몸 기울기를 나눌 수 없다는 데서 멈췄다.
 tags:

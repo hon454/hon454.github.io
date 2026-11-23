@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-23",
+  "branch": "docs/ai-mtb-coach-post-1",
+  "post": "src/content/posts/ai-mtb-coach-2d-pose.md",
+  "scope": "cover",
+  "tool": "chatgpt-web",
+  "asset": "src/assets/images/posts/ai-mtb-coach-2d-pose-cover.webp",
+  "dimensions": {
+    "width": 1600,
+    "height": 900
+  },
+  "references": [
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+  ],
+  "userDirection": "커버 이미지 생성 지침에 따라 커버를 만들어 적용해 달라는 요청. 두 후보 중 ChatGPT 후보를 선택했다.",
+  "concept": "Steady Spiral 달팽이가 스마트폰을 들고 있고, 화면 속 라이더에 관절 점과 선(2D 뼈대)이 겹쳐 있다. 뒤쪽에는 뱅크 코너를 기울여 도는 달팽이 라이더가 흐리게 보인다. 뼈대는 라이더 몸에만 그려지고 자전거에는 없다. 주행이 나아졌다는 표현은 넣지 않았다.",
+  "differentiation": "최근 커버(정면·아이소메트릭, 빈 바닥)와 달리 어깨 너머 낮은 근접 시점, 전경·배경 깊이 배치, 흙 뱅크 코너 장소를 썼다.",
+  "candidates": [
+    {
+      "tool": "chatgpt-web",
+      "size": "1672×941",
+      "selected": true,
+      "review": "전경 달팽이가 왼쪽 아래에서 잘리고 얼굴은 눈 하나만 보인다. 폰 화면 속 라이더가 실사풍 사람이라 점토 스타일과 다르다. 사용자가 이 후보를 선택했다."
+    },
+    {
+      "tool": "gemini-web",
+      "size": "화면 미리보기만 확인(원본 미다운로드)",
+      "selected": false,
+      "review": "스타일이 한 장 안에서 일관되고 중앙 크롭 여유가 컸지만 옆에서 본 시점이라 최근 커버와 더 비슷했다. 사용자가 ChatGPT 후보를 선택했다."
+    }
+  ],
+  "prompt": "Generate an image. Create a 16:9 cover illustration for a blog post about analysing mountain-bike lesson videos with 2D pose estimation. The attached image of a single green snail with a lime spiral shell is the character reference. Keep its identity exactly: dark green body, lime-green spiral shell, two round antennae, ivory eyes, small mouth, chunky rounded proportions. The attached clay scene with envelopes defines only the rendering style: soft clay-like 3D, warm ivory background, soft lighting, grounded shadows, simple rounded props. Do not copy its envelopes, numbers, paths or question mark. Scene: an over-the-shoulder close-up with the camera low and just behind the snail. In the foreground, slightly left of center, the snail is large and seen from a rear three-quarter angle with its face in profile still visible, holding up a chunky clay smartphone with one stubby arm. The phone screen faces the viewer and shows a tiny rider with a simple skeleton overlay: small cyan dots at the joints connected by thin cyan lines, drawn only on the rider's body and not on the bicycle. In the background, smaller and softly out of focus, the same snail character rides a small clay mountain bike leaned into a banked dirt corner, a smooth curved wall of warm tan clay earth. The foreground snail tilts its head, comparing the screen with the real rider. Composition: use foreground and background depth instead of a left-to-right row. Keep the snail's head, the phone screen and the background rider grouped in the center with generous padding. The edges are plain ivory background so a centered crop still works. Keep the bottom-right corner plain ivory background. No title, no text, no letters, no numbers, no logos, no watermark.",
+  "iterations": 1,
+  "export": "ChatGPT 웹 원본 1672×941 PNG를 위쪽 940px로 잘라 1600×900으로 줄이고 ffmpeg libwebp 품질 85로 변환했다. 이 PC에 cwebp가 없어 pnpm cover apply가 실패했기 때문이다. 재생성이나 수정 요청 없이 첫 결과를 사용했다.",
+  "validation": {
+    "commands": {
+      "pnpm check": "PASS: 0 errors, 0 warnings, 0 hints",
+      "pnpm type-check": "PASS",
+      "pnpm build": "PASS"
+    },
+    "visualReview": "pnpm dev 기준 데스크톱 목록형(1440px)에서는 전경 달팽이 일부와 폰이 보이고 뒤쪽 라이더는 거의 잘린다. 그리드형에서는 장면 전체가 보인다. 모바일(375px)은 카드 이미지 영역이 333×167인 것만 확인했고 화면으로는 보지 못했다."
+  }
+}

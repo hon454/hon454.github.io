@@ -1,6 +1,7 @@
 ---
 title: MTB 강습 영상에서 3D 몸 자세 모델로 상체 기울기와 무게중심 재기
 published: 2026-11-24T12:30:00+09:00
+image: ../../assets/images/posts/ai-mtb-coach-3d-body-cover.webp
 author: Jihoon Jeon
 description: 스마트폰으로 찍은 MTB 강습 영상에 3D 몸 자세 모델 GVHMR과 SAM 3D Body를 돌려 상체 기울기를 중력 기준으로 다시 재고 몸 전체 무게중심까지 계산한 과정이다. 자전거 기울기의 기준을 바꿀 때마다 런별 결론이 달라졌다. 정답 데이터가 없어 런 순위와 코치님과의 차이는 정하지 못했고, 다음 강습에서 할 촬영과 선 그리기를 정리했다.
 tags:

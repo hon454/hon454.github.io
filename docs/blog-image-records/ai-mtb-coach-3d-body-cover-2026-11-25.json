@@ -1,0 +1,34 @@
+{
+  "created": "2026-11-25",
+  "branch": "docs/ai-mtb-coach-3d-body-cover",
+  "tool": "chatgpt-web",
+  "post": "src/content/posts/ai-mtb-coach-3d-body.md",
+  "userDirection": "ChatGPT로 커버 이미지를 만들고 커밋·푸시. Gemini 후보는 만들지 않았다.",
+  "references": [
+    "public/assets/images/logo/steady-spiral-color.png",
+    "src/assets/images/posts/replication-rpc-ordering-cover.webp"
+  ],
+  "concept": "뒤에서 본 3D 몸 모델(반투명 파란 메시) 라이더가 뱅크 코너에서 기울어 있고, 달팽이가 든 다림추 실이 중력 방향을, 엉덩이 근처의 파란 공이 몸 전체 무게중심을 나타낸다. 화면 아래가 아니라 중력 기준으로 상체 기울기와 무게중심을 잰다는 글의 핵심만 표현하며, 런 순위나 올바른 자세를 암시하지 않는다.",
+  "differentiation": "시리즈 1·2편(어깨 너머 스마트폰, 액자 앞 지시봉)과 달리 낮은 시점의 후방 카메라, 작은 달팽이와 큰 라이더 대비, 다림추 실로 만든 세로 구도를 썼다.",
+  "assets": [
+    {
+      "path": "src/assets/images/posts/ai-mtb-coach-3d-body-cover.webp",
+      "width": 1600,
+      "height": 900,
+      "prompt": "Generate an image. Create a 16:9 cover illustration for a blog post about measuring a mountain biker's upper-body lean and whole-body center of mass from a 3D body model reconstructed from phone video, measured against true gravity instead of the screen. The attached image of a single green snail with a lime spiral shell is the character reference. Keep its identity exactly: dark green body, lime-green spiral shell, two round antennae, ivory eyes, small mouth, chunky rounded proportions. The attached clay scene with envelopes defines only the rendering style: soft clay-like 3D, warm ivory background, soft lighting, grounded shadows, simple rounded props. Do not copy its envelopes, numbers, paths or question mark. Scene: a low, eye-level camera looking from directly behind a large translucent pale-blue clay figure of a rider on a mountain bike, built from smooth rounded mesh-like panels like a 3D body model, leaning together into a left turn on a short banked dirt berm. The figure is much bigger than the snail. In the foreground at the lower center, the small snail stands on the dirt and holds up a long string with a round clay plumb bob, so the string hangs perfectly vertical through the frame as the gravity reference. A single glowing blue clay ball floats near the rider figure's hips, marking the body's center of mass, close to the line of the tilted bike. The snail looks up thoughtfully, comparing the leaning figure with the vertical string. Composition: vertical emphasis around the hanging string, the rider figure and the snail tightly grouped in the center with generous padding; edges are plain warm ivory background with only a hint of dirt, so a centered crop still works. Keep the bottom-right corner plain ivory background. No title, no text, no numbers, no logos, no watermark.",
+      "revisions": [
+        "ChatGPT 웹 원본 1672×941 PNG의 첫 결과를 사용했다.",
+        "원본은 라이더가 오른쪽으로 기울어 우회전처럼 보여서, 사용자 선택에 따라 좌우 반전했다. 반전 후 라이더는 왼쪽으로 기울고 뱅크가 코너 바깥쪽에 온다.",
+        "cwebp가 없어 sharp로 중앙 16:9를 자르고 1600×900, webp quality 85로 변환했다."
+      ],
+      "review": "캐릭터 색과 비율은 기준과 맞다. 달팽이는 옆모습이라 눈이 하나만 보인다. 다림추 실이 화면 위 끝까지 이어져 매달린 지점은 보이지 않는다. 문자와 워터마크는 없다."
+    }
+  ],
+  "rejected": [
+    {
+      "tool": "chatgpt-web",
+      "file": "chatgpt.png (반전 전 원본)",
+      "reason": "라이더가 오른쪽으로 기울어 글의 좌회전 뱅크와 방향이 맞지 않았다."
+    }
+  ]
+}

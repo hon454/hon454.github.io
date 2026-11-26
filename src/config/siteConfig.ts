@@ -3,7 +3,7 @@ import { resolvePageToggles } from "../utils/page-toggle-utils";
 import { resolveSiteLang } from "../utils/site-config-utils";
 
 // 사이트 언어 정의
-// 언어 코드 예시: 'zh_CN', 'zh_TW', 'en', 'ja', 'ru', 'ko'
+// 언어 코드 예시: 'zh_CN', 'zh_TW', 'en', 'ja', 'ru', 'ko', 'es'
 const SITE_LANG = resolveSiteLang("ko");
 
 // 페이지 토글 설정 - 페이지 접근 권한을 제어합니다. false이면 404를 반환하고 해당 내비게이션 메뉴를 자동으로 숨깁니다.

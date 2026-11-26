@@ -205,17 +205,17 @@ Deferred Spawn은 **생성자를 미루는 API가 아니다.** `SpawnActorDeferr
 sequenceDiagram
   participant Code as 서버 게임플레이 코드
   participant World as UWorld
-  participant Actor as Deferred Actor
+  participant DA as Deferred Actor
 
   Code->>World: SpawnActorDeferred<T>()
-  World->>Actor: 네이티브 생성자와 기본 서브오브젝트
-  World->>Actor: PostSpawnInitialize / PostActorCreated
+  World->>DA: 네이티브 생성자와 기본 서브오브젝트
+  World->>DA: PostSpawnInitialize / PostActorCreated
   World-->>Code: 유효하지만 불완전한 Actor
-  Code->>Actor: Construction 입력값 설정
-  Code->>Actor: FinishSpawning(Transform)
-  Actor->>Actor: Construction Script / OnConstruction
-  Actor->>Actor: 컴포넌트 초기화
-  Actor->>Actor: BeginPlay (월드가 이미 플레이 중이면)
+  Code->>DA: Construction 입력값 설정
+  Code->>DA: FinishSpawning(Transform)
+  DA->>DA: Construction Script / OnConstruction
+  DA->>DA: 컴포넌트 초기화
+  DA->>DA: BeginPlay (월드가 이미 플레이 중이면)
 ```
 
 ### 일반 C++에서는 타입이 있는 World API 사용하기

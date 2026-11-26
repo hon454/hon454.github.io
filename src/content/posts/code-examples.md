@@ -1,31 +1,29 @@
 ---
-title: Firefly 代码块示例
+title: Firefly 코드 블록 예시
 published: 1970-01-03
 pinned: false
-description: 在Firefly中使用表达性代码的代码块在 Markdown 中的外观。
-tags: [Markdown, Firefly]
-category: 文章示例
+description: Firefly에서 Expressive Code로 꾸민 코드 블록이 Markdown에서 어떻게 보이는지 보여 주는 예시.
+tags: [markdown, firefly]
+category: 블로그
 image: ./images/firefly3.avif
 slug: code-examples
-series: "Firefly 功能示例2"
-seriesOrder: 5
 ---
 
-在这里，我们将探索如何使用 [Expressive Code](https://expressive-code.com/) 展示代码块。提供的示例基于官方文档，您可以参考以获取更多详细信息。
+여기서는 [Expressive Code](https://expressive-code.com/)로 코드 블록을 표시하는 방법을 살펴본다. 예시는 공식 문서를 바탕으로 했으며, 자세한 내용은 문서를 참고하면 된다.
 
-## 表达性代码
+## Expressive Code
 
-### 语法高亮
+### 구문 강조
 
-[语法高亮](https://expressive-code.com/key-features/syntax-highlighting/)
+[구문 강조](https://expressive-code.com/key-features/syntax-highlighting/)
 
-#### 常规语法高亮
+#### 기본 구문 강조
 
 ```js
-console.log('此代码有语法高亮!')
+console.log('이 코드는 구문 강조가 적용된다!')
 ```
 
-#### 渲染 ANSI 转义序列
+#### ANSI 이스케이프 시퀀스 렌더링
 
 ```ansi
 [1;4mStandard ANSI colors:[0m
@@ -56,79 +54,79 @@ console.log('此代码有语法高亮!')
 - [9mStrikethrough[0m
 ```
 
-### 编辑器和终端框架
+### 에디터와 터미널 프레임
 
-[编辑器和终端框架](https://expressive-code.com/key-features/frames/)
+[에디터와 터미널 프레임](https://expressive-code.com/key-features/frames/)
 
-#### 代码编辑器框架
+#### 코드 에디터 프레임
 
 ```js title="my-test-file.js"
-console.log('标题属性示例')
+console.log('title 속성 예시')
 ```
 
 ---
 
 ```html
 <!-- src/content/index.html -->
-<div>文件名注释示例</div>
+<div>파일 이름 주석 예시</div>
 ```
 
-#### 终端框架
+#### 터미널 프레임
 
 ```bash
-echo "此终端框架没有标题"
+echo "이 터미널 프레임에는 제목이 없다"
 ```
 
 ---
 
-```powershell title="PowerShell 终端示例"
-Write-Output "这个有标题!"
+```powershell title="PowerShell 터미널 예시"
+Write-Output "이 프레임에는 제목이 있다!"
 ```
 
-#### 覆盖框架类型
+#### 프레임 종류 덮어쓰기
 
 ```sh frame="none"
-echo "看，没有框架!"
+echo "보라, 프레임이 없다!"
 ```
 
 ---
 
 ```ps frame="code" title="PowerShell Profile.ps1"
-# 如果不覆盖，这将是一个终端框架
+# 덮어쓰지 않으면 이 블록은 터미널 프레임이 된다
 function Watch-Tail { Get-Content -Tail 20 -Wait $args }
 New-Alias tail Watch-Tail
 ```
 
-### 文本和行标记
+### 텍스트와 줄 마커
 
-[文本和行标记](https://expressive-code.com/key-features/text-markers/)
+[텍스트와 줄 마커](https://expressive-code.com/key-features/text-markers/)
 
-#### 标记整行和行范围
+#### 줄 전체와 줄 범위 표시
 
 ```js {1, 4, 7-8}
-// 第1行 - 通过行号定位
-// 第2行
-// 第3行
-// 第4行 - 通过行号定位
-// 第5行
-// 第6行
-// 第7行 - 通过范围 "7-8" 定位
-// 第8行 - 通过范围 "7-8" 定位
+// 1번째 줄 - 줄 번호로 지정
+// 2번째 줄
+// 3번째 줄
+// 4번째 줄 - 줄 번호로 지정
+// 5번째 줄
+// 6번째 줄
+// 7번째 줄 - 범위 "7-8"로 지정
+// 8번째 줄 - 범위 "7-8"로 지정
 ```
 
-#### 选择行标记类型 (mark, ins, del)
+#### 줄 마커 종류 선택 (mark, ins, del)
 
 ```js title="line-markers.js" del={2} ins={3-4} {6}
 function demo() {
-  console.log('此行标记为已删除')
-  // 此行和下一行标记为已插入
-  console.log('这是第二个插入行')
+  console.log('이 줄은 삭제로 표시된다')
+  // 이 줄과 다음 줄은 삽입으로 표시된다
+  console.log('두 번째 삽입 줄이다')
 
-  return '此行使用中性默认标记类型'
+  return '이 줄은 기본 중립 마커를 쓴다'
 }
 ```
 
-#### 为行标记添加标签
+#### 줄 마커에 레이블 붙이기
 
 ```jsx {"1":5} del={"2":7-8} ins={"3":10-12}
 // labeled-line-markers.jsx
@@ -146,7 +144,7 @@ function demo() {
 </button>
 ```
 
-#### 在单独行上添加长标签
+#### 별도 줄에 긴 레이블 붙이기
 
 ```jsx {"1. Provide the value prop here:":5-6} del={"2. Remove the disabled and active states:":8-10} ins={"3. Add this to render the children inside the button:":12-15}
 // labeled-line-markers.jsx
@@ -167,12 +165,12 @@ function demo() {
 </button>
 ```
 
-#### 使用类似 diff 的语法
+#### diff와 비슷한 문법 사용
 
 ```diff
-+此行将标记为已插入
--此行将标记为已删除
-这是常规行
++이 줄은 삽입으로 표시된다
+-이 줄은 삭제로 표시된다
+이 줄은 일반 줄이다
 ```
 
 ---
@@ -186,154 +184,154 @@ function demo() {
  no whitespace will be removed either
 ```
 
-#### 结合语法高亮和类似 diff 的语法
+#### 구문 강조와 diff 문법 함께 쓰기
 
 ```diff lang="js"
   function thisIsJavaScript() {
-    // 整个块都会以 JavaScript 高亮显示，
-    // 并且我们仍然可以为其添加 diff 标记！
--   console.log('要删除的旧代码')
-+   console.log('新的闪亮代码！')
+    // 블록 전체가 JavaScript로 강조되고,
+    // 여기에 diff 마커도 붙일 수 있다!
+-   console.log('삭제할 기존 코드')
++   console.log('새로 바뀐 코드!')
   }
 ```
 
-#### 标记行内的单独文本
+#### 줄 안의 일부 텍스트 표시
 
 ```js "given text"
 function demo() {
-  // 标记行内的任何给定文本
-  return '支持给定文本的多个匹配项';
+  // 줄 안의 지정한 텍스트를 표시한다
+  return '지정한 텍스트가 여러 번 나와도 모두 표시된다';
 }
 ```
 
-#### 正则表达式
+#### 정규식
 
 ```ts /ye[sp]/
-console.log('单词 yes 和 yep 将被标记。')
+console.log('yes와 yep 단어가 표시된다.')
 ```
 
-#### 转义正斜杠
+#### 슬래시 이스케이프
 
 ```sh /\/ho.*\//
 echo "Test" > /home/test.txt
 ```
 
-#### 选择内联标记类型 (mark, ins, del)
+#### 인라인 마커 종류 선택 (mark, ins, del)
 
 ```js "return true;" ins="inserted" del="deleted"
 function demo() {
-  console.log('这些是插入和删除的标记类型');
-  // return 语句使用默认标记类型
+  console.log('삽입과 삭제 마커 종류 예시');
+  // return 문은 기본 마커 종류를 쓴다
   return true;
 }
 ```
 
-### 自动换行
+### 자동 줄 바꿈
 
-[自动换行](https://expressive-code.com/key-features/word-wrap/)
+[자동 줄 바꿈](https://expressive-code.com/key-features/word-wrap/)
 
-#### 为每个块配置自动换行
+#### 블록별 자동 줄 바꿈 설정
 
 ```js wrap
-// 启用换行的示例
+// 줄 바꿈을 켠 예시
 function getLongString() {
-  return '这是一个非常长的字符串，除非容器极宽，否则很可能无法适应可用空间'
+  return '아주 긴 문자열이라 컨테이너가 매우 넓지 않으면 공간에 들어가지 않을 가능성이 크다'
 }
 ```
 
 ---
 
 ```js wrap=false
-// wrap=false 的示例
+// wrap=false 예시
 function getLongString() {
-  return '这是一个非常长的字符串，除非容器极宽，否则很可能无法适应可用空间'
+  return '아주 긴 문자열이라 컨테이너가 매우 넓지 않으면 공간에 들어가지 않을 가능성이 크다'
 }
 ```
 
-#### 配置换行的缩进
+#### 줄 바꿈 들여쓰기 설정
 
 ```js wrap preserveIndent
-// preserveIndent 示例（默认启用）
+// preserveIndent 예시 (기본으로 켜져 있음)
 function getLongString() {
-  return '这是一个非常长的字符串，除非容器极宽，否则很可能无法适应可用空间'
+  return '아주 긴 문자열이라 컨테이너가 매우 넓지 않으면 공간에 들어가지 않을 가능성이 크다'
 }
 ```
 
 ---
 
 ```js wrap preserveIndent=false
-// preserveIndent=false 的示例
+// preserveIndent=false 예시
 function getLongString() {
-  return '这是一个非常长的字符串，除非容器极宽，否则很可能无法适应可用空间'
+  return '아주 긴 문자열이라 컨테이너가 매우 넓지 않으면 공간에 들어가지 않을 가능성이 크다'
 }
 ```
 
-## 可折叠部分
+## 접을 수 있는 영역
 
-[可折叠部分](https://expressive-code.com/plugins/collapsible-sections/)
+[접을 수 있는 영역](https://expressive-code.com/plugins/collapsible-sections/)
 
 ```js collapse={1-5, 12-14, 21-24}
-// 所有这些样板设置代码将被折叠
+// 이 보일러플레이트 설정 코드는 모두 접힌다
 import { someBoilerplateEngine } from '@example/some-boilerplate'
 import { evenMoreBoilerplate } from '@example/even-more-boilerplate'
 
 const engine = someBoilerplateEngine(evenMoreBoilerplate())
 
-// 这部分代码默认可见
+// 이 부분은 기본으로 보인다
 engine.doSomething(1, 2, 3, calcFn)
 
 function calcFn() {
-  // 您可以有多个折叠部分
+  // 접는 영역을 여러 개 둘 수 있다
   const a = 1
   const b = 2
   const c = a + b
 
-  // 这将保持可见
-  console.log(`计算结果: ${a} + ${b} = ${c}`)
+  // 이 부분은 계속 보인다
+  console.log(`계산 결과: ${a} + ${b} = ${c}`)
   return c
 }
 
-// 直到块末尾的所有代码将再次被折叠
+// 블록 끝까지의 코드는 다시 접힌다
 engine.closeConnection()
 engine.freeMemory()
-engine.shutdown({ reason: '示例样板代码结束' })
+engine.shutdown({ reason: '예시 보일러플레이트 코드 끝' })
 ```
 
-## 行号
+## 줄 번호
 
-[行号](https://expressive-code.com/plugins/line-numbers/)
+[줄 번호](https://expressive-code.com/plugins/line-numbers/)
 
-### 为每个块显示行号
+### 블록별 줄 번호 표시
 
 ```js showLineNumbers
-// 此代码块将显示行号
-console.log('来自第2行的问候!')
-console.log('我在第3行')
+// 이 코드 블록은 줄 번호를 표시한다
+console.log('2번째 줄에서 인사한다!')
+console.log('여기는 3번째 줄이다')
 ```
 
 ---
 
 ```js showLineNumbers=false
-// 此块禁用行号
-console.log('你好?')
-console.log('抱歉，你知道我在第几行吗?')
+// 이 블록은 줄 번호를 끈다
+console.log('안녕?')
+console.log('미안하지만, 지금 몇 번째 줄인지 아는가?')
 ```
 
-### 更改起始行号
+### 시작 줄 번호 바꾸기
 
 ```js showLineNumbers startLineNumber=5
-console.log('来自第5行的问候!')
-console.log('我在第6行')
+console.log('5번째 줄에서 인사한다!')
+console.log('여기는 6번째 줄이다')
 ```
 
-## Tab 代码块
+## Tab 코드 블록
 
-由 [rehype-code-group](https://github.com/ITZSHOAIB/rehype-code-group) 提供，语法与 [VitePress 代码组](https://vitepress.dev/guide/markdown#code-groups) 一致：用 `::: code-group labels=[...]` 包裹多个代码块，即可合并成一组标签页。
+[rehype-code-group](https://github.com/ITZSHOAIB/rehype-code-group)이 제공하며, 문법은 [VitePress 코드 그룹](https://vitepress.dev/guide/markdown#code-groups)과 같다. 코드 블록 여러 개를 `::: code-group labels=[...]`로 감싸면 하나의 탭 묶음이 된다.
 
 > [!NOTE]
-> `labels=[...]` 中的标签按顺序对应组内的代码块，用英文逗号分隔；`:::` 与 `code-group` 之间的空格不能省略。
+> `labels=[...]`의 레이블은 그룹 안의 코드 블록과 순서대로 짝을 이루며 영문 쉼표로 구분한다. `:::`와 `code-group` 사이의 공백은 생략할 수 없다.
 
-### 基本用法
+### 기본 사용법
 
 ````markdown
 ::: code-group labels=[code.js, code.py, code.html]
@@ -356,7 +354,7 @@ def greet(name):
 :::
 ````
 
-渲染效果：
+렌더링 결과:
 
 ::: code-group labels=[code.js, code.py, code.html]
 
@@ -377,9 +375,9 @@ def greet(name):
 
 :::
 
-### 标签中使用 Emoji
+### 탭 레이블에 Emoji 쓰기
 
-标签支持 [emoji 短代码](https://github.com/omnidan/node-emoji#readme)，构建时会自动转换成 emoji：
+탭 레이블은 [emoji 단축 코드](https://github.com/omnidan/node-emoji#readme)를 지원하며, 빌드할 때 자동으로 emoji로 바뀐다:
 
 ````markdown
 ::: code-group labels=[:package: npm, :package: pnpm, :yarn: yarn]
@@ -401,11 +399,11 @@ yarn create astro
 
 :::
 
-### 与其他代码块特性组合
+### 다른 코드 블록 기능과 함께 쓰기
 
-组内仍是普通的 Expressive Code 代码块，标题、行号、行标记、折叠、终端框架等特性都可以照常使用。
+그룹 안의 코드 블록은 평범한 Expressive Code 블록이라서 제목, 줄 번호, 줄 마커, 접기, 터미널 프레임 같은 기능을 그대로 쓸 수 있다.
 
-::: code-group labels=[配置文件, 终端, 折叠]
+::: code-group labels=[설정 파일, 터미널, 접기]
 
 ```js title="astro.config.mjs" showLineNumbers {2} ins={3}
 export default {
@@ -414,12 +412,12 @@ export default {
 };
 ```
 
-```bash title="部署"
+```bash title="배포"
 pnpm build && pnpm preview
 ```
 
 ```js collapse={1-3}
-// 这三行默认折叠
+// 이 세 줄은 기본으로 접혀 있다
 import { a } from "a";
 import { b } from "b";
 
@@ -428,79 +426,79 @@ console.log(a, b);
 
 :::
 
-### 不止是代码块
+### 코드 블록 이상의 구성
 
-需要在同一标签页内组合说明文字、代码和列表时，使用富内容语法：外层是 `:::: code-group`，每个标签页用 `::: code-tab label="..."` 包裹。这样代码前后的说明会与代码一起切换。
+같은 탭 안에 설명 글, 코드, 목록을 함께 넣으려면 리치 콘텐츠 문법을 쓴다. 바깥은 `:::: code-group`, 각 탭은 `::: code-tab label="..."`로 감싼다. 코드 앞뒤의 설명도 코드와 함께 전환된다.
 
 ````markdown
 :::: code-group label="Installation choices"
 
 ::: code-tab label="npm"
 
-先安装依赖，再启动开发服务器。
+먼저 의존성을 설치한 다음 개발 서버를 시작한다.
 
 ```sh
 npm install
 npm run dev
 ```
 
-保持终端运行，然后打开本地预览地址。
+터미널을 켜 둔 채로 로컬 미리보기 주소를 연다.
 
 :::
 
 ::: code-tab label="pnpm"
 
-使用 pnpm 安装并启动项目。
+pnpm으로 설치하고 프로젝트를 시작한다.
 
 ```sh
 pnpm install
 pnpm dev
 ```
 
-- 需要 Node.js 22.23 或更新版本。
-- 使用项目指定的 pnpm 版本。
+- Node.js 22.23 이상이 필요하다.
+- 프로젝트가 지정한 pnpm 버전을 쓴다.
 
 :::
 
 ::::
 ````
 
-渲染效果：
+렌더링 결과:
 
 :::: code-group label="Installation choices"
 
 ::: code-tab label="npm"
 
-先安装依赖，再启动开发服务器。
+먼저 의존성을 설치한 다음 개발 서버를 시작한다.
 
 ```sh
 npm install
 npm run dev
 ```
 
-保持终端运行，然后打开本地预览地址。
+터미널을 켜 둔 채로 로컬 미리보기 주소를 연다.
 
 :::
 
 ::: code-tab label="pnpm"
 
-使用 pnpm 安装并启动项目。
+pnpm으로 설치하고 프로젝트를 시작한다.
 
 ```sh
 pnpm install
 pnpm dev
 ```
 
-- 需要 Node.js 22.23 或更新版本。
-- 使用项目指定的 pnpm 版本。
+- Node.js 22.23 이상이 필요하다.
+- 프로젝트가 지정한 pnpm 버전을 쓴다.
 
 :::
 
 ::::
 
-### 在代码围栏上填写标签
+### 코드 펜스에 레이블 쓰기
 
-也可以省略 `labels=[...]`，将标签写在代码围栏的方括号中。Emoji 短代码仍然可用，Expressive Code 的 `title`、行号和高亮配置也可以一起使用。
+`labels=[...]`를 생략하고 레이블을 코드 펜스의 대괄호 안에 적을 수도 있다. Emoji 단축 코드도 그대로 쓸 수 있고, Expressive Code의 `title`, 줄 번호, 강조 설정도 함께 쓸 수 있다.
 
 ````markdown
 ::: code-group
@@ -528,9 +526,9 @@ pnpm add rehype-code-group
 
 :::
 
-### 自动生成包管理器标签
+### 패키지 매니저 탭 자동 생성
 
-给 npm 命令的围栏加上 `npm2yarn` 即可，构建时会自动展开成 npm、pnpm、Yarn 和 Bun 四个标签页，无需再手写 `::: code-group`，也无需维护四份命令。
+npm 명령의 코드 펜스에 `npm2yarn`을 붙이면 빌드할 때 npm, pnpm, Yarn, Bun 탭 네 개로 자동 확장된다. `::: code-group`을 직접 쓸 필요도, 명령 네 벌을 관리할 필요도 없다.
 
 ````markdown
 ```sh npm2yarn
@@ -542,11 +540,11 @@ npm install rehype-code-group
 npm install rehype-code-group
 ```
 
-### 同步选择、记忆与纵向布局
+### 선택 동기화, 기억, 세로 배치
 
-下面两组使用相同的 `sync="firefly-package-manager"` 和 `persist="local"`：在一组中选择 pnpm，另一组也会切换，刷新后仍会保留选择。跨组同步依靠相同的 `value`，标签文字可以不同。
+아래 두 그룹은 같은 `sync="firefly-package-manager"`와 `persist="local"`을 쓴다. 한 그룹에서 pnpm을 고르면 다른 그룹도 바뀌고, 새로고침한 뒤에도 선택이 유지된다. 그룹 사이의 동기화는 같은 `value`로 이루어지므로 탭 문구는 달라도 된다.
 
-给外层添加 `orientation="vertical"` 可在宽屏上将标签放到侧边；窄屏会自动改为顶部标签。纵向标签使用 <kbd>↑</kbd> / <kbd>↓</kbd>，横向标签使用 <kbd>←</kbd> / <kbd>→</kbd>。
+바깥에 `orientation="vertical"`을 주면 넓은 화면에서 탭이 옆에 놓이고, 좁은 화면에서는 자동으로 위쪽 탭이 된다. 세로 탭은 <kbd>↑</kbd> / <kbd>↓</kbd>, 가로 탭은 <kbd>←</kbd> / <kbd>→</kbd>로 이동한다.
 
 ````markdown
 :::: code-group label="Install dependencies" sync="firefly-package-manager" persist="local"
@@ -611,13 +609,13 @@ pnpm dev
 ::::
 
 > [!TIP]
-> 标签栏在构建期生成，默认展开第一项；支持鼠标点击与键盘 <kbd>←</kbd> / <kbd>→</kbd> / <kbd>Home</kbd> / <kbd>End</kbd> 切换。禁用 JavaScript 或打印文章时，所有标签页的内容都会显示。
+> 탭 줄은 빌드할 때 만들어지며 기본으로 첫 항목이 펼쳐진다. 마우스 클릭과 키보드 <kbd>←</kbd> / <kbd>→</kbd> / <kbd>Home</kbd> / <kbd>End</kbd>로 전환할 수 있다. JavaScript를 끄거나 글을 인쇄하면 모든 탭의 내용이 보인다.
 
-### 在提醒框内使用（MDX 组件）
+### 알림 상자 안에서 쓰기 (MDX 컴포넌트)
 
-`::: code-group` 和 `::: tip` 等 Docusaurus 风格提醒框都使用 `:::` 容器语法，而 micromark-directive 规定父子容器的冒号数必须不同，因此 `::: code-group` **无法嵌套在 `::: tip` 等提醒框内**（整块会失效）。
+`::: code-group`과 `::: tip` 같은 Docusaurus 스타일 알림 상자는 모두 `:::` 컨테이너 문법을 쓰는데, micromark-directive는 부모와 자식 컨테이너의 콜론 수가 달라야 한다고 정하고 있다. 그래서 `::: code-group`은 **`::: tip` 같은 알림 상자 안에 중첩할 수 없다**(블록 전체가 동작하지 않는다).
 
-这种情况改用 MDX 组件 [`TabGroup`](@/components/common/TabGroup.svelte)：MDX 组件不经过 `:::` 指令解析，在提醒框内外都能正常使用，也方便日后扩展更多 UI 组件。把文章后缀改为 `.mdx`，从统一入口 [`@/components/firefly-mdx`](@/components/firefly-mdx.ts) 引入（可一次引入多个组件）：
+이런 경우에는 MDX 컴포넌트 [`TabGroup`](@/components/common/TabGroup.svelte)을 쓴다. MDX 컴포넌트는 `:::` 지시문 파서를 거치지 않으므로 알림 상자 안팎에서 모두 동작하고, 나중에 UI 컴포넌트를 더 추가하기도 쉽다. 글의 확장자를 `.mdx`로 바꾸고 통합 진입점 [`@/components/firefly-mdx`](@/components/firefly-mdx.ts)에서 가져온다(여러 컴포넌트를 한 번에 가져올 수 있다):
 
 ````mdx
 import { TabGroup } from "@/components/firefly-mdx";
@@ -638,6 +636,6 @@ import { TabGroup } from "@/components/firefly-mdx";
 ````
 
 :::tip
-- `labels` 数组给每个代码块声明标签，顺序一一对应
-- 组件用 `client:load` 激活标签切换
+- `labels` 배열로 각 코드 블록의 레이블을 선언하며, 순서대로 짝을 이룬다
+- 컴포넌트는 `client:load`로 탭 전환을 활성화한다
 :::

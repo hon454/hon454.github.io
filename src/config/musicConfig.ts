@@ -20,6 +20,9 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 	// 가사 사용 여부
 	showLyrics: false,
 
+	// 하단 플로팅 가사 사용 여부 (데스크톱은 3줄, 모바일은 1줄 가사를 재생 중에 표시하며, 수동으로 닫아도 다시 재생하면 표시됩니다)
+	showFloatingLyrics: true,
+
 	// Meting API 설정
 	meting: {
 		// Meting API 주소
